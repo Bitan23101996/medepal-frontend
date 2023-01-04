@@ -1,0 +1,354 @@
+<!--
+/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+ 
+-->
+<div *ngIf="loading" class="cover">
+   <div class="loader">
+       <div class="loading-img"><img width=250px src="../../../../../assets/image/logo.svg"/></div>
+       <div class="loading-txt">Loading<div class="dot-elastic"></div></div>
+   </div>
+ </div>
+<div *ngIf="allDataFetched" class="position-relative">
+  <form>
+    <div class="row top-btn-area">
+      <div class="col-12 text-right ">
+
+        <button class="btn btn-primary"
+          (click)="btnUpdateClicked()">{{ 'USER_PROFILE.USER_VACCINATION_UPDATE' | translate }}</button>
+      </div>
+    </div>
+    <div class="row dob-msg-not-found" *ngIf="dobNotAvailable">
+      <p class="blue !important">
+        {{ 'USER_PROFILE.USER_VACCINATION_DOB_MESSEGE' | translate }}
+      </p>
+    </div>
+    <div class="content table-responsive for-medium search-result not-for-mobile">
+      <p-table [value]="vaccinations" [rows]=10>
+        <ng-template pTemplate="header">
+          <tr>
+            <th width="30%">{{ 'USER_PROFILE.USER_VACCINATION_VACCINE_MANDATORY' | translate }}</th>
+            <th width="15%">{{ 'USER_PROFILE.USER_VACCINATION_SCHEDULE' | translate }}</th>
+            <th width="15%">{{ 'USER_PROFILE.USER_VACCINATION_DUE_DATE' | translate }}</th>
+            <th width="15%" class="small-hide">{{ 'USER_PROFILE.USER_VACCINATION_STATUS' | translate }}</th>
+            <th width="20%" class="small-hide">{{ 'USER_PROFILE.USER_VACCINATION_DATE' | translate }}</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-vaccination let-i="rowIndex">
+          <tr>
+            <td>{{vaccination.vaccineName}}</td>
+            <td>
+              <span *ngIf="vaccination.schedule=='0'">{{
+                                          'USER_PROFILE.USER_VACCINATION_AT_BIRTH' | translate }}</span>
+              <span *ngIf="vaccination.schedule!='0'">{{vaccination.schedule}} &nbsp;{{
+                                      vaccination.ageUnit}}</span>
+            </td>
+            <td [ngClass]="{'status-cancel': vaccination.isDueDateExcced,'col-2 vac-cal-font':true}">
+              <span *ngIf="!dobNotAvailable">{{vaccination.dueDate}}</span>
+              <span *ngIf="dobNotAvailable">X</span>
+            </td>
+            <td class="small-hide">
+              <div class="pl-3 row">
+                <input type="checkbox" id="{{i}}" style="margin-top: 2px;" [(ngModel)]="vaccination.isSelected"
+                  [ngModelOptions]="{standalone: true}"
+                  (click)="changeClass($event,vaccination,vaccination.isDueDateExcced)">
+                <label style="font-size: 12px;" class="cursor"
+                  for="{{i}}">&nbsp;{{ 'USER_PROFILE.USER_VACCINATION_DONE' | translate }}</label>
+              </div>
+
+              <!-- <div for="group1" class="float-left vaccination-checkbox-spacer cursor">{{
+                                      'USER_PROFILE.USER_VACCINATION_DONE' | translate }}</div> -->
+            </td>
+            <td class="vac-cal-font small-hide">
+              <app-datepicker class="vaccination-date-field" [maxDate]="maxDate"
+                [(ngModel)]="vaccination.vaccinationDate" (valueChange)="updated($event,vaccination)"
+                [ngModelOptions]="{standalone: true}" position="left">
+              </app-datepicker>
+            </td>
+          </tr>
+          <tr class="small-show">
+            <td>
+              <div class="small-header">{{ 'USER_PROFILE.USER_VACCINATION_STATUS' | translate }}</div>
+              <div class="align-top mt-2">
+                <div class="pl-3 row">
+                  <input type="checkbox" id="{{i}}" style="margin-top: 2px;" [(ngModel)]="vaccination.isSelected"
+                    [ngModelOptions]="{standalone: true}"
+                    (click)="changeClass($event,vaccination,vaccination.isDueDateExcced)">
+                  <label style="font-size: 12px;" class="cursor"
+                    for="{{i}}">&nbsp;{{ 'USER_PROFILE.USER_VACCINATION_DONE' | translate }}</label>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="small-header">{{ 'USER_PROFILE.USER_VACCINATION_DATE' | translate }}</div>
+              <div class="align-top vac-cal-font">
+                <app-datepicker class="vaccination-date-field" [maxDate]="maxDate" [(ngModel)]="vaccination.vaccinationDate"
+                  (valueChange)="updated($event,vaccination)" [ngModelOptions]="{standalone: true}" position="left">
+                </app-datepicker>
+              </div>
+            </td>
+          </tr>
+          <tr class="small-show-1024-768">
+            <td>
+              <div class="small-header">{{ 'USER_PROFILE.USER_VACCINATION_STATUS' | translate }}</div>
+              <div class="align-top mt-2">
+                <div class="pl-3 row">
+                  <input type="checkbox" id="{{i}}" style="margin-top: 2px;" [(ngModel)]="vaccination.isSelected"
+                    [ngModelOptions]="{standalone: true}"
+                    (click)="changeClass($event,vaccination,vaccination.isDueDateExcced)">
+                  <label style="font-size: 12px;" class="cursor"
+                    for="{{i}}">&nbsp;{{ 'USER_PROFILE.USER_VACCINATION_DONE' | translate }}</label>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="small-header">{{ 'USER_PROFILE.USER_VACCINATION_DATE' | translate }}</div>
+              <div class="align-top vac-cal-font">
+                <app-datepicker class="vaccination-date-field" [maxDate]="maxDate" [(ngModel)]="vaccination.vaccinationDate"
+                  (valueChange)="updated($event,vaccination)" [ngModelOptions]="{standalone: true}" position="left">
+                </app-datepicker>
+              </div>
+            </td>
+          </tr>
+          <tr class="small-show">
+            <td class="show-border" colspan="3"></td>
+          </tr>
+          <tr class="small-show-1024-768">
+            <td class="show-border" colspan="3"></td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <br>
+      <div class="row">
+        <div class="col-12 text-right">
+          <button class="btn btn-primary"
+            (click)="btnUpdateClicked()">{{ 'USER_PROFILE.USER_VACCINATION_UPDATE' | translate }}</button>
+        </div>
+      </div>
+    </div>
+    <div class="content table-responsive search-result for-very-small">
+      <p-table [value]="vaccinations" [rows]=10>
+        <ng-template pTemplate="body" let-vaccination let-i="rowIndex">
+          <tr>
+            <ng-container>
+              <td class="mobile-table">
+                <table>
+                  <tr>
+                    <td class="small-header">{{ 'USER_PROFILE.USER_VACCINATION_VACCINE_MANDATORY' | translate }}</td>
+                    <td class="mb-0">
+                      <span>{{vaccination.vaccineName}}</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="small-header">{{ 'USER_PROFILE.USER_VACCINATION_SCHEDULE' | translate }}</td>
+                    <td class="mb-0">
+                      <span>
+                        <span
+                          *ngIf="vaccination.schedule=='0'">{{ 'USER_PROFILE.USER_VACCINATION_AT_BIRTH' | translate }}
+                        </span>
+                        <span *ngIf="vaccination.schedule!='0'">{{vaccination.schedule}}
+                          &nbsp;{{ vaccination.ageUnit}}</span>
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="small-header">{{ 'USER_PROFILE.USER_VACCINATION_DUE_DATE' | translate }}</td>
+                    <td class="mb-0" [ngClass]="{'status-cancel': vaccination.isDueDateExcced,'vac-cal-font':true}">
+                      <span>
+                        <span *ngIf="!dobNotAvailable">{{vaccination.dueDate}}</span>
+                        <span *ngIf="dobNotAvailable">X</span>
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="small-header">{{ 'USER_PROFILE.USER_VACCINATION_STATUS' | translate }}</td>
+                    <td class="mb-0">
+                      <div class="pl-3 row">
+                        <input type="checkbox" id="{{i}}" style="margin-top: 2px;" [(ngModel)]="vaccination.isSelected"
+                          [ngModelOptions]="{standalone: true}"
+                          (click)="changeClass($event,vaccination,vaccination.isDueDateExcced)">
+                        <label style="font-size: 12px;" class="cursor"
+                          for="{{i}}">&nbsp;{{ 'USER_PROFILE.USER_VACCINATION_DONE' | translate }}</label>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="small-header">{{ 'USER_PROFILE.USER_VACCINATION_DATE' | translate }}</td>
+                    <td class="mb-0 vac-cal-font">
+                      <span>
+                        <app-datepicker [maxDate]="maxDate" [(ngModel)]="vaccination.vaccinationDate"
+                          (valueChange)="updated($event,vaccination)" [ngModelOptions]="{standalone: true}"
+                          position="left">
+                        </app-datepicker>
+                      </span>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </ng-container>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <br>
+    <div class="content table-responsive for-medium search-result not-for-mobile">
+      <p-table [value]="optionalVaccinations" [rows]=10 *ngIf="optionalVaccinations.length>0">
+        <ng-template pTemplate="header">
+          <tr>
+            <th width="30%">{{ 'USER_PROFILE.USER_OPTIONAL_VACCINE' | translate }}</th>
+            <th width="15%">{{ 'USER_PROFILE.USER_VACCINATION_SCHEDULE' | translate }}</th>
+            <th width="15%">{{ 'USER_PROFILE.USER_VACCINATION_DUE_DATE' | translate }}</th>
+            <th width="15%" class="small-hide">{{ 'USER_PROFILE.USER_VACCINATION_STATUS' | translate }}</th>
+            <th width="20%" class="small-hide">{{ 'USER_PROFILE.USER_VACCINATION_DATE' | translate }}</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-vaccination>
+          <tr>
+            <td>{{vaccination.vaccineName}}</td>
+            <td>
+              <span *ngIf="vaccination.fromAge=='0'">{{ 'USER_PROFILE.USER_VACCINATION_AT_BIRTH' | translate }}</span>
+              <span *ngIf="vaccination.fromAge!='0'">{{vaccination.fromAge}} &nbsp;{{vaccination.ageUnit}}</span>
+            </td>
+            <td class="mt-2" [ngClass]="{'status-cancel': vaccination.isDueDateExcced,'vac-cal-font':true}">
+              <span *ngIf="!dobNotAvailable">{{vaccination.dueDate}}</span>
+              <span *ngIf="dobNotAvailable">X</span>
+            </td>
+            <td class="small-hide">
+              <input class="mt-1" type="checkbox" [(ngModel)]="vaccination.isSelected"
+                [ngModelOptions]="{standalone: true}"
+                (click)="changeClass($event,vaccination,vaccination.isDueDateExcced)">
+              &nbsp;Done
+            </td>
+            <td class="vac-cal-font small-hide">
+              <input type="text" [maxDate]="maxDate" [(ngModel)]="vaccination.vaccinationDate"
+                [ngModelOptions]="{standalone: true}" class="form-control" bsDatepicker
+                [bsConfig]="{ dateInputFormat:dateFormat ,showWeekNumbers: false}" />
+            </td>
+          </tr>
+          <tr class="small-show">
+            <td>
+              <div class="small-header">{{ 'USER_PROFILE.USER_VACCINATION_STATUS' | translate }}</div>
+              <div class="align-top mt-2">
+                <input class="mt-1" type="checkbox" [(ngModel)]="vaccination.isSelected"
+                  [ngModelOptions]="{standalone: true}"
+                  (click)="changeClass($event,vaccination,vaccination.isDueDateExcced)">
+                &nbsp;Done
+              </div>
+            </td>
+            <td>
+              <div class="small-header">{{ 'USER_PROFILE.USER_VACCINATION_DATE' | translate }}</div>
+              <div class="align-top">
+                <input type="text" [maxDate]="maxDate" [(ngModel)]="vaccination.vaccinationDate"
+                  [ngModelOptions]="{standalone: true}" class="form-control" bsDatepicker
+                  [bsConfig]="{ dateInputFormat:dateFormat ,showWeekNumbers: false}" />
+              </div>
+            </td>
+          </tr>
+          <tr class="small-show-1024-768">
+            <td>
+              <div class="small-header">{{ 'USER_PROFILE.USER_VACCINATION_STATUS' | translate }}</div>
+              <div class="align-top mt-2">
+                <input class="mt-1" type="checkbox" [(ngModel)]="vaccination.isSelected"
+                  [ngModelOptions]="{standalone: true}"
+                  (click)="changeClass($event,vaccination,vaccination.isDueDateExcced)">
+                &nbsp;Done
+              </div>
+            </td>
+            <td>
+              <div class="small-header">{{ 'USER_PROFILE.USER_VACCINATION_DATE' | translate }}</div>
+              <div class="align-top">
+                <input type="text" [maxDate]="maxDate" [(ngModel)]="vaccination.vaccinationDate"
+                  [ngModelOptions]="{standalone: true}" class="form-control" bsDatepicker
+                  [bsConfig]="{ dateInputFormat:dateFormat ,showWeekNumbers: false}" />
+              </div>
+            </td>
+          </tr>
+          <tr class="small-show">
+            <td class="show-border" colspan="3"></td>
+          </tr>
+          <tr class="small-show-1024-768">
+            <td class="show-border" colspan="3"></td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <div class="content table-responsive search-result for-very-small">
+      <p-table [value]="optionalVaccinations" [rows]=10 *ngIf="optionalVaccinations.length>0">
+        <ng-template pTemplate="body" let-vaccination>
+          <tr>
+            <ng-container>
+              <td class="mobile-table">
+                <table>
+                  <tr>
+                    <td class="small-header">{{ 'USER_PROFILE.USER_OPTIONAL_VACCINE' | translate }}</td>
+                    <td class="mb-0">
+                      <span>{{vaccination.vaccineName}}</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="small-header">{{ 'USER_PROFILE.USER_VACCINATION_SCHEDULE' | translate }}</td>
+                    <td class="mb-0">
+                      <span>
+                        <p *ngIf="vaccination.fromAge=='0'">{{ 'USER_PROFILE.USER_VACCINATION_AT_BIRTH' | translate }}
+                        </p>
+                        <p *ngIf="vaccination.fromAge!='0'">{{vaccination.fromAge}} &nbsp;{{vaccination.ageUnit}}</p>
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="small-header">{{ 'USER_PROFILE.USER_VACCINATION_DUE_DATE' | translate }}</td>
+                    <td class="mb-0">
+                      <span>
+                        <input type="checkbox" [(ngModel)]="vaccination.isSelected"
+                          [ngModelOptions]="{standalone: true}"
+                          (click)="changeClass($event,vaccination,vaccination.isDueDateExcced)">
+                        &nbsp;Done
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="small-header">{{ 'USER_PROFILE.USER_VACCINATION_STATUS' | translate }}</td>
+                    <td class="mb-0" [ngClass]="{'status-cancel': vaccination.isDueDateExcced,'vac-cal-font':true}">
+                      <span>
+                        <p *ngIf="!dobNotAvailable">{{vaccination.dueDate}}</p>
+                        <p *ngIf="dobNotAvailable">X</p>
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="small-header">{{ 'USER_PROFILE.USER_VACCINATION_DATE' | translate }}</td>
+                    <td class="mb-0 vac-cal-font">
+                      <span>
+                        <input type="text" [maxDate]="maxDate" [(ngModel)]="vaccination.vaccinationDate"
+                          [ngModelOptions]="{standalone: true}" class="form-control" bsDatepicker
+                          [bsConfig]="{ dateInputFormat:dateFormat ,showWeekNumbers: false}" />
+                      </span>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </ng-container>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </form>
+  <table>
+    <th>
+
+    </th>
+  </table>
+</div>

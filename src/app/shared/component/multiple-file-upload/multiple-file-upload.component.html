@@ -1,0 +1,31 @@
+<div class="row">
+  <div class="col-12 pt-3">
+    <div class="validation text-center pb-2 validation-error" id="validation"></div>
+    <div class="drop-zone text-center" (drop)="onDrop($event)" (dragover)="onDragOver($event)">
+      <h1>Drop files to upload</h1>
+      <div><img src="../../../../assets/image/upload-file-bg.svg" height="100" /></div>
+      <div>OR</div>
+      <div class="mt-3 mb-3">
+        <input type="file" multiple name="file" class="fileUploadInput" id="fileUpload" (change)="fileSelectMulti($event)" #procedureInputFile />
+        <!--<input type="file"  name="file" class="fileUploadInput" formControlName="documents" id="fileUpload" (change)="prescriptionFileSelected($event)" #procedureInputFile />-->
+        <label class="chooseFile" for="fileUpload">Browse</label>
+      </div>
+      <!--<div class="mt-3 mb-3" *ngIf="uploadForm.get('isSubmit').value || uploadForm.controls.file.dirty">
+        <span *ngIf="uploadForm.hasError('required', 'file')" class="validation-error">{{
+                        'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+      </div>-->
+    </div>
+    <div class="row">
+
+
+      <div class="col-12" *ngIf="fileSelected">
+      <div *ngFor="let selFile of procedureSelectFiles; let index = index"  class='file-ready' id='fileNmae{{index}}'>
+        <div class="d-inline-block "><img class="file-ico" src="../../../../assets/image/upload-file-ico.svg" height="15" /></div><div class="d-inline-block file-name">{{selFile.file.name}}</div>
+          <div  class='delete-file-uplod'><img (click)="deleteFileMulti(index)" class='grey' src='../../../../../assets/image/delete.svg' width='15'></div>
+      </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>

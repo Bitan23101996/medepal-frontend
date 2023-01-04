@@ -1,0 +1,7 @@
+{
+    "TOAST_MSG":{
+    "PASSWORD_NOT_GIVEN":"please enter the password to signup",
+    "A_B_C" : "Mobile number verified successfully",
+    "PLEASE_FILL_OUT_THE_FIELD": "すべて記入してください" 
+}
+}

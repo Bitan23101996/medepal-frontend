@@ -1,0 +1,46 @@
+/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+
+
+.menuWrapperContain{ width: 1300px;
+    position: absolute;
+    height: 100%;
+    z-index: 333;
+    background: rgba(102,45,145,1);
+    background: -moz-linear-gradient(45deg, rgba(102,45,145,1) 0%, rgba(85,21,133,0.97) 23%, rgba(73,18,115,0.93) 54%, rgba(73,0,128,0.9) 80%, rgba(102,45,145,0.87) 100%);
+    background: -webkit-gradient(left bottom, right top, color-stop(0%, rgba(102,45,145,1)), color-stop(23%, rgba(85,21,133,0.97)), color-stop(54%, rgba(73,18,115,0.93)), color-stop(80%, rgba(73,0,128,0.9)), color-stop(100%, rgba(102,45,145,0.87)));
+    background: -webkit-linear-gradient(45deg, rgba(102,45,145,1) 0%, rgba(85,21,133,0.97) 23%, rgba(73,18,115,0.93) 54%, rgba(73,0,128,0.9) 80%, rgba(102,45,145,0.87) 100%);
+    background: -o-linear-gradient(45deg, rgba(102,45,145,1) 0%, rgba(85,21,133,0.97) 23%, rgba(73,18,115,0.93) 54%, rgba(73,0,128,0.9) 80%, rgba(102,45,145,0.87) 100%);
+    background: -ms-linear-gradient(45deg, rgba(102,45,145,1) 0%, rgba(85,21,133,0.97) 23%, rgba(73,18,115,0.93) 54%, rgba(73,0,128,0.9) 80%, rgba(102,45,145,0.87) 100%);
+    background: linear-gradient(45deg, rgba(102,45,145,1) 0%, rgba(85,21,133,0.97) 23%, rgba(73,18,115,0.93) 54%, rgba(73,0,128,0.9) 80%, rgba(102,45,145,0.87) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#662d91', endColorstr='#662d91', GradientType=1 );
+    left: 80px;
+    top: 0;}
+
+/* Working on app/issues/782 */    
+ .inactive-menu{
+     pointer-events: none;
+ }  
+ /*End Working on app/issues/782 */ 
+ 
+.textDot-header{
+	display:block;
+	padding: 0 10px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+ 

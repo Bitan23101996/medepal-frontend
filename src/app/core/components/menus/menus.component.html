@@ -1,0 +1,74 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<div class="sidebar-wrapper" [class.inactive-menu]="disableMenu">
+				<div class="close-menu-mobile ml-1 mb-1 mr-1 border-bottom">
+					<button type="button" class="close float-left" aria-label="Close" (click)="closeMenu()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<div class="clearfix"></div>
+				</div>
+                <div [ngClass]="{'logo': true, 'cursor': true}"  >
+                        <img src="assets/image/logo-r.jpg" width="50" (click)="goToUserProfile();">
+                </div>
+                <div class="customNav" >
+                        <div >
+                        <ul class="nav" *ngFor="let item of menuItems1; let i= index;">
+
+
+                                <li [class.active]="name===item && expandedState!='out'">
+                                        <a id="mainMenuLink1" (click)="toggleViewPanel(item)" routerLinkActive="active" [title]=item>
+                                                <ng-template #default><i class="fa fa-user"></i></ng-template>
+                                                <img width="30" *ngIf="menuImgSrc[i] != null; else default; " [src]="menuImgSrc[i]">
+                                                <p>{{item}}</p>
+                                        </a>
+                                    </li>
+
+                        </ul>
+                        </div>
+                </div>
+        </div>
+
+        <div class="overLapProfile" id="subMenu" [@slideInOut]="expandedState" >
+                <div class="profileHeader">
+                        <p class="text-center"> <span class="profileRoundBg">
+                                        <img class="mr-0" *ngIf="profileImageSrc !=''" [src]="domSanitizer.bypassSecurityTrustUrl(profileImageSrc)">
+                                        <img class="mr-0" *ngIf="profileImageSrc ==''" src="../../../../../assets/image/user.png">
+                        </span> <i></i>
+                        </p>
+                       <p class="textDot-header text-center profileName" title="{{userName}}">{{userName}}</p>
+                        <!-- <p class="text-center">{{userEmail}}</p>
+                        <p class="text-center">{{contactNo}}</p>-->
+
+                </div>
+
+                <div class="profileLInk" *ngIf="onSelectionsubMenuLevel1.length != 0">
+                        <!-- <p>{{name}}</p> -->
+                        <ul *ngFor="let item of onSelectionsubMenuLevel1" >
+                                <li (click)="goToScreen(item)">{{item}}</li>
+
+
+                        </ul>
+                        <div>
+                                        <!-- <ul *ngFor="let item1 of onSelectionsubMenuLevel2">
+                                                        <li (click)="goToScreen(item1)">{{item1}}</li>
+
+                                                </ul> -->
+                        </div>
+
+                </div>
+
+        </div>

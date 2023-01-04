@@ -1,0 +1,38 @@
+<div *ngIf="offlineStatus" class="custom-toast offline">
+  <div class="custom-toast-header ">
+    <h1>You are offline !!</h1>
+  </div>
+  <div class="custom-toast-body">
+    <!--<div><img src="../../../../assets/image/cloud.svg" height="50" /></div>-->
+    <h2>Check internet connection</h2>
+  </div>
+</div>
+
+<div *ngIf="onlineStatus" class="custom-toast online">
+  <div class="custom-toast-header ">
+    <h1>Back online !!</h1>
+  </div>
+  <div class="custom-toast-body">
+    <!--<div><img src="../../../../assets/image/back-online.svg" height="60" /></div>-->
+    <h2>Please continue your work.</h2>
+  </div>
+</div>
+
+<!--<div *ngIf="slowStatus" class="custom-toast slow">
+  <div class="custom-toast-header ">
+    <h1>Slow network connection</h1>
+  </div>
+  <div class="custom-toast-body">
+    <h2>Some features may be slow.</h2>
+  </div>
+</div>-->
+
+<div *ngIf="verySlowStatus" class="custom-toast slow">
+  <div class="custom-toast-header ">
+    <h1>Very slow connection</h1>
+  </div>
+  <div class="custom-toast-body">
+    <!--<div><img src="../../../../assets/image/slow.svg" height="50" /></div>-->
+    <h2>Some features may not load properly.</h2>
+  </div>
+</div>

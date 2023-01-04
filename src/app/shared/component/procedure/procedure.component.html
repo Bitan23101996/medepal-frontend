@@ -1,0 +1,392 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<div class="page-content">
+
+    <!-- start download image show -->
+    <!-- <div *ngIf="download.downloadImageSrc">
+        <img *ngIf="download.contentType !='application/pdf'" class="prescription-img-size"
+            [src]="domSanitizer.bypassSecurityTrustUrl(download.downloadImageSrc)" id="image-corner" alt="">
+        <iframe width="100%" height="500" scrolling="no" frameborder="0" id="prescriptionIframe"
+            *ngIf="download.contentType =='application/pdf'"
+            [src]="domSanitizer.bypassSecurityTrustResourceUrl(download.downloadImageSrc)"></iframe>
+        <span (click)="editImage()"><img _ngcontent-c9="" src="../../../../../assets/image/edit-button.svg"
+                width="15"></span>
+    </div> -->
+    <!-- end of downloaded image show -->
+
+    <form [formGroup]="procedureForm">     
+
+        <div class="col-12">
+            <div class="row top-btn-area-for-procedure-create"  *ngIf="!fromSidebar">
+                <button type="button" (click)="back()" class="btn btn-secondary float-right mr-3">
+                    <ng-container *ngIf="procedureNoteRefNo">{{'COMMON.CANCEL_BUTTON'| translate}}</ng-container>
+                    <ng-container *ngIf="!procedureNoteRefNo">{{'COMMON.BACK_BUTTON'| translate}}</ng-container>
+                </button>
+                <button type="button" class="btn btn-primary float-right" (click)="saveProcedureNotes()"
+                    *ngIf="isEdit">{{'COMMON.SAVE_BUTTON'| translate}}</button>
+                <button type="button" class="btn btn-primary float-right" (click)="updateProcedure()"
+                    *ngIf="!isEdit">{{'COMMON.EDIT_BUTTON'| translate}}</button>
+            </div>
+        </div>
+
+        <div class="row" *ngIf="!fromSidebar">
+          <div class="col-12 col-md-6 procedure-note-mt mt-md-0">
+            <div class="main-left-panel">
+              <div class="card custom-bg-procedure">
+              <div class="row">
+                <div class="col-12 mb-3">
+                    <label class="d-inline-block">{{'PROCEDURE.PATIENT_NAME'| translate}} </label><span class="col-12">
+                        {{patientNameAndAgeToDisplay}}
+                    </span>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 mb-3">
+                    <label>{{'PROCEDURE.PROCEDURE_NAME'| translate}}<span class="validation-error" *ngIf="isEdit">
+                            </span> </label>
+                    <app-name *ngIf="isEdit" preventType="none" formControlName="procedureName"></app-name>
+                    <p *ngIf="!isEdit">{{procedureForm.get('procedureName').value}}
+                    </p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 mb-3" *ngIf="admissionRefNo==null">
+                    <label>{{'PROCEDURE.HOSPITAL_NAME'| translate}} <span class="validation-error" *ngIf="isEdit">
+                            </span></label>
+                    <ng-container *ngIf="isEdit">
+                        <p-autoComplete styleClass="autoComplete" formControlName="hospitalName"
+                            [suggestions]="hospitalList" (completeMethod)="getHospitalList($event)" [size]="25"
+                            placeholder="Name" [minLength]="1" (onSelect)="populateHospitalAddress($event)">
+                            <ng-template let-results pTemplate="item">
+                                <span>{{results.hospitalName}}</span>
+                            </ng-template>
+                        </p-autoComplete>
+                    </ng-container>
+                    <p *ngIf="!isEdit">{{procedureForm.get('hospitalName').value}}
+                    </p>
+                </div>
+              </div>
+              <div class="row">
+                  <div class="col-xl-4 col-lg-12">
+                      <label>{{'PROCEDURE.PROCEDURE_DATE'| translate}} <span class="validation-error" *ngIf="isEdit">
+                              </span></label>
+                      <ng-container *ngIf="isEdit">
+                          <app-datepicker formControlName="date" position="bottom" readonly>
+                          </app-datepicker>
+                      </ng-container>
+                      <!--[maxDate]="maxDate"-->
+                      <p *ngIf="!isEdit">{{procedureForm.get('date').value}}</p>
+                  </div>
+
+                  <div class="col-xl-4 col-lg-6">
+                      <label>{{'PROCEDURE.START_TIME'| translate}} <span class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span></label>
+                      <input type="time" class="form-control custom-time-picker" *ngIf="isEdit"
+                          (change)="timeValidate('stTime',stTime.value)" #stTime [readonly]="disableTiming"
+                          formControlName="startTime">
+                      <p *ngIf="!isEdit">{{startTimeDisplay}}</p>
+                      <div class="validation-error" *ngIf="startTimingErrorFlag && isEdit">Start time can not be greater than
+                          end
+                          time.</div>
+                  </div>
+                  <div class="col-xl-4 col-lg-6">
+                      <label>{{'PROCEDURE.END_TIME'| translate}} <span class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span></label>
+                      <input type="time" class="form-control custom-time-picker" *ngIf="isEdit"
+                          (change)="timeValidate('ndTime',ndTime.value)" #ndTime [readonly]="disableTiming==true"
+                          formControlName="endTime">
+                      <p *ngIf="!isEdit">{{endTimeDisplay}}</p>
+                      <div class="validation-error" *ngIf="endTimingErrorFlag && isEdit">End time can not be less than Start
+                          time.
+                      </div>
+                  </div>
+              </div>
+              </div>
+            </div>
+            <div class="row mt-3"><!-- If procedure page is not coming from sidebar-->
+                <div class="col-12">
+                    <div class="card custom-bg-procedure-normal">
+                        <label>NOTES <span class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span></label>
+                        <textarea #docNoteDet rows="6" column="20" maxlength="2024" *ngIf="isEdit"
+                            class="col-12 form-control" formControlName="note"></textarea>
+                        <p *ngIf="!isEdit">{{procedureForm.get('note').value}}</p>
+                        <br>
+                    </div>
+                </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-12 mt-2 mt-md-0">
+            <div class="row">
+              <div class="col-12" *ngIf="!fromSidebar">
+                  <div class="card padding10 custom-bg-procedure-normal">
+                      <div class="row">
+                          <div class="col-md-7">
+                              <h5 class="inner">
+                                  <label>{{'PROCEDURE.ASSISTANTS'| translate}} <span class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span></label>
+                              </h5>
+                          </div>
+                          <div class="col-md-5 text-right">
+                              <button type="button" class="btn btn-primary" *ngIf="isEdit"
+                                  (click)="addItem()">{{'COMMON.ADD_BUTTON'| translate}}</button>
+                          </div>
+                      </div>
+                      <div>
+                          <div class="table-responsive">
+                              <table class="table profile-readonly">
+                                  <thead>
+                                      <tr>
+                                          <th style="padding:0px!important;">{{'PROCEDURE.NAME'| translate}} </th>
+                                          <th>{{'PROCEDURE.ROLE'| translate}}</th>
+                                          <th *ngIf="isEdit"></th>
+                                      </tr>
+                                  </thead>
+                                  <tbody formArrayName="assintants">
+                                      <tr *ngFor="let assistants of procedureForm.get('assintants')['controls']; let i = index"
+                                          [formGroupName]="i">
+                                          <td style="padding-left:0px!important;">
+                                              <input (keydown)="onKeydown($event)" type="text" formControlName="name" *ngIf="isEdit"
+                                                  style="margin-bottom: -1px!important;">
+                                              <p *ngIf="!isEdit">
+                                                  {{procedureForm.get('assintants')['controls'][i].get('name').value }}
+                                              </p>
+                                          </td>
+                                          <td>
+                                              <select class="form-control" formControlName="role" *ngIf="isEdit">
+                                                  <option value="">Select</option>
+                                                  <option *ngFor="let r of assistanceDropdownValue"
+                                                      value="{{r.displayValue}}">
+                                                      {{r.displayValue}}
+                                                  </option>
+                                              </select>
+                                              <p *ngIf="!isEdit">
+                                                  {{procedureForm.get('assintants')['controls'][i].get('role').value }}
+                                              </p>
+                                          </td>
+                                          <td *ngIf="isEdit">
+                                              <span ngbTooltip="Delete Doctor Assistant" container="body" *ngIf="isEdit"
+                                                  (click)="deleteAssistant(i)" class="cursor">
+                                                  <img class="grey" src="../../../../../assets/image/delete.svg"
+                                                      width="15">
+                                              </span>
+                                          </td>
+                                      </tr>
+                                  </tbody>
+                              </table>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+            </div>
+            <div class="row">
+            <div *ngIf="!fromSidebar" class="col-12"><!--class="col-6 display-inline-block"-->
+                <div class= "card custom-bg-procedure-normal padding10"><!--class="min-height292px card padding10"-->
+                    <div class="row">
+                        <div class="col-md-7">
+                            <h5 class="inner">
+                                <label>{{'PROCEDURE.DOCUMENTS_IMAGES'| translate}} <span class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span></label>
+                            </h5>
+                        </div>
+                        <!--<div class="col-md-5 text-right">
+                            <button type="button" class="btn btn-primary" *ngIf="isEdit"
+                                (click)="addImages()">{{'COMMON.ADD_BUTTON'| translate}}</button>
+                        </div>-->
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table profile-readonly">
+                            <thead>
+                                <tr>
+                                    <th style="border-bottom: 0px!important;padding: 0px!important;"></th>
+                                    <th style="border-bottom: 0px!important;padding: 0px!important;"></th>
+                                    <th style="border-bottom: 0px!important;padding: 0px!important;"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let uploadedFile of uploadedDocFileList; let index = index">
+                                    <td style="padding-left:0px!important;">
+                                       <a href="javascript:void(0);" (click)="downloadImage(uploadedFile.procedureUploadRefNo,true,uploadedFile)"> {{uploadedFile.fileName}}</a>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                </tr>
+                                <ng-container *ngIf="isEdit">
+                                  <!--<tr *ngFor="let images of procedureImages; let index = index">
+                                        <td style="padding-left:0px!important;">
+                                                <input type="file" (change)="fileSelect($event)" #procedureInputFile
+                                                *ngIf="isEdit" />
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
+                                                <span ngbTooltip="Delete file" container="body" (click)="deleteFile(index)"
+                                                *ngIf="isEdit" class="cursor">
+                                                <img class="grey" src="../../../../../assets/image/delete.svg" width="15">
+                                            </span>
+                                        </td>
+                                    </tr>-->
+                                    <app-multiple-file [procedureSelectFiles]="procedureSelectFiles"></app-multiple-file>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="col-12 pl-0" *ngIf="fromSidebar">
+          <label class="d-inline">{{'PROCEDURE.PATIENT_NAME'| translate}} </label><span>{{patientNameAndAgeToDisplay}}</span>
+        </div>
+
+
+
+
+
+        <div class="row" *ngIf="!fromSidebar">
+            <!-- <div class="col-12"> -->
+
+
+
+            <!-- </div> -->
+        </div>
+
+
+
+        <div class="row">
+
+
+
+
+            <div *ngIf="fromSidebar" class="col-12 left-panel-procedure-note"><!--class="col-6 display-inline-block"-->
+
+              <div class="row mb-2" ><!-- If procedure page is coming from sidebar-->
+                  <div class="col-12">
+                      <div class="card pb-2 procedureCard">
+                          <div class="procedure-header">Notes</div>
+                          <div class="p-2">
+                          <textarea #docNoteDet rows="10" column="20" maxlength="2024" *ngIf="isEdit"
+                              class="col-12 custom-max-height form-control mb-0" formControlName="note"></textarea>
+                              <span *ngIf="showValidationError">
+                                    <span *ngIf="showValidationError"
+                                      class="validation-error"> {{'VALIDATION.VALIDATION_REQUIRED' | translate}} </span>
+                             </span>
+                            </div>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="row ">
+                <div class="col-12">
+                  <div class=" card procedureCard">
+                  <div class="row ml-0 mr-0 procedure-header procedure-header-upload">
+                      <div class="col-md-8">Add {{'PROCEDURE.DOCUMENTS_IMAGES'| translate}}</div>
+
+                  </div>
+                  <app-multiple-file [procedureSelectFiles]="procedureSelectFiles"></app-multiple-file>
+                  <div class="table-responsive uploadImage">
+                      <table class="table profile-readonly">
+                          <tbody>
+                              <tr *ngFor="let uploadedFile of uploadedDocFileList; let index = index">
+                                  <td class="text-center">
+                                     <a class="downloadImageBtn" href="javascript:void(0);" (click)="downloadImage(uploadedFile.procedureUploadRefNo,true,uploadedFile)"><i class="fa fa-download" style="font-size:12px;" aria-hidden="true"></i>&nbsp;&nbsp;{{uploadedFile.fileName}}</a>
+                                  </td>
+                                  <!--<td>
+                                  </td>
+                                  <td>
+                                  </td>-->
+                              </tr>
+                              <ng-container *ngIf="isEdit">
+                                <!--  <tr *ngFor="let images of procedureImages; let index = index">
+                                      <td>
+                                              <input type="file" name="file" class="fileUploadInput" id="file{{index}}" style="width:195px;" (change)="fileSelect($event)" #procedureInputFile
+                                              *ngIf="isEdit" />
+                                              <label class="chooseFile" id="chooseFileVal{{index}}" for="file{{index}}"><i class="fa fa-upload" style="font-size:12px;" aria-hidden="true"></i>&nbsp;&nbsp;Choose a file</label>
+                                      </td>
+
+                                          <td *ngIf="fileSelected">
+                                              <span  ngbTooltip="Delete file" container="body" (click)="deleteFile(index)"
+                                              *ngIf="isEdit" class="cursor">
+                                              <img class="grey" src="../../../../../assets/image/delete.svg" width="15">
+                                          </span>
+                                      </td>
+                                  </tr>
+                                  <tr>
+                                    <td colspan=2 class="text-right">
+                                        <button type="button" class="btn btn-secondary" *ngIf="isEdit"
+                                              (click)="addImages()">{{'COMMON.ADD_BUTTON'| translate}}</button>
+                                    </td>
+                                  </tr> -->
+                              </ng-container>
+                          </tbody>
+                      </table>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+        </div>
+
+        <div class="row" *ngIf="fromSidebar">
+          <div class="col-12 progressList" id="fileNames"></div>
+            <div class="col-sm-12 col-12 text-center">
+                <button type="button" class="btn btn-primary" (click)="saveProcedureNotes()">{{'COMMON.SUBMIT_BUTTON'| translate}}</button>
+            </div>
+        </div>
+
+
+        <div class="row" *ngIf="!fromSidebar">
+            <div class="col-12" *ngIf="show_canvas_paint">
+                <div class="card custom-bg-procedure-canvas">
+                    <canvas-paint [prescriptionDetail]="prescriptionForm"
+                        [canvasDetailsFromProcedure]="canvasDetailsFromProcedure"
+                        [previousDrewImage]="previousDrewImage" (getCanvasData)="getCanvasData($event)"></canvas-paint>
+                </div>
+            </div>
+        </div>
+        <div class="row" *ngIf="!fromSidebar">
+            <div class="col-12" *ngIf="(!show_canvas_paint) && procedureSelectFiles.length>0">
+                <div class="card custom-bg-procedure-canvas">
+                    <div *ngFor="let canvasImg of procedureSelectFiles">
+                        <img src="{{ canvasImg.file }}" height="400" *ngIf="canvasImg.filetype =='canvas' && (!downloadedCanvasImgShow)"/>
+                        <div *ngIf="download.downloadImageSrc && downloadedCanvasImgShow">
+                            <img *ngIf="download.contentType !='application/pdf'" class="prescription-img-size"
+                                [src]="domSanitizer.bypassSecurityTrustUrl(download.downloadImageSrc)" id="image-corner"
+                                alt="">
+                            <iframe width="100%" height="500" scrolling="no" frameborder="0" id="prescriptionIframe"
+                                *ngIf="download.contentType =='application/pdf'"
+                                [src]="domSanitizer.bypassSecurityTrustResourceUrl(download.downloadImageSrc)"></iframe>
+                            <span (click)="editImage(canvasImg)" *ngIf="canvasImg.filetype =='canvas'&& isEdit && (downloadedCanvasImgShow)"
+                            class="float-right cursor" title="Edit Image"><img
+                                src="../../../../../assets/image/edit-button.svg" width="15"></span>
+                        </div>
+                        <span (click)="editImage(canvasImg)" *ngIf="canvasImg.filetype =='canvas'&& isEdit && (!downloadedCanvasImgShow)"
+                            class="float-right cursor" title="Edit Image"><img
+                                src="../../../../../assets/image/edit-button.svg" width="15"></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </form>
+</div>

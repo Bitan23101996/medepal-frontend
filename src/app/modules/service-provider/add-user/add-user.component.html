@@ -1,0 +1,482 @@
+<ng-template #adduserModal>
+  <form [formGroup]="addNewUserForm" (ngSubmit)="submit()">
+    <div class="modal-header">
+      <h4 class="modal-title">User List</h4>
+    </div>
+    <div class="modal-body">
+      <div class="content table-responsive for-medium search-result not-for-mobile">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>UserName<span class="validation-error">*</span></th>
+              <th>UserRole<span class="validation-error">*</span></th>
+              <th>Email Id<span class="validation-error"></span></th>
+              <th class="small-hide">Phone No<span class="validation-error"></span></th>
+              <th class="small-hide">Designation</th>
+              <!-- <th class="small-hide"></th> -->
+            </tr>
+          </thead>
+          <tbody formArrayName='addNewUserList'>
+            <tr *ngFor="let q of addNewUserForm.get('addNewUserList').controls; let i = index" [formGroup]="q">
+              <td>
+                <app-name formControlName="userName" preventType="all"></app-name>
+                <!-- <input type="text" class="form-control" formControlName="userName" required (keydown)="onKeydown($event)"> -->
+                <span *ngIf="submitted && addNewUserForm.get('addNewUserList').controls[i].get('userName').errors ">
+                  <span *ngIf="addNewUserForm.get('addNewUserList').controls[i].get('userName').errors.required"
+                    class="validation-error">* UserName is required</span>
+                </span>
+              </td>
+              <td>
+                <select id="Id" class="form-control" formControlName="userRole" [disabled]="isReadOnlyUserRole"
+                  required>
+                  <option [disabled]="isReadOnlyUserRole" [ngValue]="role" *ngFor="let role of userRole">
+                    {{role}}
+                  </option>
+                </select>
+                <span *ngIf="submitted && addNewUserForm.get('addNewUserList').controls[i].get('userRole').errors ">
+                  <span *ngIf="addNewUserForm.get('addNewUserList').controls[i].get('userRole').errors.required"
+                    class="validation-error">* Role is required</span>
+                </span>
+              </td>
+              <td>
+                <input type="text" class="form-control" formControlName="email"
+                  (blur)="checkDuplicateEmail($event.target.value, i)" [readonly]="isReadOnlyEmail">
+                <span *ngIf="submitted && addNewUserForm.get('addNewUserList').controls[i].get('email').errors ">
+                  <span *ngIf="addNewUserForm.get('addNewUserList').controls[i].get('email').errors.email"
+                    class="validation-error">* Invalid Email </span>
+                </span>
+                <p data-toggle="tooltip" title="{{q.value.email}}">
+                  <span *ngIf="q.value.email_verification_status == 'Y'" data-toggle="tooltip" title="Verified"
+                    style="position: relative;left: 199px;top: -26px;"><img
+                      src="../../../../../assets/image/verified.svg" height="18px;"></span>
+                  <a style="font-size: 11px;" *ngIf="q.value.email_verification_status == 'N' " (click)="emailVerify()"
+                    href="javascript:void(0)">Verify Email</a>
+                </p>
+              </td>
+              <td class="small-hide">
+                <div *ngIf="isReadOnlyContact">
+                  <input type="text" class="form-control" formControlName="contact" (keypress)="keyPress($event)"
+                    (blur)="checkContactNumber($event.target.value, i)" [readonly]="isReadOnlyContact">
+                  <p data-toggle="tooltip" title="{{q.value.contact}}">
+                    <span *ngIf="q.value.contact_verification_status == 'Y'" data-toggle="tooltip" title="Verified"
+                      style="position: relative;left: 199px;top: -26px;"><img
+                        src="../../../../../assets/image/verified.svg" height="18px;"></span>
+                    <a style="font-size: 11px;" *ngIf="q.value.contact_verification_status == 'N'"
+                      (click)="mobileVerify()" href="javascript:void(0)">Verify Mobile</a>
+                  </p>
+
+                  <div *ngIf="!otpVerifySuccess" class="col-lg-7">
+                    <div class="row">
+                      <input *ngIf="otpVerify" type="text" formControlName="otp" class="form-control user-verify-otp">
+                      <button style="margin-top: -15px;" *ngIf="otpVerify" type="button"
+                        class="btn btn-secondary btn-sm" (click)="cancelSection()">Cancel</button>
+                      &nbsp;&nbsp;&nbsp;<button type="button" *ngIf="otpVerify" style="margin-top: -15px;"
+                        class="btn btn-primary btn-sm" (click)="otpSubmit()">Submit OTP</button>
+                    </div>
+                    <div class="row">
+                      <a style="margin-top: -11px;margin-left: 29px;" *ngIf="otpVerify" href="javascript:void(0)"
+                        (click)="resendOtp()">resend OTP</a>
+                    </div>
+                  </div>
+                </div>
+
+                <div *ngIf="!isReadOnlyContact">
+                  <int-phone-prefix [locale]="'IN'" [defaultCountry]="'in'" formControlName="contact" autofocus=""
+                    (keypress)="keyPress($event)" (keyup)="checkContactNumber($event.target.value)"
+                    (keyUp)="checkDuplicatePhNo($event.target.value, i)"></int-phone-prefix>
+                </div>
+              </td>
+              <td class="small-hide">
+                <input type="text" class="form-control" formControlName="designation">
+              </td>
+            </tr>
+            <tr class="small-show-1024-768"
+              *ngFor="let q of addNewUserForm.get('addNewUserList').controls; let i = index" [formGroup]="q">
+              <td>
+                <div class="small-header">Phone No</div>
+                <div class="align-top">
+                  <div *ngIf="isReadOnlyContact">
+                    <input type="text" class="form-control" formControlName="contact" (keypress)="keyPress($event)"
+                      (blur)="checkContactNumber($event.target.value, i)" [readonly]="isReadOnlyContact">
+                    <p data-toggle="tooltip" title="{{q.value.contact}}">
+                      <span *ngIf="q.value.contact_verification_status == 'Y'" data-toggle="tooltip" title="Verified"
+                        style="position: relative;left: 199px;top: -26px;"><img
+                          src="../../../../../assets/image/verified.svg" height="18px;"></span>
+                      <a style="font-size: 11px;" *ngIf="q.value.contact_verification_status == 'N'"
+                        (click)="mobileVerify()" href="javascript:void(0)">Verify Mobile</a>
+                    </p>
+
+                    <div *ngIf="!otpVerifySuccess" class="col-lg-7">
+                      <div class="row">
+                        <input *ngIf="otpVerify" type="text" formControlName="otp" class="form-control user-verify-otp">
+                        <button style="margin-top: -15px;" *ngIf="otpVerify" type="button"
+                          class="btn btn-secondary btn-sm" (click)="cancelSection()">Cancel</button>
+                        &nbsp;&nbsp;&nbsp;<button type="button" *ngIf="otpVerify" style="margin-top: -15px;"
+                          class="btn btn-primary btn-sm" (click)="otpSubmit()">Submit OTP</button>
+                      </div>
+                      <div class="row">
+                        <a style="margin-top: -11px;margin-left: 29px;" *ngIf="otpVerify" href="javascript:void(0)"
+                          (click)="resendOtp()">resend OTP</a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div *ngIf="!isReadOnlyContact">
+                    <int-phone-prefix [locale]="'IN'" [defaultCountry]="'in'" formControlName="contact" autofocus=""
+                      (keypress)="keyPress($event)" (keyup)="checkContactNumber($event.target.value)"
+                      (keyUp)="checkDuplicatePhNo($event.target.value, i)"></int-phone-prefix>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="small-header">Designation</div>
+                <div class="align-top">
+                  <input type="text" class="form-control" formControlName="designation">
+                </div>
+              </td>
+            </tr>
+            <tr class="small-show" *ngFor="let q of addNewUserForm.get('addNewUserList').controls; let i = index"
+              [formGroup]="q">
+              <td>
+                <div class="small-header">Phone No</div>
+                <div class="align-top">
+                  <div *ngIf="isReadOnlyContact">
+                    <input type="text" class="form-control" formControlName="contact" (keypress)="keyPress($event)"
+                      (blur)="checkContactNumber($event.target.value, i)" [readonly]="isReadOnlyContact">
+                    <p data-toggle="tooltip" title="{{q.value.contact}}">
+                      <span *ngIf="q.value.contact_verification_status == 'Y'" data-toggle="tooltip" title="Verified"
+                        style="position: relative;left: 199px;top: -26px;"><img
+                          src="../../../../../assets/image/verified.svg" height="18px;"></span>
+                      <a style="font-size: 11px;" *ngIf="q.value.contact_verification_status == 'N'"
+                        (click)="mobileVerify()" href="javascript:void(0)">Verify Mobile</a>
+                    </p>
+
+                    <div *ngIf="!otpVerifySuccess" class="col-lg-7">
+                      <div class="row">
+                        <input *ngIf="otpVerify" type="text" formControlName="otp" class="form-control user-verify-otp">
+                        <button style="margin-top: -15px;" *ngIf="otpVerify" type="button"
+                          class="btn btn-secondary btn-sm" (click)="cancelSection()">Cancel</button>
+                        &nbsp;&nbsp;&nbsp;<button type="button" *ngIf="otpVerify" style="margin-top: -15px;"
+                          class="btn btn-primary btn-sm" (click)="otpSubmit()">Submit OTP</button>
+                      </div>
+                      <div class="row">
+                        <a style="margin-top: -11px;margin-left: 29px;" *ngIf="otpVerify" href="javascript:void(0)"
+                          (click)="resendOtp()">resend OTP</a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div *ngIf="!isReadOnlyContact">
+                    <int-phone-prefix [locale]="'IN'" [defaultCountry]="'in'" formControlName="contact" autofocus=""
+                      (keypress)="keyPress($event)" (keyup)="checkContactNumber($event.target.value)"
+                      (keyUp)="checkDuplicatePhNo($event.target.value, i)"></int-phone-prefix>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="small-header">Designation</div>
+                <div class="align-top">
+                  <input type="text" class="form-control" formControlName="designation">
+                </div>
+              </td>
+            </tr>
+            <tr class="small-show">
+              <td class="show-border" colspan="3"></td>
+            </tr>
+            <tr class="small-show-1024-768">
+              <td class="show-border" colspan="3"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="content table-responsive search-result for-very-small">
+        <div *ngFor="let q of addNewUserForm.get('addNewUserList').controls; let i = index" [formGroup]="q">
+          <table class="table">
+            <tr class="text-left">
+              <td class="mobile-table">
+                <table class="w-100">
+                  <tr>
+                    <td class="small-header">UserName<span class="validation-error">*</span></td>
+                    <td class="mb-0">
+                      <app-name formControlName="userName" class="form-control-for-user-list-popup" preventType="all"></app-name>
+                      <span
+                        *ngIf="submitted && addNewUserForm.get('addNewUserList').controls[i].get('userName').errors ">
+                        <span *ngIf="addNewUserForm.get('addNewUserList').controls[i].get('userName').errors.required"
+                          class="validation-error">* UserName is required</span>
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="small-header">UserRole<span class="validation-error">*</span></td>
+                    <td class="mb-0">
+                      <select id="Id" class="form-control-for-user-list-popup" formControlName="userRole" [disabled]="isReadOnlyUserRole"
+                        required>
+                        <option [disabled]="isReadOnlyUserRole" [ngValue]="role" *ngFor="let role of userRole">
+                          {{role}}
+                        </option>
+                      </select>
+                      <span
+                        *ngIf="submitted && addNewUserForm.get('addNewUserList').controls[i].get('userRole').errors ">
+                        <span *ngIf="addNewUserForm.get('addNewUserList').controls[i].get('userRole').errors.required"
+                          class="validation-error">* Role is required</span>
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="small-header">Email Id<span class="validation-error"></span></td>
+                    <td class="mb-0">
+                      <input type="text" class="form-control-for-user-list-popup" formControlName="email"
+                        (blur)="checkDuplicateEmail($event.target.value, i)" [readonly]="isReadOnlyEmail">
+                      <span *ngIf="submitted && addNewUserForm.get('addNewUserList').controls[i].get('email').errors ">
+                        <span *ngIf="addNewUserForm.get('addNewUserList').controls[i].get('email').errors.email"
+                          class="validation-error">* Invalid Email </span>
+                      </span>
+                      <p data-toggle="tooltip" title="{{q.value.email}}">
+                        <span *ngIf="q.value.email_verification_status == 'Y'" data-toggle="tooltip" title="Verified"
+                          style="position: relative;left: 199px;top: -26px;"><img
+                            src="../../../../../assets/image/verified.svg" height="18px;"></span>
+                        <a style="font-size: 11px;" *ngIf="q.value.email_verification_status == 'N' "
+                          (click)="emailVerify()" href="javascript:void(0)">Verify Email</a>
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="small-header">Phone No<span class="validation-error"></span></td>
+                    <td class="mb-0">
+                      <div *ngIf="isReadOnlyContact">
+                        <input type="text" class="form-control-for-user-list-popup" formControlName="contact" (keypress)="keyPress($event)"
+                          (blur)="checkContactNumber($event.target.value, i)" [readonly]="isReadOnlyContact">
+                        <p data-toggle="tooltip" title="{{q.value.contact}}">
+                          <span *ngIf="q.value.contact_verification_status == 'Y'" data-toggle="tooltip"
+                            title="Verified" style="position: relative;left: 199px;top: -26px;"><img
+                              src="../../../../../assets/image/verified.svg" height="18px;"></span>
+                          <a style="font-size: 11px;" *ngIf="q.value.contact_verification_status == 'N'"
+                            (click)="mobileVerify()" href="javascript:void(0)">Verify Mobile</a>
+                        </p>
+
+                        <div *ngIf="!otpVerifySuccess" class="col-lg-7">
+                          <div class="row">
+                            <input *ngIf="otpVerify" type="text" formControlName="otp"
+                              class="form-control-for-user-list-popup user-verify-otp">
+                            <button style="margin-top: -15px;" *ngIf="otpVerify" type="button"
+                              class="btn btn-secondary btn-sm" (click)="cancelSection()">Cancel</button>
+                            &nbsp;&nbsp;&nbsp;<button type="button" *ngIf="otpVerify" style="margin-top: -15px;"
+                              class="btn btn-primary btn-sm" (click)="otpSubmit()">Submit OTP</button>
+                          </div>
+                          <div class="row">
+                            <a style="margin-top: -11px;margin-left: 29px;" *ngIf="otpVerify" href="javascript:void(0)"
+                              (click)="resendOtp()">resend OTP</a>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div *ngIf="!isReadOnlyContact">
+                        <int-phone-prefix [locale]="'IN'" [defaultCountry]="'in'" formControlName="contact" autofocus=""
+                          (keypress)="keyPress($event)" (keyup)="checkContactNumber($event.target.value)"
+                          (keyUp)="checkDuplicatePhNo($event.target.value, i)"></int-phone-prefix>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="small-header">Designation</td>
+                    <td class="mb-0">
+                      <input type="text" class="form-control-for-user-list-popup" formControlName="designation">
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary btn-sm" (click)="closeModal()">Cancel</button>
+      <button type="submit" class="btn btn-primary btn-sm pull-right">Save User</button>
+    </div>
+  </form>
+</ng-template>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="row">
+      <div class="col-md-6">
+
+      </div>
+      <div class="col-md-6">
+        <button type="button" class="btn btn-secondary float-right mb-2" (click)="openModal()"><i
+            class="fas fa-plus"></i> Add New User</button>
+      </div>
+    </div>
+    <div class="content table-responsive for-medium search-result not-for-mobile">
+      <p-table [value]="resdata" [paginator]="isPaginator" [rows]="5">
+        <ng-template pTemplate="header">
+          <tr>
+            <th scope="col">UserName</th>
+            <th scope="col">UserRole</th>
+            <th scope="col">Email Id</th>
+            <th scope="col" class="small-hide">Phone No</th>
+            <th scope="col" class="small-hide">Designation</th>
+            <th scope="col" class="small-hide"></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-i="rowIndex">
+          <tr>
+            <td>{{rowData.userName}}</td>
+            <td>{{rowData.userRole}}</td>
+            <td>{{rowData.email}}</td>
+            <td class="small-hide">{{rowData.contact}}</td>
+            <td class="small-hide">{{rowData.designation}}</td>
+            <td class="small-hide">
+              <span ngbTooltip="Edit User" container="body" (click)="openEditModal(rowData)" class="cursor">
+                <img class="grey" src="../../../../../assets/image/edit.svg" height="15" alt="">
+              </span>
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <span ngbTooltip="Delete User" container="body" (click)="deleteUser(i, rowData)" class="cursor">
+                <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+              </span>
+            </td>
+          </tr>
+          <tr class="small-show">
+            <td>
+              <div class="small-header">Phone No</div>
+              <div class="align-top">{{rowData.contact}}</div>
+            </td>
+            <td>
+              <div class="small-header">Designation</div>
+              <div class="align-top">{{rowData.designation}}</div>
+            </td>
+            <td>
+              <div class="small-header"></div>
+              <div class="align-top">
+                <div class="row text-right">
+                  <div class="col-6">
+                    <span ngbTooltip="Edit User" container="body" (click)="openEditModal(rowData)" class="cursor">
+                      <img class="grey" src="../../../../../assets/image/edit.svg" height="15" alt="">
+                    </span>
+                  </div>
+                  <div class="col-6 pr-4">
+                    <span ngbTooltip="Delete User" container="body" (click)="deleteUser(i, rowData)" class="cursor">
+                      <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr class="small-show-1024-768">
+            <td>
+              <div class="small-header">Phone No</div>
+              <div class="align-top">{{rowData.contact}}</div>
+            </td>
+            <td>
+              <div class="small-header">Designation</div>
+              <div class="align-top">{{rowData.designation}}</div>
+            </td>
+            <td>
+              <div class="small-header"></div>
+              <div class="align-top">
+                <div class="row text-right">
+                  <div class="col-6">
+                    <span ngbTooltip="Edit User" container="body" (click)="openEditModal(rowData)" class="cursor">
+                      <img class="grey" src="../../../../../assets/image/edit.svg" height="15" alt="">
+                    </span>
+                  </div>
+                  <div class="col-6 pr-4">
+                    <span ngbTooltip="Delete User" container="body" (click)="deleteUser(i, rowData)" class="cursor">
+                      <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr class="small-show">
+            <td class="show-border" colspan="3"></td>
+          </tr>
+          <tr class="small-show-1024-768">
+            <td class="show-border" colspan="3"></td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <div class="content table-responsive search-result for-very-small">
+      <p-table [value]="resdata" [paginator]="isPaginator" [rows]="5">
+        <ng-template pTemplate="body" let-rowData let-i="rowIndex">
+          <tr>
+            <ng-container>
+              <td class="mobile-table">
+                <table>
+                  <tr>
+                    <td class="small-header">UserName</td>
+                    <td class="mb-0">{{rowData.userName}}</td>
+                  </tr>
+                  <tr>
+                    <td class="small-header">UserRole</td>
+                    <td class="mb-0">{{rowData.userRole}}</td>
+                  </tr>
+                  <tr>
+                    <td class="small-header">Email Id</td>
+                    <td class="mb-0">{{rowData.email}}</td>
+                  </tr>
+                  <tr>
+                    <td class="small-header">Phone No</td>
+                    <td class="mb-0">{{rowData.contact}}</td>
+                  </tr>
+                  <tr>
+                    <td class="small-header">Designation</td>
+                    <td class="mb-0">{{rowData.designation}}</td>
+                  </tr>
+                  <tr>
+                    <td class="small-header"></td>
+                    <td class="mb-0">
+                      <div class="row text-right">
+                        <div class="col-6">
+                          <span ngbTooltip="Edit User" container="body" (click)="openEditModal(rowData)" class="cursor">
+                            <img class="grey" src="../../../../../assets/image/edit.svg" height="15" alt="">
+                          </span>
+                        </div>
+                        <div class="col-6 pr-4">
+                          <span ngbTooltip="Delete User" container="body" (click)="deleteUser(i, rowData)"
+                            class="cursor">
+                            <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </ng-container>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+<!-- alert modal for confirmation -->
+<ng-template #confirmationAlert>
+  <div class="row">
+    <div class="col-lg-8">
+      <p>Your email/phone is registered with an another profile:</p>
+    </div>
+  </div>
+  <div class="row">
+    <div *ngFor="let role of roleList" class="col-lg-2">
+      <label class="radio">
+        <p><b>{{role.roleName}}</b></p>
+        <span style="margin-top: 4px;" class="checkmark"></span>
+      </label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-8"></div>
+    <div class="col-lg-2">
+      <button type="button" class="btn btn-primary btn-sm">Confirm</button>
+    </div>
+    <div class="col-lg-2">
+      <button type="button" class="btn btn-secondary btn-sm" (click)="closeModal()">Close</button>
+    </div>
+  </div>
+</ng-template>
+<!-- alert modal for confirmation end -->

@@ -1,0 +1,27 @@
+<!-- /*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */ -->
+
+
+<div *ngIf="!showVideoChat" class="waiting-message-area">
+  <div class="waiting-message">
+    <h1>Please wait...</h1>
+    <p>for our doctor to start your consulting session.</p>
+    <div class="dot-elastic"></div>
+  </div>
+</div>
+<app-video-chat-component [singlePageAppObj]="singlePageAppObj" (onCloseClick)="showVideoChat = false" [appointmentRefNo]="appointmentRefNo" *ngIf="showVideoChat">
+  video-chat-single-page-app works!
+</app-video-chat-component>

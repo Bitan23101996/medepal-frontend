@@ -1,0 +1,422 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+ <div *ngIf="!redirectFlag">
+    <app-success-card [successMsgEl]="redirectFlag" [successMsgFor]="successMsgFor"></app-success-card>
+</div>
+
+<div *ngIf="redirectFlag">
+<div class="row" *ngIf="!isRegistrationWorkflowCompleted">
+  <div class="col-lg-12">
+    <app-registration-workflow [workflow]="workflow" [isRegistrationWorkflowCompleted]="isRegistrationWorkflowCompleted"></app-registration-workflow>
+   
+
+
+    <div *ngIf="currentStep!=0">
+        <div class="text-center">
+          <div class="d-inline-block standard-box">
+            <div class="box-header"><h3>PRICING</h3></div>
+            <div class="text-center billing-date-border1">
+              <div class="d-inline-block block4">Pay per use only</div>
+              <div class="d-inline-block block5">No fixed fees</div>
+              <div class="d-inline-block block6">No hidden cost</div>
+            </div>
+            <table class="table plan-detail-tbl">
+                  <tr [hidden]="true">
+                    <th *ngFor="let plan of billingPlanList;">
+                      {{plan.displayName}}
+                    </th>
+                  </tr>
+                 <!--<tr>
+                      <td *ngFor="let plan of billingPlanList;" >
+                          <div [ngClass]="plan.trialMonthsStr=='Free Usage Period' ? 'trialMonthLbl':'trialMonth'">
+                            <ng-container *ngIf="plan.trialMonthsStr=='0' || plan.trialMonths==null">{{plan.trialMonthsStr}}</ng-container>
+                            <ng-container *ngIf="plan.trialMonthsStr!='0' && plan.trialMonths!=null">{{plan.trialMonthsStr}}
+                              <span class="text-lowercase" *ngIf="plan.trialMonths > 1">{{plan.billingCycle}}s</span>
+                              <span class="text-lowercase" *ngIf="plan.trialMonths == 0">{{plan.billingCycle}}</span>
+                              (Till {{plan.trialPeriodEndDateStr}})</ng-container>
+                          </div>
+                      </td>
+                    </tr>-->
+                  <tr>
+                    <!-- <td colspan="10">
+                        <table class="plan-detail-tbl">
+                              <tr>
+                                <td *ngFor="let plan of billingPlanList">
+                                    <ng-container *ngFor="let unit of plan.chargeUnitDetails;">
+                                        <div class="chargeUnitAttribute" *ngIf="unit.chargeUnitAttribute!=null"> {{unit.chargeUnitAttribute}} </div>
+                                        <div class="chargeUnitBlank"  *ngIf="unit.chargeUnitAttribute==null"></div>
+                                        <div class="rateText" *ngIf="unit.rateText!=null"> {{unit.rateText}} </div>
+                                        <div class="rateTextList" *ngIf="unit.rateText==null">
+                                          <div *ngFor="let rate of unit.rateTextSlab">
+                                            {{rate}}
+                                          </div>
+                                        </div>
+                                        <div class="commitment" *ngIf="unit.commitment!=null"> {{unit.commitment}} </div>
+                                        <div class="commitment" *ngIf="unit.commitment==null"> Nil </div>
+                                    </ng-container>
+                                </td>
+                                </tr>
+                                </table>
+                    </td> -->
+                    <td width=50% *ngFor="let plan of billingPlanList;">
+                      <!-- <div *ngFor="let unit of plan.chargeUnitDetails;">
+                          <div> {{unit.chargeUnitAttribute}} </div>
+                          <div *ngIf="unit.rateText!=null"> {{unit.rateText}} </div>
+                          <div *ngIf="unit.rateText==null">
+                            <div *ngFor="let rate of unit.rateTextSlab">
+                              {{rate}}
+                            </div>
+                          </div>
+                          <div> {{unit.commitment}} </div>
+                      </div> -->
+                      <div class="chargeUnit"  *ngFor="let unit of plan.chargeUnitDetails;">
+                          <div class="chargeUnitAttribute"  *ngIf="unit.chargeUnitAttribute!=null"> {{unit.chargeUnitAttribute}} </div>
+                          <!-- Commented to hide Rate label -->
+                          <!-- <div class="chargeUnitAttribute"  *ngIf="unit.chargeUnitAttribute==null">&nbsp; </div> -->
+                          <div *ngIf="unit.rateText!=null || unit.rateTextSlab.length!=0">
+                              <ng-container *ngIf="unit.rateText!=null && unit.rateText!='Rate'">
+                                  <div class="rateText">
+                                    <span class="currency">{{'SEARCH.SEARCH_INR_SIGN' | translate}} </span>
+                                    {{unit.rateText}}
+                                  </div>
+                              </ng-container>
+                              <ng-container *ngIf="unit.rateText==null">
+                                  <div class="rateText">
+                                  <div *ngFor="let rate of unit.rateTextSlab">
+                                      <span class="currency">{{'SEARCH.SEARCH_INR_SIGN' | translate}} </span>
+                                    {{rate}}
+                                    </div>
+                                  </div>
+                              </ng-container>
+                              <!-- Commented to hide Rate label -->
+                              <!-- <ng-container *ngIf="unit.rateText=='Rate'">
+                                  <div class="rateText">
+                                    {{unit.rateText}} per {{unit.chargeUnitAttribute}}
+                                  </div>
+                              </ng-container> -->
+                          </div>
+
+                          <div class="rateText" *ngIf="unit.rateText==null && unit.rateTextSlab.length==0"> Nil </div>
+
+                          <!-- Commented to hide commitment label -->
+                          <!-- <div class="commitment" *ngIf="unit.commitment!=null">
+                              <span class="currency">{{'SEARCH.SEARCH_INR_SIGN' | translate}} </span>
+                               {{unit.commitment}} </div>
+                          <div class="commitment" *ngIf="unit.commitment==null"> Nil </div> -->
+                        </div>
+                    </td>
+                  </tr>
+                <!--  <tr>
+                    <td *ngFor="let plan of billingPlanList;" >
+                        <div [ngClass]="plan.trialMonthsStr=='Free Usage Period' ? 'trialMonthLbl':'trialMonth'">
+                          <ng-container *ngIf="plan.trialMonthsStr=='0' || plan.trialMonths==null">{{plan.trialMonthsStr}}</ng-container>
+                          <ng-container *ngIf="plan.trialMonthsStr!='0' && plan.trialMonths!=null">{{plan.trialMonthsStr}}
+                            <span class="text-lowercase" *ngIf="plan.trialMonths > 1">{{plan.billingCycle}}s</span>
+                            <span class="text-lowercase" *ngIf="(plan.trialMonths == 1 || plan.trialMonths == 0)">{{plan.billingCycle}}</span>
+                            (Till {{plan.trialPeriodEndDateStr}})</ng-container>
+                        </div>
+                    </td>
+                  </tr> -->
+                  <tr><td height="10px"></td></tr>
+                <tr>
+                    <tr class="billing-date-border">
+                        <td *ngFor="let plan of billingPlanList;">
+                            <div [ngClass]="plan.billingStartDateStr=='Billing Start Date' ? 'billingStartDateLbl':'billingStartDate'">
+                                <ng-container *ngIf="plan.billingStartDateStr=='Billing Start Date'">{{plan.billingStartDateStr}}</ng-container>
+                                <ng-container *ngIf="plan.billingStartDateStr!='Billing Start Date'">
+                                  {{plan.billingStartDateStr}}
+                                  <div class="billing-rules">Bill for each month's usage will be generated on the first day of next calendar month</div>
+                                </ng-container>
+
+                            </div>
+
+                        </td>
+                      </tr>
+                    <tr>
+                        <td colspan=2 class="text-center accept" *ngFor="let plan of billingPlanList;">
+                            <button type="button" class="btn btn-primary accept-btn" (click)="choosePlan(plan)">
+                                {{'BILLING.CHOOSE_PLAN_BTN' | translate}}
+                              </button>
+                        </td>
+                      </tr>
+                      <tr >
+                          <td colspan="10">
+                            <ul class="notesArea">
+                              <li>You will be billed for your personal use only. If you are using MEDePAL on behalf of any OPD / Clinic / Hospital, the corresponding establishment will be billed.</li>
+                              <li>Free Usage Period is applicable for Personal use only.</li>
+                            </ul>
+
+                          </td>
+                      </tr>
+                  <!-- <tr>
+                    <td *ngFor="let plan of billingPlanList;">
+                      <div *ngFor="let unit of plan.chargeUnitDetails;">
+                        {{unit.rateText}}
+                      </div>
+                    </td>
+                  </tr> -->
+
+                  </table>
+                 <!-- <div class="border-top">  <h1 class="text-uppercase">Pay per use only. No minimum charges. No hidden costs.</h1></div>-->
+          </div>
+        </div>
+
+
+              <div class="row">
+                  <div class="col-lg-12 text-center">
+                    <!-- <button type="button" class="btn btn-primary" (click)="choosePlan()">
+                      {{'BILLING.CHOOSE_PLAN_BTN' | translate}}
+                    </button> -->
+                    <p class="ip">
+                      {{'BILLING.IP_MSG' | translate}}
+                      <strong> {{ipAddress}} </strong>
+                    </p>
+                  </div>
+                </div>
+    </div>
+
+    <!--
+    <div class="row">
+      <div class="col-md-2">
+        <div class="plan-header">
+          <label>{{'BILLING.CHARGE_UNIT' | translate}} </label>
+          <ul>
+            <li *ngFor="let attr of billingUnitList">
+              {{attr.attributeValue}}
+              <ul>
+                <li>{{'BILLING.RATE' | translate}}</li>
+                <li>{{'BILLING.COMMITMENT' | translate}}</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <div class="plan-header">
+          <label>{{'BILLING.TRIAL_PERIOD' | translate}} </label>
+        </div>
+      </div>
+      <div class="col-md-10">
+        <div class="row">
+          <div class="col-lg-4" *ngFor="let plan of billingPlanList; let i = index">
+            <div [ngClass]="selected[i]? 'card plan-card selected' : 'card plan-card'" (click)="selectPlan(plan, i)">
+              <div class="card-header">
+                <h1>{{plan.displayName}}</h1>
+              </div>
+              <div class="card-body">
+                <div class="billing-unit-rate">
+                  <ng-container *ngFor="let details of plan.billingPlanDetails">
+                    <div class="plan-rate">
+                      <div *ngIf="details.slabRateFlag=='Y'">
+                        <div *ngFor="let slab of details.billingSlabList">
+                          {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{slab.rateText}}
+                        </div>
+                      </div>
+                      <div *ngIf="details.slabRateFlag=='N'">
+                        {{details.rateText}}
+                      </div>
+                    </div>
+                    <div class="plan-commitment">
+
+                      <div *ngIf="details.minRate===undefined">
+                        Nil
+                      </div>
+                      <div *ngIf="details.minRate!==undefined">
+                        {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{details.minRate}}
+                      </div>
+                    </div>
+                    <hr>
+                  </ng-container>
+                </div>
+
+                <div class="billing-unit-rate">
+                  {{plan.trialMonths}}
+                  <span class="lower">
+                    {{plan.billingCycle}}
+                  </span>
+                </div>
+
+                 <table class="plan-detail-tbl">
+                        <tbody>
+                          <tr>
+                            <td>{{'BILLING.CHARGE_UNIT' | translate}} </td>
+                            <td>{{plan.billingPlanDetails[0].baseUnit}}</td>
+                          </tr>
+                          <tr>
+                            <td>{{'BILLING.RATE' | translate}} </td>
+                            <td>
+                              <span *ngIf="plan.billingPlanDetails[0].slabRateFlag=='Y'">
+                                <ng-container *ngFor="let slab of plan.billingPlanDetails[0].billingSlabList">
+                                  <div *ngIf="slab.slabEnd!==undefined">
+                                    {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{slab.rate}} per {{slab.unitSize}}
+                                    <span class="lower">
+                                      {{plan.billingPlanDetails[0].baseUnit}}
+                                    </span>
+                                    for {{slab.slabStart}} to {{slab.slabEnd}}
+                                    <span class="lower">
+                                      {{plan.billingPlanDetails[0].baseUnit}}
+                                    </span>
+                                  </div>
+                                  <div *ngIf="slab.slabEnd===undefined">
+                                    {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{slab.rate}} per {{slab.unitSize}}
+                                    <span class="lower">
+                                      {{plan.billingPlanDetails[0].baseUnit}}
+                                    </span>
+                                    over {{slab.slabStart}}
+                                    <span class="lower">
+                                      {{plan.billingPlanDetails[0].baseUnit}}
+                                    </span>
+                                  </div>
+                                </ng-container>
+                              </span>
+                              <span *ngIf="plan.billingPlanDetails[0].slabRateFlag=='N'">
+                                {{plan.billingPlanDetails[0].rate}} per {{plan.billingPlanDetails[0].unitSize}}
+                                <span class="lower">
+                                  {{plan.billingPlanDetails[0].baseUnit}}
+                                </span>
+
+                              </span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>{{'BILLING.COMMITMENT' | translate}} </td>
+                            <td>
+                              <span *ngIf="plan.billingPlanDetails[0].minRate===undefined">
+                                Nil
+                              </span>
+                              <span *ngIf="plan.billingPlanDetails[0].minRate!==undefined">
+                                {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{plan.billingPlanDetails[0].minRate}}
+                               </span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>{{'BILLING.TRIAL_PERIOD' | translate}} </td>
+                            <td>
+                              {{plan.trialMonths}}
+                              <span class="lower">
+                                {{plan.billingCycle}}
+                              </span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>-->
+
+
+
+
+  </div>
+</div>
+<div class="row" *ngIf="isRegistrationWorkflowCompleted || currentStep==0">
+  <div class="col-lg-12">
+    <div class="row" *ngIf="myBillingPlan!=null">
+      <div class="col-lg-6">
+        <div class="card plan-card">
+          <div class="card-header">
+            <h1>{{myBillingPlan.displayName}}</h1>
+          </div>
+          <div class="card-body">
+            <table class="plan-detail-tbl">
+              <tbody>
+                <tr>
+                  <td>{{'BILLING.CHARGE_UNIT' | translate}} </td>
+                  <td>{{myPlanBaseUnits}}</td>
+                </tr>
+                <tr>
+                  <td>{{'BILLING.RATE' | translate}} </td>
+                  <td>
+
+                      <ng-container *ngFor="let details of myBillingPlan.billingPlanDetails">
+                          <strong><u> {{details.baseUnit}} </u></strong>
+                          <div *ngIf="details.slabRateFlag=='Y'">
+                            <div *ngFor="let slab of details.billingSlabList">
+                                {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{slab.rateText}}
+                            </div>
+                          </div>
+                          <div *ngIf="details.slabRateFlag=='N'">
+                                  {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{details.rateText}}
+                            </div>
+                        </ng-container>
+<!-- 
+                    <span *ngIf="myBillingPlan.billingPlanDetails[0].slabRateFlag=='Y'">
+                      <ng-container *ngFor="let slab of myBillingPlan.billingPlanDetails[0].billingSlabList">
+                        <div *ngIf="slab.slabEnd!==undefined">
+                          {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{slab.rate}} per {{slab.unitSize}}
+                          <span class="lower">
+                            {{myBillingPlan.billingPlanDetails[0].baseUnit}}
+                          </span>
+                          for {{slab.slabStart}} to {{slab.slabEnd}}
+                          <span class="lower">
+                            {{myBillingPlan.billingPlanDetails[0].baseUnit}}
+                          </span>
+                        </div>
+                        <div *ngIf="slab.slabEnd===undefined">
+                          {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{slab.rate}} per {{slab.unitSize}}
+                          <span class="lower">
+                            {{myBillingPlan.billingPlanDetails[0].baseUnit}}
+                          </span>
+                          over {{slab.slabStart}}
+                          <span class="lower">
+                            {{myBillingPlan.billingPlanDetails[0].baseUnit}}
+                          </span>
+                        </div>
+                      </ng-container>
+                    </span>
+                    <span *ngIf="myBillingPlan.billingPlanDetails[0].slabRateFlag=='N'">
+                      {{myBillingPlan.billingPlanDetails[0].rate}} per {{myBillingPlan.billingPlanDetails[0].unitSize}}
+                      <span class="lower">
+                        {{myBillingPlan.billingPlanDetails[0].baseUnit}}
+                      </span>
+
+                    </span> -->
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{'BILLING.COMMITMENT' | translate}} </td>
+                  <td>
+                    <span *ngIf="myBillingPlan.billingPlanDetails[0].minRate===undefined">
+                      Nil
+                    </span>
+                    <span *ngIf="myBillingPlan.billingPlanDetails[0].minRate!==undefined">
+                      {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{myBillingPlan.billingPlanDetails[0].minRate}} </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>{{'BILLING.TRIAL_PERIOD' | translate}} </td>
+                  <td>
+                    {{myBillingPlan.trialMonths}}
+                    <span class="lower">
+                      {{myBillingPlan.billingCycle}}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <a *ngIf="isRegistrationWorkflowCompleted" href="javascript:void(0);" (click)="downloadContract()">{{'BILLING.DOWNLOAD_CONTRACT' | translate}}</a>
+
+      </div>
+    </div>
+  </div>
+</div>
+</div>

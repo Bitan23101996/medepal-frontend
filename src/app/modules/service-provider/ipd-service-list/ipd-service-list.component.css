@@ -1,0 +1,13 @@
+.serviceListTableInput{
+    padding-left:5px !important;
+}
+
+.addNewPosition{
+    position: relative;
+    bottom: 30px;
+    right: 0;
+    top: -80px;
+}
+body .ui-paginator {
+    margin-top: 46px !important;
+}

@@ -1,0 +1,117 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+ <div class="row top-btn-area book-diagnostics-top-btn-area">
+  <!-- <div class="col-lg-2 col-md-3 col-sm-3 col-3"></div> -->
+  <div  class="order-diagnostics-button col-lg-2 col-md-9 col-sm-12 col-12 text-right">
+    <button class="btn btn-primary" (click)="historyBack()">back</button>
+  </div>
+</div>
+ <div class="page-content">
+ <div class="card">
+	<div class="row card-body">
+	  <div class="col-lg-3  pb-2">
+		<label>{{'PEER_CONSLT.PATIENT' | translate}}</label>
+		<div>{{patientDetails.name}} (<span *ngIf="patientDetails.age">{{patientDetails.age}}/</span>{{patientDetails.gender}})</div>
+	  </div>
+	  <div class="col-lg-9  pb-2">
+		<label>{{'PEER_CONSLT.DIAGNOSIS' | translate}}</label>
+		<div> <input type="text" placeholder="{{'PEER_CONSLT.SOMETHING_WRITE' | translate}}" [(ngModel)]="consultingMsg"></div>
+	  </div>
+	</div>
+</div>
+<div class="card">
+  <div class="row card-header">
+    <div class="col-xl-4 col-lg-8 col-md-8 col-sm-8 col-12">
+      <h5 class="inner">{{'PEER_CONSLT.REQUEST_DOC_OPINION' | translate}}</h5>
+    </div>
+    <div class="col-xl-7 col-lg-1 col-md-1 col-sm-1"></div>
+    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-3 col-12 pb-sm-0 pb-2 text-right">
+      <button class="btn btn-primary btn-small" (click)="createSearchInputField()">{{'PEER_CONSLT.ADD' | translate}}</button>
+    </div>
+  </div>
+  <div class="row hide-for-very-small-both-side">
+    <div class="col-lg-4 col-md-4 col-4">
+      <label>{{'PEER_CONSLT.DOCTOR' | translate}}</label>
+    </div>
+    <div class="col-lg-3 col-md-4 col-4">
+      <label>{{'PEER_CONSLT.MOBILE' | translate}}</label>
+    </div>
+    <div class="col-lg-4 col-md-3 col-3">
+      <label>{{'PEER_CONSLT.EMAIL' | translate}}</label>
+    </div>
+    <div class="col-lg-1 col-md-1 col-1"></div>
+  </div>
+  <div class="row hide-for-very-small-both-side" *ngFor="let doc of docDetailsField.newDocList; let i=index;">
+    <div class="col-lg-4 col-md-4 col-4">
+      <!-- <input type="text" placeholder="{{'PEER_CONSLT.DOC_NAME' | translate}}" [(ngModel)]="doc.docName" (focusout)="addPeerConsulting()"> -->
+      <app-name (onNameChange)="changeName($event, 'doctorName', i)" preventType="all" [(ngModel)]="doc.docName" 
+      placeholder="{{'PEER_CONSLT.DOC_NAME' | translate}}"></app-name>
+    </div>
+    <div class="col-lg-3 col-md-4 peer-phone col-4">
+      <int-phone-prefix [locale]="'es'" [defaultCountry]="'in'" [(ngModel)]="doc.mobileNo" (focusout)="addPeerConsulting()"></int-phone-prefix>
+    </div>
+    <div class="col-lg-4 col-md-3 col-3">
+      <input type="text" placeholder="{{'PEER_CONSLT.EMAIL_ID' | translate}}" [(ngModel)]="doc.emailId" (focusout)="addPeerConsulting()">
+    </div>
+    <div class="col-lg-1 col-md-1 col-1">
+      <i class="fas fa-trash-alt cursor" (click)="removeDoc(i)"></i>
+    </div>
+  </div>
+  
+  <!-- mobile view start -->
+  <div class="row show-for-very-small-both-side" *ngFor="let doc of docDetailsField.newDocList; let i=index;">
+	<div class="col-12 pb-2">
+		<label>{{'PEER_CONSLT.DOCTOR' | translate}}</label>
+		<div>
+      <!-- <input type="text" placeholder="{{'PEER_CONSLT.DOC_NAME' | translate}}" [(ngModel)]="doc.docName" (focusout)="addPeerConsulting()"> -->
+      <app-name (onNameChange)="changeName($event, 'doctorName', i)" preventType="all" [(ngModel)]="doc.docName" 
+      placeholder="{{'PEER_CONSLT.DOC_NAME' | translate}}" (focusout)="addPeerConsulting()"></app-name>
+    </div>
+	</div>
+	<div class="col-12">
+		<label>{{'PEER_CONSLT.MOBILE' | translate}}</label>
+		<div><int-phone-prefix [locale]="'es'" [defaultCountry]="'in'" [(ngModel)]="doc.mobileNo" (focusout)="addPeerConsulting()"></int-phone-prefix></div>
+	</div>
+	<div class="col-12 pb-4">
+		<label>{{'PEER_CONSLT.EMAIL' | translate}}</label>
+		<div><input type="text" placeholder="{{'PEER_CONSLT.EMAIL_ID' | translate}}" [(ngModel)]="doc.emailId" (focusout)="addPeerConsulting()"></div>
+	</div>
+	<div class="col-12 text-right">
+		<i class="fas fa-trash-alt cursor" (click)="removeDoc(i)"></i>
+	</div>
+  </div>
+  
+  
+</div>
+<div class="card">
+  <div class="row card-header">
+    <div class="col-lg-12">
+      <h5 class="inner">{{'PEER_CONSLT.MSG_TO_INVITEES' | translate}}</h5>
+    </div>
+  </div>
+  <div class="row card-body">
+	<div class="col-lg-12 pb-2">
+    <input type="text" placeholder="{{'PEER_CONSLT.MSG' | translate}}" [(ngModel)]="inviteMsg">
+	</div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-lg-4"></div>
+  <div class="col-lg-4 text-center">
+    <button class="btn btn-primary btn-small" (click)="sendRequest()">{{'PEER_CONSLT.SEND_REQUEST' | translate}}</button>
+  </div>
+</div>
+</div>

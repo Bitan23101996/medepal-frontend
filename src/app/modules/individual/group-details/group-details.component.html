@@ -1,0 +1,425 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<div class="row" *ngIf="allDataFetched">
+  <div class="col-lg-12">
+    <div class="row bt-style">
+      <div class="col-md-2">
+      </div>
+      <!-- <div class="col-md-6">
+                    <div class="form-group">
+                        <input id="typeahead-http" (keyup)="resetCheckbox();" [(ngModel)]="searchKey" type="text" class="form-control"
+                            placeholder="Search By Keywords" />
+                    </div>
+                </div> -->
+      <!-- <div class="col-md-2"></div> -->
+      <div class="row top-btn-area">
+        <div class="col-lg-12">
+          <button class="btn btn-sm btn-primary float-right" type="button"
+            (click)="openCreateGroupModal('create-group-modal')">
+            {{ 'USER_GROUPS.USER_GROUPS_CREATE_GROUP' | translate }}</button>
+        </div>
+      </div>
+    </div>
+    <div class=" invitation-area">
+     
+      <div class="col-12">
+        
+        <div class="row information-header1 " *ngIf="groupInvitationArr.length > 0">
+          <div [ngClass]="isInvitationOpen ? 'invitation-title-opened col-lg-8 col-md-8 col-sm-12 pl-13' : 'invitation-title-closed'">
+            <div class="page-heading-info Group3">
+            <h2>Invitation to join a MEDePAL group created by somebody you know</h2>
+            </div>
+          </div>
+          <div [ngClass]="isInvitationOpen ? 'col-lg-4 col-md-4 col-sm-12' : 'col-12'" class="text-right btn-pos">
+            <button *ngIf="isInvitationOpen" class="btn btn-secondary btn-sm" (click)="hideInvitationList()">Hide Invitation List</button>
+            <button *ngIf="!isInvitationOpen" class="btn btn-secondary hidelist btn-sm" (click)="showInvitationList()">Show Invitation List</button>
+          </div>
+        </div>
+        
+    <!-- message style 1-->
+        <div [ngClass]="isInvitationOpen ? 'invitation-list-opened' : 'invitation-list-closed'">
+          <div class="invitation-list">
+            <div *ngFor="let myInvitation of groupInvitationArr" class="row pl-4 invitation-list-area">
+              <div class="col-xl-9 col-lg-10 col-md-11 col-sm-12 col-12">
+                <div class="row">
+                  <div class="float-left">
+                    <h2>Invited by <b>{{myInvitation.groupOwnerName}}</b> to join the group <b>{{myInvitation.groupName}}</b></h2>
+                  </div>
+                  <div class="float-left">
+                    <button class="btn btn-secondary btn-sm accept" (click)="acceptGroupInvitation(myInvitation)"><b>ACCEPT</b></button>
+                  </div>
+                  <div class="float-left">
+                    <button class="btn btn-secondary btn-small reject" (click)="rejectGroupInvitation(myInvitation)">REJECT</button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    </div>
+    <!-- message style 1-->
+
+    <div class="text-center not-found" *ngIf="UserGroupsTable.length== 0">
+      <h3>{{ 'USER_GROUPS.USER_GROUPS_NO_GROUPS' | translate }}</h3>
+    </div>
+    
+      <div class="page-heading-info Group3" *ngIf="UserGroupsTable.length>0">
+    <h2>List of groups you are member of</h2>
+    </div>
+  
+   <div class="row page-content">
+           <div class="col-9">
+        <div class="row">
+          <div class="col-xl-4 col-lg-6 col-md-6" *ngFor="let group of UserGroupsTable;">
+            <div class="card">
+              <div class="card-header">
+                <h5> {{group.groupName}}</h5>
+              </div>
+              <div class="card-body">
+                <div *ngFor="let members of group.userGrops">
+                  <div *ngIf="members.groupRole== 'OWNER' && members.invitationAccepted == inviteAccepted">
+                    <p class="bold"><span ngbTooltip="OWNER">{{members.name}} </span></p>
+                  </div>
+                </div>
+                <div *ngFor="let members of group.userGrops">
+                  <div *ngIf="members.groupRole== 'MEMBER' && members.invitationAccepted == inviteAccepted">
+                    <p>{{members.name}}</p>
+                  </div>
+                </div>
+                <div *ngFor="let members of group.userGrops">
+                  <div *ngIf="members.groupRole== 'OWNER' && members.invitationAccepted == inviteSent">
+                    <p class="group-invitation-sent bold"><span ngbTooltip="OWNER">{{members.name}}
+                      </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="groupInvitedText"
+                        *ngIf="members.invitationAccepted == inviteSent">INVITED</span></p>
+                  </div>
+                </div>
+                <div *ngFor="let members of group.userGrops">
+                  <div *ngIf="members.groupRole == 'MEMBER' && members.invitationAccepted == inviteSent">
+                    <p class="group-invitation-sent"><span>{{members.name}}
+                      </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="groupInvitedText"
+                        *ngIf="members.invitationAccepted == inviteSent">INVITED</span></p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-7 col-md-6 col-7">
+                    <div *ngIf="group.totalMembers>6">
+                      <button class="btn btn-link" (click)="goToGroupPermission(group);">
+                        {{ 'USER_GROUPS.USER_GROUPS_VIEW_ALL' | translate }}</button>
+                    </div>
+                    <div *ngIf="group.displayUserName !== 'Me'">
+                      <button class="btn btn-primary"
+                        (click)="leaveGroup(group);">{{ 'USER_GROUPS.USER_GROUPS_LEAVE_GROUP' | translate }}</button>
+                    </div>
+                  </div>
+                  <div class="col-md-1 col-1 pl-0 pr-0">
+                    <i *ngIf="group.displayUserName == 'Me'" (click)="deleteGroup(group);"
+                      ngbTooltip="{{ 'USER_GROUPS.USER_GROUPS_POPUP_DELETE_GROUP' | translate }}"
+                      class="fas fa-trash-alt cursor"></i>
+                    <i style="margin-left: -15px;" *ngIf="group.displayUserName != 'Me'"
+                      class="fas fa-trash-alt disabled editIcon"></i>
+                  </div>
+                  <div class="col-md-1 col-1 pl-0 pr-0">
+                    <i *ngIf="group.displayUserName == 'Me'" (click)="editGroup('edit-group-modal',group);"
+                      ngbTooltip="{{ 'USER_GROUPS.USER_GROUPS_POPUP_EDIT_GROUP' | translate }}"
+                      class="fas fa-edit cursor">&nbsp;</i>
+                    <i *ngIf="group.displayUserName != 'Me'" class="fas fa-edit disabled deleteIcon">&nbsp;</i>
+                  </div>
+                  <div class="col-md-1 col-1 pl-0 pr-0">
+                    <i class="fas fa-eye cursor" ngbTooltip="Group Permission" (click)="goToGroupPermission(group);"></i>
+                  </div>
+                  <div class="col-md-1 col-1 pl-0 pr-0">
+                    <i *ngIf="group.displayUserName == 'Me'" ngbTooltip="Add Members" (click)="openModalAddMembers(group)"
+                      class="fas fa-plus cursor"></i>
+                    <i *ngIf="group.displayUserName != 'Me'" class="fas fa-plus disabled AddMemberIcon"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-3 right-panel-border">
+        <div class="desc-box1">
+          <div class="main-header">What is a MEDePAL Group?</div>
+          <div class=Group4>
+          <p>MEDePAL Group is a mechanism to monitor and exchange medical and treatment data of your family members and near and dear ones. Multiple groups can be created by one person. Group members can exchange treatment records among themselves. This is of immense benefit to families where members are geographically distributed as well as those who are co-located. 
+          </p>
+        </div>
+        </div>
+        <div class="desc-box3">
+          <div class="main-header">Do all group members have access to your medical records?</div>
+          <div class=Group4>
+          <p>No, you decide the level of access that you want to give to the other members. Different members of the same group can be given different permissions. You are in control of your data at all times. 
+            Members of one group cannot access medical records of members in another group. </p>
+        </div>
+        </div>
+        <!--
+        <div class="desc-box3">
+          <div class="main-header">Lorem ipsum dolor sit amet</div>
+          <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        </div>
+        -->
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<ng-template #memberGroupModal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{userPopUp.title}}</h4>
+    <div class="modal-header-btn"><button type="button" class="btn btn-primary btn-sm"
+        (click)="addUser()">{{'USER_GROUPS.ADD_MEMBER'| translate }}</button></div>
+    <button type="button" class="close" aria-label="close" (click)="modalRef.hide('cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body modal-body-scroll Group information-header">
+   <!---<div *ngIf="!groupName.value">-->
+    <h2>Specify a name for the group to be created</h2>
+    
+    <div class="row group-group-name mb-4">
+      <div class="col-lg-2 col-md-4">
+        <label>{{ 'USER_GROUPS.USER_GROUPS_POPUP_GROUP_NAME' | translate }}</label>
+      </div>
+      <div class="col-lg-10 col-md-8">
+        <app-name class="add-member-group-name"
+          placeholder="{{ 'USER_GROUPS.USER_GROUPS_POPUP_PLACEHOLDER_ENTER_GROUP_NAME' | translate }}"
+          (change)="onKeyCheckUserNameLength(userPopUp)" (onNameChange)="changeName($event, 'groupName')"
+          (keyup)="onKeyCheckUserNameLength(userPopUp)" [disabled]="userPopUp.title=='Add Members'" preventType="all"
+          [(ngModel)]="userPopUp.groupName" #groupName="ngModel" required="required"></app-name>
+        <!-- <input type="text" class="add-member-group-name" (keyup)="onKeyCheckUserNameLength(userPopUp)"
+                    (change)="onKeyCheckUserNameLength(userPopUp)" [disabled]="userPopUp.title=='Add Members'"
+                    [(ngModel)]="userPopUp.groupName"
+                    placeholder="{{ 'USER_GROUPS.USER_GROUPS_POPUP_PLACEHOLDER_ENTER_GROUP_NAME' | translate }}" /> -->
+      </div>
+    </div>
+
+    <div *ngIf="userPopUp.newUserList.length>0">
+      <div class="content table-responsive no-btm-border not-for-mobile ">
+        <div class="desc-box1 Group5 heading">
+        <h2>To add new members to your group, specify Name, Mobile and/or Email of the person you want to invite
+            
+        </h2>
+        </div>
+        <!--not for mobile -->
+        <table class="table">
+          <thead>
+            <tr class="d-flex">
+              <th class="col-lg-3 col-md-9">
+                {{ 'ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_FIRST_NAME' | translate }}</th>
+              <th class="text-center col-lg-1 col-md-2">{{ 'ADD_FAMILY_MEMBER.MINOR' | translate }}</th>
+              <th class="cell-responsive-hide col-lg-3 small-hide">
+                {{ 'ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_USER_PHONE_NUMBER' | translate }}</th>
+              <th class="cell-responsive-hide col-lg-4 small-hide">
+                {{ 'ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_USER_NAME' | translate }}</th>
+              <th class="col-lg-1 col-md-1"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="d-flex" *ngFor="let rowData of userPopUp.newUserList; let i=index;">
+              <td class="col-12 modal-nopadding" colspan=5>
+                <table class="w-100">
+                  <tr class="d-flex">
+                    <td class="col-lg-3 col-md-9">
+                      <!-- <input id="input" class="add-mem-input-name"
+                                                type="text" [(ngModel)]="rowData.name"
+                                                placeholder="{{ 'USER_GROUPS.USER_GROUPS_FIRST_NAME' | translate }}"> -->
+                      <app-name class="add-mem-input-name"
+                        placeholder="{{ 'USER_GROUPS.USER_GROUPS_FIRST_NAME' | translate }}"
+                        (onNameChange)="changeName($event, 'memberName', i)" preventType="all"
+                        [(ngModel)]="rowData.name"></app-name>
+                    </td>
+                    <td class="text-center col-lg-1 col-md-2"><input type="checkbox" [(ngModel)]="rowData.minor"
+                        [checked]="minor==true"></td>
+                    <td class="popup-table-phone cell-responsive-hide col-lg-3 small-hide">
+                      <!-- <int-phone-prefix class="input-group" id="input" type="text" [locale]="'es'"
+                                                [defaultCountry]="'in'" [(ngModel)]="rowData.contactNo">
+                                            </int-phone-prefix> -->
+                      <app-telephone class="input-group" (keyup)="numberField($event, i)" (onPhoneNumberChange)="changeNumber($event, 'memberNumber', i)"
+                        [(ngModel)]="rowData.contactNo">
+                      </app-telephone>
+                    </td>
+                    <td class="cell-responsive-hide col-lg-4 small-hide"><input id="input" type="text"
+                        [(ngModel)]="rowData.emailAddress"
+                        placeholder="{{ 'USER_GROUPS.USER_GROUPS_EMAIL_NUMBER' | translate }}">
+                    </td>
+                    <td class="col-lg-1 text-right col-md-1"><span ngbTooltip="Delete" (click)="removeUser(i)"
+                        class="cursor">
+                        <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                      </span></td>
+                  </tr>
+                  
+
+                  <!--for ipad-->
+                  <tr class="d-flex group-add-modal small-show-1024-768">
+                    <td>
+                      <div class="small-header">
+                        {{ 'ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_USER_PHONE_NUMBER' | translate }}
+                      </div>
+                      <!-- <int-phone-prefix class="input-group" id="input" type="text" [locale]="'es'"
+                                            [defaultCountry]="'in'" [(ngModel)]="rowData.contactNo">
+                                            </int-phone-prefix> -->
+                      <app-telephone class="input-group" (onPhoneNumberChange)="changeNumber($event, 'memberNumber', i)"
+                        [(ngModel)]="rowData.contactNo">
+                      </app-telephone>
+                    </td>
+                    <td>
+                      <div class="small-header">
+                        {{ 'ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_USER_NAME' | translate }}</div>
+                      <input id="input" type="text" [(ngModel)]="rowData.emailAddress"
+                        placeholder="{{ 'USER_GROUPS.USER_GROUPS_EMAIL_NUMBER' | translate }}">
+                    </td>
+                  </tr>
+                  <!--end of ipad design-->
+
+                  <!-- <tr class="d-flex row-responsive-show">
+                                        <td class="col-md-5">
+                                            <div class="responsive-popup-heading">
+                                                {{ 'ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_USER_PHONE_NUMBER' | translate }}
+                                            </div>
+                                            <div class="popup-table-phone">
+                                                <int-phone-prefix class="input-group" id="input" type="text"
+                                                    [locale]="'es'" [defaultCountry]="'in'"
+                                                    [(ngModel)]="rowData.contactNo"></int-phone-prefix>
+                                            </div>
+                                        </td>
+                                        <td class="col-md-7">
+                                            <div class="responsive-popup-heading">
+                                                {{ 'ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_USER_NAME' | translate }}</div>
+                                            <div><input id="input" type="text" [(ngModel)]="rowData.emailAddress"
+                                                    placeholder="{{ 'USER_GROUPS.USER_GROUPS_EMAIL_NUMBER' | translate }}">
+                                            </div>
+                                        </td>
+                                    </tr> -->
+                </table>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+        <div class="desc-box1 Group5 heading">
+          <h2>An invitation will be sent to the newly added members. They will be included in the group after they confirm
+              
+          </h2>
+          </div>
+      </div><!-- end of not for mobile-->
+      <!--mobile-->
+      <div class="table-responsive table-responsive-modal-mobile for-very-small">
+        <div *ngFor="let rowData of userPopUp.newUserList; let i=index;">
+          <table class="w-100">
+            <tr class="text-left">
+              <td class="mobile-table">
+                <table class="w-100">
+                  <tr>
+                    <td class="small-header">
+                      {{ 'ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_FIRST_NAME' | translate }}</td>
+                    <td class="mb-0">
+                      <input id="input" class="add-mem-input-name" type="text" [(ngModel)]="rowData.name"
+                        placeholder="{{ 'USER_GROUPS.USER_GROUPS_FIRST_NAME' | translate }}">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="small-header">{{ 'ADD_FAMILY_MEMBER.MINOR' | translate }}</td>
+                    <td class="mb-0">
+                      <input type="checkbox" [(ngModel)]="rowData.minor" [checked]="minor==true">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="small-header">
+                      {{ 'ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_USER_PHONE_NUMBER' | translate }}
+                    </td>
+                    <td class="mb-0">
+                      <!-- <int-phone-prefix class="input-group mb-0" id="input" type="text"
+                                                [locale]="'es'" [defaultCountry]="'in'" [(ngModel)]="rowData.contactNo">
+                                            </int-phone-prefix> -->
+                      <app-telephone class="input-group mb-0"
+                        (onPhoneNumberChange)="changeNumber($event, 'memberNumber', i)" [(ngModel)]="rowData.contactNo">
+                      </app-telephone>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="small-header">
+                      {{ 'ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_USER_NAME' | translate }}</td>
+                    <td class="mb-0">
+                      <input id="input" type="text" [(ngModel)]="rowData.emailAddress"
+                        placeholder="{{ 'USER_GROUPS.USER_GROUPS_EMAIL_NUMBER' | translate }}">
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td></td>
+                    <td>
+                      <span ngbTooltip="Delete" (click)="removeUser(i)" class="cursor">
+                        <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                      </span>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            
+          </table>
+         
+        </div>
+      </div><!-- end of mobile -->
+
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div class="row">
+      <div class="col-lg-12 text-right">
+        <button type="button" class="btn btn-sm btn-secondary" (click)="modalRef.hide()">{{
+                        'USER_GROUPS.USER_GROUPS_POPUP_CANCEl' | translate }}</button>&nbsp;
+        <button class="btn btn-sm btn-primary" (click)="saveGroup();">{{ 'USER_GROUPS.USER_GROUPS_MODAL_SAVE_BUTTON' |
+                        translate }}</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template #editGroupModal>
+  <div class="modal-header">
+    <h4 class="modal-title float-left">{{ 'USER_GROUPS.USER_GROUPS_POPUP_EDIT_GROUP' | translate }}</h4>
+    <button type="button" class="close float-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-lg-4 col-md-4">
+        <label>{{ 'USER_GROUPS.USER_GROUPS_POPUP_GROUP_NAME' | translate }}</label>
+      </div>
+      <div class="col-lg-8 col-md-8">
+        <input type="text" (keyup)="onKeyCheckUserNameLength(currentSelectedGroup)"
+          (change)="onKeyCheckUserNameLength(userPopUp)" [(ngModel)]="currentSelectedGroup.groupName"
+          placeholder="{{ 'USER_GROUPS.USER_ENTER_GROUP_NAME' | translate }}" />
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" (click)="modalRef.hide()">{{
+            'USER_GROUPS.USER_GROUPS_POPUP_CANCEl' | translate }}</button>
+    <button class="btn btn-sm btn-primary" (click)="changeGroupName();">{{ 'USER_GROUPS.USER_GROUPS_POPUP_EDIT' |
+            translate }}</button>
+
+  </div>
+</ng-template>

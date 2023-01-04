@@ -1,0 +1,5 @@
+<div [formGroup]="txtForm">
+    <textarea id="txtVal" maxlength="500" #br class="form-control allow-all-char" placeholder="{{placeholder}}"  formControlName={{formControlName}}></textarea>
+    <!-- app#855 -->
+    <i style="color:black; text-align:right; font-size:10px">({{500 - br.value.length}} characters remaining)</i>
+</div>

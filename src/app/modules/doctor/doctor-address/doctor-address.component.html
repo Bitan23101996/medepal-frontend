@@ -1,0 +1,289 @@
+<div class="row">
+    <div class="col-lg-12">
+        
+                    <form [formGroup]="form">
+                        <div formArrayName="addreses">
+                            <div class="row top-btn-area">
+                                <div class="col-lg-10"></div>
+                                <div class="col-lg-12">
+                                    <button type="button" [disabled]="addreses.controls[0] && addreses.controls[0].get('isEdit').value " (click)="addNewAddress()" class="btn btn-sm btn-primary float-right">
+                                      {{'USER_PROFILE.USER_PROFILE_ADD_ADDRESS' | translate }}</button>
+                                </div>
+                            </div>
+                            <div class="text-center" *ngIf="addreses.controls.length==0">
+                                <h1 class="noAdressData">{{ 'USER_PROFILE.USER_PROFILE_ADDRESS_EMPTY_ERROR_MESSAGE' | translate }} </h1>
+                                
+                            </div>
+
+                            <div *ngIf="addreses.controls.length>0" class="row page-content">
+
+                                    <!-- <ngb-panel *ngFor="let address of userProfileData?.addressList; let i = index" title="{{address.addressType}} Address"> -->
+                                    <div class="col-xl-4 col-lg-6 col-md-6" *ngFor="let ctrl of form.controls.addreses.controls; let i = index" title="{{ctrl.get('addressType').value}} Address"
+                                        [formGroupName]="i" id="{{i}}">
+
+                                        <div  class="card">
+                                          <!-- non editable mode -->
+                                          <div *ngIf="!ctrl.get('isEdit').value" class="card-header"><h5>{{ctrl.get('addressType').value}}</h5></div>
+                                          <div *ngIf="!ctrl.get('isEdit').value" class="row card-body">
+                                               <div class="col-12">
+                                                  <p>
+                                                     {{ctrl.get('line1').value}} &nbsp; {{ctrl.get('line2').value}}
+                                                   </p>
+                                                   <p>
+                                                     <span>{{ctrl.get('city').value}}</span>&nbsp;<span>{{ctrl.get('state').value}}</span>&nbsp;<span>{{ctrl.get('pinCode').value}}</span>
+                                                   </p>
+                                                   <p>{{ctrl.get('country').value}}</p>
+                                                   <div class="float-right">
+                                                   <span *ngIf="isEditDeleteAllowed" class="cursor pull-right" (click)="deleteAddress(ctrl, i)">DELETE</span>
+                                                   <span *ngIf="isEditDeleteAllowed" class="pull-right">|</span><span *ngIf="isEditDeleteAllowed" class="cursor pull-right" (click)="editToggleAddress(ctrl)">EDIT</span>
+                                                  </div>
+                                               </div>
+
+                                          </div>
+                                          <!-- non editable mode -->
+                                          <!-- editable mode -->
+                                          <div *ngIf="ctrl.get('isEdit').value" class="row card-body">
+                                                <div class="col-12 card-header-edit-mode">
+                                                  <div class="row">
+                                                    <div class="col-xl-7 col-lg-7 col-md-6 col-sm-8 col-6">
+                                                      <h5>{{ addressHeader}}</h5>
+                                                    </div>
+                                                    <!--div class="col-2 text-right">
+                                                      <span class="cursor" (click)="deleteAddress(ctrl, i)">DELETE</span>
+                                                    </div-->
+                                                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-2 col-3 text-right">
+
+                                                      <span class="cursor" (click)="onBackOperation(ctrl,i)">CANCEL</span>
+                                                    </div>
+                                                    <div class="col-md-3 col-sm-2 col-3 text-right">
+                                                      <button type="button" class="btn btn-primary " (click)="saveAddress(ctrl);">SAVE</button>
+                                                    </div>
+                                                  </div>
+                                                  </div>
+                                                <div class="col-12">
+                                                    <div  class="form-group">
+                                                        <label class="bt-style">{{
+                                                                'USER_PROFILE.USER_PROFILE_ADDRESS_TYPE' | translate }}
+                                                                </label>
+
+                                                        <div >
+                                                            <!-- <select class="form-control" formControlName="addressType" (change)="createNewAddressType($event,ctrl)">
+                                                                <option *ngFor="let addressType of addressTypeList"
+                                                                    value="{{addressType.Type}}" class="cursor">
+                                                                    {{addressType.Type}}</option>
+                                                            </select> -->
+                                                            <p-autoComplete placeholder="Address Type" formControlName="addressType" [suggestions]="filteredAddressTypesSingle" (completeMethod)="filterAddressTypeSingle($event)">
+                                                                </p-autoComplete>
+                                                            <span *ngIf="ctrl.get('isSubmit').value || ctrl.controls.addressType.dirty">
+                                                                <span *ngIf="ctrl.hasError('required', 'addressType')" class="validation-error">{{
+                                                                    'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                                            </span>
+                                                        </div>
+
+                                                </div>
+                                              <!--  <div class="col-lg-2">
+                                                    <i ngbTooltip="Edit Address" (click)="editToggleAddress(ctrl)" class="far fa-edit cursor"></i>
+                                                    &nbsp;&nbsp;<i ngbTooltip="Delete Address" (click)="deleteAddress(ctrl, i)" class="fas fa-trash-alt cursor"></i>
+                                                </div>
+                                                <div class="col-lg-2">
+                                                    <i [hidden]="ctrl.get('id').value==0" ngbTooltip="Back" class="fas fa-backspace" (click)="onBackOperation(ctrl,i)"></i>
+                                                    &nbsp;&nbsp;<i ngbTooltip="Save Address" class="fas fa-save cursor" (click)="saveAddress(ctrl);"></i>
+                                                    &nbsp;&nbsp;<i ngbTooltip="Delete Address" (click)="deleteAddress(ctrl, i)" class="fas fa-trash-alt cursor"></i>
+                                                </div> -->
+                                            </div>
+
+                                                <div class="col-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label bt-style">{{
+                                                                'USER_PROFILE.USER_PROFILE_COUNTRY_LABEL' | translate
+                                                                }} </label>
+
+                                                        <div>
+                                                            <select formControlName="country" class="form-control" (change)="getStateCasCadeToCounntry(ctrl)">
+                                                                <option *ngFor="let country of masterCOUNTRY" value="{{country.countryName}}"
+                                                                    class="cursor"> {{country.countryName}}</option>
+                                                            </select>
+                                                            <span *ngIf="ctrl.get('isSubmit').value || ctrl.controls.country.dirty">
+                                                                <span *ngIf="ctrl.hasError('required', 'country')" class="validation-error">{{
+                                                                    'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="col-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label bt-style">{{
+                                                                'USER_PROFILE.USER_PROFILE_PINCODE_LABEL' | translate
+                                                                }} </label>
+
+                                                        <div >
+                                                            <input type="text" maxlength="6" class="form-control" min="0" formControlName="pinCode" 
+                                                            #pin (keyup)="fetchCountryStateCityByPin(ctrl, $event)" />
+                                                            <span *ngIf="ctrl.get('isSubmit').value">
+                                                                <span *ngIf="ctrl.hasError('required', 'pinCode')" class="validation-error">{{
+                                                                    'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                                                <span *ngIf="ctrl.hasError('minlength', 'pinCode')" class="validation-error">{{
+                                                                            'VALIDATION.VALIDATION_PINCODE_MIN_LENGTH' |
+                                                                            translate }}</span>
+
+                                                                <!-- <span *ngIf="ctrl.hasError('maxlength', 'pinCode')" class="validation-error">{{
+                                                                                    'VALIDATION.VALIDATION_PINCODE_MAX_LENGTH' |
+                                                                                    translate }}</span>
+                                                                                    <br> -->
+                                                                <span *ngIf="ctrl.hasError('min', 'pinCode')" class="validation-error">{{
+                                                                                        'VALIDATION.VALIDATION_PINCODE_MIN' |
+                                                                                        translate }}</span>
+                                                                <span *ngIf="ctrl.hasError('pattern', 'pinCode')" class="validation-error">{{
+                                                                                                'VALIDATION.VALIDATION_PINCODE_PATTERN' |
+                                                                                                translate }}</span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            <div class="col-lg-8">
+                                                <div class="form-group">
+                                                    <label class="control-label bt-style">{{
+                                                            'USER_PROFILE.USER_PROFILE_STATE_LABEL' | translate }}
+                                                            </label>
+
+                                                    <div >
+                                                            <!-- Changed for issue app#597 -->
+                                                            <input type="text" class="form-control" #state id="state" formControlName="state" [readonly]="true">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                                <div class="col-lg-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label bt-style">{{
+                                                                'USER_PROFILE.USER_PROFILE_CITY_LABEL' | translate }}
+                                                                </label>
+
+                                                        <div>
+                                                            <input [required]="true" *ngIf="ctrl.get('isEdit').value"
+                                                                type="text" class="form-control" formControlName="city" (keydown)="onKeydown($event)" [readonly]="isAnyAddressInEditState"/>
+                                                            <span *ngIf="ctrl.get('isSubmit').value || ctrl.controls.city.dirty">
+                                                                <span *ngIf="ctrl.hasError('required', 'city')" class="validation-error">{{
+                                                                    'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                                                <!-- <span *ngIf="ctrl.hasError('minlength', 'city')" class="validation-error">{{
+                                                                    'VALIDATION.VALIDATION_CITY_NOT_LESS_THAN' |
+                                                                    translate }}</span> -->
+                                                                <span *ngIf="ctrl.hasError('maxlength', 'city')" class="validation-error">{{
+                                                                    'VALIDATION.VALIDATION_CITY_NOT_MORE_THAN' |
+                                                                    translate }}</span>
+                                                                <!-- <span *ngIf="ctrl.hasError('pattern', 'city')" class="validation-error">{{
+                                                                            'VALIDATION.VALIDATION_CITY_LETTER' |
+                                                                            translate }}</span> -->
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label">{{
+                                                                'USER_PROFILE.USER_PROFILE_ADDRESS_LINE1_LABEL' |
+                                                                translate
+                                                                }}
+                                                                </label>
+
+                                                        <div >
+                                                            <input type="text" class="form-control" formControlName="line1"/>
+                                                            <span *ngIf="ctrl.get('isSubmit').value || ctrl.controls.line1.dirty">
+                                                                <span *ngIf="ctrl.hasError('required', 'line1')" class="validation-error">{{
+                                                                    'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label">{{
+                                                                'USER_PROFILE.USER_PROFILE_ADDRESS_LINE2_LABEL' |
+                                                                translate
+                                                                }}
+                                                                </label>
+
+                                                        <div >
+                                                            <input type="text" class="form-control" formControlName="line2" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="row">
+                                                        <div class="col-xl-7 col-lg-7 col-md-6 col-sm-8 col-6"></div>
+                                                        <div class="col-xl-2 col-lg-2 col-md-3 col-sm-2 col-3">
+                                                            <button type="button" class="btn btn-sm btn-secondary" (click)="onBackOperation(ctrl,i)">CANCEL</button>
+                                                            <!-- <span class="cursor" (click)="onBackOperation(ctrl,i)">CANCEL</span> -->
+                                                        </div>
+                                                        <div class="col-md-3 col-sm-2 col-3 text-right">
+                                                            <button type="button" class="btn btn-primary " (click)="saveAddress(ctrl);">SAVE</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                          </div>
+
+
+
+                                          <!-- editable mode -->
+                                        </div>
+
+
+
+
+                                </div>
+                            </div>
+                            <br>
+                            <!-- <div class="row">
+                                <div class="col-sm-12 text-center">
+                                    <button type="button" [disabled]="form.controls.addreses.controls[0] && form.controls.addreses.controls[0].get('isEdit').value && form.controls.addreses.controls[0].get('id').value==0" (click)="addNewAddress()" class="btn btn-sm btn-primary">{{
+                                        'USER_PROFILE.USER_PROFILE_ADD_ADDRESS' | translate }}</button>
+                                </div>
+                                <div class="col-sm-12 text-center btn-group" *ngIf="ctrl.get('isEdit').value">
+                                    <button type="button" class="btn btn-sm btn-primary pull-right" (click)="ctrl.get('isEdit').value = !ctrl.get('isEdit').value">Back</button>
+                                    <button type="button" [disabled]="form.controls.addreses.controls[0] && form.controls.addreses.controls[0].get('isEdit').value && form.controls.addreses.controls[0].get('id').value==0" (click)="addNewAddress()" class="btn btn-sm btn-primary">{{
+                                            'USER_PROFILE.USER_PROFILE_ADD_ADDRESS' | translate }}</button>
+                                </div>
+                            </div> -->
+                        </div>
+                    </form>
+    </div>
+</div>
+<!-- <jw-modal id="create-Address-type-modal">
+    <h1>{{ 'USER_PROFILE.USER_PROFILE_POPUP_NEW_ADDRESS_TYPE' | translate }}</h1>
+    <p>{{ 'USER_PROFILE.USER_PROFILE_POPUP_ADDRESS_TYPE' | translate }}<input type="text" [(ngModel)]="addressT"
+            placeholder="{{ 'USER_PROFILE.USER_PROFILE_POPUP_PLACEHOLDER_ENTER_ADDRESS_TYPE' | translate }}" /></p>
+    <div class="row">
+        <div class="col-sm-2">
+            <button class="btn btn-default" (click)="createAddresType(addressT,'create-Address-type-modal');">{{
+                'USER_PROFILE.USER_PROFILE_POPUP_SUBMIT' | translate }}</button>
+        </div>
+        <div class="col-sm-2">
+            <button class="btn btn-default" (click)="closeModal('create-Address-type-modal','withoutSave');">{{
+                'USER_PROFILE.USER_PROFILE_POPUP_CLOSE' | translate }}</button>
+        </div>
+    </div>
+</jw-modal>
+
+<ng-template #addressTypeTemp>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">{{ 'USER_PROFILE.USER_PROFILE_POPUP_NEW_ADDRESS_TYPE' | translate }}</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="closeModal()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>{{ 'USER_PROFILE.USER_PROFILE_POPUP_ADDRESS_TYPE' | translate }}
+            <input type="text" [(ngModel)]="addressT"
+            placeholder="{{ 'USER_PROFILE.USER_PROFILE_POPUP_PLACEHOLDER_ENTER_ADDRESS_TYPE' | translate }}" />
+        </p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-sm btn-primary" (click)="createAddresType();">{{ 'USER_PROFILE.USER_PROFILE_POPUP_SUBMIT' | translate }}</button>
+        <button type="button" class="btn btn-default" (click)="closeModal()">{{ 'USER_GROUPS.USER_GROUPS_POPUP_CLOSE' | translate }}</button>
+    </div>
+</ng-template> -->

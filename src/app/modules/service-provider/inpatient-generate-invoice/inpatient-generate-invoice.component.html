@@ -1,0 +1,875 @@
+<!--
+/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+ -->
+
+ <div class="row page-content">
+  <div class="col-12">
+
+    <div class="row">
+      <div class="col-lg-12">
+        <form [formGroup]="inpatientInvoiceForm" >
+          <div class="row top-btn-area-for-inpatient-admission" id="submitCancelButtonBlock">
+            <div class="col-lg-12 text-right">
+              <button type="button" (click)="saveInPatientInvoice()" class="btn btn-primary btn-sm float-right">GENERATE</button>
+              <button type="button" class="btn btn-secondary btn-sm float-right mr-2"
+                (click)="navigateToAdmissionDetails()">{{'COMMON.CANCEL_BUTTON'|translate}}</button>
+            </div>
+          </div>
+
+          <div class="row content-padding-for-inpatient-admission" id="admissionBasicInfoBlock">
+            <div class="col-12">
+              <div class="row">
+                <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-12">
+                  <label class="d-inline">Patient : </label>
+                  <span class="gen-invoice-header-area">{{admitedPatientDetails.patientName}}<span>({{admitedPatientDetails.age}}/{{admitedPatientDetails.gender}})</span></span>
+                </div>
+                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
+                  <label class="d-inline">Room No : </label>
+                  <span class="gen-invoice-header-area">{{admitedPatientDetails.roomNo}}</span>
+                </div>
+                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
+                  <label class="d-inline">Bed No : </label>
+                  <span class="gen-invoice-header-area">{{admitedPatientDetails.bedNo}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="row" id="patientBedChrageSection">
+            <div class="col-12">
+              <div class="card mt-3 mb-3">
+                <div class="card-header gen-invoice"><h5>BED CHARGE</h5></div>
+                <div class="card-body">
+                  <div class="row">
+                    <div formArrayName="bedHistoryDetail" class="col-12" *ngIf="bedChargeList">
+                      <div class="table-responsive no-btm-border inpatient-bill-raise-not-for-mobile">
+                        <table style="width: 100%;" class="table">
+                          <thead>
+                            <tr class="d-flex">
+                              <th class="col-2"><div class="float-left first-col-width">No.</div>&nbsp;<span>FROM DATE</span></th>
+
+                              <th class="text-center col-2">TO DATE</th>
+                              <th class="text-center col-2">ROOM NO / BED NO</th>
+                              <th class="text-center col-2">RATE</th>
+                              <th class="text-center col-2">NO. OF DAYS</th>
+                              <th class="col-2">AMOUNT</th>
+                              <th class="text-center"></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr
+                              *ngFor="let bedHistory of inpatientInvoiceForm.get('bedHistoryDetail').controls; let i = index"
+                              [formGroup]="bedHistory" [attr.id]="'tr'+i" class="d-flex">
+                              <td class="col-2">
+                                <div class="float-left first-col-width">{{i+1}}</div>
+                                
+                                <span class="float-left" style="width: 50%;"><input type="text" placeholder="DD-MM-YYYY" bsDatepicker 
+                                  [bsConfig]="{ dateInputFormat: dtFormat, showWeekNumbers: false }" class="form-control date"
+                                  formControlName="startDate" #dp="bsDatepicker" [readonly]="true"></span>
+                                  <span class="pt-1 float-left"><i (bsValueChange)="onValueChange(event)" (click)="dp.toggle()"
+                                    [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt"></i></span>
+                                  
+                              </td>
+
+                              <td class="text-center col-2">
+                                
+                                <span class="text-center float-left" style="width: 50%;margin-left:55px;"><input type="text" placeholder="DD-MM-YYYY" bsDatepicker 
+                                  [bsConfig]="{ dateInputFormat: dtFormat, showWeekNumbers: false }" class="form-control date"
+                                  formControlName="endDate" #dp="bsDatepicker" [readonly]="true"></span>
+                                  <span class="pt-1 float-left"><i (bsValueChange)="onValueChange(event)" (click)="dp.toggle()"
+                                    [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt"></i></span>
+                              </td>
+                              <td class="text-center col-2">
+
+                                  {{inpatientInvoiceForm.get('bedHistoryDetail').controls[i].get('bedInfo').value}}
+                              </td>
+                              <td class="text-center col-2">
+                                {{inpatientInvoiceForm.get('bedHistoryDetail').controls[i].get('bedChargeStandard').value}}
+                              </td>
+                              <td class="text-center col-2">
+                                <input type="text" formControlName="noOfDays" class="num-of-days form-control text-right" numbersOnly
+                                  (blur)="calculateBedChargeOnNoOfDaysInput(i)">
+                              </td>
+                              <td class="col-2">
+                                <span style="display: inline-flex;">
+                                  <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                                    </strong></span>
+                                  <span> <input type="text" formControlName="totalAmount" class="form-control text-right txtarea-width"
+                                      numbersOnly (blur)="calculateBedChargeOnNoOfDaysInput(i)"></span>
+                                </span>
+                              
+                                <span ngbTooltip="Delete Bed" container="body" class="cursor"
+                                  (click)="deleteBedHistory(i)" style="position: absolute;right: 34px;">
+                                  <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                                </span>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+
+
+
+                      <div class="content table-responsive inpatient-bill-raise-for-mobile">
+                        <div *ngFor="let bedHistory of inpatientInvoiceForm.get('bedHistoryDetail').controls; let i = index"
+                          [formGroup]="bedHistory" [attr.id]="'tr'+i">
+                          <table class="w-100">
+                            <tr class="text-left">
+                              <td class="mobile-table">
+                                <table class="w-100">
+                                  <tr>
+                                    <td class="small-header">No.</td>
+                                    <td class="mb-0 text-right">{{i+1}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td class="small-header">BED NO.</td>
+                                    <td class="mb-0 text-right">
+                                      {{inpatientInvoiceForm.get('bedHistoryDetail').controls[i].get('bedInfo').value}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td class="small-header">CHARGE</td>
+                                    <td class="mb-0 text-right">
+                                      {{inpatientInvoiceForm.get('bedHistoryDetail').controls[i].get('bedChargeStandard').value}}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td class="small-header">DAYS</td>
+                                    <td class="mb-0 text-right">
+                                      <input type="text" formControlName="noOfDays" class="form-control text-right"
+                                        numbersOnly (blur)="calculateBedChargeOnNoOfDaysInput(i)">
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td class="small-header">START DATE</td>
+                                    <td class="mb-0 text-right">
+                                      {{inpatientInvoiceForm.get('bedHistoryDetail').controls[i].get('startDate').value | date: 'dd-MM-yyyy'}}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td class="small-header">END DATE</td>
+                                    <td class="mb-0 text-right">
+                                      {{inpatientInvoiceForm.get('bedHistoryDetail').controls[i].get('endDate').value | date: 'dd-MM-yyyy'}}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td class="small-header">AMOUNT</td>
+                                    <td class="mb-0 text-right">
+                                      <span style="display: inline-flex;">
+                                        <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                                          </strong></span>
+                                        <span> <input type="text" formControlName="totalAmount"
+                                            class="form-control text-right" numbersOnly (blur)="calculateTotalInvoiceAmount()"></span>
+                                      </span>
+                                    </td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+
+
+          <!-- app#2328 -->
+          <div class="row">
+              <div class="col-12">
+                <div class="card mt-3 mb-3" style="position: initial;">
+                  <div class="card-header gen-invoice"><h5>IPD FEES</h5></div>
+                  <div class="card-body">
+                    <div class="row">
+                      <div formArrayName="ipdFeesDetail" class="col-12" *ngIf="ipdFeesDetail">
+                        <div class="table-responsive no-btm-border inpatient-bill-raise-not-for-mobile">
+                          <table style="width: 100%;" class="table">
+                            <thead>
+                              <tr class="d-flex">
+                                <th class="col-2"><div class="float-left first-col-width">No.</div>&nbsp;<span>DATE</span></th>
+                                <th class="col-4">DOCTOR</th>
+                                <th class="col-2 text-center ">FEE</th>
+                                <th class="text-center col-2">NO. OF VISIT</th>
+                                <th class="col-2">AMOUNT</th>
+                                <th class="text-center"></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr
+                                *ngFor="let f of inpatientInvoiceForm.get('ipdFeesDetail').controls; let i = index"
+                                [formGroup]="f" [attr.id]="'tr'+i" class="d-flex">
+                                <td class="col-2">
+                                  <div class="float-left first-col-width">{{i+1}}</div>
+                                  
+                                  <span class="float-left" style="width: 50%;"><input type="text" placeholder="DD-MM-YYYY" bsDatepicker 
+                                    [bsConfig]="{ dateInputFormat: dtFormat, showWeekNumbers: false }" class="form-control date"
+                                    formControlName="usageDate" #dp="bsDatepicker" [readonly]="true"></span>
+                                    <span class="pt-1 float-left"><i (click)="dp.toggle()"
+                                      [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt"></i></span>
+                                    
+                                </td>
+                                
+                                <td class="text-center col-4">
+                                    <p-autoComplete formControlName="serviceName" [suggestions]="doctorDetails" 
+                                    (completeMethod)="filteredReferralSingle($event, i)" [size]="100" #doc
+                                    (onSelect)="referredNameSelect($event, i)" [dropdown]="true" [style]="{'margin-top':'-6px'}"
+                                    [minLength]="1" (onKeyUp)="managePk(doc.value, i)">
+                
+                                    <ng-template let-doctor pTemplate="item">
+                                      <span style="font-size:11px;font-weight: 500;">{{doctor.name}}</span>
+                                    </ng-template>
+                
+                                  </p-autoComplete>
+                                    <!-- <input type="text" formControlName="serviceName" class="form-control"> -->
+                                </td>
+
+                                <td class="text-center col-2">
+                                    <span style="display: inline-flex;">
+                                      <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                                        </strong></span>
+                                      <span> <input type="text" formControlName="baseCharge" class="form-control text-right txtarea-width"
+                                          numbersOnly (blur)="calculateIpdFeesOnUnitInput(i)"></span>
+                                    </span>
+                                  
+                                  </td>
+
+                                <td class="text-center col-2">
+                                    <input type="text" formControlName="unit" class="num-of-days form-control text-right"
+                                     numbersOnly (blur)="calculateIpdFeesOnUnitInput(i)">
+                                </td>
+                                
+                                <td class="col-2">
+                                  <span style="display: inline-flex;">
+                                    <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                                      </strong></span>
+                                    <span> <input type="text" formControlName="amount" class="form-control text-right txtarea-width"
+                                        readonly></span>
+                                  </span>
+                                
+                                  <span ngbTooltip="Delete Fee" container="body" class="cursor"
+                                    (click)="deleteFee(i)" style="position: absolute;right: 34px;">
+                                    <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                                  </span>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row" style="margin-top:-10px">
+                        <div class="col-lg-12 text-right">
+                          <button type="button" class="btn btn-secondary btn-sm add-row" id="addFeeDetail"
+                            (click)="addIpdFeesDetailForm()">
+                            <i class="fas fa-plus-square"></i>&nbsp;{{'PRESCRIPTION.ADD_ROW_LINK'| translate}}</button>
+                        </div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          <div class="row" id="patientBillDetailSection">
+            <div class="col-12">
+              <div class="card mt-3 mb-3" style="position: initial;">
+                <div class="card-header gen-invoice"><h5>OTHER CHARGE</h5></div>
+                <div class="card-body">
+                  <div class="row">
+                    <div formArrayName="invoiceDetailList" *ngIf="invoiceDetailList" class="col-12">
+                      <div class="table-responsive no-btm-border inpatient-bill-raise-not-for-mobile">
+                        <table style="width: 100%;" class="table">
+                          <thead>
+                            <tr class="d-flex">
+                              <th class="col-3"><div class="float-left first-col-width">No.</div>&nbsp;<span>USAGE DATE</span></th><!-- Working on app/issue/2386 -->
+                              <th class="text-left col-2">ITEM</th><!-- Working on app/issue/2386 -->
+                              <th class="text-left col-1">CODE</th> <!--  Working on app/issue/2403 -->
+                              <th class="col-2 text-left">QTY/DURATION</th>
+                              <th class="col-2"></th>
+                              <th class="col-1">AMOUNT</th>
+                              <th class="col-1"></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr
+                              *ngFor="let invoiceDetail of inpatientInvoiceForm.get('invoiceDetailList').controls; let i = index"
+                              [formGroup]="invoiceDetail" [attr.id]="'tr'+i" class="d-flex">
+                              <!-- Working on app/issue/2386 -->
+                              <td class="col-3">
+                                <div class="float-left first-col-width">{{i+1}}</div>
+                                <div class="float-left">
+                                    <span class="text-center float-left" ><input type="text" placeholder="DD-MM-YYYY" bsDatepicker 
+                                      [bsConfig]="{ dateInputFormat: dtFormat, showWeekNumbers: false }" class="form-control date"
+                                      formControlName="usageDate" #dp="bsDatepicker" [readonly]="true"></span>
+                                      <span class="pt-1 float-left"><i (bsValueChange)="onValueChange(event)" (click)="dp.toggle()"
+                                        [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt"></i></span>
+                                </div>
+                               
+                             </td>
+                              <td class="text-center col-2">
+                                <div class="ipd-invoice float-left item-width">
+                                    <p-autoComplete styleClass="medicineListAutoComplete" inputStyleClass="medicationStyle" #med
+                                      placeholder="Specify item to be billed" [suggestions]="ipdServiceList" [minLength]="3"
+                                      (onSelect)="setBillDetailForm($event,i)"
+                                      (completeMethod)="getIpdServiceBasicInfoList($event,i)" autoHighlight="false"
+                                      formControlName="serviceName" required>
+                                      <ng-template let-ipdService pTemplate="item">
+                                        <span style="font-size:11px;font-weight: 500;">{{ipdService.serviceName}}</span>
+                                      </ng-template>
+                                    </p-autoComplete>
+                                    <div
+                                      *ngIf="billDetailValidationError && inpatientInvoiceForm.get('invoiceDetailList').controls[i].get('serviceName').errors">
+                                      <div class="validation-error"
+                                        *ngIf="inpatientInvoiceForm.get('invoiceDetailList').controls[i].get('serviceName').errors.required">
+                                        This field is required</div>
+                                    </div>
+                                </div>                               
+
+                              </td>
+                               <!-- Working on app/issue/2403 -->
+                              <td class="text-left col-1">
+                                  {{inpatientInvoiceForm.get('invoiceDetailList').controls[i].get('itemCode').value}}
+                              </td>
+                               <!-- End Working on app/issue/2403 -->
+                              <!-- Working on app/issue/2402 -->
+                              <td class="text-left col-2">
+                                <div class="row"
+                                  *ngIf="inpatientInvoiceForm.get('invoiceDetailList').controls[i].get('rateType').value=='SLAB'">
+                                  <div class="col-6 pr-0"><input type="text" formControlName="hours" placeholder="Hr(s)"
+                                      class="form-control input-sm float-left text-right" numbersOnly
+                                      (blur)="getIpdServiceRateByRefNoAndQuantity(i)"  (keyup)="addNewBillItem(i,$event)"><span
+                                      class="float-left unit">hrs</span>
+                                  </div>
+                                  <!-- <div class="col-3" style="margin-top: 10px;">hrs</div> -->
+                                  <div class="col-6 pl-0 pr-0"><input type="text" formControlName="minutes" placeholder="Min(s)"
+                                      class="form-control input-sm float-left text-right" numbersOnly
+                                      (blur)="getIpdServiceRateByRefNoAndQuantity(i)" (keyup)="addNewBillItem(i,$event)"><span
+                                      class="float-left unit">mins</span></div>
+                                  <!-- <div class="col-3" style="margin-top: 10px;">mins</div> -->
+                                </div>
+                                <div class="row"
+                                  *ngIf="inpatientInvoiceForm.get('invoiceDetailList').controls[i].get('rateType').value=='FIX' && inpatientInvoiceForm.get('invoiceDetailList').controls[i].get('serviceType').value!='PROCEDURE'">
+                                  <div class="col-9"><input type="text" placeholder="Unit(s)" formControlName="unit"
+                                      class="form-control input-sm float-left text-right" numbersOnly
+                                      (blur)="getIpdServiceRateByRefNoAndQuantity(i)" (keyup)="addNewBillItem(i,$event)"><span
+                                      class="float-left unit">unit</span></div>
+                                  <!-- <div class="col-3 text-left">unit</div> -->
+                                </div>
+                                <!-- End Working on app/issue/2402 -->
+                                <div class="row"
+                                *ngIf="inpatientInvoiceForm.get('invoiceDetailList').controls[i].get('serviceType').value=='OTHER'">
+                                <div class="col-9"><input type="text" placeholder="Unit(s)" formControlName="unit"
+                                    class="form-control input-sm float-left text-right" numbersOnly
+                                    (blur)="getIpdServiceRateByRefNoAndQuantity(i)"><span
+                                    class="float-left unit">unit</span></div>
+                                <!-- <div class="col-3 text-left">unit</div> -->
+                              </div>
+                              <!-- Working on app/issue/2386 -->
+                              
+                                <!--<div class="row"
+                                  *ngIf="inpatientInvoiceForm.get('invoiceDetailList').controls[i].get('serviceType').value=='PROCEDURE'">
+                                  <div class="col-12">N/A</div>
+                                </div>-->
+                              </td>
+                              <td class="col-2"></td>
+                              <td class="col-1">
+                                <!-- <input type="text" formControlName="amount" class="form-control" numbersOnly> -->
+                                <span style="display: inline-flex;">
+                                  <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                                    </strong></span>
+                                  <span> <input type="text" formControlName="amount"
+                                      class="form-control text-right input-md txtarea-width" numbersOnly (blur)="calculateTotalInvoiceAmount()"></span>
+                                </span>
+                              </td>
+                              <td class="col-1 text-center">
+                                <span ngbTooltip="Delete Invoice Detail" container="body" class="cursor"
+                                  (click)="deleteBillDetail(i)">
+                                  <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                                </span>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="content table-responsive inpatient-bill-raise-for-mobile">
+                        <div
+                          *ngFor="let invoiceDetail of inpatientInvoiceForm.get('invoiceDetailList').controls; let i = index"
+                          [formGroup]="invoiceDetail" [attr.id]="'tr'+i">
+                          <table class="w-100">
+                            <tr class="text-left">
+                              <td class="mobile-table">
+                                <table class="w-100">
+                                  <tr>
+                                    <td class="small-header">No.</td>
+                                    <td class="mb-0 text-right">{{i+1}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td class="small-header">ITEM</td>
+                                    <td class="mb-0 text-right">
+                                      <p-autoComplete styleClass="medicineListAutoComplete"
+                                        inputStyleClass="medicationStyle" #med placeholder="Specify item to be billed"
+                                        [suggestions]="ipdServiceList" [minLength]="3"
+                                        (onSelect)="setBillDetailForm($event,i)"
+                                        (completeMethod)="getIpdServiceBasicInfoList($event)" autoHighlight="false"
+                                        formControlName="serviceName" required>
+                                        <ng-template let-ipdService pTemplate="item">
+                                          <span style="font-size:11px;font-weight: 500;">{{ipdService.serviceName}}</span>
+                                        </ng-template>
+                                      </p-autoComplete>
+                                      <div
+                                        *ngIf="billDetailValidationError && inpatientInvoiceForm.get('invoiceDetailList').controls[i].get('serviceName').errors">
+                                        <div class="validation-error"
+                                          *ngIf="inpatientInvoiceForm.get('invoiceDetailList').controls[i].get('serviceName').errors.required">
+                                          This field is required</div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td class="small-header">NUMBER/DURATION</td>
+                                    <td class="mb-0 text-right">
+                                      <div class="row"
+                                        *ngIf="inpatientInvoiceForm.get('invoiceDetailList').controls[i].get('rateType').value=='SLAB'">
+                                        <div class="col-6"><input type="text" formControlName="hours" placeholder="Hr(s)"
+                                            class="form-control input-sm float-left text-right" numbersOnly
+                                            (blur)="getIpdServiceRateByRefNoAndQuantity(i)"><span
+                                            class="float-left unit">hrs</span>
+                                        </div>
+                                        <!-- <div class="col-3" style="margin-top: 10px;">hrs</div> -->
+                                        <div class="col-6"><input type="text" formControlName="minutes" placeholder="Min(s)"
+                                            class="form-control input-sm float-left text-right" numbersOnly
+                                            (blur)="getIpdServiceRateByRefNoAndQuantity(i)"><span
+                                            class="float-left unit">mins</span></div>
+                                        <!-- <div class="col-3" style="margin-top: 10px;">mins</div> -->
+                                      </div>
+                                      <div class="row"
+                                        *ngIf="inpatientInvoiceForm.get('invoiceDetailList').controls[i].get('rateType').value=='FIX' && inpatientInvoiceForm.get('invoiceDetailList').controls[i].get('serviceType').value!='PROCEDURE'">
+                                        <div class="col-9"><input type="text" placeholder="Unit(s)" formControlName="unit"
+                                            class="form-control input-sm float-left text-right" numbersOnly
+                                            (blur)="getIpdServiceRateByRefNoAndQuantity(i)"><span
+                                            class="float-left unit">unit</span></div>
+                                        <!-- <div class="col-3 text-left">unit</div> -->
+                                      </div>
+                                      <!-- <div class="row text-center"
+                                        *ngIf="inpatientInvoiceForm.get('invoiceDetailList').controls[i].get('serviceType').value=='PROCEDURE'">
+                                        <div class="col-12">N/A</div>
+                                      </div> -->
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td class="small-header">CHARGE</td>
+                                    <td class="mb-0 text-right">
+                                      <span style="display: inline-flex;">
+                                        <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                                          </strong></span>
+                                        <span> <input type="text" formControlName="amount"
+                                            class="form-control text-right input-md" numbersOnly (blur)="calculateTotalInvoiceAmount()"></span>
+                                      </span>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td class="small-header"></td>
+                                    <td class="mb-0 text-right">
+                                      <span ngbTooltip="Delete Invoice Detail" container="body" class="cursor"
+                                        (click)="deleteBillDetail(i)">
+                                        <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                                      </span>
+                                    </td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row" style="margin-top:-30px">
+                    <div class="col-lg-12 text-right">
+                      <button type="button" class="btn btn-secondary btn-sm add-row" id="addBillDetail"
+                        (click)="addBillDetailForm()">
+                        <i class="fas fa-plus-square"></i>&nbsp;{{'PRESCRIPTION.ADD_ROW_LINK'| translate}}</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="card mt-3 mb-3">
+                <div class="card-header gen-invoice"><h5>DISCOUNT</h5></div>
+                  <div class="card-body">
+                    <div class="table-responsive no-btm-border inpatient-bill-raise-not-for-mobile">
+                      <table class="table">
+                        <thead>
+                          <tr class="d-flex">
+                            <th class="text-left col-10"><div class="float-left first-col-width">No.</div>&nbsp;<span>DISCOUNT TYPE</span></th>
+                            <th class="col-2">AMOUNT</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr class="d-flex">
+                            <td class="col-10">
+                              <div class="float-left first-col-width">1</div>
+                              <div class="item-width float-left">
+                                <input type="text" placeholder="Discount Description" formControlName="discountDescription"
+                                  class="form-control">
+                              </div>
+                            </td>
+                            <td class="col-2">
+                              <span style="display: inline-flex;">
+                                <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                                  </strong></span>
+                                <span> <input type="text"  (blur)="calculateTotalInvoiceAmount()"
+                                    formControlName="discountAmount" class="form-control text-right input-md txtarea-width"
+                                    numbersOnly></span>
+                              </span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div class="table-responsive inpatient-bill-raise-for-mobile col-12">
+                      <table class="w-100">
+                        <tr class="text-left">
+                          <td class="mobile-table">
+                            <table class="w-100">
+                              <tr>
+                                <td class="small-header">DISCOUNT DESCRIPTION</td>
+                                <td class="mb-0 text-right">
+                                  <input type="text" placeholder="Discount Description" formControlName="discountDescription"
+                                    class="form-control">
+                                </td>
+                              </tr>
+                              <tr>
+                                <td class="small-header">AMOUNT</td>
+                                <td class="mb-0 text-right">
+                                  <span style="display: inline-flex;">
+                                    <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                                      </strong></span>
+                                    <span> <input type="text" placeholder="Discount Amount"
+                                        (blur)="calculateTotalInvoiceAmount()" formControlName="discountAmount"
+                                        class="form-control text-right input-md txtarea-width" numbersOnly></span>
+                                  </span>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+
+                  </div>
+              </div>
+
+
+
+
+
+
+              <div class="row"
+                style="border-top:1px solid #c4c0c0;border-bottom:1px solid #c4c0c0;padding-top: 10px;margin:2px;">
+                <!-- <div class="col-6 text-right"> -->
+                <!-- <span class=" btn-primary" (click)="calculateTotalInvoiceAmount()">Calculate</span> -->
+                <!-- </div> -->
+                <div class="col-12 text-right">
+                  <h5 class="total-area-padding"> Total :
+                    <span *ngIf="totalInvoiceAmount>0">
+                      <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}</strong></span>
+                      {{totalInvoiceAmount  | number: '1.2-2'}}
+                    </span>
+                  </h5>
+                </div>
+              </div>
+              <!-- Working on app/issues/1548 -->
+
+              <div class="row">
+                <div class="col-5">
+                  <div class="card mt-3 mb-3">
+                    <div class="card-header gen-invoice"><h5>PAYMENT/REFUND</h5></div>
+                    <div class="card-body">
+                      <div class="row" id="patientPaymentSection">
+                          <label class="paymentLabel text-center mb-1 mt-1 ml-2" style="width:15%;">Payment</label>
+                        <div style="height:165px;overflow-y:auto;" class="table-responsive no-btm-border inpatient-bill-raise-not-for-mobile col-12">
+                         
+                          <table style="width: 100%;" class="table">
+                            <thead>
+                              <tr class="d-flex">
+                                <!--<th class="col-1">NO.</th>-->
+                                <th class="col-3">Date</th>
+                                <th class="col-3">PAYMENT FOR</th><!-- Working on app/issue/1642 -->
+                                <th class="col-3">Mode</th>
+                                <th class="col-2">Amount</th>
+                                <th class="col-1"></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let payment of advancePaymentList;let i = index" class="d-flex">
+                                <!--<td class="col-1">{{i+1}}</td>-->
+                                <ng-container *ngIf="payment.paymentType!='REFUND'">
+                                <td class="col-3">{{payment.paymentDateTime | date: 'dd-MM-yyyy'}}</td>
+                                <td class=" col-3">{{payment.paymentDescription}}</td><!-- Working on app/issue/1642 -->
+                                 <td class="text-left col-3">{{payment.paymentMode | uppercase}}</td>
+                                <td class="col-2"><span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                                    </strong> </span>{{payment.amount  | number: '1.2-2'}}
+                                </td>
+                                <td class="col-1">
+                                  <img src="../../../../assets/image/print.svg" (click)="generatePaymentReport(payment.txnRefNo)" height="15" class="cursor" />
+                                </td>
+                              </ng-container>
+
+                              
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <label class="refundLabel text-center mt-2 mb-1 ml-2" style="width:15%;">Refund</label>
+                        <div style="height:165px;overflow-y:auto;" class="table-responsive no-btm-border inpatient-bill-raise-not-for-mobile col-12">
+                            
+                            <table style="width: 100%;" class="table">
+                              <thead>
+                                <tr class="d-flex">
+                                  <!--<th class="col-1">NO.</th>-->
+                                  <th class="col-3">Date</th>
+                                  <th class="col-3">PAYMENT FOR</th><!-- Working on app/issue/1642 -->
+                                  <th class="col-3">Mode</th>
+                                  <th class="col-2">Amount</th>
+                                  <th class="col-1"></th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let payment of advancePaymentList;let i = index" class="d-flex">
+                                  <!--<td class="col-1">{{i+1}}</td>-->
+                                  <ng-container *ngIf="payment.paymentType=='REFUND'">
+                                  <td class="col-3">{{payment.paymentDateTime | date: 'dd-MM-yyyy'}}</td>
+                                  <td class=" col-3">{{payment.paymentDescription}}</td><!-- Working on app/issue/1642 -->
+                                   <td class="text-left col-3">{{payment.paymentMode | uppercase}}</td>
+                                  <td class="col-2"><span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                                      </strong> </span>{{payment.amount  | number: '1.2-2'}}
+                                  </td>
+                                  <td class="col-1">
+                                    <img src="../../../../assets/image/print.svg" (click)="generatePaymentReport(payment.txnRefNo)" height="15" class="cursor" />
+                                  </td>
+                                </ng-container>
+  
+                                
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        <div class="content table-responsive inpatient-bill-raise-for-mobile col-12">
+                          <div *ngFor="let payment of advancePaymentList">
+                            <table class="w-100">
+                              <tr class="text-left">
+                                <td class="mobile-table">
+                                  <table class="w-100">
+                                    <tr>
+                                      <td class="small-header">Date</td>
+                                      <td class="mb-0 text-right">{{payment.paymentDateTime | date: 'dd-MM-yyyy'}}</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="small-header">Payment Mode</td>
+                                      <td class="mb-0 text-right">{{payment.paymentMode}}</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="small-header">Amount</td>
+                                      <td class="mb-0 text-right">
+                                        <span>
+                                          <strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}</strong>
+                                        </span>{{payment.amount  | number: '1.2-2'}}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td class="small-header"></td>
+                                      <td class="mb-0 text-right"><img src="../../../assets/image/download.svg" height="15"
+                                          class="cursor" /></td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row"
+                        style="border-top:1px solid #c4c0c0;border-bottom:1px solid #c4c0c0;padding-top: 10px;margin:2px;">
+                        <!-- <div class="col-6 text-right"> -->
+                        <!-- <span class=" btn-primary" (click)="calculateTotalInvoiceAmount()">Calculate</span> -->
+                        <!-- </div> -->
+                        <div class="col-12 text-right">
+                          <h5> OUTSTANDING :
+                            <span *ngIf="totalInvoiceAmount>0">
+                              <span>
+                                <strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}</strong>
+                              </span> {{outstandingAmount > 0 ? (outstandingAmount | number: '1.2-2') : '0.00'}} <!--app#2305-->
+                            </span>
+                          </h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="col-7">
+                    <div class="row mt-3" *ngIf="!paymentDetailsView">
+                      <div class="col-12 text-right">
+                        <button class="btn btn-primary btn-sm" type="button" (click)="showPaymentRefundSection();">Payment/Refund</button>
+                      </div>
+                    </div>
+                    <div class="card mt-3 mb-3" *ngIf="paymentDetailsView">
+                      <div class="card-header gen-invoice">
+                        <h5>ADD <span *ngIf="refundDetailsSection">REFUND</span> <span *ngIf="!refundDetailsSection">PAYMENT</span> DETAILS</h5>
+                        <div class="row">
+                          <div class="col-12 text-center mt25">
+                            <span class="refundLabel float-right" *ngIf="paymentDetailsSection" (click)="togglePaymentOrRefund();">Refund</span>
+                            <span class="paymentLabel float-right mr-2" *ngIf="refundDetailsSection" (click)="togglePaymentOrRefund();">Payment</span>
+                          </div>
+                        </div>
+                        
+                      </div>
+                      <div class="card-body">
+                        <div class="row page-content" style="margin-top:10px;" formGroupName="paymentDetail" *ngIf="paymentDetailsSection">
+                          <div class="col-12">
+                            <div class="row">
+                              <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+                                <div class="form-group">
+                                  <label class="page-header">Payment Description</label>
+                                  <input type="text" class="form-control" formControlName="paymentDescription" required>
+                                </div>
+                              </div>
+                              <div class="col-xl-3 col-lg-3 col-md-2 col-sm-6 col-12">
+                                <div class="form-group">
+                                  <label class="page-header">Amount</label>
+                                  <span style="display: inline-flex;">
+                                    <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                                      </strong></span>
+                                    <span> <input type="text" formControlName="amount" class="form-control text-left"
+                                      twoDigitDecimaNumber required style="padding-left:5px !important;"></span>
+                                  </span>
+                                  <div class="validation-error"
+                                    *ngIf="isSubmitted && inpatientInvoiceForm.get('paymentDetail').get('amount').errors">
+                                    <span
+                                      *ngIf="inpatientInvoiceForm.get('paymentDetail').get('amount').errors.required">This
+                                      field is required</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-12">
+                                <div class="form-group">
+                                  <label class="page-header">Payment Mode</label>
+                                  <select #selectedValue formControlName="paymentMode" required>
+                                    <option value="" selected disabled>Select</option>
+                                    <option *ngFor="let paymentMode of paymentModeCategories; let i = index"
+                                      [value]="paymentMode.displayValue">
+                                      <!-- Working on app/issue/1655 -->
+                                      {{paymentMode.displayValue}}
+                                    </option>
+                                  </select>
+                                  <div class="validation-error"
+                                    *ngIf="isSubmitted && inpatientInvoiceForm.get('paymentDetail').get('paymentMode').errors">
+                                    <span
+                                      *ngIf="inpatientInvoiceForm.get('paymentDetail').get('paymentMode').errors.required">This
+                                      field is required</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-12">
+                                <div class="form-group"
+                                  *ngIf="inpatientInvoiceForm.value.paymentDetail.paymentMode=='Debit/Credit Card'">
+                                  <!-- Working on app/issue/1655 -->
+                                  <label class="page-header">Card Last 4 Digit</label>
+                                  <input type="text" class="form-control" maxlength="4" minlength="4"
+                                    formControlName="cardNo" style="width:20%">
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!--Payment And Refund-->
+                        <div class="row" *ngIf="refundDetailsSection" formGroupName="paymentDetail">
+                          <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+                            <div class="form-group">
+                              <label class="page-header">Refund Description</label>
+                              <input type="text" class="form-control" formControlName="paymentDescription" required>
+                            </div>
+                          </div>
+                          <div class="col-xl-3 col-lg-3 col-md-2 col-sm-6 col-12">
+                            <div class="form-group">
+                              <label class="page-header">Refund Amount</label>
+                              <span style="display: inline-flex;">
+                                <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                                  </strong></span>
+                                <span> <input type="text" formControlName="amount" class="form-control text-left" twoDigitDecimaNumber
+                                    required style="padding-left:5px !important;"></span>
+                              </span>
+                              <div class="validation-error"
+                                *ngIf="isSubmitted && inpatientInvoiceForm.get('paymentDetail').get('amount').errors">
+                                <span *ngIf="inpatientInvoiceForm.get('paymentDetail').get('amount').errors.required">This
+                                  field is required</span>
+                              </div>
+                            </div>
+                          </div>
+  
+                        </div>
+                        <!--END Payment And Refund-->
+  
+                        <!--Cancel & Save Button Row-->
+                        <div class="row">
+                          <div class="col-12 text-right">
+                            <button class="btn btn-secondary btn-sm" type="button" (click)="hidePaymentDetailsSection();">Cancel</button>
+                            <button class="btn btn-primary btn-sm" type="button" (click)="savePaymentBillDetails()">Save</button>
+                          </div>
+                        </div>
+                        <!--END Cancel & Save Button Row-->
+                      </div>
+                    </div>
+                  </div>
+  
+                </div>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+              <!-- End Working on app/issues/1548 -->
+              <div class="row" style="margin-top:50px">
+                <div class="col-lg-12 text-right">
+                  <button type="button" (click)="saveInPatientInvoice()" class="btn btn-primary btn-sm float-right">GENERATE</button>
+                  <button type="button" class="btn btn-secondary btn-sm float-right mr-2"
+                    (click)="navigateToAdmissionDetails()">{{'COMMON.CANCEL_BUTTON'|translate}}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

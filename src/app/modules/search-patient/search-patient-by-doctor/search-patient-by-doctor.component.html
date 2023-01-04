@@ -1,0 +1,333 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt.Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<form [formGroup]="searchPaitent" (ngSubmit)="searchPaitentByDoctor()">
+	
+
+      
+    <section class="pageMainContin">
+			<div *ngIf="loading" class="cover">
+				<div class="loader">
+						<div class="loading-img"><img width=250px src="../../../../../assets/image/logo.svg"/></div>
+						<div class="loading-txt">Loading<div class="dot-elastic"></div></div>
+				</div>
+			</div>
+        <div class="content">
+			<div class="text-center mb-4">
+				<div class="main-header1 font1-style1"> Search for your existing patients</div>
+				<div class="style-margin1 font1-style2">
+				<p>Search for patients by specifying one or more search attributes specified below: </p>
+				<p>Patient name (partial names accepted), Mobile, Diagnosis (disease)</p>
+				<div class="gap-search1">
+				<p>and Medication given to patient.</p>
+				</div>
+				</div>
+			  </div>
+          <div class="page-content">
+            <div class="container-fluid">
+				<section class="searchSection top hide-for-very-small">
+				<div class="container-fluid">
+					<div class="row no-gutters center-pos">
+						<div class="col-4 pl-2">
+						  <label class="label-tx">{{ 'SEARCH.PATIENT_SEARCH_NAME' | translate }}</label>
+						</div>
+						<div class="col-2 pl-2">
+						  <label class="label-tx">{{ 'SEARCH.PATIENT_SEARCH_MOBILE' | translate }}</label>
+						</div>
+						<div class="col-3 pl-2">
+						  <label class="label-tx">{{ 'SEARCH.PATIENT_SEARCH_DISEASE' | translate }}</label>
+						</div>
+						<div class="col-3 pl-2">
+						  <label class="label-tx">{{ 'SEARCH.PATIENT_SEARCH_MEDICATION' | translate }}</label>
+						</div>
+				  </div>
+					<div class="row no-gutters main-search search-area-shadow center-pos">
+					  <div class="col-4">
+						<div class="border-right-group">
+			  
+						  <div class="spacer">
+							<input class="form-control" formControlName="name" type="text" 
+							  placeholder="Name" pInputText>
+						  </div>
+						</div>
+			  
+					  </div>
+					  <div class="col-2">
+			  
+						<div>
+			  
+						  <div class="spacer">
+							<input class="form-control border-right-0 border" formControlName="mobile" type="text" 
+							  placeholder="Mobile" pInputText>
+						  </div>
+						</div>
+					  </div>
+					  <div class="col-3">
+			  
+						<div>
+			  
+						  <div class="spacer">
+							<input class="form-control border-right-0 border" formControlName="disease" type="text" 
+							  placeholder="Disease" pInputText>
+						  </div>
+						</div>
+					  </div>
+					  <div class="col-3">
+			  
+						
+			  <!-- auto complete medicne -->
+						  <div class="spacer patient-search">
+							  <p-autoComplete styleClass="medicineListAutoComplete" #med placeholder="Medication" [suggestions]="results" [minLength]="2"
+							  (onSelect)="setMedicineName($event)" (completeMethod)="getMedicineList($event)" formControlName="medication"
+							  >
+							  <ng-template let-results pTemplate="item">
+								<span style="font-size:11px;font-weight: 500;">{{results._source.product_name}}</span>
+								<br>
+								<span style="font-size:9px">Composition: {{results._source.product_composition}}</span>
+							  </ng-template>
+							</p-autoComplete>
+						  </div>
+						
+					  </div>
+					  <a href="javascript:void(0)" class="btn btn-primary" (click)="searchPaitentByDoctor()" role="button">Search</a>
+			  
+					</div>
+				 </div>
+				 <div *ngIf="noResultFound" class="w-100 not-found text-center pt-3"><h3>Sorry, We could not find any patient matching your search conditions.</h3></div>
+				</section>
+				
+				<section *ngIf="showSearchSection" class="searchSection top show-for-very-small mb-0">
+					<div class="row pb-2">
+						<div class="col-12">
+						  <label class="label-tx">{{ 'SEARCH.PATIENT_SEARCH_NAME' | translate }}</label>
+						  <input class="form-control" formControlName="name" type="text" 
+							  placeholder="Name" pInputText>
+						</div>
+				  </div>
+				  <div class="row pb-2">
+					<div class="col-4">
+						 <label class="label-tx">{{ 'SEARCH.PATIENT_SEARCH_MOBILE' | translate }}</label>
+						 <input class="form-control border-right-0 border" formControlName="mobile" type="text" 
+							  placeholder="Mobile" pInputText>
+					</div>
+					<div class="col-8 pl-0">
+						 <label class="label-tx">{{ 'SEARCH.PATIENT_SEARCH_DISEASE' | translate }}</label>
+						 <input class="form-control border-right-0 border" formControlName="disease" type="text" 
+							  placeholder="Disease" pInputText>
+					</div>
+				  </div>
+				  <div class="row pb-2">
+						<div class="col-12">
+						  <label class="label-tx">{{ 'SEARCH.PATIENT_SEARCH_MEDICATION' | translate }}</label>
+						  <p-autoComplete styleClass="medicineListAutoComplete" #med placeholder="Medication" [suggestions]="results" [minLength]="2"
+							  (onSelect)="setMedicineName($event)" (completeMethod)="getMedicineList($event)" formControlName="medication"
+							  >
+							  <ng-template let-results pTemplate="item">
+								<span style="font-size:11px;font-weight: 500;">{{results._source.product_name}}</span>
+								<br>
+								<span style="font-size:9px">Composition: {{results._source.product_composition}}</span>
+							  </ng-template>
+							</p-autoComplete>
+						</div>
+						
+				  </div>
+				   <div class="row">
+						<div class="col-12 text-center"><a href="javascript:void(0)" class="btn btn-sm btn-primary" (click)="searchPaitentByDoctor()" role="button">Search</a></div>
+						<div *ngIf="searchPanelDisplayMobile" class="col-12 text-center mb-0"><a href="javascript:void(0)" (click)="hideSearchPanel()">Hide search panel</a></div>
+				   </div>
+				   <div *ngIf="noResultFound" class="w-100 not-found text-center pt-3"><h3>Sorry, We could not find any patient matching your search conditions.</h3></div>
+				</section>
+				 <div *ngIf="searchPanelShow" class="row mb-0 show-for-very-small">
+					<div class="col-12 text-right"><a href="javascript:void(0)" (click)="showSearchPanel()">Show search panel</a></div>
+				   </div>
+				
+    </div>
+    </div>
+    </div>
+   
+	
+	
+    <section class="srcResult searchSection" *ngIf="showResult">
+		
+      <div class="container-fluid">
+	  
+		<hr>
+        <div class="row page-content">
+          <div class="col-lg-12">
+    
+      
+    
+
+    
+
+      <div class="row">
+          <div class="pr-0 ml-3 sml page-content filter-panel-width" [ngClass]="panelVisible ? 'panelVisible' : 'panelNotVisible'">
+              <div class="card">
+              <div class="filterPanel">
+                <div class="row border-bottom">
+                  <div class="col-8"><h4 class="search-result-left-pen-heading">{{'SEARCH.REFINE_BY' | translate }}</h4></div>
+                  <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0);">{{ 'FETCH_PATIENT.RESET_ALL' | translate }}</a></div>
+                </div>
+
+                <div class="row overflow-auto scrollarea">
+                  <div class="col-12 pt-2">
+                      <!-- issue app#593 -->
+                    <div class="row mt-3 mb-3">
+                      <div class="col-8">
+                          <button [class]="buttonClassCurrent" (click) = "changeClassButton1()">{{ 'FETCH_PATIENT.ONE_DAY' | translate }}</button>
+                          <button [class]="buttonClassAnother" (click) = "changeClassButton2()">{{ 'FETCH_PATIENT.DURATION' | translate }}</button>
+                      </div>
+                      <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0);" (click)="resetSearchDate()">{{ 'FETCH_PATIENT.RESET' | translate }}</a></div>
+                    </div>
+                    <div class="row" *ngIf="appointmentStatus !== 'REQ'">
+                        <div class="col-6">
+                          <div class="form-group">
+                            <label>{{ 'FETCH_PATIENT.FROM' | translate }}</label>
+                              <span class="float-left"><input type="text" placeholder="DD-MM-YYYY" (bsValueChange)="onValueChange('fromDate',$event)" bsDatepicker [bsConfig]="{ dateInputFormat: dateFormat, showWeekNumbers: false }"
+                                class="form-control date" formControlName="fromDate"  #dp="bsDatepicker" [readonly]="true"></span>
+                              <span class="pt-1 float-left"><i (bsValueChange)="onValueChange('fromDate',$event)" (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt"></i></span>
+  
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="form-group">
+                            <label>{{ 'FETCH_PATIENT.TO' | translate }}</label>
+                            <span class="float-left"><input type="text" placeholder="DD-MM-YYYY" (bsValueChange)="onValueChange('toDate',$event)" bsDatepicker [bsConfig]="{ dateInputFormat: dateFormat, showWeekNumbers: false }"
+                              class="form-control date" formControlName="toDate"  #dp1="bsDatepicker"  [readonly]="true" ></span>
+                            <span class="pt-1 float-left"><i (bsValueChange)="onValueChange('toDate',$event)" (click)="dp1.toggle()" [attr.aria-expanded]="dp1.isOpen" class="far fa-calendar-alt"></i></span>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row pb-2">
+                          <div class="col-8"><label class="page-header">{{ 'FETCH_PATIENT.CHAMBER_NAME' | translate }}</label></div>
+                          <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0);" (click)="resetChamberName()">{{ 'FETCH_PATIENT.RESET' | translate }}</a></div>
+                        </div>
+                        <div *ngFor="let a of chamberList" class="form-check">
+                          <label class="form-check-label">
+                            <!--/sbis-poc/app/issues/524-->
+                            <input type="checkbox" class="form-check-input" value="{{a.chamberRefNo}}" formControlName="chamberName" [checked]="isCheckedChamber(a.chamberRefNo)" (change)="chamberChange($event, a)">{{a.chamberName}}
+                          </label>
+                        </div>
+  
+                     </div>
+                    <div class="form-group pb-2">
+                      <label class="page-header">{{'SEARCH.PATIENT_NAME' | translate }}</label>
+                      <input type="text" class="form-control" formControlName="name" placeholder="{{'SEARCH.ENTER_PATIENT_NAME' | translate }}">
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-group text-right border-top pt-2">
+                <button type="submit" (click)="refinePanelhide()" class="btn btn-primary btn-sm">{{'SEARCH.SEARCH'| translate}}</button>
+              </div>
+
+              </div>
+            </div>
+        <!-- <div class="card"> -->
+        <div class="col">
+            <div class="card">
+                <div class="row header cardHeader  pl-0 pr-0 pt-0">
+                  <div class="col-10">
+                    <div>
+                      <h1>{{'SEARCH.PATIENT_SEARCH'|translate}}</h1>
+                    </div>
+                  </div>
+				  <div class="col-2 text-right"><span class="cursor filterBtn" (click)="refinePanelDisplay()">Filters</span></div>
+                </div>
+    
+                 <div class="content table-responsive search-result hide-for-very-small" >
+
+
+
+                      <p-table [value]="fetchpatientList" [paginator]="isPaginator" [alwaysShowPaginator]="false" [rows]="10" >
+                          <ng-template pTemplate="header">
+                             
+                              <tr>
+                                 
+                                  <th class="search-patient-small-name">Name</th>
+                                  <th class="search-patient-small-name">Chamber</th>
+                                  <th class="search-patient-small-name">PATIENT SINCE</th>
+                                  <th class="search-patient-small-contact" width="15%">Contact No.</th>
+                                  <!--<th width="10%">Gender</th>-->
+                                 
+                                  <th class="search-patient-small-consult" width="25%"></th>
+                                </tr>
+                          </ng-template>
+                          <ng-template pTemplate="body" let-rowData let-i="rowIndex" >
+                              <tr>
+                                  <td>{{rowData.name}} ({{rowData.age}}/{{rowData.gender}})</td>
+                                  <td>{{rowData.chamberName}}</td>
+                                  <!-- sbis-poc/app/issues/721-->
+                                  <td>{{rowData.prescriptionDate | date: 'dd/MM/yyyy'}}</td>
+                                  <td class="search-patient-nopadding">{{rowData.mobile}}</td>
+                                  <!--<td>{{rowData.gender}}</td>-->
+                                 
+                                <!-- sbis-poc/app/issues/725-->
+                                <td class="peer-consulting-td">
+								 <button class="btn btn-secondary" (click)="patientView(rowData)">{{'SEARCH.VIEW'| translate}}</button>&nbsp;
+								<!-- <a class="link-style" href="javascript:void(0)" (click)="peerConsulting(rowData)">{{'SEARCH.CONSULT'| translate}}</a>&nbsp;
+								<a class="link-style" href="javascript:void(0)" (click)="procedureNote(rowData)">{{'SEARCH.PROCEDURE_NOTE'| translate}}</a> -->
+							</td>
+                                </tr>
+                             
+                          </ng-template>
+                      </p-table>
+                    </div>
+					
+					
+					 <div class="content table-responsive search-result patient-search-res show-for-very-small" >
+						<p-table styleClass="patient-search-paginator" [value]="fetchpatientList" [paginator]="isPaginator" [alwaysShowPaginator]="false" [rows]="10" >
+							<ng-template pTemplate="body" let-rowData let-i="rowIndex" >
+								<tr>
+									<td class="small-header" width="50%">Name</td>
+									<td>{{rowData.name}} ({{rowData.age}}/{{rowData.gender}})</td>
+								</tr>
+								<tr>
+									<td class="small-header">Chamber</td>
+									<td>{{rowData.chamberName}}</td>
+								</tr>
+								<tr>
+									<td class="small-header">PATIENT SINCE</td>
+									<td>{{rowData.prescriptionDate | date: 'dd/MM/yyyy'}}</td>
+								</tr>
+								<tr>
+									<td class="small-header">Contact No.</td>
+									<td>{{rowData.mobile}}</td>
+								</tr>
+								<tr>
+									<td class="border-bottom"></td>
+									<td class="border-bottom"> <button class="btn btn-secondary" (click)="patientView(rowData)">{{'SEARCH.VIEW'| translate}}</button>&nbsp;
+								<!--<a class="link-style" href="javascript:void(0)" (click)="peerConsulting(rowData)">{{'SEARCH.CONSULT'| translate}}</a></td>-->
+								</tr>
+							</ng-template>
+						</p-table>
+					 </div>
+                  
+               </div>
+          </div>
+        </div>
+      </div>
+      <!-- </div> -->
+      </div> 
+
+  
+    </div>
+    </section>
+	 </section>	
+    </form>

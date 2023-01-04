@@ -1,0 +1,49 @@
+.med-list h6{
+  color: #662d91;
+}
+
+.med-list-header{
+  border-top:1px solid #c8c8c8;
+  border-bottom:1px solid #c8c8c8;
+}
+
+.green-card{
+  border-top:2px solid #ce8a35 !important;
+  border-bottom:2px solid #ce8a35 !important;
+}
+
+.text-green{
+  color:#4dbeac;
+}
+
+.sub-total-heading{
+  background: #ce8a35 !important;
+  border-radius:30px;
+  color:#fff !important;
+  font-weight:400;
+  padding:7px 17px;
+  display:inline;
+  margin-right:0;
+}
+
+.top-border{
+  border-top:1px solid #c8c8c8;
+}
+
+.row.no-mb{
+  margin-bottom:0 !important;
+}
+
+.grand-total{
+  font-weight:400;
+  padding-top:10px;
+}
+
+@media (max-width: 576px) {
+  .review-order-button{
+    margin-top:60px !important;
+  }
+  .padding-top4px-for-review-order {
+		padding-top: 10px !important;
+	}
+}

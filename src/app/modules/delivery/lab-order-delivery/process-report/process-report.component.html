@@ -1,0 +1,28 @@
+<form [formGroup]="labDeliveryForm">
+    <!-- <div class="form-group">
+        <label class="userKey control-label">
+          Process Date
+          <span class="validation-error">*</span>
+        </label>
+        <input type="text" placeholder="DD-MM-YYYY" bsDatepicker
+          [bsConfig]="{ dateInputFormat: dateFormat, showWeekNumbers: false  }" class="form-control date-pick"
+          [minDate]="minDate" #dp="bsDatepicker" formControlName="processDate" required>
+        <span><i (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt date-picker-calendarIco"></i></span>
+        <div *ngIf="submitted && labDeliveryForm.controls.processDate.errors">
+            <div class="validation-error mt-2" *ngIf="labDeliveryForm.controls.processDate.errors.required">This field is required</div>
+          </div>
+      </div>
+
+      <div class="form-group">
+          <label class="userKey control-label">
+              Process Time
+            <span class="validation-error">*</span>
+          </label>
+          <input type="time" class="form-control" formControlName="processTime" required>
+          <div *ngIf="submitted && labDeliveryForm.controls.processTime.errors">
+              <div class="validation-error mt-2" *ngIf="labDeliveryForm.controls.processTime.errors.required">This field is required</div>
+            </div>
+        </div> -->
+    
+    <button type="button" class="btn btn-primary mt-4" (click)="saveDeliveryStep()">Process & Generate</button>
+  </form>

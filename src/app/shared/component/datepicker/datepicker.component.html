@@ -1,0 +1,59 @@
+<span *ngIf="!isMinModeOpen"> 
+        <div class="float-left custom-datePicker"><input type="text" #dp="bsDatepicker" [disabled]="disabled"
+                        [minDate]="minDate" [maxDate]="maxDate" placeholder="{{dateFormat}}" class="form-control"
+                        bsDatepicker [(ngModel)]="selectedDate" (ngModelChange)="update($event)" (keydown)="onKeydown($event)" [maxDate]="maxDate"  [readonly]="readonly"
+                        [ngModelOptions]="{standalone: true}" placement={{position}}
+                        [bsConfig]="{ dateInputFormat: dateFormat ,showWeekNumbers: false}" /></div>
+
+        <div *ngIf="!disabled" class="pt-1"><i (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen"
+                        class="far fa-calendar-alt cursor"></i></div>
+        <div *ngIf="disabled" class="pt-1"><i class="far fa-calendar-alt"></i></div>
+</span>
+<span *ngIf="isMinModeOpen">
+                <div class="float-left custom-datePicker">
+                        <input type="text" #dp="bsDatepicker" 
+                        class="form-control" 
+                        value="{{ selectedDate | date: 'yyyy' }}" 
+                        (bsValueChange)="updateWithViewMode($event)"
+                        [bsConfig]="bsConfig" placement={{position}}
+                        [maxDate]="maxDate" [minDate]="minDate" [readonly]="readonly"
+                        bsDatepicker [(bsValue)]="selectedDate" /> 
+                </div>
+                <div class="pt-1"><i (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt cursor"></i>
+                </div>
+        </span>
+
+<!-- <span *ngIf="!isMinModeOpen"> 
+        <span *ngIf="formControlName != null">
+                <div class="float-left custom-datePicker">
+                    <input type="text" #dp="bsDatepicker" [minDate]="minDate" [maxDate]="maxDate" placeholder="{{dateFormat}}"
+                        class="form-control" formControlName={{formControlName}} bsDatepicker placement={{position}}
+                        [bsConfig]="{ dateInputFormat: dateFormat ,showWeekNumbers: false}" /></div>
+            
+                <div class="pt-1"><i (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt cursor"></i>
+                </div>
+            </span>
+            
+            
+            <span *ngIf="formControlName == null">
+                <div class="float-left custom-datePicker"><input type="text" #dp="bsDatepicker" [disabled]="disabled" [minDate]="minDate"
+                        [maxDate]="maxDate" placeholder="{{dateFormat}}" class="form-control" bsDatepicker [(ngModel)]="ngModel"
+                        (ngModelChange)="update($event)" [maxDate]="maxDate" [ngModelOptions]="{standalone: true}"
+                        placement={{position}} [bsConfig]="{ dateInputFormat: dateFormat ,showWeekNumbers: false}" /></div>
+            
+                <div *ngIf="!disabled" class="pt-1"><i (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt cursor"></i></div>
+                <div *ngIf="disabled" class="pt-1"><i class="far fa-calendar-alt"></i></div>
+            </span>
+</span>
+<span *ngIf="isMinModeOpen">
+        <div class="float-left custom-datePicker">
+                <input type="text" #dp="bsDatepicker" 
+                class="form-control" 
+                value="{{ inputDate | date: 'yyyy' }}" 
+                (bsValueChange)="updateWithViewMode($event)"
+                [bsConfig]="bsConfig"
+                bsDatepicker [(bsValue)]="inputDate" /> 
+        </div>
+        <div class="pt-1"><i (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt cursor"></i>
+        </div>
+</span> -->

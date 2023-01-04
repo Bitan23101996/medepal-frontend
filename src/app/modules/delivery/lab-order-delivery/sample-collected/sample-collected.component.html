@@ -1,0 +1,27 @@
+<form [formGroup]="labDeliveryForm">
+    <!-- <div class="form-group">
+        <label class="userKey control-label">
+          Collection Date
+          <span class="validation-error">*</span>
+        </label>
+        <input type="text" placeholder="DD-MM-YYYY" bsDatepicker
+          [bsConfig]="{ dateInputFormat: dateFormat, showWeekNumbers: false  }" class="form-control date-pick"
+          [minDate]="minDate" #dp="bsDatepicker" formControlName="collectionDate" required>
+        <span><i (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt date-picker-calendarIco"></i></span>
+        <div *ngIf="submitted && labDeliveryForm.controls.collectionDate.errors">
+            <div class="validation-error mt-2" *ngIf="labDeliveryForm.controls.collectionDate.errors.required">This field is required</div>
+          </div>
+      </div>
+      <div class="form-group">
+          <label class="userKey control-label">
+            Collection Time
+            <span class="validation-error">*</span>
+          </label>
+          <input type="time" class="form-control" formControlName="collectionTime" required>
+          <div *ngIf="submitted && labDeliveryForm.controls.collectionTime.errors">
+              <div class="validation-error mt-2" *ngIf="labDeliveryForm.controls.collectionTime.errors.required">This field is required</div>
+            </div>
+        </div> -->
+    
+    <button type="button" class="btn btn-primary mt-4" (click)="saveDeliveryStep()">Sample Collected</button>
+  </form>

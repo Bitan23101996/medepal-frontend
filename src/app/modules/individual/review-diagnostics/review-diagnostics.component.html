@@ -1,0 +1,79 @@
+<div class="row top-btn-area book-diagnostics-top-btn-area">
+    <!-- <div class="col-lg-11"></div> -->
+    <div class="review-order-button col-lg-12 text-right">
+      <button class="btn btn-primary" (click)="backOperation()">Back</button>
+    </div>
+</div>
+<div class="row">
+  <div class="row col-md-12 height45"></div>
+  <div class="col-lg-8">
+    <div class="col-md-12 border padding10">
+      <div class="row">
+        <div class="col-lg-8 col-md-8 col-sm-8 col-8 textDot">Diagnostics Order</div>
+        <div class="col-lg-4 col-md-4 col-md-4 col-4">Price</div>
+        <!-- <div class="col-lg-2"></div> -->
+      </div>
+    </div>
+    <div class="border diagnostics-list-area">
+      <div class="col-lg-12" *ngFor="let diagnostics of diagnosticsList; let i = index">
+        <div class="row">
+          <div class="col-lg-8 col-md-8 col-sm-8 col-8 textDot-for-review-diagnostics">
+            {{diagnostics.longName}}
+          </div>
+          <div class="col-lg-4 col-md-4 col-md-4 col-4">
+            {{'SEARCH.SEARCH_INR_SIGN' | translate}}{{diagnostics.price}}
+          </div>
+          <!-- <div class="col-lg-2">
+            <label><i class="fas fa-trash-alt cursor" (click)="deleteDiagnostics(diagnostics, i)"></i></label>
+          </div> -->
+        </div>
+      </div>
+    </div> 
+  </div>
+  <div class="col-lg-4 min-height168px">
+    <div class="col-lg-12 padding20 min-height156px border">
+        <div class="row">
+          <div class="col-lg-8 col-md-8 col-sm-8 col-8"><p class="font-size-larger"><b>{{'ORDER_MEDICINE.SUBTOTAL_LEBEL_NAME' | translate}}</b></p></div>
+          <div class="col-lg-4 col-md-4 col-sm-4 col-4 padding-top4px"><p class="float-right review-diagnostics-font-style">{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{totalAmount | number:'1.2-2'}}</p></div>
+        </div>
+        <div class="row">
+          <div class="col-lg-8 col-md-8 col-sm-8 col-8"><p class="font-size-larger"><b>{{'ORDER_MEDICINE.DELIVERY_CHARGE' | translate}}</b></p></div>
+          <div class="col-lg-4 col-md-4 col-sm-4 col-4 padding-top4px"><p class="float-right review-diagnostics-font-style">{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{deliveryCharge | number:'1.2-2'}}</p></div>          
+        </div>
+        <div class="row" *ngIf="tax > 0">
+          <div class="col-lg-8 col-md-8 col-sm-8 col-8"><p class="font-size-larger"><b>{{'ORDER_MEDICINE.TAX' | translate}}</b></p></div>
+          <div class="col-lg-4 col-md-4 col-sm-4 col-4 padding-top4px"><p class="float-right review-diagnostics-font-style">{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{tax | number:'1.2-2'}}</p></div>  
+        </div>
+        <div class="row" *ngIf="discount > 0">
+          <div class="col-lg-8 col-md-8 col-sm-8 col-8"><p class="font-size-larger"><b>{{'ORDER_MEDICINE.DISCOUNT' | translate}}</b></p></div>
+          <div class="col-lg-4 col-md-4 col-sm-4 col-4 padding-top4px"><p class="float-right review-diagnostics-font-style">{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{discount | number:'1.2-2'}}</p></div>    
+        </div>
+        <hr>
+        <div class="row">
+          <div class="col-lg-8 col-md-8 col-sm-8 col-8"><p class="font-size-larger"><b>{{'ORDER_MEDICINE.GRAND_TOTAL' | translate}}</b></p></div>
+          <div class="col-lg-4 col-md-4 col-sm-4 col-4 padding-top4px"><p class="float-right review-diagnostics-font-style">{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{grandTotal | number:'1.2-2'}}</p></div>
+        </div>
+        <div class="padding-top29px text-center">
+          <button class="btn btn-primary" (click)="placeOrder()">{{'ORDER_MEDICINE.BOOK_DIAGNOSTICS' | translate}}</button>
+        </div><br>
+    </div> <br><br>
+    <div class="col-lg-12 page-content">
+      <div class="card">
+        <div class="card-header">
+          <h5>Delivery Address</h5>
+        </div>
+        <div class="row card-body">
+          <div class="col-12">
+            <p>
+              {{delivarAddress.line1}} &nbsp; {{delivarAddress.line2}}
+            </p>
+            <p>
+              <span>{{delivarAddress.city}}</span>&nbsp;<span>{{delivarAddress.state}}</span>&nbsp;<span>{{delivarAddress.pinCode}}</span>
+            </p>
+            <p>{{delivarAddress.country}}</p>
+          </div>
+        </div>
+      </div>
+    </div>    
+  </div>
+</div>

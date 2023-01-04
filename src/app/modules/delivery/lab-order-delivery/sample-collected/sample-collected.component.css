@@ -1,0 +1,14 @@
+input[type="time"]{
+    -webkit-appearance: none; 
+    border: none;
+    border-bottom: 1px solid #ccc;
+    width: 100%;
+    border-radius: 0;
+    font-size: 15px !important;
+    box-shadow: none;
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}

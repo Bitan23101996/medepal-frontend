@@ -1,0 +1,75 @@
+<!-- /*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */ -->
+<div class="prescription-widgets advice">
+    <div class="card">
+        <div class="card-header display-header">
+            <h5 class="float-left">{{'PRESCRIPTION.ADVICE'| translate}}</h5>
+            <button class="btn btn-secondary btn-sm float-right" (click)="freqAdvice()">Frequent Advice List</button>
+        </div>
+        <div class="card-body display-box">
+            <form [formGroup]="doctorAdviceForm">
+             <div>
+
+                <div class="content table-responsive no-btm-border">
+                    <table style="width: 100.1%;" class="table">
+                    <thead>
+                      <tr>
+                        <th style="width: 1%;">{{'PRESCRIPTION.SL_NO'| translate}}</th>
+                        <th style="width: 93%;">{{'PRESCRIPTION.ADVICE'| translate}}</th>
+                        <th style="width: 6%;"></th>
+                      </tr>
+                    </thead>
+                    <tbody formArrayName="adviceList" *ngIf="adviceList.length > 0">
+                        <tr *ngFor="let observ of doctorAdviceForm.get('adviceList').controls; let i = index"
+                          [formGroup]="observ" [attr.id]="'tr'+i">
+                          <td>{{i+1}}</td>
+                          <td [attr.id] = "'cell'+i">
+                            <input type="text" id="adviceStyle" (keyup.enter)="addAdvice()" class="form-control advices" formControlName="advice" maxlength="120" required />
+                            <span *ngIf="submitted && doctorAdviceForm.get('adviceList').controls[i].get('advice').errors">
+                                <span *ngIf="doctorAdviceForm.get('adviceList').controls[i].get('advice').errors.required"
+                                  class="validation-error">{{'VALIDATION.VALIDATION_REQUIRED'| translate}}</span>
+                              </span>
+                          </td>
+                          <td>
+                              <!-- <button type="button" class="btn btn-danger btn-xs" (click)="deleteAdvice(i)"><i class="fas fa-trash-alt"></i> Remove </button> -->
+                              <span ngbTooltip="Delete Advice" (click)="deleteAdvice(i)" class="cursor">
+                                <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                              </span>
+                          </td>
+                        </tr>
+                      </tbody>
+                  </table>
+                  <div class="text-right"><button type="button" class="btn btn-secondary btn-sm add-row" (click)="addAdvice()">
+                      <i class="fas fa-plus-square"></i>&nbsp;{{'PRESCRIPTION.ADD_ROW_LINK'| translate}}</button></div>
+                  </div>
+                  <!-- app/issues/2135 -->
+                  <p-sidebar [(visible)]="displaySidebarAdvice" appendTo="body" position="right" styleClass="modal-sidebar" [style]="{width:'30em', overflow: 'auto', background: 'rgba(100, 137, 134, .9)', color:'#fff'}">
+                    <h1 class="header-sidebar">{{'PRESCRIPTION.FREQUENT_ADVICE_LIST'| translate}}</h1>
+                    <div class="rightSidebarList">
+                    <ul class="mt-2">
+                        <li *ngFor="let fa of frequentAdviceList;let i = index">
+                            <a [class.disableLink]="clickedEvents[i]" (click)="setAdvice(fa)">{{fa.advice}}</a>
+                        </li>
+                    </ul>
+                    </div>
+                    </p-sidebar>
+                <!-- End app/issues/2135 -->
+             </div>
+
+             </form>
+        </div>
+      </div>
+  </div>

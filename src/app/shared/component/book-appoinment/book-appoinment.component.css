@@ -1,0 +1,105 @@
+/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+
+ div.scroll {
+    width: 250px;
+    height: 100px;
+    overflow: auto;
+}
+.card-custom {
+    width: 80px;
+    /* margin-left: 5px;
+    margin-right: 5px; */
+}
+.selected-card{
+    background: #eeeeee;
+}
+
+/* Working on app/issues/595 */
+.common-link{
+    color: #ad4274;
+    text-decoration: underline;
+    font-weight: 400;
+    padding-right: 20px;
+    text-transform: capitalize;
+}
+/* End Working on app/issues/595 */
+
+/* start switch classes  */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 45px;
+    height: 19px;
+    left: 6px;
+    top: 3px;
+  }
+  
+  .switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+      position: absolute;
+      content: "";
+      height: 17px;
+      width: 17px;
+      left: 1px;
+      bottom: 1px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color:#21c8a7;/* #662d91;*/
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #21c8a7;/*//#662d91;*/
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 42px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
+
+
+  /* end of switch classes */

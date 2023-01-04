@@ -1,0 +1,11 @@
+.export{
+    background-color: #985bba !important;
+    background: linear-gradient(to right, #985bba 0%,#985bba 100%) !important;
+    border: 1px solid #8850a7 !important;
+    color: white !important;
+}
+
+.btn{
+    border-radius: unset !important;
+   
+}

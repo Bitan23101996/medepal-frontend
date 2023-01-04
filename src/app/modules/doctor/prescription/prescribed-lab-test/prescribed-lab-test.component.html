@@ -1,0 +1,114 @@
+<!-- /*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */ -->
+<div class="prescription-widgets labTest">
+    <div class="card">
+        <div class="card-header display-header">
+            <h5 class="float-left">{{'PRESCRIPTION.INVESTIGATIONS'| translate}}</h5>
+            <button class="btn btn-secondary btn-sm float-right" (click)="displaySideBar()">{{'PRESCRIPTION.FREQUENTLY_PRESCRIBED_TESTS'| translate}}</button>
+        </div>
+        <div class="card-body display-box">
+            <!-- <button type="button" class="btn btn-primary btn-sm float-right" (click)="openModal()">Prescribe Test</button> -->
+            <form [formGroup]="doctorTestForm">
+             <!-- Working on app/issues/648 -->
+             <div class="medication">
+               <div class="row">
+                 <!-- <div [class.col-8]="!notFoundFrequentRecord" [class.col-12]="notFoundFrequentRecord"> -->
+                 <div class="col-12 ">
+                    <div class="content table-responsive no-btm-border lab-test">
+                        <table style="width: 100.1%;" class="table">
+                        <thead>
+                          <tr>
+                            <th style="width: 1%;">{{'PRESCRIPTION.SL_NO'| translate}}</th>
+                            <th style="width: 60%;">{{'PRESCRIPTION.NAME'| translate}}</th>
+                            <th style="width: 38%;">{{'PRESCRIPTION.COMMENTS'| translate}}</th>
+                            <th style="width: 1%;"></th>
+                          </tr>
+                        </thead>
+                       <tbody formArrayName="doctorTestList" *ngIf="doctorTestList">
+                           <tr *ngFor="let test of doctorTestForm.get('doctorTestList').controls; let i = index" [formGroup]="test"
+                                [attr.id]="'tr'+i">
+                             <td>{{i+1}}</td>
+                             <td [attr.id] = "'cell'+i">
+                             <!-- <select class="form-control" #mdAttrPk formControlName="medicalAttributePk" (change)="duplicateCheck($event, i)">
+                               <option *ngFor="let t of testD" [value]="t.testId">{{t.testN}}</option>
+                             </select> -->
+                             <p-autoComplete styleClass="medicineListAutoComplete" inputStyleClass="labTestStyle" placeholder="Test Name"  [suggestions]="labTestList" (onSelect)="setTestName($event, i)" [minLength]="3"
+                             (completeMethod)="getTestList($event)" formControlName="medicalAttributeName" (onKeyUp)="managePk(testName.value, i)" onkeydown="if (event.keyCode == 13) {document.getElementById('addInvestigation').click()}" required>
+                               <ng-template let-results pTemplate="item">
+                                 <span>{{results.longName}}</span>
+                               </ng-template>
+                             </p-autoComplete>
+                             <span *ngIf="submitted && (doctorTestForm.get('doctorTestList').controls[i].get('medicalAttributeName').value==null && doctorTestForm.get('doctorTestList').controls[i].get('medicalAttributePk').value==null)"
+                                 class="validation-error">{{'VALIDATION.VALIDATION_REQUIRED'| translate}}
+                             </span>
+                             <!-- // /sbis-poc/app/issues/729 start-->
+                             <!-- <span *ngIf="submitted && (doctorTestForm.get('doctorTestList').controls[i].get('medicalAttributeName').value!=null && doctorTestForm.get('doctorTestList').controls[i].get('medicalAttributePk').value==null)"
+                                 class="validation-error">* Pathological Test is not valid
+                             </span> -->
+                             <!-- // /sbis-poc/app/issues/729 end-->
+                             <!-- <span *ngIf="submitted && doctorTestForm.get('doctorTestList').controls[i].get('medicalAttributeName').errors">
+                               <span *ngIf="doctorTestForm.get('doctorTestList').controls[i].get('medicalAttributeName').errors.required"
+                                 class="validation-error">* Pathological Test Name is required</span>
+                             </span>
+                             <span *ngIf="submitted && doctorTestForm.get('doctorTestList').controls[i].get('medicalAttributePk').errors && (doctorTestForm.get('doctorTestList').controls[i].get('medicalAttributeName').value!=null || doctorTestForm.get('doctorTestList').controls[i].get('medicalAttributeName').value!='')">
+                                 <span *ngIf="doctorTestForm.get('doctorTestList').controls[i].get('medicalAttributePk').errors.required"
+                                   class="validation-error">* Pathological Test does exist to our system </span>
+                               </span> -->
+                             <span *ngIf="isDuplicateLabTest[i]" class="validation-error">
+                                {{'PRESCRIPTION.DUPLICATE_INVESTIGATION_VALIDATION'| translate}}
+                             </span>
+                             <!-- <input type="hidden" formControlName="longName"> -->
+                             </td>
+                             <td>
+                               <input type="text" class="form-control" formControlName="comments" maxlength="255"/>
+                             </td>
+                             <td>
+                                 <!-- <button type="button" class="btn btn-danger btn-xs" (click)="deleteTest(i)"><i class="fas fa-trash-alt"></i> Remove </button> -->
+                               <!-- <button type="button" class="btn btn-link" (click)="deleteTest(i)">Remove</button> -->
+                               <span ngbTooltip="Delete Test" (click)="deleteTest(i)" class="cursor">
+                                   <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                                 </span>
+                             </td>
+                           </tr>
+                         </tbody>
+                     </table>
+                     <div class="text-right"><button type="button" class="btn btn-secondary btn-sm add-row" id="addInvestigation" (click)="addTest()">
+                         <i class="fas fa-plus-square"></i>&nbsp;{{'PRESCRIPTION.ADD_ROW_LINK'| translate}}</button></div>
+                     </div>
+                 </div>
+
+               </div>
+
+      		 <p-sidebar [(visible)]="displaySidebarInvestigation" appendTo="body" position="right" styleClass="modal-sidebar" [style]="{width:'30em', overflow: 'auto', background: 'rgba(100, 137, 134, .9)', color:'#fff'}">
+                  <h1 class="header-sidebar">{{'PRESCRIPTION.FREQUENTLY_PRESCRIBED_TESTS'| translate}}</h1>
+                 <div class="rightSidebarList">
+      			  <ul class="mt-2">
+      				<li *ngFor="let ft of frequentTestList; let i = index">
+                         <a [class.disableLink]="clickedEvent[i]" href="javascript:void(0);" (click)="setTest(ft)">{{ft.longName}}</a>
+                      </li>
+      			 </ul>
+      			</div>
+      		 </p-sidebar>
+
+             </div>
+
+             </form>
+
+        </div>
+
+
+      </div>
+  </div>

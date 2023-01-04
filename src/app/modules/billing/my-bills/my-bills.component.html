@@ -1,0 +1,440 @@
+<div class="page-heading-info">
+  <h2>View everything regarding your MEDePAL billing plan, current usage and your billing and payment history</h2>
+</div>
+<div class="row page-content">
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-5">
+            <h5>Displaying details bill for</h5>
+          </div>
+          <div class="col-4">
+            <div class="btn-group dateNextPrev">
+              <div class="calendar-arrow-box" (click)="goToPreviousDate()">
+                <i class="fas fa-angle-double-left"></i>
+              </div>
+              <div class="calendar-header">
+                <ng-container *ngIf="billingCycle=='Month'">
+                  <!-- {{viewDate | date :'MMMM, yyyy'}} -->
+                  {{billingMonth}}, {{billingYear}}
+                </ng-container>
+                <ng-container *ngIf="billingCycle!='Month'">
+                  {{viewDate | date :'mediumDate'}}
+                </ng-container>
+              </div>
+              <div class="calendar-arrow-box" (click)="goToNextDate()">
+                <i class="fas fa-angle-double-right"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-3 text-right">
+            <span *ngIf="myBill == null" class="bill-pill-red">Bill not generated</span>
+            <ng-container *ngIf="myBill != null">
+              <span *ngIf="myBill.paymentStatus != null" class="found bill-pill-green">Bill generated</span>
+            </ng-container>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card-body">
+        <div class="not-found billing-details text-center" *ngIf="myBillDetailView.length == 0">
+          No billing record(s) found.
+        </div>
+
+        <div class="billing-details">
+          <div class="row" *ngIf="myBillDetailView.length > 0">
+
+            <div class="col-lg-12">
+              <h1><u>Consultation</u></h1>
+              <div class="bill-section">
+                <ng-container *ngFor="let bill of myBillDetailView">
+                  <div *ngIf="bill.chamber!=null">
+                    <h5>{{bill.chamber}}</h5>
+                    <table width="100%" class="table table-condensed bill-table">
+                      <thead>
+                        <tr>
+                          <th>Date</th>
+                          <th class="text-right">Count</th>
+                          <th class="text-right">Charges</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let b of bill.doctorBillingViewDTOChamberwise">
+                          <td> {{b.prescriptionDate}} </td>
+                          <td class="text-right"> {{b.unitCnt}} </td>
+                          <td class="text-right"> {{b.amount == null? "-":'SEARCH.SEARCH_INR_SIGN' | translate}}
+                            {{b.amount | number:'2.2-2'}} </td>
+                        </tr>
+                        <!-- <hr> -->
+                        <tr class="border-top border-bottom">
+                          <td>
+                            <h6>Subtotal</h6>
+                          </td>
+                          <td class="text-right">
+                            <h6> {{displaySubtotalUnit(bill.doctorBillingViewDTOChamberwise)}} </h6>
+                          </td>
+                          <td class="text-right">
+                            <h6> {{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                              {{displaySubtotal(bill.doctorBillingViewDTOChamberwise) | number:'2.2-2'}} </h6>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <!-- <hr>
+                      <div class="row no-gutters">
+                          <div class="col-lg-4">
+                              <h6>Subtotal</h6>
+                          </div>
+                          <div class="col-lg-4  text-right">
+                              <h6> {{displaySubtotalUnit(bill.doctorBillingViewDTOChamberwise)}} </h6>
+                          </div>
+
+                          <div class="col-lg-4 text-right">
+                              <h6> {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{displaySubtotal(bill) | number:'2.2-2'}} </h6>
+                          </div>
+
+                      </div> -->
+                    <!-- <hr> -->
+                  </div>
+
+                </ng-container>
+              </div>
+
+              <!-- <div class="bill-section" *ngIf="summaryView == 'Y'">
+                <table width="100%" class="bill-table">
+                  <tr *ngFor="let b of myBillDetailSummaryView">
+                    <td>
+                      <h5>{{b.chamber}}</h5>
+                    </td>
+                    <td> {{b.unitCnt}} prescriptions </td>
+                  </tr>
+                </table>
+              </div> -->
+
+
+            </div>
+          </div>
+
+          <div class="row" *ngIf="procedureList.length > 0">
+
+            <div class="col-lg-12">
+              <h1><u>Procedure Record</u></h1>
+              <div class="bill-section">
+                <table width="100%" class="table table-condensed bill-table" style="table-layout:fixed">
+                  <thead>
+                    <tr>
+                      <th width="15%">Date</th>
+                      <th width="60%">Notes</th>
+                      <th width="10%" class="text-right">Count</th>
+                      <th width="15%" class="text-right">Charges</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let b of procedureList">
+                      <td> {{b.procedureDate}} </td>
+                      <td class="textDot">{{b.notes}}</td>
+                      <td class="text-right"> {{b.unitCnt}} </td>
+                      <td class="text-right"> {{b.amount == null? "-":'SEARCH.SEARCH_INR_SIGN' | translate}}
+                        {{b.amount | number:'2.2-2'}} </td>
+                    </tr>
+                    <tr class="border-top border-bottom">
+                      <td>
+                        <h6>Subtotal</h6>
+                      </td>
+                      <td></td>
+                      <td class="text-right">
+                        <h6> {{displaySubtotalUnit(procedureList)}} </h6>
+                      </td>
+                      <td class="text-right">
+                        <h6> {{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                          {{displaySubtotal(procedureList) | number:'2.2-2'}} </h6>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <!-- <hr>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <h6>Subtotal</h6>
+                            </div>
+                            <div class="col-lg-6 text-right">
+                                <h6> {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{displaySubtotal(procedureList) | number:'2.2-2'}} </h6>
+                            </div>
+
+                        </div> -->
+                <!-- <hr> -->
+              </div>
+
+              <!-- <div class="bill-section" *ngIf="summaryView == 'Y'">
+                  <table width="100%" class="bill-table">
+                    <tr *ngFor="let b of myBillDetailSummaryView">
+                      <td>
+                        <h5>{{b.chamber}}</h5>
+                      </td>
+                      <td> {{b.unitCnt}} prescriptions </td>
+                    </tr>
+                  </table>
+                </div> -->
+
+
+            </div>
+          </div>
+
+          <div class="total-bill-section">
+            <hr>
+            <div class="row">
+              <div class="col-lg-8">
+                <h4>{{'BILLING.TOTAL' | translate}}</h4>
+              </div>
+              <div class="col-lg-4 text-right">
+                <h4>
+                  {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{totalAmount | number:'2.2-2'}}
+
+                </h4>
+              </div>
+            </div>
+            <hr>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card" *ngIf="myBillingPlan!=null">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-lg-6">
+            <h5>My Billing Plan</h5>
+          </div>
+          <div class="col-lg-6 text-right">
+            <button class="btn btn-secondary"
+              (click)="downloadContract()">{{'BILLING.DOWNLOAD_CONTRACT' | translate}}</button>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-6">
+            <ng-container *ngFor="let details of myBillingPlan.billingPlanDetails">
+              <div class="row no-margin-btm">
+                <div class="col-lg-6">
+                  <label> {{details.baseUnit}}</label>
+                </div>
+                <div class="col-lg-6">
+                  <div *ngIf="details.slabRateFlag=='Y'">
+                    <div *ngFor="let slab of details.billingSlabList">
+                      {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{slab.rateText}}
+                    </div>
+                  </div>
+                  <div *ngIf="details.slabRateFlag=='N'">
+                    {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{details.rateText}}
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+          <div class="col-6">
+            <div class="text-right">
+              <div class="d-inline-block price-plan-msg text-center">PAY PER USE,<br> NO MONTHLY COMMITMENT</div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+    <div class="card margin-card">
+      <div class="card-header">
+        <h5>Billing & Payment Status</h5>
+      </div>
+      <div class="card-body">
+
+        <div class="text-center">
+          <div class="text-left">
+            <div class="top-card text-center">
+              <div class="total-bill-header">Unbilled Amount</div>
+              <div *ngIf="myBillingSummary != undefined && myBillingSummary.lastBillStr > 0" class="total-bill">
+                {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{myBillingSummary.lastBillStr | number: '1.2-2'}}</div>
+              <div *ngIf="myBillingSummary == undefined || myBillingSummary.lastBillStr == 0" class="total-bill">NIL
+              </div>
+            </div>
+            <div class="top-card text-center">
+              <div class="total-bill-header">&nbsp;</div>
+              <!-- <div class="total-bill-signs"></div> -->
+            </div>
+            <div class="top-card text-center">
+              <div class="total-payment-header">Last Payment</div>
+              <div *ngIf="myBillingSummary != undefined && myBillingSummary.lastPaymentStr > 0" class="total-payment">
+                {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{myBillingSummary.lastPaymentStr | number: '1.2-2'}}</div>
+              <div *ngIf="myBillingSummary == undefined || myBillingSummary.lastPaymentStr == 0" class="total-payment">
+                NIL</div>
+            </div>
+            <div class="top-card text-center">
+              <div class="total-bill-header">&nbsp;</div>
+              <!-- <div class="total-bill-equal"></div>
+                  <div class="total-bill-equal"></div> -->
+            </div>
+            <div class="top-card text-center">
+              <div *ngIf="myBillingSummary != undefined && myBillingSummary.outstandingAmount > 0"
+                class="total-due-header">Total Outstanding</div>
+              <div *ngIf="myBillingSummary != undefined && myBillingSummary.outstandingAmount > 0" class="total-due">
+                {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{myBillingSummary.outstandingAmount | number: '1.2-2'}}</div>
+              <div *ngIf="myBillingSummary != undefined && myBillingSummary.outstandingAmount < 0"
+                class="total-due-header-refund">Refund</div>
+              <div *ngIf="myBillingSummary != undefined && myBillingSummary.outstandingAmount < 0" class="total-refund">
+                {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{myBillingSummary.outstandingAmount | number: '1.2-2'}}</div>
+              <div *ngIf="myBillingSummary == undefined || myBillingSummary.outstandingAmount == 0"
+                class="total-due-header-refund">Total Outstanding</div>
+              <div *ngIf="myBillingSummary == undefined || myBillingSummary.outstandingAmount == 0"
+                class="total-refund">NIL</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="card margin-card">
+      <div class="card-header no-btm-border">
+        <h5>Billing History</h5>
+      </div>
+      <div class="card-body table-responsive no-btm-border">
+        <table class="table bill-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Amount</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let history of myBillingHistory">
+              <td>{{history.generationDate | date:'dd-MM-yyyy' }}</td>
+              <td> {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{history.paymentAmount | number:'2.2-2'}}</td>
+              <td>
+                <span *ngIf="history.paymentStatus=='P'" class="badge badge-success">Paid</span>
+                <span *ngIf="history.paymentStatus=='U'" class="badge badge-warning">Due</span>
+              </td>
+            </tr>
+            <tr *ngIf="myBillingHistory.length ==0">
+              <td class="not-found text-center" colspan="3">No Record Found</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card row.no-margin-btm">
+      <div class="card-header no-btm-border">
+        <h5>Payment History</h5>
+      </div>
+      <div class="card-body table-responsive no-btm-border">
+        <table class="table bill-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Amount</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            <tr>
+              <td class="not-found text-center" colspan="3">No Record Found</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="row">
+  <div class="col-lg-12">
+    <!-- <div class="container billing-header" *ngIf="myBillingPlan!=null">
+      <div class="row">
+        <div class="col-lg-10">
+          <div class="row">
+            <div class="col-lg-3">
+              {{'BILLING.BILLING_PERIOD' | translate}}
+            </div>
+            <div class="col-lg-9">
+              <div class="btn-group dateNextPrev">
+                <div class="btn" (click)="goToPreviousDate()">
+                  &lt;&lt; </div>
+                <label style="padding: 2px">
+                  <ng-container *ngIf="billingCycle=='Month'">
+                    {{billingMonth}}, {{billingYear}}
+                  </ng-container>
+                  <ng-container *ngIf="billingCycle!='Month'">
+                    {{viewDate | date :'mediumDate'}}
+                  </ng-container>
+                </label>
+                <div class="btn" (click)="goToNextDate()">
+                  &gt;&gt;
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-3">
+              {{'BILLING.BILLING_PLAN' | translate}}
+            </div>
+            <div class="col-lg-9">
+              {{myBillingPlan.displayName}}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-3">
+              {{'BILLING.PLAN_DETAILS' | translate}}
+            </div>
+            <div class="col-lg-9">
+              <ng-container *ngFor="let details of myBillingPlan.billingPlanDetails">
+                <strong><u> {{details.baseUnit}} </u></strong>
+                <div *ngIf="details.slabRateFlag=='Y'">
+                  <div *ngFor="let slab of details.billingSlabList">
+                      {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{slab.rateText}}
+                  </div>
+                </div>
+                <div *ngIf="details.slabRateFlag=='N'">
+                        {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{details.rateText}}
+                  </div>
+              </ng-container>
+
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-3">
+              {{'BILLING.BILL_STATUS' | translate}}
+            </div>
+            <div class="col-lg-9">
+              <span *ngIf="myBill == null" class="not-found">Bill not generated</span>
+              <ng-container *ngIf="myBill != null">
+                <span *ngIf="myBill.paymentStatus == null" class="found">Bill generated</span>
+              </ng-container>
+            </div>
+
+
+          </div>
+        </div>
+        <div class="col-lg-2 text-right">
+          <a *ngIf="myBill != null" href="javascript:void(0);" (click)="generateMyBill()">
+            <img ngbTooltip="Download Bill" container="body" src="../../../assets/image/download.svg" height="15" class="cursor" />
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-12 text-right" *ngIf="myBill != null">
+
+        <input type="checkbox" (click)="toggleSummaryView($event)"> {{'BILLING.SUMMARY_VIEW' | translate}}
+      </div>
+    </div> -->
+
+  </div>
+</div>

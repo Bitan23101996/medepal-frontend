@@ -1,0 +1,221 @@
+<div class="row top-btn-area deliver-address-display-action-button-hide">
+  <div class="col-8"></div>
+  <!-- <div class="delivary-address-button col-2">
+    <button class="btn btn-primary" (click)="downloadFile()">{{'MY_ORDER.DOWNLOAD_INVOICE' | translate}}</button>
+  </div> -->
+  <div class="my-order-details-back-button col-2">
+    <button class="btn btn-small btn-primary"
+      (click)="backOperation()">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_BACK_BUTTON' | translate}}</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-12 deliver-address-display-action-button-show">
+    <div class="row text-right padding-bottom16px">
+      <div class="col-5 col-xs-8 col-sm-8 col-md-8 col-lg-9 pr-0">
+        <button class="btn btn-small btn-primary"
+          (click)="backOperation()">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_BACK_BUTTON' | translate}}</button>
+      </div>
+      <div class="col-7 col-xs-4 col-sm-4 col-md-4">
+        <button class="btn btn-primary" (click)="downloadFile()">{{'MY_ORDER.DOWNLOAD_INVOICE' | translate}}</button>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 gridHeight">
+    <div class="small-size-hide">
+      <div class="col-md-12 border padding10">
+        <div class="row">
+          <div class="col-5">
+            <h6>{{'ORDER_MEDICINE.GRID_HEADER_MEDICINE_LEBEL_NAME' | translate}}</h6>
+          </div>
+          <div class="col-3 text-center">
+            <h6>{{'ORDER_MEDICINE.GRID_HEADER_QUANTITY_LEBEL_NAME' | translate}}</h6>
+          </div>
+          <div class="col-4 text-right pr-5">
+            <h6>{{'ORDER_MEDICINE.GRID_HEADER_TOTAL_PRICE_LEBEL_NAME' | translate}}</h6>
+          </div>
+        </div>
+      </div><br>
+      <!--Data-->
+      <div class="border">
+        <div class="col-md-12 padding13" *ngFor="let myMedicine of myOrderDetails.orderMedicineDetails; let i = index"
+          [attr.data-index]="i">
+          <div class="row margin-bottom-17px">
+            <div class="col-5">
+              <div class="row padding-left14px">
+                <span class="order-med-name textDot width85">{{myMedicine.medicine}}</span>
+                <!-- &nbsp;&nbsp;&nbsp;<label class="margin-bottom-0" *ngIf="medicine.prescriptionRequired" title="prescription required"><i class="fas fa-file-medical"></i></label> -->
+              </div>
+              <div class="row padding-left14px">
+                <span>by {{myMedicine.brandName}}</span>
+              </div>
+              <span>
+                {{myMedicine.product_package}}
+              </span>
+            </div>
+            <!-- <div class="col-md-3 text-center">
+                <p class="padding-top24px padding-left10px">{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{myMedicine.netAmount}}</p>
+              </div> -->
+            <div class="col-3 text-center">
+              <!-- <input class="padding-top24px width-40px" type="number" (input)="updatePrice($event,medicine,i)" min="1" name="medicineQuantity"
+                  [(ngModel)]="medicine.medicineQuantity" (click)="updatePrice($event,medicine,i)"
+                  (keyUp)="updatePrice($event,medicine,i)" /> -->
+              <p class="padding-top24px">{{myMedicine.numUnits}}</p>
+            </div>
+            <div class="col-4 text-right pr-5 mt-4">
+              <p>{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{myMedicine.netAmount}}</p>
+            </div>
+            <!-- <div class="col-md-1">
+                <label class="padding-top24px" ngbTooltip="Delete Medicine" (click)="updatePriceAndCart(medicine,i)"><i class="fas fa-trash-alt cursor"></i></label>
+              </div>&nbsp;&nbsp; -->
+          </div>
+        </div><br>
+      </div>
+    </div>
+    <div class="small-size-show">
+      <div class="border">
+        <div class="col-md-12 padding13" *ngFor="let myMedicine of myOrderDetails.orderMedicineDetails; let i = index"
+          [attr.data-index]="i">
+          <div class="row pb-2">
+            <div class="col-5">
+              <h6 class="small-header mt-1">{{'ORDER_MEDICINE.GRID_HEADER_MEDICINE_LEBEL_NAME' | translate}}</h6>
+            </div>
+            <div class="col-7">
+              <div class="row padding-left14px">
+                <span class="order-med-name">{{myMedicine.medicine}}</span>
+                <!-- &nbsp;&nbsp;&nbsp;<label class="margin-bottom-0" *ngIf="medicine.prescriptionRequired" title="prescription required"><i class="fas fa-file-medical"></i></label> -->
+              </div>
+              <div class="row padding-left14px">
+                <span>by {{myMedicine.brandName}}</span>
+              </div>
+              <span>
+                {{myMedicine.product_package}}
+              </span>
+            </div>
+          </div>
+          <div class="row pb-2">
+            <div class="col-5">
+              <h6 class="small-header">{{'ORDER_MEDICINE.GRID_HEADER_QUANTITY_LEBEL_NAME' | translate}}</h6>
+            </div>
+            <div class="col-7 text-right pr-4">
+              <p>{{myMedicine.numUnits}}</p>
+            </div>
+          </div>
+          <div class="row pb-2">
+            <div class="col-5">
+              <h6 class="small-header">{{'ORDER_MEDICINE.GRID_HEADER_TOTAL_PRICE_LEBEL_NAME' | translate}}</h6>
+            </div>
+            <div class="col-7 text-right pr-4">
+              <p>{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{myMedicine.netAmount}}</p>
+            </div>
+          </div>
+          <hr class="mt-0 mb-0">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 min-height168px margin-top10px">
+    <div class="col-lg-12 padding20 min-height156px border">
+      <div class="row">
+        <div class="col-7">
+          <p class="font-size-larger"><b>{{'MY_ORDER.ORDER_ID_LEBEL_NAME' | translate}} :</b></p>
+        </div>
+        <div class="col-5">
+          <p class="float-right">{{myOrderDetails.pharmacyOrderRefNo}}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-7">
+          <p class="font-size-larger"><b>{{'MY_ORDER.ORDER_DATE_LEBEL_NAME' | translate}} :</b></p>
+        </div>
+        <div class="col-5">
+          <p class="float-right">{{myOrderDetails.orderDate | dateFormat}}</p>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-7">
+          <p class="font-size-larger"><b>{{'ORDER_MEDICINE.SUBTOTAL_LEBEL_NAME' | translate}}
+              ({{myOrderDetails.orderMedicineDetails?.length}} {{'ORDER_MEDICINE.ITEM_LEBEL_NAME' | translate}}
+              <ng-container *ngIf="myOrderDetails.orderMedicineDetails?.length>1">s</ng-container>): </b></p>
+        </div>
+        <div class="col-5 padding-top4px">
+          <p class="float-right">{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{myOrderDetails.grossAmount}}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-7">
+          <p class="font-size-larger"><b>{{'ORDER_MEDICINE.DELIVERY_CHARGE' | translate}}</b></p>
+        </div>
+        <div class="col-5 padding-top4px">
+          <p class="float-right">{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{myOrderDetails.deliveryCharge}}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-7">
+          <p class="font-size-larger"><b>{{'ORDER_MEDICINE.TAX' | translate}}</b></p>
+        </div>
+        <div class="col-5 padding-top4px">
+          <p class="float-right">{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{myOrderDetails.tax}}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-7">
+          <p class="font-size-larger"><b>{{'ORDER_MEDICINE.DISCOUNT' | translate}}</b></p>
+        </div>
+        <div class="col-5 padding-top4px">
+          <p class="float-right">{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{myOrderDetails.discount}}</p>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-7">
+          <p class="font-size-larger"><b>{{'ORDER_MEDICINE.GRAND_TOTAL' | translate}}</b></p>
+        </div>
+        <div class="col-5 padding-top4px">
+          <p class="float-right">{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{myOrderDetails.totalAmount}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+<div class="row">
+  <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12">
+    <div class="border">
+      <p-steps [model]="orderStateList" [readonly]="true" [(activeIndex)]="activeIndex"
+        styleClass="steps-custom-for-order-details" let>
+      </p-steps>
+    </div>
+  </div>
+  <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 page-content">
+    <div class="card">
+      <div class="card-header">
+        <label>Receipt and Invoice</label>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-12 text-right">
+            <div class="padding10" style="float: right;">
+              <img [src]="transform(downloadedFile?.imgSrc)" height="50px" width="50px" class="cursor border p-1 mr-1"
+                (click)="openImageInNewTab(downloadedFile?.imgSrc)"
+                *ngIf="downloadedFile?.contentType != 'application/pdf' && downloadedFile" />
+              <img *ngIf="downloadedFile?.contentType == 'application/pdf' && downloadedFile" height="50px" width="50px"
+                class="cursor border pt-1 pb-1 mr-1" (click)="openPdf(downloadedFile?.imgSrc)" src="assets/image/pdf.svg" />
+              <label *ngIf="downloadedFile" style="padding-right: 5px;margin-top: -10px;">Invoice</label>
+            </div>
+            <div class="padding10">
+              <img [src]="transform(downloadOrderInvoice?.downloadImageSrc)" height="50px" width="50px"
+                class="cursor border p-1 mr-1" (click)="openImageInNewTab(downloadOrderInvoice?.downloadImageSrc)"
+                *ngIf="downloadOrderInvoice.contentType != 'application/pdf'" />
+              <img *ngIf="downloadOrderInvoice.contentType == 'application/pdf'"
+                height="50px" width="50px" class="cursor border pt-1 pb-1 mr-1"
+                (click)="openPdf(downloadOrderInvoice?.downloadImageSrc)" src="assets/image/pdf.svg" />
+              <label [ngStyle]="downloadedFile ? {'padding-right': '67px'} : {'padding-right': '11px'}"
+                *ngIf="downloadOrderInvoice.contentType != ''" style="margin-top: -10px;">Reciept</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

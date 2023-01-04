@@ -1,0 +1,592 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+
+
+          <ngb-tabset #tab="ngbTabset" *ngIf="userProfile" (tabChange)="onTabChange($event)">
+              <ngb-tab [disabled]="disabledTab['tab-personal']" id="tab-personal" title="{{ 'USER_PROFILE.USER_PROFILE_PERSONAL_DATA' | translate }}">
+                <ng-template ngbTabContent>
+                    <form [formGroup]="userProfile" class="form-signin">
+                        <div class="row">
+                          <div class="col-sm-2 text-center">
+                              <div *ngIf="progress.percentage>0" class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" attr.aria-valuenow="{{progress.percentage}}"
+                              aria-valuemin="0" aria-valuemax="100" [ngStyle]="{width:progress.percentage+'%'}">
+                              {{progress.percentage}}%</div>
+                            <img *ngIf="profileImageSrc ==''" src="../../../../../assets/image/user.png" width="150" class="rounded" alt="...">
+                            <img *ngIf="profileImageSrc !=''" [src]="domSanitizer.bypassSecurityTrustUrl(profileImageSrc)" width="150" class="rounded" alt="...">
+                            <input type="file" accept="image/*" [hidden]="true" id="profilePhoto" (change)="selectFile($event)" >
+                            <label class="btn btn-success" *ngIf="progress.percentage>0">Upload</label>
+                            <label class="btn btn-success" *ngIf="!progress.percentage>0" for="profilePhoto">Upload</label>
+                          </div>
+                          <div class="col-sm-10">
+                            <div class="col-md-2 pr-1">
+                              <div class="form-group">
+                                <label>{{ 'USER_PROFILE.USER_PROFILE_NAME_LABEL' | translate }}</label>
+                                <input type="text" class="form-control" (keyup)="replaceNumber(userProfile.value)" name="firstName" placeholder="{{ 'USER_PROFILE.USER_PROFILE_NAME_PLACEHOLDER' | translate }}" formControlName="firstName" required="" autofocus="" />
+                                <span *ngIf="userProfileubmitted && lControls.firstName.errors">
+                                  <span *ngIf="lControls.firstName.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                  <span *ngIf="lControls.firstName.errors.minlength" class="validation-error">{{ 'VALIDATION.VALIDATION_FIRST_NAME_NOT_LESS_THAN' | translate }}</span>
+                                  <span *ngIf="lControls.firstName.errors.maxlength" class="validation-error">{{ 'VALIDATION.VALIDATION_FIRST_NAME_NOT_MORE_THAN' | translate }}</span>
+                                  <span *ngIf="lControls.firstName.errors.pattern" class="validation-error">{{ 'VALIDATION.VALIDATION_ONLY_LETTER' | translate }}</span>
+                               </span>
+                              </div>
+                            </div>
+                        <!-- <div class="col-md-2 pr-1">
+                        <div class="form-group">
+                        <label>{{ 'USER_PROFILE.USER_PROFILE_LAST_NAME_LABEL' | translate }}</label>
+                        <input type="text" class="form-control" name="lname" placeholder="{{ 'USER_PROFILE.USER_PROFILE_LAST_NAME_PLACEHOLDER' | translate }}" formControlName="lastName" required="" autofocus="" />
+                        <span *ngIf="userProfileubmitted && lControls.lastName.errors">
+                          <span *ngIf="lControls.lastName.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                          <span *ngIf="lControls.lastName.errors.minlength" class="validation-error">{{ 'VALIDATION.VALIDATION_LAST_NAME_NOT_LESS_THAN' | translate }}</span>
+                          <span *ngIf="lControls.lastName.errors.maxlength" class="validation-error">{{ 'VALIDATION.VALIDATION_LAST_NAME_NOT_MORE_THAN' | translate }}</span>
+                       </span>
+                      </div>
+                    </div> -->
+
+                    <div class="col-md-2 pr-1">
+                      <div class="form-group">
+                        <label for="">{{ 'USER_PROFILE.USER_PROFILE_GENDER' | translate }}</label>
+                        <select id="gender" name="gender" class="form-control" formControlName="gender">
+                          <option *ngFor="let gender of masterGender" value="{{gender.attributeValue}}">{{gender.displayValue}}</option>
+                        </select>
+                        <span *ngIf="userProfileubmitted && lControls.gender.errors">
+                          <span *ngIf="lControls.gender.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                       </span>
+                      </div>
+                    </div>
+
+                    <div class="col-md-2 pr-1">
+                        <div class="form-group">
+                      <label>{{ 'USER_PROFILE.USER_PROFILE_DOB' | translate }}</label>
+                      <input type="text" placeholder="Date of birth" class="form-control" bsDatepicker [bsConfig]="{ dateInputFormat: dateFormat }" formControlName="dateOfBirth">
+                      <!-- <input type="date" [value]="userProfile.get('dateOfBirth').value | dateFormat" data-date-format="DD-MM-YYYY" (ngModelChange)="userProfile.get('dateOfBirth').value=$event" class="form-control"  formControlName="dateOfBirth"/> -->
+                      <span *ngIf="userProfileubmitted && lControls.dateOfBirth.errors">
+                        <span *ngIf="lControls.dateOfBirth.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                     </span>
+                     </div>
+                    </div>
+
+                    <div class="col-md-2 pr-1">
+                      <div class="form-group">
+                          <label>{{ 'USER_PROFILE.USER_PROFILE_CONTACTNO' | translate }}</label>
+                          <input type="number" min="0" minlength="10" maxlength="10" oninput="validity.valid||(value='');" class="form-control"  formControlName="contactNo" required="" autofocus="" />
+                          <span *ngIf="userProfileubmitted && lControls.contactNo.errors">
+                            <span *ngIf="lControls.contactNo.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                            <span *ngIf="lControls.contactNo.errors.pattern"  class="validation-error">{{ 'VALIDATION.VALIDATION_NUMBER' | translate }}</span>
+                         </span>
+                      </div>
+                    </div>
+
+                    <div class="col-md-2 pr-1">
+                        <div class="form-group">
+                            <label>{{ 'USER_PROFILE.USER_PROFILE_MARITAL_STATUS' | translate }}</label>
+                            <select id="maritalstatus" name="maritalstatus" class="form-control" formControlName="maritialStatus">
+                              <option value="Married">{{ 'USER_PROFILE.USER_PROFILE_MARITAL_STATUS_VALUE1' | translate }}</option>
+                              <option value="Unmarried">{{ 'USER_PROFILE.USER_PROFILE_MARITAL_STATUS_VALUE2' | translate }}</option>
+                            </select>
+                            <span *ngIf="userProfileubmitted && lControls.maritialStatus.errors">
+                              <span *ngIf="lControls.maritialStatus.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                           </span>
+                          </div>
+                    </div>
+
+                    <div class="col-md-2 pr-1">
+                      <div class="form-group">
+                          <label>{{ 'USER_PROFILE.USER_PROFILE_PHYSICALDATA_HEIGHT' | translate }}</label>
+                          <input type="number" min="1" minlength="1" max="400" oninput="validity.valid||(value='');" class="form-control" name="height" placeholder="{{ 'USER_PROFILE.USER_PROFILE_PHYSICALDATA_HEIGHT' | translate }}" formControlName="height" required="" autofocus="" />
+                          <span *ngIf="userProfileubmitted && lControls.height.errors">
+                            <span *ngIf="lControls.height.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                            <span *ngIf="lControls.height.errors.pattern" class="validation-error">{{ 'VALIDATION.VALIDATION_HEIGHT_NUMERIC_VALUE' | translate }}</span>
+                            <span *ngIf="lControls.height.errors.maxlength" class="validation-error">{{ 'VALIDATION.VALIDATION_HEIGHT_CHARECTER_LENGTH' | translate }}</span>
+                          </span>
+                      </div>
+                    </div>
+                    <div class="col-md-2 pr-1">
+                      <div class="form-group">
+                          <label>{{ 'USER_PROFILE.USER_PROFILE_PHYSICALDATA_WEIGHT' | translate }}</label>
+                          <input type="number" min="1" max="200" oninput="validity.valid||(value='');" class="form-control" name="weight" placeholder="{{ 'USER_PROFILE.USER_PROFILE_PHYSICALDATA_WEIGHT' | translate }}" formControlName="weight" required="" autofocus="" />
+                          <span *ngIf="userProfileubmitted && lControls.weight.errors">
+                            <span *ngIf="lControls.weight.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                            <span *ngIf="lControls.weight.errors.pattern" class="validation-error">{{ 'VALIDATION.VALIDATION_WEIGHT_NUMERIC_VALUE' | translate }}</span>
+                            <span *ngIf="lControls.weight.errors.maxlength" class="validation-error">{{ 'VALIDATION.VALIDATION_WEIGHT_CHARECTER_LENGTH' | translate }}</span>
+                            </span>
+                      </div>
+                      </div>
+                      <div class="col-md-4 pr-1">
+                          <div class="form-group">
+                      <label>{{ 'USER_PROFILE.USER_PROFILE_EMAIL_LABEL' | translate }}</label>
+                      <input type="email" class="form-control" name="email" placeholder="{{ 'USER_PROFILE.USER_PROFILE_EMAIL_PLACEHOLDER' | translate }}" formControlName="emailAddress" autofocus="" />
+                      <span *ngIf="userProfileubmitted && lControls.emailAddress.errors">
+                        <span *ngIf="lControls.emailAddress.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                        <span *ngIf="lControls.emailAddress.errors.pattern"  class="validation-error">{{ 'VALIDATION.VALIDATION_EMAIL' | translate }}</span>
+                     </span>
+                     </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12 text-right">
+                    <button class="btn btn-sm btn-primary float-left" type="button" (click)="backClicked()"><i class="fas fa-chevron-left">&nbsp;</i>{{ 'MAIN.MAIN_BACK_BUTTON' | translate }}</button>
+                    <button class="btn btn-sm btn-primary" type="button" (click)="profileSubmit(userProfile.value)">{{ 'USER_PROFILE.USER_PROFILE_SAVE_PROFILE' | translate }}</button>
+                  </div>
+                </div>
+              </form>
+              </ng-template>
+              </ngb-tab>
+
+              <ngb-tab [disabled]="disabledTab['tab-address']" id="tab-address" title="{{ 'USER_PROFILE.USER_PROFILE_ADDRESS' | translate }}">
+                <ng-template ngbTabContent>
+                    <form [formGroup]="addressForm" class="form-signin">
+                      <div class="row">
+                        <div class="col-md-2 pr-1">
+                          <div class="form-group">
+                              <label>{{ 'USER_PROFILE.USER_PROFILE_ADDRESS_TYPE' | translate }}</label>
+                              <select id="address-type" name="address-type" class="form-control" formControlName="addressType" (change)="createNewAddressType($event,'create-Address-type-modal')">
+                                <option *ngFor="let addressType of addressTypeList" value="{{addressType.Type}}" class="cursor"> {{addressType.Type}}</option>
+                                <!-- <option *ngIf="addressT" value="{{addressT}}">{{addressT}}</option> -->
+                                <!-- <option value="Home" class="cursor"> {{ 'USER_PROFILE.USER_PROFILE_ADDRESS_TYPE_ONE' | translate }}</option>
+                                <option value="Office" class="cursor"> {{ 'USER_PROFILE.USER_PROFILE_ADDRESS_TYPE_TWO' | translate }}</option>
+                                <option value="Create" class="cursor"> {{ 'USER_PROFILE.USER_PROFILE_ADDRESS_TYPE_THREE' | translate }}</option>  -->
+                              </select>
+                              <span *ngIf="addressSubmitted && adrsControls.addressType.errors">
+                                  <span *ngIf="adrsControls.addressType.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                              </span>
+                          </div>
+                        </div>
+                        <div class="col-md-2 pr-1">
+                          <div class="form-group">
+                              <label>{{ 'USER_PROFILE.USER_PROFILE_ADDRESS_LINE1_LABEL' | translate }}</label>
+                              <input type="text" class="form-control" name="line1" placeholder="{{ 'USER_PROFILE.USER_PROFILE_ADDRESS_LINE1_PLACEHOLDER' | translate }}"
+                               formControlName="line1" required="" autofocus="" />
+                              <span *ngIf="addressSubmitted && adrsControls.line1.errors">
+                                  <span *ngIf="adrsControls.line1.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                  <span *ngIf="adrsControls.line1.errors.minlength" class="validation-error">{{ 'VALIDATION.VALIDATION_ADDRESS_NOT_LESS_THAN' | translate }}</span>
+                                  <span *ngIf="adrsControls.line1.errors.maxlength" class="validation-error">{{ 'VALIDATION.VALIDATION_ADDRESS_NOT_MORE_THAN' | translate }}</span>
+                              </span>
+                          </div>
+                        </div>
+                        <div class="col-md-2 pr-1">
+                          <div class="form-group">
+                              <label>{{ 'USER_PROFILE.USER_PROFILE_ADDRESS_LINE2_LABEL' | translate }}</label>
+                              <input type="text" minlength="3" maxlength="100" class="form-control" name="Address" placeholder="{{ 'USER_PROFILE.USER_PROFILE_ADDRESS_LINE2_PLACEHOLDER' | translate }}" formControlName="line2" autofocus="" />
+                          </div>
+                        </div>
+                        <div class="col-md-2 pr-1">
+                          <div class="form-group">
+                              <label>{{ 'USER_PROFILE.USER_PROFILE_COUNTRY_LABEL' | translate }}</label>
+                              <select id="country" name="country" class="form-control" formControlName="country" (change)="getStateCasCadeToCounntry($event.target.value)">
+                                  <option value="">Select</option>
+                                  <option *ngFor="let country of masterCOUNTRY" value="{{country.countryName}}" class="cursor"> {{country.countryName}}</option>
+                                </select>
+                                <span *ngIf="addressSubmitted && adrsControls.country.errors">
+                                    <span *ngIf="adrsControls.country.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                </span>
+                          </div>
+                        </div>
+                        <div class="col-md-2 pr-1">
+                          <div class="form-group">
+                              <label>{{ 'USER_PROFILE.USER_PROFILE_STATE_LABEL' | translate }}</label>
+                              <select [attr.disabled]="masterSTATE.length>0 ?null:''" id="state" name="state" class="form-control" formControlName="state">
+                                <option value="">Select</option>
+                                  <option *ngFor="let state of masterSTATE" value="{{state.stateName}}">{{state.stateName}}</option>
+                                </select>
+                                <span *ngIf="addressSubmitted && adrsControls.state.errors">
+                                    <span *ngIf="adrsControls.state.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-2 pr-1">
+                          <div class="form-group">
+                            <label>{{ 'USER_PROFILE.USER_PROFILE_CITY_LABEL' | translate }}</label>
+                            <input type="text" class="form-control" name="city" placeholder="{{ 'USER_PROFILE.USER_PROFILE_CITY_PLACEHOLDER' | translate }}"
+                            formControlName="city" required="" autofocus="" />
+                            <span *ngIf="addressSubmitted && adrsControls.city.errors">
+                                <span *ngIf="adrsControls.city.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                <span *ngIf="adrsControls.city.errors.minlength" class="validation-error">{{ 'VALIDATION.VALIDATION_CITY_NOT_LESS_THAN' | translate }}</span>
+                              <span *ngIf="adrsControls.city.errors.maxlength" class="validation-error">{{ 'VALIDATION.VALIDATION_CITY_NOT_MORE_THAN' | translate }}</span>
+                            </span>
+                          </div>
+                        </div>
+                        <div class="col-md-2 pr-1">
+                          <div class="form-group">
+                              <label>{{ 'USER_PROFILE.USER_PROFILE_PINCODE_LABEL' | translate }}</label>
+                              <input (keyup)="validPincode(addressForm.value)" type="text" oninput="validity.valid||(value='');" class="form-control" name="pincode" placeholder="{{ 'USER_PROFILE.USER_PROFILE_PINCODE_PLACEHOLDER' | translate }}"
+                               formControlName="pinCode" required="" autofocus="" />
+                              <span *ngIf="addressSubmitted && adrsControls.pinCode.errors">
+                                  <span *ngIf="adrsControls.pinCode.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                  <span *ngIf="adrsControls.pinCode.errors.pattern" class="validation-error">{{ 'VALIDATION.VALIDATION_PINCODE_LENGTH' | translate }}</span>
+                              </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-12 text-right">
+                          <button class="btn btn-sm  btn-primary float-left" type="button" (click)="backClicked()"><i class="fas fa-chevron-left">&nbsp;</i>{{ 'MAIN.MAIN_BACK_BUTTON' | translate }}</button>
+                          <button class="btn btn-sm btn-primary" type="button" (click)="addNewAddress(addressForm.value)">{{ 'USER_PROFILE.USER_PROFILE_GO_ADD_ADDRESS' | translate }}</button>
+                        </div>
+                      </div>
+                      <!-- <ul class="list-group">
+                        <li class="list-group-item rounded-style-buttom">
+                          <div class="row">
+                            <div class="col-md-10">
+                                <label>{{ 'USER_PROFILE.USER_PROFILE_ADDRESS_TYPE' | translate }}</label>
+                                <select id="address-type" name="address-type" class="form-control" formControlName="addressType" (change)="createNewAddressType($event,'create-Address-type-modal')">
+                                  <option *ngFor="let addressType of addressTypeList" value="{{addressType.Type}}" class="cursor"> {{addressType.Type}}</option>
+                                  <option *ngIf="addressT" value="{{addressT}}">{{addressT}}</option>
+                                  <option value="Home" class="cursor"> {{ 'USER_PROFILE.USER_PROFILE_ADDRESS_TYPE_ONE' | translate }}</option>
+                                  <option value="Office" class="cursor"> {{ 'USER_PROFILE.USER_PROFILE_ADDRESS_TYPE_TWO' | translate }}</option>
+                                  <option value="Create" class="cursor"> {{ 'USER_PROFILE.USER_PROFILE_ADDRESS_TYPE_THREE' | translate }}</option>
+                                </select>
+                                <span *ngIf="addressSubmitted && adrsControls.addressType.errors">
+                                    <span *ngIf="adrsControls.addressType.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                </span>
+                            </div>
+                            <div class="col-md-2 update-button-style">
+                                <button class="btn btn-md btn-primary" type="button" (click)="addNewAddress(addressForm.value)">{{ 'USER_PROFILE.USER_PROFILE_GO_ADD_ADDRESS' | translate }}</button>
+                            </div>
+                          </div>
+                        </li>
+                        <br>
+                          <li class="list-group-item rounded-style-top">
+                              <label>{{ 'USER_PROFILE.USER_PROFILE_ADDRESS_LINE1_LABEL' | translate }}</label>
+                              <input type="text" class="form-control" name="line1" placeholder="{{ 'USER_PROFILE.USER_PROFILE_ADDRESS_LINE1_PLACEHOLDER' | translate }}"
+                               formControlName="line1" required="" autofocus="" />
+                              <span *ngIf="addressSubmitted && adrsControls.line1.errors">
+                                  <span *ngIf="adrsControls.line1.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                  <span *ngIf="adrsControls.line1.errors.minlength" class="validation-error">{{ 'VALIDATION.VALIDATION_ADDRESS_NOT_LESS_THAN' | translate }}</span>
+                                  <span *ngIf="adrsControls.line1.errors.maxlength" class="validation-error">{{ 'VALIDATION.VALIDATION_ADDRESS_NOT_MORE_THAN' | translate }}</span>
+                              </span>
+                            </li>
+                            <li class="list-group-item rounded-style-buttom">
+                              <label>{{ 'USER_PROFILE.USER_PROFILE_ADDRESS_LINE2_LABEL' | translate }}</label>
+                              <input type="text" minlength="3" maxlength="100" class="form-control" name="Address" placeholder="{{ 'USER_PROFILE.USER_PROFILE_ADDRESS_LINE2_PLACEHOLDER' | translate }}" formControlName="line2" autofocus="" />
+                            </li>
+                            <br>
+                            <li class="list-group-item rounded-style">
+                                <div class="form-group">
+                                <label>{{ 'USER_PROFILE.USER_PROFILE_COUNTRY_LABEL' | translate }}</label>
+                                <select id="country" name="country" class="form-control" formControlName="country" (change)="getStateCasCadeToCounntry($event.target.value)">
+                                    <option value="">Select</option>
+                                    <option *ngFor="let country of masterCOUNTRY" value="{{country.countryName}}" class="cursor"> {{country.countryName}}</option>
+                                  </select>
+                                  <span *ngIf="addressSubmitted && adrsControls.country.errors">
+                                      <span *ngIf="adrsControls.country.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                  </span>
+                                  </div>
+                            </li>
+                            <br>
+                            <li class="list-group-item rounded-style">
+                                <div class="form-group">
+                                <label>{{ 'USER_PROFILE.USER_PROFILE_STATE_LABEL' | translate }}</label>
+                                <select [attr.disabled]="masterSTATE.length>0 ?null:''" id="state" name="state" class="form-control" formControlName="state">
+                                  <option value="">Select</option>
+                                    <option *ngFor="let state of masterSTATE" value="{{state.stateName}}">{{state.stateName}}</option>
+                                  </select>
+                                  <span *ngIf="addressSubmitted && adrsControls.state.errors">
+                                      <span *ngIf="adrsControls.state.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                  </span>
+                                  </div>
+                            </li>
+                            <br>
+                            <li class="list-group-item rounded-style">
+                                <label>{{ 'USER_PROFILE.USER_PROFILE_CITY_LABEL' | translate }}</label>
+                                <input type="text" class="form-control" name="city" placeholder="{{ 'USER_PROFILE.USER_PROFILE_CITY_PLACEHOLDER' | translate }}"
+                                formControlName="city" required="" autofocus="" />
+                                <span *ngIf="addressSubmitted && adrsControls.city.errors">
+                                    <span *ngIf="adrsControls.city.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                    <span *ngIf="adrsControls.city.errors.minlength" class="validation-error">{{ 'VALIDATION.VALIDATION_CITY_NOT_LESS_THAN' | translate }}</span>
+                                  <span *ngIf="adrsControls.city.errors.maxlength" class="validation-error">{{ 'VALIDATION.VALIDATION_CITY_NOT_MORE_THAN' | translate }}</span>
+                                </span>
+                            </li>
+                            <br>
+                            <li class="list-group-item rounded-style">
+                              <label>{{ 'USER_PROFILE.USER_PROFILE_PINCODE_LABEL' | translate }}</label>
+                              <input type="number" class="form-control" name="pincode" placeholder="{{ 'USER_PROFILE.USER_PROFILE_PINCODE_PLACEHOLDER' | translate }}"
+                               formControlName="pinCode" required="" autofocus="" />
+                              <span *ngIf="addressSubmitted && adrsControls.pinCode.errors">
+                                  <span *ngIf="adrsControls.pinCode.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                  <span *ngIf="adrsControls.pinCode.errors.pattern" class="validation-error">{{ 'VALIDATION.VALIDATION_PINCODE_LENGTH' | translate }}</span>
+                              </span>
+                            </li>
+                            <br>
+                            <li class="list-group-item rounded-style-buttom">
+                                <button class="btn btn-lg btn-primary btn-block" type="button" (click)="addNewAddress(addressForm.value)">{{ 'USER_PROFILE.USER_PROFILE_GO_ADD_ADDRESS' | translate }}</button>
+                            </li>
+                      </ul> -->
+                </form>
+                </ng-template>
+              </ngb-tab>
+
+              <ngb-tab [disabled]="disabledTab['tab-occupation']" id="tab-occupation" title="{{ 'USER_PROFILE.USER_PROFILE_OCCUPATION' | translate }}">
+                <ng-template ngbTabContent>
+                    <form [formGroup]="occupationForm" class="form-signin">
+                      <div class="row">
+                        <div class="col-md-4 pr-1">
+                            <div class="form-group">
+                                <label for="">{{ 'USER_PROFILE.USER_PROFILE_OCCUPATION_NATURE_OF_JOB' | translate }}</label>
+                                <select id="natureofjob" name="natureofjob" class="form-control" formControlName="natureOfJob">
+                                  <option *ngFor="let job of natureOfJob" value="{{job}}">{{job}}</option>
+                                </select>
+                                <span *ngIf="occupationSubmitted && occupationControls.natureOfJob.errors">
+                                    <span *ngIf="occupationControls.natureOfJob.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                </span>
+                              </div>
+                        </div>
+                        <div class="col-md-4 pr-1">
+                            <div class="form-group">
+                                <label for="">{{ 'USER_PROFILE.USER_PROFILE_OCCUPATION_TYPE_OF_JOB' | translate }}</label>
+                                <input type="text" class="form-control" name="typeofjob"
+                                 placeholder="{{ 'USER_PROFILE.USER_PROFILE_OCCUPATION_TYPE_OF_JOB' | translate }}" formControlName="typeOfJob" required="" autofocus="" />
+                                <span *ngIf="occupationSubmitted && occupationControls.typeOfJob.errors">
+                                    <span *ngIf="occupationControls.typeOfJob.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                    <span *ngIf="occupationControls.typeOfJob.errors.minlength" class="validation-error">{{ 'VALIDATION.VALIDATION_TYPE_OF_JOB_MIN_LENGTH' | translate }}</span>
+                                    <span *ngIf="occupationControls.typeOfJob.errors.maxlength" class="validation-error">{{ 'VALIDATION.VALIDATION_TYPE_OF_JOB_MAX_LENGTH' | translate }}</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 pr-1">
+                            <div class="form-group">
+                                <label for="">{{ 'USER_PROFILE.USER_PROFILE_OCCUPATION_WORKING_HOURS' | translate }}</label>
+                                <input type="number" min=1 oninput="validity.valid||(value='');" max="24" class="form-control" name="workinghours"
+                                 placeholder="{{ 'USER_PROFILE.USER_PROFILE_OCCUPATION_WORKING_HOURS' | translate }}" formControlName="workingHours" required="" autofocus="" />
+                                <span *ngIf="occupationSubmitted && occupationControls.workingHours.errors">
+                                    <span *ngIf="occupationControls.workingHours.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                </span>
+                              </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-sm-12 text-right">
+                            <button class="btn btn-sm  btn-primary float-left" type="button" (click)="backClicked()"><i class="fas fa-chevron-left">&nbsp;</i>{{ 'MAIN.MAIN_BACK_BUTTON' | translate }}</button>
+                            <button class="btn btn-sm btn-primary" type="button" (click)="saveOccupation(occupationForm.value)">{{ 'USER_PROFILE.USER_PROFILE_GO_ADD_OCCUPATION' | translate }}</button>
+                          </div>
+                      </div>
+                    <!-- <ul class="list-group">
+                      <li class="list-group-item rounded-style-buttom">
+                          <div class="form-group">
+                            <label for="">{{ 'USER_PROFILE.USER_PROFILE_OCCUPATION_NATURE_OF_JOB' | translate }}</label>
+                            <select id="natureofjob" name="natureofjob" class="form-control" formControlName="natureOfJob">
+                              <option *ngFor="let job of natureOfJob" value="{{job}}">{{job}}</option>
+                            </select>
+                            <span *ngIf="occupationSubmitted && occupationControls.natureOfJob.errors">
+                                <span *ngIf="occupationControls.natureOfJob.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                            </span>
+                          </div>
+                        </li>
+                        <br>
+                      <li class="list-group-item rounded-style">
+                          <div class="form-group">
+                              <input type="text" class="form-control" name="typeofjob"
+                               placeholder="{{ 'USER_PROFILE.USER_PROFILE_OCCUPATION_TYPE_OF_JOB' | translate }}" formControlName="typeOfJob" required="" autofocus="" />
+                              <span *ngIf="occupationSubmitted && occupationControls.typeOfJob.errors">
+                                  <span *ngIf="occupationControls.typeOfJob.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                  <span *ngIf="occupationControls.typeOfJob.errors.minlength" class="validation-error">{{ 'VALIDATION.VALIDATION_TYPE_OF_JOB_MIN_LENGTH' | translate }}</span>
+                                  <span *ngIf="occupationControls.typeOfJob.errors.maxlength" class="validation-error">{{ 'VALIDATION.VALIDATION_TYPE_OF_JOB_MAX_LENGTH' | translate }}</span>
+                              </span>
+                          </div>
+                        </li>
+                        <br>
+                          <li class="list-group-item rounded-style">
+                          <div class="form-group">
+                              <input type="number" min=1 oninput="validity.valid||(value='');" max="24" class="form-control" name="workinghours"
+                               placeholder="{{ 'USER_PROFILE.USER_PROFILE_OCCUPATION_WORKING_HOURS' | translate }}" formControlName="workingHours" required="" autofocus="" />
+                              <span *ngIf="occupationSubmitted && occupationControls.workingHours.errors">
+                                  <span *ngIf="occupationControls.workingHours.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                              </span>
+                            </div>
+                          </li>
+                          <br>
+                          <li class="list-group-item">
+                          <div class="form-group">
+                              <input type="text" class="form-control" name="sedentary Job" placeholder="{{ 'USER_PROFILE.USER_PROFILE_EXERCISE_REGIME_SEDENTARY_JOB' | translate }}"
+                                formControlName="sedentaryJob" required="" autofocus="" />
+                                <span *ngIf="occupationSubmitted && occupationControls.sedentaryJob.errors">
+                                    <span *ngIf="occupationControls.sedentaryJob.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                </span>
+                              </div>
+                        </li>
+                        <div class="row">
+                          <div class="col-md-3">
+                            <button class="btn btn-md btn-primary" type="button" (click)="saveOccupation(occupationForm.value)">{{ 'USER_PROFILE.USER_PROFILE_GO_ADD_OCCUPATION' | translate }}</button>
+                          </div>
+                        </div>
+                  </ul> -->
+                </form>
+                </ng-template>
+              </ngb-tab>
+              <ngb-tab [disabled]="disabledTab['tab-exercise']" id="tab-exercise" title="{{ 'USER_PROFILE.USER_PROFILE_EXERCISE_REGIME' | translate }}">
+                  <ng-template ngbTabContent>
+                  <form [formGroup]="exerciseForm" class="form-signin">
+                    <div class="row">
+                      <div class="col-md-6 pr-1">
+                          <div class="form-group">
+                              <label for="">{{ 'USER_PROFILE.USER_PROFILE_EXERCISE_NATURE_OF_EXERCISE_LABEL' | translate }}</label>
+                              <select id="natureOfExercise" name="natureOfExercise" class="form-control" formControlName="natureOfExercise">
+                                <option *ngFor="let exercise of masterEXERCISE" value="{{exercise.exerciseType}}">{{exercise.exerciseType}}</option>
+                              </select>
+                              <span *ngIf="exerciseSubmitted && exerciseControls.natureOfExercise.errors">
+                                  <span *ngIf="exerciseControls.natureOfExercise.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                              </span>
+                          </div>
+                      </div>
+                      <div class="col-md-6 pr-1">
+                          <div class="form-group">
+                              <label for="">{{ 'USER_PROFILE.USER_PROFILE_EXERCISE_EXERCISE_FREQUENCY_LABEL' | translate }} </label>
+                              <select id="exerciseFrequency" name="exerciseFrequency" class="form-control" formControlName="exerciseFrequency">
+                                <option value="Weekly">{{ 'USER_PROFILE.USER_PROFILE_EXERCISE_EXERCISE_FREQUENCY_WEEKLY_LABEL' | translate }}</option>
+                                <option value="Daily">{{ 'USER_PROFILE.USER_PROFILE_EXERCISE_EXERCISE_FREQUENCY_DAILY_LABEL' | translate }}</option>
+                              </select>
+                              <span *ngIf="exerciseSubmitted && exerciseControls.exerciseFrequency.errors">
+                                  <span *ngIf="exerciseControls.exerciseFrequency.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                              </span>
+                            </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 text-right">
+                          <button class="btn btn-sm  btn-primary float-left" type="button" (click)="backClicked()"><i class="fas fa-chevron-left">&nbsp;</i>{{ 'MAIN.MAIN_BACK_BUTTON' | translate }}</button>
+                          <button class="btn btn-sm btn-primary" type="button" (click)="saveMoreExercise(exerciseForm.value)">{{ 'USER_PROFILE.USER_PROFILE_GO_ADD_EXERCISE' | translate }}</button>
+                        </div>
+                    </div>
+                    <!-- <ul class="list-group">
+                        <li class="list-group-item" *ngIf="multiExercise.length==0">
+                            <div class="alert alert-warning">
+                               No exercise data found.
+                            </div>
+                          </li>
+                           <li class="list-group-item"  *ngIf="multiExercise.length > 0">
+                            <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Nature of exercise</th>
+                                    <th scope="col">Exercise hours</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr *ngFor="let exer of multiExercise">
+                                    <td>{{exer?.exerciseType}}</td>
+                                    <td>{{exer?.exerciseTime/60 | number }} hours</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                              <button class="btn btn-lg btn-primary btn-block" type="button" (click)="createExercise()">{{ 'USER_PROFILE.USER_PROFILE_GO_SUBMIT' | translate }}</button>
+                        </li>
+                        <li class="list-group-item rounded-style-buttom">
+                            <div class="form-group">
+                                <label for="">{{ 'USER_PROFILE.USER_PROFILE_EXERCISE_NATURE_OF_EXERCISE_LABEL' | translate }}</label>
+                                <select id="natureOfExercise" name="natureOfExercise" class="form-control" formControlName="natureOfExercise">
+                                  <option *ngFor="let exercise of masterEXERCISE" value="{{exercise.exerciseType}}">{{exercise.exerciseType}}</option>
+                                </select>
+                                <span *ngIf="exerciseSubmitted && exerciseControls.natureOfExercise.errors">
+                                    <span *ngIf="exerciseControls.natureOfExercise.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                </span>
+                            </div>
+                            <br>
+                              <div class="form-group">
+                                  <label for="">{{ 'USER_PROFILE.USER_PROFILE_EXERCISE_EXERCISE_FREQUENCY_LABEL' | translate }} </label>
+                                  <select id="exerciseFrequency" name="exerciseFrequency" class="form-control" formControlName="exerciseFrequency">
+                                    <option value="Weekly">{{ 'USER_PROFILE.USER_PROFILE_EXERCISE_EXERCISE_FREQUENCY_WEEKLY_LABEL' | translate }}</option>
+                                    <option value="Daily">{{ 'USER_PROFILE.USER_PROFILE_EXERCISE_EXERCISE_FREQUENCY_DAILY_LABEL' | translate }}</option>
+                                  </select>
+                                  <span *ngIf="exerciseSubmitted && exerciseControls.exerciseFrequency.errors">
+                                      <span *ngIf="exerciseControls.exerciseFrequency.errors.required"  class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                  </span>
+                                </div>
+                                <br>
+                          <div class="form-group">
+                            <label>{{ 'USER_PROFILE.USER_PROFILE_EXERCISE_REGIME_NATURE_OF_EXERCISE' | translate }}</label>
+                            <div ngbDropdown class="d-inline-block">
+                                <button class="btn btn-outline-primary"  name="natureOfExercise" ngbDropdownToggle>{{natureOfExercise?.id ? natureOfExercise?.exerciseType : 'Select' }}</button>
+                                <div ngbDropdownMenu aria-labelledby="dropdownBasic1" id="dropdownBasic1">
+                                  <button *ngFor="let exercise of masterEXERCISE" (click)="setExercise(exercise)" class="dropdown-item cursor">{{exercise.exerciseType}}</button>
+                                </div>
+                              </div>
+                          </div>
+                          div class="form-group">
+                            <label>{{ 'USER_PROFILE.USER_PROFILE_EXERCISE_HOURS' | translate }}</label>
+                              <ngb-timepicker *ngIf="isTimerReady" id="exerciseTime" name="exerciseTime" [(ngModel)]="exerciseTime" [ngModelOptions]="{standalone: true}"></ngb-timepicker>
+                             <input type="text" class="form-control" name="natureof job" placeholder="{{ 'USER_PROFILE.USER_PROFILE_EXERCISE_EXERCISE_TIME' | translate }}"
+                              formControlName="exerciseTime" required="" autofocus="" /> >
+                          </div>
+                        </li>
+                        <br>
+                        <div class="row">
+                          <div class="col-md-3">
+                              <button class="btn btn-md btn-primary" type="button" (click)="saveMoreExercise(exerciseForm.value)">{{ 'USER_PROFILE.USER_PROFILE_GO_ADD_EXERCISE' | translate }}</button>
+                          </div>
+                        </div>
+                    </ul> -->
+                  </form>
+                  </ng-template>
+                </ngb-tab>
+              <!-- <ngb-tab title="{{ 'USER_PROFILE.USER_PROFILE_MEDICAL_RECORDS' | translate }}">
+                <ng-template ngbTabContent>
+                  <ul class="list-group">
+                    <li class="list-group-item">
+                      <div class="form-group">
+                          <label for="">{{ 'USER_PROFILE.USER_PROFILE_EXERCISE_REGIME' | translate }}</label>
+                          <select id="exerciseregime" name="exerciseregime" class="form-control" formControlName="exerciseRegime">
+                            <option value="Less than 24hrs">{{ 'USER_PROFILE.USER_PROFILE_EXERCISE_REGIME_VALUE1' | translate }}</option>
+                            <option value="24hrs">{{ 'USER_PROFILE.USER_PROFILE_EXERCISE_REGIME_VALUE2' | translate }}</option>
+                            <option value="More than 24hrs">{{ 'USER_PROFILE.USER_PROFILE_EXERCISE_REGIME_VALUE3' | translate }}</option>
+                          </select>
+                        </div>
+                      <input type="text" class="form-control" name="natureofexercise" placeholder="{{ 'USER_PROFILE.USER_PROFILE_EXERCISE_REGIME_NATURE_OF_EXERCISE' | translate }}" formControlName="natureOfExercise" required="" autofocus="" />
+                      <input type="text" class="form-control" name="sedentaryjob" placeholder="{{ 'USER_PROFILE.USER_PROFILE_EXERCISE_REGIME_SEDENTARY_JOB' | translate }}" formControlName="sedentaryJob" required="" autofocus="" />
+                    </li>
+                    <br>
+                    <li class="list-group-item">
+                      <label>{{ 'USER_PROFILE.USER_PROFILE_MEDICAL_HISTORY' | translate }}</label>
+                      <select id="madicalhistory" name="madicalhistory" formControlName="madicalHistory" multiple class="form-control select_multi">
+                          <option value="a1">a1</option>
+                          <option value="a2">a2</option>
+                          <option value="a3">a3</option>
+                          <option value="a4">a4</option>
+                      </select>
+                      <label>{{ 'USER_PROFILE.USER_PROFILE_ANY_CHRONIC_DIEASE' | translate }}</label>
+                      <select id="anychronicdisease" name="anychronicdisease" formControlName="anyChronicDisease" multiple class="form-control select_multi">
+                          <option value="b1">b1</option>
+                          <option value="b2">b2</option>
+                          <option value="b3">b3</option>
+                          <option value="b4">b4</option>
+                      </select>
+                    </li>
+                    <li class="list-group-item">
+                      <label>{{ 'USER_PROFILE.USER_PROFILE_VACCINATION_HISTORY_LABEL' | translate }}</label>
+                      <input type="text" class="form-control" name="vaccinationhistory" placeholder="{{ 'USER_PROFILE.USER_PROFILE_VACCINATION_HISTORY_PLACEHOLDER' | translate }}" formControlName="vaccinationHistory" required="" autofocus="" />
+                    </li>
+                  </ul>
+                </ng-template>
+              </ngb-tab> -->
+            </ngb-tabset>
+
+
+
+
+  <jw-modal id="create-Address-type-modal">
+    <h1>{{ 'USER_PROFILE.USER_PROFILE_POPUP_NEW_ADDRESS_TYPE' | translate }}</h1>
+    <p>{{ 'USER_PROFILE.USER_PROFILE_POPUP_ADDRESS_TYPE' | translate }}<input type="text" [(ngModel)]="addressT" placeholder="{{ 'USER_PROFILE.USER_PROFILE_POPUP_PLACEHOLDER_ENTER_ADDRESS_TYPE' | translate }}" /></p>
+    <div class="row">
+      <div class="col-sm-2">
+        <button class="btn btn-default" (click)="createAddresType(addressT,'create-Address-type-modal');">{{ 'USER_PROFILE.USER_PROFILE_POPUP_SUBMIT' | translate }}</button>
+      </div>
+      <div class="col-sm-2">
+        <button class="btn btn-default" (click)="closeModal('create-Address-type-modal','withoutSave');">{{ 'USER_PROFILE.USER_PROFILE_POPUP_CLOSE' | translate }}</button>
+      </div>
+    </div>
+  </jw-modal>

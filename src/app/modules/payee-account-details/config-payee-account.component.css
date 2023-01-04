@@ -1,0 +1,9 @@
+.details-view {
+    border: 1px solid lightgray;
+    padding: 13px 9px 0px 9px;
+}
+.signature_design {
+    height: 46px;
+    width: 100%;
+    margin-bottom: 0px !important;
+}

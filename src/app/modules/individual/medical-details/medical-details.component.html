@@ -1,0 +1,283 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<div class="container">
+    <div class="row">
+      <div class="col-12 text-right margin-top-52px line-break-header-menu page-header-link">
+          <a href="javascript:void(0)" (click)="onMyGroupBtnClick('minor')">{{'COMMON.MINOR_BTN' | translate}}
+          </a>
+          <span *ngIf="!mygroupFlag">
+            &nbsp;&nbsp;<a href="javascript:void(0)" (click)="onMyGroupBtnClick('group')">{{'COMMON.MY_GROUP_BTN' | translate}}
+            </a>
+          </span>
+          <span *ngIf="mygroupFlag">
+            &nbsp;&nbsp;<a href="javascript:void(0)" (click)="onMyGroupBtnClick('my')">{{'COMMON.MY_SELF_BUTTON' | translate}}
+            </a>
+          </span>
+      </div>
+        <!-- <div class="col-xl-6 col-lg-4 col-md-4 col-sm-5"></div> -->
+        <!-- <div class="col-xl-9 col-lg-8 col-md-9 col-sm-8 text-right page-header-link">
+          <a href="javascript:void(0)" id="mem-myself" class="float-right margin-top-52px pr-0"
+            (click)="onMyGroupBtnClick('minor')"><img src="assets/image/minor.svg" height="18" alt="" />{{'COMMON.MINOR_BTN' | translate}}</a>
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-3 col-sm-4 page-header-link">
+          <a href="javascript:void(0)" *ngIf="!mygroupFlag" id="mem-group" class="float-right margin-top-52px pr-0"
+            (click)="onMyGroupBtnClick('group')"><img src="assets/image/group.svg" height="18"
+              alt="" />{{'COMMON.MY_GROUP_BTN' | translate}}</a>
+          <a href="javascript:void(0)" *ngIf="mygroupFlag" id="mem-myself" class="float-right margin-top-52px pr-0"
+            (click)="onMyGroupBtnClick('my')"><img src="assets/image/user.svg" height="18"
+            alt="" />{{'COMMON.MY_SELF_BUTTON' | translate}}</a>
+        </div> -->
+        <!-- <div class="col-lg-12 page-header-link">
+          <a href="javascript:void(0)" *ngIf="!mygroupFlag" id="mem-group" class="float-right med-det-link-custom-style "
+            (click)="onMyGroupBtnClick('group')"><img src="assets/image/group.svg" height="18"
+              alt="" />{{'COMMON.MY_GROUP_BTN' | translate}}</a>
+          <a href="javascript:void(0)" id="mem-myself" class="float-right med-det-link-custom-style-minor"
+            (click)="onMyGroupBtnClick('minor')"><img src="assets/image/minor.svg" height="18" alt="" />{{'COMMON.MINOR_BTN' | translate}}</a>
+          <a href="javascript:void(0)" *ngIf="mygroupFlag" id="mem-myself" class="float-right med-det-link-custom-style"
+            (click)="onMyGroupBtnClick('my')"><img src="assets/image/user.svg" height="18"
+            alt="" />{{'COMMON.MY_SELF_BUTTON' | translate}}</a>
+        </div> -->
+      </div>
+  
+  <div class="row">
+    <div class="col-lg-7">
+      <!-- <div class="row">
+        <button *ngIf="initialState" type="button" class="btn btn-sm btn-secondary" (click)="this.initialState = false;">Back</button>
+      </div> -->
+      <div *ngIf="mygroupFlag" class="row">
+        <span class="display-inline-block">{{'ADD_MEDICAL_RECORDS.HEALTH_DATA_FOR_LEBEL_NAME' | translate}}
+          <span>{{selectedGrpMemberName | uppercase }}</span></span>
+        <select class="display-inline-block" (change)="onChangeMyGroup($event)" class="med-det-username-drpdwn-custom-style">
+          <option *ngFor="let mygroup of myGroupUserNameArr" [value]="mygroup.userRefNo">{{mygroup.userName}}</option>
+        </select>
+      </div>
+      <div *ngIf="minorFlag">
+        <span class="display-inline-block">{{'ADD_MEDICAL_RECORDS.HEALTH_DATA_FOR_LEBEL_NAME' | translate}}
+          <span>{{selectedMinorMemberName | uppercase }}</span></span>&nbsp;&nbsp;
+        <select class="display-inline-block" (change)="onChangeMinor($event)" class="med-det-username-drpdwn-custom-style">
+          <option *ngFor="let minor of minorNamelist" [value]="minor.userRefNo">{{minor.forUserName}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-lg-5 text-right">
+      <button *ngIf="initialState && !logoOptionEnabled" type="button" class="btn btn-sm btn-primary" (click)="this.initialState = false;this.logoOptionEnabled = true;">Back</button>&nbsp;&nbsp;
+      <button class="btn btn-sm btn-primary float-right display-inline-block" type="button"
+        *ngIf="addMEdRecordBtnShowFlag" (click)="addMedicalRecords($event,'create-medical-records-modal')"
+        >{{
+        'USER_MEDICAL.USER_MEDICAL_ADD' | translate }}</button>
+      <!--class="addMedicalDetailBTN"-->
+    </div>
+  </div><br>
+  
+  <div *ngIf="!initialState && logoOptionEnabled" class="row page-content">
+    <div (click)="getMedicalRecordsByName(typeIcon)" style="padding-bottom: 25px;" class="col-6 col-xs-4 col-sm-3 col-md-2 col-lg-2 col-xl-1" *ngFor="let typeIcon of typeIconArr let i = index">
+      <div class="cursor content_logo_design">
+        <img id="logo_img" class="cursor" src="{{typeIcon.path}}" height="50px" alt="">
+        <div class="content_logo_label_div">
+          <label class="content_logo_label" for="logo_img">{{typeIcon.label}}</label>
+        </div>
+      </div>
+    </div>
+    <div (click)="getMedicalRecordsByName(typeIconForOther)" style="padding-bottom: 25px;" class="col-6 col-xs-4 col-sm-3 col-md-2 col-lg-2 col-xl-1">
+      <div class="cursor content_logo_design">
+        <p class="content_logo_design_for_other">OH</p>
+        <!-- <img id="logo_img" class="cursor" src="{{typeIcon.path}}" height="50px" alt=""> -->
+        <div class="content_logo_label_div_for_other">
+          <label class="content_logo_label" for="logo_img">Other</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="initialState && !logoOptionEnabled" class="row page-content">
+    <div *ngIf="widgets.length == 0" class="col-12 text-center"><!--<i class="fas fa-exclamation-circle not-found-icon">&nbsp;&nbsp;</i>-->
+      <!-- <p *ngIf="mygroupFlag && selectedGrpMemberName!=''">
+        {{'ADD_MEDICAL_RECORDS.NO_HEALTH_METRICS_SPECIFIED' | translate }}</p>
+      <p *ngIf="!mygroupFlag && selectedGrpMemberName==''">
+        {{'ADD_MEDICAL_RECORDS.NO_HEALTH_METRICS_SPECIFIED' | translate }}</p> -->
+      <p>{{'ADD_MEDICAL_RECORDS.NO_HEALTH_METRICS_SPECIFIED' | translate }}</p>
+    </div>
+    <ng-container *ngIf="widgets.length > 0">
+      <div class="col-md-6 col-lg-6 col-xl-4" *ngFor="let widget of widgets let i = index">
+        <div class="row card-body">
+          <div class="col-lg-12" id={{i}}>
+            <div class="card min-height-130px">
+              <div class="card-header">
+                <div class="row">
+                  <div class="col-lg-8 col-md-7 col-sm-9 col-7">
+                    <h5 class="health-matrics textDot-for-health-matrics-card-header"> {{widget.longName}}</h5>
+                  </div>
+                  <div class="col-lg-4 col-md-5 col-sm-3 col-5 text-right">
+
+                      <!-- <span class="spanT float-right iconsMedical"> -->
+                          <i ngbTooltip="Graph of Medical Data" class="fas fa-chart-line cursor"
+                            (click)="showHealthAttributeProgress(widget,'showChart')"></i>
+                         
+                          <span ngbTooltip="Update Medical Data"  class="table-action-btn edit cursor" *ngIf="addMEdRecordBtnShowFlag" (click)="openMedHistoryModalByEditIconClick(widget,'create-medical-records-modal')">
+                              <img src="assets/image/edit.svg" height="20" alt="">
+                            </span>
+        
+                          <i ngbTooltip="View Medical Data" class="far fa-eye cursor" *ngIf="!addMEdRecordBtnShowFlag"
+                            (click)="openMedHistoryModalByEditIconClick(widget,'create-medical-records-modal')"></i>
+        
+                        <!-- </span> -->
+                  </div>
+                </div>
+              </div>
+              <h5 class="card-title"><span [ngClass]="widget.color">{{widget.result}} &nbsp;</span>{{widget.unitName}}</h5><br>
+              <!-- <h5 class="card-title"><span>{{widget.result}}</span><i *ngIf="widget.color!='black'" [ngClass]="widget.color" class="fas fa-stroopwafel fa-spin"></i> {{widget.unitName}}</h5><br> -->
+              <small class="text-muted">
+                <h6 class="small">Last Measured On: {{widget.dateStr | dateFormat}}</h6>
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template id="createRecord" #createViewMedicalRecordsModal>
+  <div [hidden]="isEditable" class="modal-add-med-rec">
+	<div class="modal-header">
+        <h4 class="modal-title">{{ 'USER_MEDICAL_RECORDS.ADD_HEALTH_ATTRIBUTE' | translate }}</h4>
+        <button type="button" class="close" aria-label="close" (click)="modalRef.hide('cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+   </div>     
+    
+  </div>
+  <div [hidden]="!isEditable" class="modal-add-med-rec">
+    <!--Edit Medical Record Header-->
+	<div *ngIf="addMEdRecordBtnShowFlag" class="modal-header">
+        <h4 class="modal-title">{{'ADD_MEDICAL_RECORDS.EDIT_MEDICAL_RECORDS' | translate }}</h4>
+        <button type="button" class="close" aria-label="close" (click)="modalRef.hide('cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+   </div>
+   
+   <div *ngIf="!addMEdRecordBtnShowFlag" class="modal-header">
+        <h4 class="modal-title">{{ 'ADD_MEDICAL_RECORDS.VIEW_MEDICAL_RECORDS' | translate }}</h4>
+        <button type="button" class="close" aria-label="close" (click)="modalRef.hide('cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+   </div>
+  </div>
+  <div class="modal-body pb-0">
+	  <div [hidden]="isEditable">
+		  <p-dropdown  [options]="results"  [style]="{'width':'100%'}" [(ngModel)]="defaultmedDetAttr" name="defaultmedDetAttr" filterBy="label"
+			[filter]="true" (onChange)="onSelectEvent($event,results)"></p-dropdown>
+     </div>
+     <br/>
+  <form [formGroup]="addMedicalAttributeForm" class="med-det-custom-form-style">
+    <div class="row" formArrayName="attributeItems"
+      *ngFor="let item of addMedicalAttributeForm.get('attributeItems').controls; let i = index;">
+      <div [formGroupName]="i" class="add-med-rec-spacer">
+        <div class="col-lg-5 col-md-12 col-sm-12 col-12 add-med-rec-title pr-0">
+          <label title="{{item.get('attributeName').value}}">{{item.get('attributeName').value}}</label>
+        </div>
+        <div class="col-lg-2 col-md-5 col-sm-5 col-5 pl-1 pr-1 mt-1 margin-left11px">
+          <ng-container *ngIf="item.get('attributeBPSysId').value == ''">
+            <div [ngClass]="item.get('unit').value !=''?'float-left med-record-with-unit':'float-left med-record-without-unit'">
+              <input type="text" formControlName="value" placeholder="Value" class="med-det-input" required="" *ngIf="addMEdRecordBtnShowFlag"
+                (keypress)="numberOnly($event)" />
+                <span *ngIf="!addMEdRecordBtnShowFlag">{{item.get('attributeId').value}}</span>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="item.get('attributeBPSysId').value != ''">
+            <div class="float-left display-inline-block">
+              <input type="text" formControlName="valueOfSys" id="upper" placeholder="Upper" required="" *ngIf="addMEdRecordBtnShowFlag"
+                class="form-control small-width" (keypress)="numberOnly($event)">
+              <span *ngIf="!addMEdRecordBtnShowFlag">{{item.get('attributeBPSysId').value}}</span>
+            </div>
+            <div class="float-left ml-1 mr-1" *ngIf="item.get('attributeBPSysId').value != ''">/</div>
+            <div class="float-left display-inline-block">
+              <input type="text" class="small-width" formControlName="valueOfDia" placeholder="Lower" required="" *ngIf="addMEdRecordBtnShowFlag"
+                (keypress)="numberOnly($event)" />
+                <span *ngIf="!addMEdRecordBtnShowFlag">{{item.get('attributeBPDiaId').value}}</span>
+            </div>
+          </ng-container>
+          <div *ngIf="item.get('unit').value != ''" class="float-left">{{item.get('unit').value}}
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-6 col-sm-6 col-6 pr-0 pl-0 mt-1">
+          <select formControlName="source" class="form-control dropdown-style92" *ngIf="addMEdRecordBtnShowFlag">
+            <option *ngFor="let medDetSourceEl of sourceValues" placeholder="Source"
+              value="{{medDetSourceEl.displayValue}}">{{medDetSourceEl.displayValue}}</option>
+          </select>
+          <span *ngIf="!addMEdRecordBtnShowFlag">{{item.get('source').value}}</span>
+        </div>
+        <div [ngClass]="addMEdRecordBtnShowFlag? 'col-lg-2 col-md-9 col-sm-9 col-9 pl-3 pr-0 med-check': 'col-md-3 col-md-9 col-sm-9 col-9 pl-3 pr-0 med-check'"><!--class="col-md-1"-->
+          <app-datepicker *ngIf="addMEdRecordBtnShowFlag" [maxDate]="maxDate" formControlName="date" position="bottom" readonly></app-datepicker>
+          <!-- <input type="text" placeholder="Test Date" class="form-control date-med-records" *ngIf="addMEdRecordBtnShowFlag"
+            bsDatepicker [bsConfig]="{ dateInputFormat: dateFormat }" [maxDate]="maxDate" formControlName="date" readonly> -->
+            <!-- <ng-container *ngIf="addMEdRecordBtnShowFlag"><app-datepicker [maxDate]="maxDate" formControlName="date" position="bottom"></app-datepicker></ng-container> -->
+            <p *ngIf="!addMEdRecordBtnShowFlag">{{item.get('date').value | dateFormat}}</p>
+        </div>
+        <div class="text-left col-lg-1 col-md-3 col-sm-3 col-3 pl-0 pr-0 mt-1" *ngIf="addMEdRecordBtnShowFlag">
+         
+		  <span [hidden]="isEditable" ngbTooltip="Delete Medical Data"><img class="cursor" (click)="deleteRecords(i)" src="../../../../../assets/image/delete.svg" height="15" alt=""></span>
+          <ng-container *ngIf="addMEdRecordBtnShowFlag">
+            <span [hidden]="!isEditable" ngbTooltip="Update" class="cursor"
+              ><img class="cursor" (click)="updateSingleMedicalData(addMedicalAttributeForm.value,i)" src="../../../../../assets/image/save.svg" height="15" alt=""></span>&nbsp;
+            <span [hidden]="!isEditable" ngbTooltip="Delete Medical Data" class="cursor"><img class="cursor" (click)="deleteRecords(i,addMedicalAttributeForm.value)" src="../../../../../assets/image/delete.svg" height="15" alt=""></span>
+			  
+			 
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+    </div>
+  </form>
+  </div>
+  <div class="modal-footer pt-0 pb-0">
+  <div class="text-right">
+  <div class="display-inline-block">
+      <button class="btn btn-sm btn-secondary cursor" (click)="modalRef.hide();">{{
+          'USER_PROFILE.USER_PROFILE_POPUP_CLOSE' | translate }}</button>
+    </div>
+	 &nbsp;
+    <div class="display-inline-block">
+      <button [hidden]="isEditable" class="btn btn-sm btn-primary cursor" type="submit"
+        
+        (click)="createNewHealthRecord(addMedicalAttributeForm.value,'createViewMedicalRecordsModal');">{{'USER_MEDICAL_RECORDS.ADD_HEALTH_ATTRIBUTE_POPUP_SUBMIT' | translate }}</button>
+     <!--[disabled]="medicalDetailDisablebyBoolean()"-->
+    </div>
+    
+  </div>
+  </div>
+</ng-template>
+
+
+<jw-modal id="showChart">
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="closeNewModal('showChart')">{{
+          'USER_GROUPS.USER_GROUPS_POPUP_CLOSE' | translate }}</button>
+  </div>
+  <div class="modal-body">
+    <chart-component [chartType]="'line'" [data]="chartData"></chart-component>
+  </div>
+
+</jw-modal>
+
+<!-- https://gitlab.com/sbis-poc/frontend/issues/214 -->
+<ng-container *ngIf="showMedicalTestReport">
+  <app-medical-test-results [selectedPatientDetail]="userDet" (medicalDetailsClose)="medicalDetailsClose($event)"></app-medical-test-results>
+</ng-container>
+<!-- https://gitlab.com/sbis-poc/frontend/issues/214 -->

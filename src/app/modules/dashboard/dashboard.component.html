@@ -1,0 +1,97 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<section class="pageMainContin">
+  <!-- start carousel test -->
+  <div class="card">
+    <!-- <div for add dashboard btn -->
+    <div class="row">
+      <div class="col-lg-12 text-right dashboard-add-btn-div-style">
+        <!-- <button class="btn btn-sm btn-primary" type="submit">
+          <i class="fas fa-plus"></i>
+          Add Dashboard
+        </button> -->
+      </div>
+    </div>
+    <!-- end of div for add dashboard btn -->
+
+    <ng-container *ngFor="let dashboardArrEl of dashboardArr; let indx = index;">
+      <div class="dashboard-inner-border-div-custom-style">
+        <ng-container *ngFor="let rowArrEl of dashboardArrEl.rowArray; let rowArrInd = index;">
+          <div class="row dashboard-block">
+            <ng-container *ngFor="let tilesArrel of dashboardArrEl.widgetDtos">
+              <div [ngClass]="tilesArrel.colMdClass" *ngIf="(rowArrInd+ 1) == tilesArrel.rowNo">
+                <div [ngClass]="tilesArrel.customCSSStyle">
+                  <h1 class="dashboard-card-header" *ngIf="!(tilesArrel.widgetType == widgetTypeConstObj.text && tilesArrel.chartData.datasets.length > 1)">{{tilesArrel.description}}</h1>
+                  <div *ngIf="tilesArrel.widgetType == widgetTypeConstObj.text">
+                    <div class="text-right" *ngIf="tilesArrel.chartData.datasets.length == 1">
+                      <div class="row">
+                        <ng-container *ngFor="let description of tilesArrel.chartData.datasets[0].value.split('-')">
+                          <div class="col-12 text-left padding-left20px descr"><label>{{description}}</label></div>
+                        </ng-container>
+                      </div>
+                    </div>
+                    <div *ngIf="tilesArrel.chartData.datasets.length > 1">
+                      <ng-container *ngFor="let description of tilesArrel.chartData.datasets">
+                        <div class="dashboard-widget-custom-style padding-2-percent">
+                          <div ><!--[style.min-height]="tilesArrel.customMinHeightStyleForCol"-->
+                            <p class="dashboard-card-header">{{tilesArrel.description}}</p>
+                            <ng-container *ngFor="let splt of description.value.split('\n')">
+                             <div *ngIf="splt" class="custom-multiple-text-widget-style">
+                              {{splt}}<br />
+                             </div> 
+                            </ng-container>
+                          </div>
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+                  <div *ngIf="tilesArrel.widgetType != widgetTypeConstObj.text && tilesArrel.widgetType != widgetTypeConstObj.table">
+                    <chart-component [chartType]="tilesArrel.widgetType" [data]="tilesArrel.chartData">
+                    </chart-component>
+                  </div>
+                  <ng-container *ngIf="tilesArrel.widgetType == widgetTypeConstObj.table">
+                    <p-table [value]="tilesArrel.colarr">
+                      <ng-template let-ri="rowIndex" let-tbody pTemplate="body">
+                        <tr class="text-center">
+                          <ng-container *ngFor="let td of tilesArrel.arrbyColNo; let indx= index;">
+                          <th *ngIf="ri == 0">{{tbody.key[indx]}}</th>
+                          <td *ngIf="ri != 0">{{tbody.key[indx]}}</td>
+                          </ng-container>
+                        </tr>
+                      </ng-template>
+                    </p-table>
+                  </ng-container>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+    <!-- <p-table [value]="colarr">
+        <ng-template let-ri="rowIndex" let-tbody pTemplate="body">
+          <tr class="text-center">
+            <ng-container *ngFor="let td of colNoAr; let indx= index;">
+            <th *ngIf="ri == 0">{{tbody.key[indx]}}</th>
+            <td *ngIf="ri != 0">{{tbody.key[indx]}}</td>
+            </ng-container>
+          </tr>
+        </ng-template>
+      </p-table> -->
+  </div>
+  <!-- end of carousel test -->
+</section>

@@ -1,0 +1,262 @@
+
+/*
+*  * |///////////////////////////////////////////////////////////////////////|
+*  * |                                                                       |
+*  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+*  * | All Rights Reserved                                                   |
+*  * |                                                                       |
+*  * | This document is the sole property of StellaBlue Interactive          |
+*  * | Services Pvt. Ltd.                                                    |
+*  * | No part of this document may be reproduced in any form or             |
+*  * | by any means - electronic, mechanical, photocopying, recording        |
+*  * | or otherwise - without the prior written permission of                |
+*  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+*  * |                                                                       |
+*  * |///////////////////////////////////////////////////////////////////////|
+*  */
+/* 
+Css modification according to the designer
+*/
+.procedureSidebar .close-btn{
+	position:absolute;
+	left:-30px;
+	top:0;
+	height:30px;
+	width:30px;
+	background:#f5f8f9;
+	text-align:center;
+	line-height:30px;
+}
+
+.border-right {
+	border-right: 1px solid lightgrey;
+}
+
+.proceduresidebarArea{
+	height:100%;
+	overflow:auto;
+	padding-left:19px !important;
+	padding-right:16px !important;
+	padding-bottom: 20px !important;
+    padding-top: 18px !important;
+}
+
+.proceduresidebarArea.noteArea{
+  padding-top: 0 !important;
+	overflow:hidden;
+}
+
+
+  .font-size11 {
+	font-size: 11px !important;
+  }
+  .font-color-grey{
+	  color: darkgrey;
+  }
+
+/*.in-patient-btn .btn{
+	border-radius:0 !important;
+	font-size:11px !important;
+	height:12px;
+}
+
+	.in-patient-btn .btn-secondary{
+		border-right:1px solid #4d4d4d !important;
+	}
+
+	.in-patient-btn .btn-secondary:last-of-type{
+		border-right:none !important;
+	}
+
+
+	.page-content .card .table-responsive td.in-patient-btn .btn{
+		padding: 0 10px !important;
+		margin-bottom:7px !important;
+	} */
+
+	.filterBtn-for-impatient {
+		position: initial !important;
+	}
+
+	.card.roundedCard{
+		text-align:center;
+		background:#fff;
+		color:#c03356;
+		border-top:3px solid #c03356 !important;
+		min-height:151px;
+		line-height:141px;
+		vertical-align: middle;
+		font-weight:400;
+		margin-top:36px;
+	}
+
+
+	.card.notesCard{
+		padding-left:10px;
+		padding-right:10px;
+	}
+
+.card.notesCard:nth-child(odd){
+		background:#fff;
+	}
+
+.card.notesCard:nth-child(even){
+		background:#fffbf6;
+	}
+	.notes-header{
+	  background:#f2f2f2;
+	  height:30px;
+	  border-top-left-radius:.25rem;
+	  border-top-right-radius:.25rem;
+	  color:#4d4d4d;
+	  line-height: 30px;
+	  vertical-align: middle;
+	  font-weight:400;
+	  padding-left:10px;
+	  font-size:12px;
+	}
+
+	.notesImageArea{
+		border:1px dotted #ce8a35;
+		border-radius:10px;
+		padding:5px;
+		margin-bottom:10px !important;
+	}
+
+	.notesImageArea.ng-star-inserted .ng-star-inserted{
+		margin-bottom:0 !important;
+	}
+
+	.right-panel-top-padding{
+		margin-top:34px;
+		height: calc(100vh - 100px);
+		overflow:auto;
+	}
+
+/* Working on app/issue/1844 */
+	.sideBarLabel{
+		color: #662d91 !important;
+		font-size: 12px !important;   
+		text-transform: uppercase !important;
+		letter-spacing: 1px !important;    
+		font-weight: 500 !important;
+	}
+/* End Working on app/issue/1844 */
+
+
+.sidebarList{
+	height: calc(100vh - 14px);
+    overflow-y: auto;
+	overflow-x: hidden;
+	margin-left: 15px;
+}
+.room-category{
+	
+	border: 1px solid #ccc;
+	/* height: calc(100vh - 138px); */
+	width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+.room{
+	/* background: #edd7fb;
+	width: 150px;
+    padding: 10px;
+    
+    display: inline-block;
+	margin: 5px;
+	text-align: center; */
+	border-radius: 10px;
+    /* background: #eef4bb; */
+    background: #edd7fb;
+    width: 150px;
+    padding: 10px;
+    display: inline-block;
+    margin: 5px;
+    text-align: center;
+    box-shadow: -3px 3px 4px #baabab inset, 4px -4px 4px #baabab inset;
+}
+.bed{
+	cursor: pointer;
+    border: 1px solid #af4dc8;
+    padding: 1px 6px;
+    /* margin: 0 10px; */
+    background: #af4dc8;
+    color: #fff;
+    font-weight: 600;
+}
+
+.selectedBed{
+	cursor: pointer;
+    border: 1px solid #5d5959;
+    padding: 1px 6px;
+    /* margin: 0 10px; */
+    background:#5d5959;
+    color: #fff;
+    font-weight: 600;
+}
+.btn-fixed{
+    /* position: absolute;
+    right: -1px;
+    bottom: -14px; */
+    background: #ce8a35;
+    color: #fff;
+}
+.top-card .badge{
+    font-size: 14px;
+}
+.badge-text{
+    font-weight: 400;
+    font-size: 12px;
+    display: inline-block;
+    margin-right: 10px;
+    margin-top: 2px;
+}
+.badge-success-txt{
+    color:#28a745;
+}
+.badge-secondary-txt{
+    color:#6c757d;
+}
+.badge-primary-txt{
+    color:#007bff;
+}
+.badge-danger-txt{
+    color:#dc3545;
+}
+.p-info{
+    white-space: normal;
+    font-size: 11px;
+    margin-bottom: 10px;
+    color: #611e72;
+    border-bottom: 1px solid #611e72;
+    margin-top: 10px;
+}
+.history-data .row.ng-star-inserted {
+    margin-bottom: 4px !important;
+}
+.history-data .row .col-6.ng-star-inserted {
+    margin-bottom: 4px !important;
+}
+
+.refundLabel{
+	border-radius: 20px;
+	background: #146199;
+	min-width: 100px;
+	color: #fff;
+	font-size: 16px;
+	font-weight: 400;
+	cursor: pointer;
+}
+.paymentLabel{
+	border-radius: 20px;
+	background: #ce8a35;
+	min-width: 100px;
+	color: #fff;
+	font-size: 16px;
+	font-weight: 400;
+	cursor: pointer;
+}
+.mt25{
+	margin-top: -40px !important;
+}

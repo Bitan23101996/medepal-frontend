@@ -1,0 +1,348 @@
+<div class="row">
+  <div *ngIf="loading" class="cover-for-modal">
+    <div class="loader-for-modal">
+        <div class="loading-img"><img width=250px src="../../../../../assets/image/logo.svg"/></div>
+        <div class="loading-txt">Loading<div class="dot-elastic"></div></div>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <div class="current-invoice">
+      <form [formGroup]="invoiceForm">
+        <!--   <h1 class="header" *ngIf="!editMode">{{'INVOICE.CREATE_INVOICE' | translate}}</h1>
+          <h1 class="header" *ngIf="editMode">{{'INVOICE.EDIT_INVOICE' | translate}} ({{invoiceNo}})</h1>-->
+         <div class="card">
+          <div class="card-body">
+         
+              <!-- <div class="row mt-2">
+                <div class="col-7 mb-0">
+                  <label>{{'INVOICE.CHARGE_DETAILS' | translate}}</label>
+                </div>
+               
+              </div>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>{{'INVOICE.DESCRIPTION' | translate}}</th>
+                      <th>{{'INVOICE.INVOICE_AMOUNT' | translate}}</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody formArrayName="chargeDetails">
+                    <tr *ngFor="let s of chargeDetails.controls; let i = index" [formGroup]="s" [attr.id]="'tr'+i">
+                      <td>
+                        <input type="text" class="form-control" formControlName="description" required>
+                        <span *ngIf="submitted && invoiceForm.get('chargeDetails').controls[i].get('description').errors">
+                          <span *ngIf="invoiceForm.get('chargeDetails').controls[i].get('description').errors.required"
+                            class="validation-error"> {{'VALIDATION.VALIDATION_REQUIRED' | translate}} </span>
+                        </span>
+                      </td>
+                      <td>
+                        <input type="text" class="form-control" formControlName="amount" (keyup)="calculateCharges()" twoDigitDecimaNumber required>
+                        <span *ngIf="submitted && invoiceForm.get('chargeDetails').controls[i].get('amount').errors">
+                            <span *ngIf="invoiceForm.get('chargeDetails').controls[i].get('amount').errors.required"
+                              class="validation-error"> {{'VALIDATION.VALIDATION_REQUIRED' | translate}} </span>
+                          </span>
+                      </td>
+                      <td>
+                        <span ngbTooltip="Delete charge" container="body" (click)="deleteCharge(i)" class="cursor">
+                          <img class="grey" src="../../../../../assets/image/delete.svg" width="15">
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="row" style="margin-top:5px">
+                  <div class="col-lg-12 text-right">
+  
+                    <button type="button" class="btn btn-secondary btn-sm add-row" id="addBillDetail" (click)="addCharge()">
+                      <i class="fas fa-plus-square"></i>&nbsp;{{'PRESCRIPTION.ADD_ROW_LINK'| translate}}</button>
+                  </div>
+                </div> -->
+                <div class="page-heading-info">
+                  <h2 class="welcome-msg" *ngIf="regTxnDetails!=null ">
+                    <!-- {{regTxnDetails | json}} -->
+                    Paid {{regTxnDetails.fees | currency:'INR'}} on {{regTxnDetails.paymentDate | date: 'dd-MM-yyyy'}} as Registration Fees
+                  </h2>
+                </div>
+            <div class="row mt-2">
+                <div class="col-7 mb-0">
+                  <label>{{'INVOICE.CHARGE_DETAILS' | translate}}</label>
+                </div>
+                <!-- <div class="col-5 mb-0">
+                  <button type="button" class="btn btn-primary float-right mb-2" (click)="addCharge()"> {{'COMMON.ADD_BUTTON' | translate}}</button>
+                </div> -->
+              </div>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>{{'INVOICE.SERVICE_ITEM' | translate}}</th>
+                      <th>{{'INVOICE.SERVICE_ITEM_NUMBER_DURATION' | translate}}</th>
+                      <th>{{'INVOICE.SERVICE_ITEM_CHARGE' | translate}}</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody formArrayName="invoiceDetailList">
+                    <tr *ngFor="let s of invoiceDetailList.controls; let i = index" [formGroup]="s" [attr.id]="'tr'+i">
+                      <td style="padding-top: 0 !important;">
+                          <p-autoComplete styleClass="medicineListAutoComplete" inputStyleClass="medicationStyle" #med  [suggestions]="ipdServiceList" [minLength]="3"
+                          (onSelect)="setBillDetailForm($event,i)" (completeMethod)="getIpdServiceBasicInfoList($event)" autoHighlight="false" formControlName="serviceName" [required]="true"
+                           >
+                          <ng-template let-ipdService pTemplate="item">
+                            <span style="font-size:11px;font-weight: 500;">{{ipdService.serviceName}}</span>                  
+                          </ng-template>
+                        </p-autoComplete>
+                        <span *ngIf="submitted && invoiceForm.get('invoiceDetailList').controls[i].get('serviceName').errors">
+                            <span *ngIf="invoiceForm.get('invoiceDetailList').controls[i].get('serviceName').errors.required"
+                              class="validation-error"> {{'VALIDATION.VALIDATION_REQUIRED' | translate}} </span>
+                          </span>
+                      </td>
+                      <td style="padding-top: 6px !important;" >
+                          <div class="row no-gutters" *ngIf="invoiceForm.get('invoiceDetailList').controls[i].get('rateType').value=='SLAB'">
+                              <div class="col-6"><input type="text" formControlName="hours"  placeholder="Hr(s)" class="form-control input-sm float-left text-right"
+                                  numberOnly (blur)="getIpdServiceRateByRefNoAndQuantity(i)"><span class="float-left unit">hrs</span></div>
+                              <!-- <div class="col-3" style="margin-top: 10px;">hrs</div> -->
+                              <div class="col-6"><input type="text" formControlName="minutes"  placeholder="Min(s)" class="form-control input-sm float-left text-right"
+                                  numberOnly (blur)="getIpdServiceRateByRefNoAndQuantity(i)"><span class="float-left unit">mins</span></div>
+                              <!-- <div class="col-3" style="margin-top: 10px;">mins</div> -->
+                            </div>
+  
+                            <div class="row no-gutters" *ngIf="(invoiceForm.get('invoiceDetailList').controls[i].get('rateType').value=='FIX' && invoiceForm.get('invoiceDetailList').controls[i].get('serviceType').value!='PROCEDURE') || invoiceForm.get('invoiceDetailList').controls[i].get('serviceRefNo').value==null">
+                              <div class="col-9"><input type="text" formControlName="unit" class="form-control input-sm float-left text-right"
+                                  numberOnly (blur)="getIpdServiceRateByRefNoAndQuantity(i)"><!--<span class="float-left unit">unit</span> --></div>
+                              <!-- <div class="col-3 text-left">unit</div> -->
+                            </div>
+                            <!-- <div class="row" *ngIf="invoiceForm.get('invoiceDetailList').controls[i].get('serviceType').value=='PROCEDURE'">
+                              <div class="col-12">N/A</div>
+                            </div> -->
+                      </td>
+                      <td style="padding-top: 6px !important;">
+                          <!-- <input type="text" formControlName="amount" class="form-control" numberOnly> -->
+                          <span style="display: inline-flex;">
+                              <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}} 
+                                </strong></span>                                
+                           <span> <input type="text" formControlName="amount" class="form-control text-right input-md" numberOnly (blur)="calculateInvoiceDetail()" required></span>
+                          </span>
+                          <div *ngIf="submitted && invoiceForm.get('invoiceDetailList').controls[i].get('amount').errors">
+                              <span *ngIf="invoiceForm.get('invoiceDetailList').controls[i].get('amount').errors.required"
+                                class="validation-error"> {{'VALIDATION.VALIDATION_REQUIRED' | translate}} </span>
+                          </div>
+                        </td>
+                      <td>
+                          <span ngbTooltip="Delete Service Charge" container="body" class="cursor" (click)="deleteInvoiceDetail(i)">
+                              <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                            </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="row" style="margin-top:5px">
+                  <div class="col-lg-12 text-right">
+  
+                    <button type="button" class="btn btn-secondary btn-sm add-row"  (click)="addInvoiceDetail()">
+                      <i class="fas fa-plus-square"></i>&nbsp;{{'PRESCRIPTION.ADD_ROW_LINK'| translate}}</button>
+                  </div>
+                </div>
+            
+            <div class="row">
+              <div class="col-7 mb-0">
+                <label>{{'INVOICE.DISCOUNT_DETAILS' | translate}}</label>
+              </div>
+              <!-- <div class="col-5 mb-0">
+                <button type="button" class="btn btn-primary float-right mb-2" (click)="addDiscount()">{{'COMMON.ADD_BUTTON' | translate}}</button>
+              </div> -->
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th style="width:70%">{{'INVOICE.DESCRIPTION' | translate}}</th>
+                      <th style="width:25%">{{'INVOICE.INVOICE_AMOUNT' | translate}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <input type="text" class="form-control" formControlName="discountDescription">
+                        <div *ngIf="submitted && discountMnd" class="validation-error"> {{'VALIDATION.VALIDATION_REQUIRED' | translate}}
+                        </div>
+                      </td>
+                      <td>
+                          <span style="display: inline-flex;">
+                              <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}} 
+                                </strong></span>                                
+                           <span> <input type="text" formControlName="discountAmount" class="form-control text-right input-md" #amt (keyup)="calculateDiscount(amt.value)" twoDigitDecimaNumber></span>
+                          </span>
+                      </td>
+                      
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            <!-- <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width:70%">{{'INVOICE.DESCRIPTION' | translate}}</th>
+                    <th style="width:25%">{{'INVOICE.INVOICE_AMOUNT' | translate}}</th>
+                    <th style="width:5%"></th>
+                  </tr>
+                </thead>
+                <tbody formArrayName="discountDetails">
+                  <tr *ngFor="let s of discountDetails.controls; let i = index" [formGroup]="s" [attr.id]="'tr'+i">
+                    <td>
+                      <input type="text" class="form-control" formControlName="description">
+
+                    </td>
+                    <td>
+                        <span style="display: inline-flex;">
+                            <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}} 
+                              </strong></span>                                
+                         <span> <input type="text" formControlName="amount" class="form-control text-right input-md" (keyup)="calculateDiscount()" twoDigitDecimaNumber></span>
+                        </span>
+                    </td>
+                    <td>
+                      <span ngbTooltip="Delete discount" container="body" (click)="deleteDiscount(i)" class="cursor">
+                        <img class="grey" src="../../../../../assets/image/delete.svg" width="15">
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="row" style="margin-top:5px">
+                <div class="col-lg-12 text-right">
+
+                  <button type="button" class="btn btn-secondary btn-sm add-row" (click)="addDiscount()">
+                    <i class="fas fa-plus-square"></i>&nbsp;{{'PRESCRIPTION.ADD_ROW_LINK'| translate}}</button>
+                </div>
+              </div> -->
+
+              <div class="row mb-2" formGroupName="paymentDetail">
+                  <div class="col-4">
+                    <label>Payment Mode</label>
+                    <select class="form-control" formControlName="paymentMode" #payment (change)="setPayment(payment.value)">
+                      <option *ngFor="let pm of paymentModeList" [value]="pm.attributeValue">
+                        {{pm.displayValue}}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="col-4" *ngIf="showCardNo">
+                      <label>Card No. <span class="optional-label">(Last 4 digit)</span></label>
+                      <input type="text" class="form-control" formControlName="cardNo" maxlength="4" numbersOnly>
+                  </div>
+                </div>
+          </div>
+        </div>
+
+
+        <div class="fixed-bottom">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-6">
+                <h1>
+                  <span>{{'INVOICE.TOTAL_AMOUNT' | translate}} </span>
+                  <span>
+                    <strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{totalAmount | number: '1.2-2'}} </strong>
+                  </span>
+                </h1>
+              </div>
+              <div class="col-6 text-right">
+                <button type="button" class="btn btn-primary" (click)="saveInvoice()">{{'INVOICE.GENERATE_BTN' | translate}}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+
+    <div class="past-invoice">
+        <div class="row">
+            <div class="col-md-8">
+                <h1 class="header" *ngIf="invoiceList.length > 0">{{'INVOICE.EXISTING_INVOICE' | translate}}</h1>
+            </div>
+            <div class="col-md-4 text-right">
+                <button type="button" *ngIf="editMode" class="btn btn-secondary" (click)="addNewInvoice()">{{'INVOICE.NEW_INVOICE' | translate}}</button>
+              </div>
+      
+      <div class="content table-responsive overflow-hidden">
+        <!-- <div class="text-center not-found" *ngIf="invoiceList.length==0">
+          <h3>No past invoices is available</h3>
+        </div> -->
+        <p-table *ngIf="invoiceList.length > 0" [value]="invoiceList" [paginator]="invoiceList > 5" [rows]=5>
+          <ng-template pTemplate="header">
+            <tr>
+              <th width="20%">{{'INVOICE.INVOICE_NO' | translate}}</th>
+              <th width="20%">{{'INVOICE.INVOICE_DATE' | translate}}</th>
+              <th width="20%">{{'INVOICE.INVOICE_AMOUNT' | translate}}</th>
+              <th width="20%">{{'INVOICE.REASON' | translate}}</th>
+              <th width="20%"></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-invoice let-ri="rowIndex">
+            <tr>
+              <td>
+                {{invoice.invoiceNo}}
+              </td>
+              <td>
+                {{invoice.invoiceDate | date: 'dd-MM-yyyy'}}
+              </td>
+              <td>
+                {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{invoice.totalAmount | number: '1.2-2'}}
+              </td>
+              <td>
+                <input type="text" class="form-control" #reason>
+              </td>
+              <td>
+                <span class="cursor mr-2" container="body" ngbTooltip="Edit Invoice" (click)="editInvoice(invoice)">
+                  <img alt="" class="grey" height="15" src="../../../../../assets/image/edit.svg">
+                </span>
+                <span class="cursor mr-2" container="body" ngbTooltip="Delete Invoice" (click)="deleteInvoice(invoice, reason.value)">
+                  <img alt="" class="grey" height="15" src="../../../../../assets/image/delete.svg">
+                </span>
+                <span class="cursor" container="body" ngbTooltip="Print" (click)="printInvoice(invoice)">
+                  <img alt="" class="grey" height="15" src="../../../../../assets/image/print.svg">
+                </span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+
+    </div>
+    </div>
+
+</div>
+
+<!-- <p-dialog [(visible)]="displayOnDelete" [responsive]="true" [style]="{width: '350px', minWidth: '200px', right: '200px'}" 
+[maximizable]="false" [showHeader]="true" [baseZIndex]="10000">
+    Content
+</p-dialog> -->
+
+
+<!-- <p-sidebar [(visible)]="displayOnDelete" [modal]="true" [appendTo]="t" position="bottom" styleClass="modal-sidebar" [style]="{width:'100%'}">
+  Content
+</p-sidebar> -->
+
+<ng-template #printModal>
+    <div class="modal-header">
+      <h5>Print Invoice</h5>
+      <button type="button" class="close float-right" (click)="modalRef.hide()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <input type="radio" name="printOpt" value="S" checked> Single
+      <input type="radio" name="printOpt" value="D"> Duplicate
+      <div class="mt-2">
+          <button class="btn btn-primary" type="button" (click)="print('S')">Print</button>
+      </div>
+      
+    </div>
+   </ng-template>
+<!-- {{appointmentRefNo}} -->

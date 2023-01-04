@@ -1,0 +1,133 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+<div class="row">
+  <div class="col-lg-12">
+    <form [formGroup]="customForm">
+      <div class="row top-btn-area">
+        <div class="col-lg-12 text-right">
+          <button type="button" class="btn btn-primary btn-sm float-right" (click)="saveCustomForm()">{{'COMMON.SAVE_BUTTON'|translate}}</button>
+          <button type="button" class="btn btn-secondary btn-sm cursor float-right mr-2" (click)="backToList()">{{'COMMON.CANCEL_BUTTON'|translate}}</button>
+
+        </div>
+      </div>
+
+      <div class="form-block">
+        <div class="row">
+          <div class="col-lg-8 col-sm-12">
+            <div class="form-group">
+              <label class="userKey control-label">Form Name
+                <span class="validation-error">*</span>
+              </label>
+              <input type="text" class="form-control" formControlName="formName">
+            </div>
+          </div>
+          
+        </div>
+
+      </div>
+
+      <div class="row" formArrayName="questionList" *ngIf="questionList">
+
+        <div class="col-lg-8 col-sm-12" *ngFor="let q of questionList.controls; let i = index" [formGroup]="q" [attr.id]="'col'+i">
+          <div class="question-block mt-2">
+            <div class="row">
+              <div class="col-md-8">
+                <div class="form-group">
+                  <label class="userKey control-label">Question {{i+1}}
+                    <span class="validation-error">*</span>
+                  </label>
+                  <input type="text" class="form-control" formControlName="question">
+                  <input type="hidden" formControlName="sequenceNo" [value]="i+1">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="userKey control-label">Answer Type
+                    <span class="validation-error">*</span>
+                  </label>
+                  <select formControlName="answerType" #type (change)="setOptionType(q, type.value, i)">
+                    <option *ngFor="let o of optionTypeList" [value]="o.attributeValue">
+                      {{o.displayValue}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="option-block">
+                <ng-container  *ngIf="selectedOptionType[i]=='ST' || selectedOptionType[i]=='LT'">
+                    <input type="text" placeholder="Answer wil be free text" readonly>
+                </ng-container>
+              <ng-container  *ngIf="selectedOptionType[i]=='RD' || selectedOptionType[i]=='CH' || selectedOptionType[i]=='DD'">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <td colspan="3" class="text-left">
+                      <label>Options</label>
+                    </td>
+                  </tr>
+                </thead>
+                <tbody formArrayName="answerList">
+                  <tr *ngFor="let opt of q.get('answerList').controls; let j = index" [formGroup]="opt" [attr.id]="'tr'+i">
+                    <td *ngIf="selectedOptionType[i]=='RD'">
+                      <input type="radio" checked disabled>
+                    </td>
+                    <td *ngIf="selectedOptionType[i]=='CH'">
+                        <input type="checkbox" checked disabled>
+                      </td>
+                    <td style="width: 90%">
+                      <input type="text" placeholder="Option" formControlName="answer">
+                      <input type="hidden" formControlName="sequenceNo" [value]="j+1">
+                    </td>
+                    <td>
+                      <span ngbTooltip="Delete Option" container="body" class="cursor" (click)="deleteOption(q, i)">
+                        <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              </ng-container>
+              <hr>
+              <div class="row" style="margin-top:5px">
+                <div class="col-lg-3">
+                    <label>Required
+                  <span class="switch">
+                    <input type="checkbox" formControlName="mandatoryFlag">
+                    <span class="slider round"></span>
+                  </span> </label>
+                </div>
+                <div class="col-lg-3">
+                    <span ngbTooltip="Delete Question" container="body" class="cursor" (click)="deleteQuestion(i)"> 
+                        <img class="grey" src="../../../../../assets/image/delete.svg" height="18" alt="">
+                      </span>
+                </div>
+                <div class="col-lg-6 text-right">
+                  <button type="button" class="btn btn-secondary btn-sm add-row" (click)="addOption(q)"   *ngIf="selectedOptionType[i]=='RD' || selectedOptionType[i]=='CH' || selectedOptionType[i]=='DD'">
+                    <i class="fas fa-plus-square"></i>&nbsp;Add Option</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      <div class="col-lg-8 col-sm-12 text-right">
+          <button type="button" class="btn btn-secondary btn-sm add-row" (click)="addQuestion()">
+            <i class="fas fa-plus-square"></i>&nbsp;Add New Question</button>
+        </div>
+    </form>
+  </div>
+</div>

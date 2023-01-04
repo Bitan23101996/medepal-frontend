@@ -1,0 +1,175 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row bt-style">
+                <div class="col-lg-3">
+                    <button class="btn btn-md btn-primary" type="button" (click)="backClicked()"><i class="fas fa-chevron-left">&nbsp;</i>{{
+                        'MAIN.MAIN_BACK_BUTTON' | translate }}</button>
+                </div>
+                <!-- <div class="col-md-4">
+                    <button type="button" (click)="addNewRow()" class="btn btn-primary bt-style">{{ 'ADD_FAMILY_MEMBER.ADD_FAMILY_ADD_MULTI_MEMBER'
+                        | translate }}</button>
+                </div> -->
+            </div>
+            <form [formGroup]="addMember" class="form-signin">
+                <!-- <ul class="list-group" formArrayName="itemRows" formArrayName="itemRows"> -->
+                <!-- <li class="list-group-item" *ngFor="let itemrow of addMember.controls.itemRows.controls; let i=index" [formGroupName]="i"> -->
+                <!-- <div class="col-md-4">
+                            <button *ngIf="addMember.controls.itemRows.controls.length > 1" (click)="deleteRow(i)" class="btn btn-danger">{{
+                                'ADD_FAMILY_MEMBER.ADD_FAMILY_DELETE_ROW' | translate }}</button>
+                        </div> -->
+                <ul class="list-group">
+                    <li class="list-group-item rounded-style-buttom" *ngIf="multipleMember.length>0">
+                        <table class="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">{{ 'USER_FAMILY.USER_FAMILY_FILE' | translate }}</th>
+                                    <th scope="col">{{ 'USER_FAMILY.USER_FAMILY_FIRST_NAME' | translate }}</th>
+                                    <th scope="col">{{ 'USER_FAMILY.USER_FAMILY_LAST_NAME' | translate }}</th>
+                                    <th scope="col">{{ 'USER_FAMILY.USER_FAMILY_RELATION' | translate }}</th>
+                                    <th scope="col">{{ 'USER_FAMILY.USER_FAMILY_ACTIONS' | translate }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let userMembers of multipleMember">
+                                    <th scope="row">
+                                        <div class="col-md-3">
+                                            <div class="text-center">
+                                                <img src="../../../../../assets/image/user.png" class="rounded" alt="...">
+                                            </div>
+                                        </div>
+                                    </th>
+                                    <td>{{userMembers?.firstName}}</td>
+                                    <td>{{userMembers?.lastName}}</td>
+                                    <td>{{userMembers?.relationshipName}}</td>
+                                    <td class="cursor">
+                                        <div class="row">
+                                            <div class="col-sm-2">
+                                                <label><i ngbTooltip="Delete Member" (click)="deleteMember(userMembers)"
+                                                        class="fas fa-trash-alt cursor"></i></label></div>
+                                            <div class="col-sm-2"><i ngbTooltip="Edit Member" class="far fa-edit"></i>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div>
+                            <label></label>
+                            <button class="btn btn-lg btn-primary btn-block" type="button" (click)="addMore(addMember.value)">{{
+                                'ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_SUBMIT' | translate }}</button>
+                        </div>
+                    </li>
+                    <br>
+                        <li class="list-group-item rounded-style">
+                            <div class="col-sm-12">
+                                <label>{{ 'ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_USER_NAME' | translate }}</label>
+                                <input type="text" class="form-control" name="fname" (change)="checkUserName(addMember.value)" placeholder="{{ 'ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_USER_NAME' | translate }}"
+                                    formControlName="userName" required="" autofocus="" />
+                                <span *ngIf="submitted && fcl.userName.errors">
+                                    <span *ngIf="fcl.userName.errors.required" class="validation-error">{{ 'VALIDATION.VALIDATION_USERNAME_REQUIRED'
+                                        | translate }}
+                                    </span>
+                                    <span *ngIf="fcl.userName.errors.minLength" class="validation-error">{{ 'VALIDATION.VALIDATION_MIN_LENGTH_4'
+                                        | translate }}
+                                    </span>
+                                </span>
+                            </div>
+                        </li>
+                        <br>
+                        <li class="list-group-item rounded-style">
+                            <div class="col-sm-12">
+                                <label>{{ 'ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_GROUP' | translate }}</label>
+                                <select id="grouId" name="groupId" class="form-control" disabled="editMem || groupId" (change)="goToUserGroup($event.target.value)" formControlName="groupId">
+                                    <option class="cursor" value="99">Create Group</option>
+                                    <option *ngFor="let group of UserGroups" value="{{group.id}}">{{group.groupName}}</option>
+                                </select>
+                            </div>
+                        </li>
+                        <br>
+                        <li class="list-group-item rounded-style">
+                            <div class="col-sm-12">
+                                <label>{{ 'ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_RELATION' | translate }}</label>
+                                <select id="relation" name="relation" class="form-control" formControlName="relation">
+                                    <option *ngFor="let relation of relationData" value="{{relation.displayValue}}">{{relation.displayValue}}</option>
+                                </select>
+                                <span *ngIf="submitted && fcl.relation.errors">
+                                    <span *ngIf="fcl.relation.errors.required" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                </span>
+                            </div>
+                        </li>
+                        <br>
+                        <li class="list-group-item rounded-style">
+                            <div class="col-sm-12">
+                                <label>{{ 'ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_FIRST_NAME' | translate }}</label>
+                                <input type="text" class="form-control" name="fname" placeholder="{{ 'ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_FIRST_NAME' | translate }}"
+                                    formControlName="firstName" required="" autofocus="" />
+                                <span *ngIf="submitted && fcl.firstName.errors">
+                                    <span *ngIf="fcl.firstName.errors.required" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span> 
+                                    <span *ngIf="fcl.firstName.errors.minlength" class="validation-error">{{ 'VALIDATION.VALIDATION_FIRST_NAME_NOT_LESS_THAN' | translate }}</span>
+                                    <span *ngIf="fcl.firstName.errors.maxlength" class="validation-error">{{ 'VALIDATION.VALIDATION_FIRST_NAME_NOT_MORE_THAN' | translate }}</span>
+                                </span>
+                            </div>
+                        </li>
+                        <br>
+                        <li class="list-group-item rounded-style">
+                            <div class="col-sm-12">
+                                <label>{{ 'ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_LAST_NAME' | translate }}</label>
+                                <input type="text" class="form-control" name="lname" placeholder="{{ 'ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_LAST_NAME' | translate }}"
+                                    formControlName="lastName" required="" autofocus="" />
+                                <span *ngIf="submitted && fcl.firstName.errors">
+                                    <span *ngIf="fcl.lastName.errors.required" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span> 
+                                    <span *ngIf="fcl.lastName.errors.minlength" class="validation-error">{{ 'VALIDATION.VALIDATION_LAST_NAME_NOT_LESS_THAN' | translate }}</span>
+                                    <span *ngIf="fcl.lastName.errors.maxlength" class="validation-error">{{ 'VALIDATION.VALIDATION_LAST_NAME_NOT_MORE_THAN' | translate }}</span>
+                                </span>
+                            </div>
+                        </li>
+                        <br>
+                        <li class="list-group-item rounded-style" *ngIf="!editMem"> 
+                            <div class="col-sm-12">
+                                <label>{{ 'ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_AGE' | translate }}</label>
+                                <input type="number" class="form-control" name="age" placeholder="{{ 'ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_AGE_TITLE' | translate }}"
+                                    formControlName="age" min=1 oninput="validity.valid||(value='');"  max="150" required="" autofocus="" />
+                                <span *ngIf="submitted && fcl.age.errors">
+                                    <span *ngIf="fcl.age.errors.required" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                    <span *ngIf="fcl.age.errors && fcl.age.errors.max && fcl.age.errors.max.actual > fcl.age.errors.max.max" class="validation-error">{{
+                                        'ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_AGE_BAR' | translate }}
+                                    </span>
+                                    <span *ngIf="fcl.age.errors && fcl.age.errors.min && fcl.age.errors.min.min > fcl.age.errors.min.actual" class="validation-error">{{
+                                        'ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_AGE_BAR' | translate }}
+                                    </span>
+                                </span>
+                            </div>
+                        </li>
+                        <br>
+                        <div>
+                        </div>
+                </ul>
+                <!-- </ul> -->
+                <div class="row bt-style">
+                    <div class="col-lg-3">
+                        <button class="btn btn-md btn-primary btn-block" type="button" (click)="editMem ? editUserMember(addMember.value) : addUserMembers(addMember.value)">
+                            {{ editMem ? ('ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_SAVE' | translate) : ('ADD_FAMILY_MEMBER.ADD_FAMILY_MEMBER_ADD' | translate)}}
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

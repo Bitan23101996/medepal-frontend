@@ -1,0 +1,116 @@
+<!-- 
+/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+ -->
+
+ <div class="row page-content">
+        <div class="col-12">
+    
+          <div class="row">
+            <div class="col-3 scrollareaForResourceList">
+              <div *ngFor="let ot of resourceList"> 
+                  <div *ngFor="let otBed of ot.otBedResourceList">
+                      <span [ngClass]="otBed.cssClass" >
+                        <span>{{ot.name}} : </span>
+                        <h6 class="col-md-12 cursor" (click)="getAvailabilityCalendarForResource(otBed.refNo)">{{otBed.resourceName }}</h6>
+                    </span>               
+                  </div> 
+              </div>
+            </div>
+    
+            <div class="col-9">
+              <div class="row">
+                
+              <div class="col-lg-4 col-md-4 text-center calendar">
+                  <div class="btn-group dateNextPrev">
+                    <div class="cursor mt-1 mr-lg-2 mr-md-1" [class.active]="view === CalendarView.Day"
+                      mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate"
+                      (viewDateChange)="nextPrevDateChange($event)">
+                      <img src="../../../../../assets/image/prev.svg" height="20" alt="">
+                    </div>
+                    <div class="calendar" mwlCalendarToday [(viewDate)]="viewDate">
+                      <label>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</label>
+                    </div>
+                    <div class="cursor mt-1 ml-lg-2 ml-md-1" [class.active]="view === CalendarView.Day" mwlCalendarNextView
+                      [view]="view" [(viewDate)]="viewDate" (viewDateChange)="nextPrevDateChange($event)">
+                      <img src="../../../../../assets/image/next.svg" height="20" alt="">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4 text-right">
+                  <div class="btn-group">
+                   <!--  <div class="btn btn-sm" [ngClass]="view === CalendarView.Month ? 'btn-primary' : 'btn-secondary'"
+                      (click)="monthView()" [class.active]="view === CalendarView.Month">
+                      Month
+                    </div> -->
+                    <div class="btn btn-sm ml-2 mr-2" (click)="weekView()"
+                      [ngClass]="view === CalendarView.Week ? 'btn-primary' : 'btn-secondary'"
+                      [class.active]="view === CalendarView.Week">
+                      Week
+                    </div>
+                    <div class="btn btn-sm" (click)="setDay()"
+                      [ngClass]="view === CalendarView.Day ? 'btn-primary' : 'btn-secondary'"
+                      [class.active]="view === CalendarView.Day">
+                      Day
+                    </div>
+                  </div>
+                </div>
+              </div>
+    
+                <div class="row mt-2">
+                    <div class="col-md-12">
+                      <div [ngSwitch]="view">
+                        <!-- <mwl-calendar-month-view *ngSwitchCase="CalendarView.Month" [viewDate]="viewDate" [events]="events"
+                          [refresh]="refresh" [activeDayIsOpen]="activeDayIsOpen" (dayClicked)="dayClicked($event.day)"
+                          (eventClicked)="handleEvent($event.event)" (eventTimesChanged)="eventTimesChanged($event)">
+                        </mwl-calendar-month-view> -->
+                         <mwl-calendar-week-view *ngSwitchCase="CalendarView.Week" [viewDate]="viewDate" [events]="events"
+                          [refresh]="refresh" [hourSegments]="hourSegments" (hourSegmentClicked)="hourClicked($event)"
+                          (eventClicked)="handleEvent($event.event)" (eventTimesChanged)="eventTimesChanged($event)"
+                          [dayStartHour]="minDayStartTime" [dayEndHour]="maxDayEndTime"
+                          (beforeViewRender)="beforeWeekViewRender($event)">
+                        </mwl-calendar-week-view> 
+                       <mwl-calendar-day-view *ngSwitchCase="CalendarView.Day" [viewDate]="viewDate" [events]="events"
+                          [refresh]="refresh" [hourSegments]="hourSegments" (eventClicked)="handleEvent($event.event)"
+                          (eventTimesChanged)="eventTimesChanged($event)" (hourSegmentClicked)="hourClicked($event)"
+                          [dayStartHour]="minDayStartTime" [dayEndHour]="maxDayEndTime"
+                          (beforeViewRender)="beforeDayViewRender($event)">
+                        </mwl-calendar-day-view> 
+                      </div>
+                    </div>
+                  </div>
+            </div>
+          </div>
+    
+        </div>
+</div>
+
+<!-- <p-sidebar [(visible)]="displayPatientDetailsSidebar" appendTo="body" position="left"
+    [style]="{width:'20%', height:'500px', overflow: 'hidden', background: '#f7fffe', position:'absolute'}" [baseZIndex]="99999">
+    <p><strong>{{'MY_PRESCRIPTION.SELECT_PATIENT' | translate}}</strong></p>
+    <hr>
+    <div class="substituteMedicineList custom-x-scroll-for-modal">
+      <ul class="mt-2">
+        <li *ngFor="let associatedUser of associatedUserDetailsList;let i = index">
+          <a href="javascript:void(0);" (click)="setPatientIfMinorHave(associatedUser)">
+            {{associatedUser.name}} <span class="minor" *ngIf="associatedUser.isMinor">(Minor)</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </p-sidebar> -->
+
+ 

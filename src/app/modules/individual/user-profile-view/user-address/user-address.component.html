@@ -1,0 +1,203 @@
+<!-- Working on app/issues/782 -->
+<div *ngIf="!redirectFlag">
+    <app-success-card [successMsgEl]="redirectFlag" [successMsgFor]="successMsgFor"></app-success-card>
+    <div class="page-heading-info individual">
+		  <h2>Here is how you can get started with MEDePAL immediately</h2>
+		  </div>
+		<div class="row">
+		   <div class="col-12">
+	  
+			  <div class="row mb-3">
+				 <div class="col-12 mb-3 mb-xl-0 col-xl-4">
+					<div class="dashb-card green-card">
+						<div class="row ">
+              <div class=" col-sm-12 text-center col-lg-1 col-md-1 col-xl-1 pr-lg-0"> <img src="../../../../assets/image/appointment1.svg" height="40" alt="" /></div>
+						  <div class=" col-sm-12 col-lg-11 col-md-11 col-xl-11 name-white button-margin ">BOOK DOCTOR APPOINTMENTS</div>
+						  </div>
+						<div class="row ">
+						  <div class="col-12 name-white3 line">
+							  <p>Book appointments with reputed doctors across all specialities.<br>
+							  Unable to travel or have an urgent requirement? Consult doctors online.</p>
+
+						  </div></div>
+					  <div class="row position1">
+						<div class="col-12 text-center">
+						  <div class="dashb-button cursor" (click)="searchDoctor()">Book Appointment</div>
+						</div>
+					  </div>
+				
+			  </div>
+				
+			</div>
+		  
+			
+			<div class="col-12 mb-3 mb-xl-0 col-xl-4">
+			  <div class="dashb-card green-card1">
+				<div class="row">
+          <div class="col-sm-12 text-center col-lg-1 col-md-1 col-xl-1 pr-lg-0"> <img src="../../../../assets/image/medical-record.svg" height="40" alt="" /></div>
+				  <div class=" col-sm-12 col-lg-11 col-md-11 col-xl-11 name-white button-margin">MANAGE YOUR MEDICAL RECORDS</div>
+				  </div>
+				  <div class="row">
+					<div class="col-12 name-white3 line ">
+					  <p>Manage all your medical records in a single location. Treatment through MEDePAL will have your records in MEDePAL automtically. </p>
+					  <p>Upload your old Prescriptions and test records for immediately access anytime from anywhere and any device.</p>
+
+					</div></div>
+				  <div class="row">
+					<div class="col-12 text-center">
+					  <div class="dashb-button1 cursor" (click)="myPrescriptionPage()">Upload Prescription</div>
+					</div>
+				  </div>
+			  </div>
+			</div>
+			<div class="col-12 col-xl-4">
+			  <div class="dashb-card green-card2">
+				<div class="row ">
+          <div class="col-sm-12 text-center col-lg-1 col-md-1 col-xl-1 pr-lg-0"> <img src="../../../../assets/image/reunion.svg" height="40" alt="" /></div>
+				  <div class=" col-sm-12 col-lg-11 col-md-11 col-xl-11 name-white button-margin">CARE FOR YOUR FAMILY AND FRIENDS</div>
+				  </div>
+				  <div class="row">
+					<div class="col-12 name-white3 line">
+					  <p>Distributed families have become a norm nowdays. Worries about the health of your near dear ones cannot be avoided. </p>
+					  <p>Monitor the health of your beloved ones using MEDePAL. Create groups and take the first step to include everybody in the same ecosystem. Have access to their health information (only if they permit)</p>
+
+					</div></div>
+				  <div class="row">
+					<div class="col-12 text-center">
+					  <div class="dashb-button2 cursor" (click)="myGroupPage()">Create Group</div>
+					</div>
+				  </div>
+			  </div>
+			</div>
+
+		</div>
+	  </div>
+    </div>
+    <div class="page-heading-info in-margin individual">
+      <h2>We are bringing new services soon to take care of your other medical requirements</h2>
+      </div>
+      <div class="row">
+      <div class="col-12">
+      
+        <div class="row mb-3">
+        <div class="col-12 mb-3 mb-xl-0 col-xl-6">
+          <div class="dashb-card border-left-profile">
+          <div class="row">
+            <div class="col-8 name-white2 button-margin">ORDER MEDICINE</div>
+            </div>
+            <div class="row">
+            
+              <div class="col-sm-12 text-center col-lg-1 col-md-1 col-xl-1">
+                <img src="../../../../assets/image/drug.svg" height="50" alt="" />
+                </div>
+                <div class="col-sm-12 col-lg-11 col-md-11 col-xl-11 line-margin  name-white1"><p> Order medicine from reputed pharmacies. Genuine medicine at attractive prices</p>
+              </div>
+  
+            </div>
+            </div>
+        </div>
+        <div class="col-12 mb-3 mb-xl-0 col-xl-6">
+          <div class="dashb-card border-left-profile1">
+          <div class="row">
+            <div class="col-12 name-white2 button-margin">BOOK DIAGNOSTICS</div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 text-center col-lg-1 col-md-1 col-xl-1">
+                <img src="../../../../assets/image/laboratory.svg" height="50" alt="" />
+                </div>
+              <div class="col-sm-12 col-lg-11 col-md-11 col-xl-11 line-margin1  name-white1">
+                <p>Book Diagnostics Tests from nearby Diagnostics centers.<br>
+                Home collection of samples and reports delivered to your MEDePAL account.</p>
+    
+              </div></div>
+          </div>
+        </div>
+        
+        </div>
+        </div>
+        </div>
+</div>
+
+<!--End Working on app/issues/782 -->
+<div class="row" *ngIf="allDataFetched">
+  <div class="col-lg-12" *ngIf="redirectFlag">
+    <form [formGroup]="form">
+      <div formArrayName="addreses">
+        <div class="row top-btn-area">
+
+          <div class="col-lg-12">
+            <button type="button"
+              [disabled]="form.controls.addreses.controls[0] && form.controls.addreses.controls[0].get('isEdit').value "
+              (click)="addNewAddress()" class="btn btn-sm btn-primary float-right">{{
+                                                'USER_PROFILE.USER_PROFILE_ADD_ADDRESS' | translate }}</button>
+          </div>
+        </div>
+        <!-- Working on app/issues/782 -->
+        <app-registration-workflow [workflow]="workflow"
+          [isRegistrationWorkflowCompleted]="isRegistrationWorkflowCompleted"></app-registration-workflow>
+        <!-- End Working on app/issues/782 -->
+        <br />
+        <div class="text-center" *ngIf="form.controls.addreses.controls.length==0 && addressFirstLoad">
+          <h1 class="noAdressData">{{ 'USER_PROFILE.USER_PROFILE_ADDRESS_EMPTY_ERROR_MESSAGE' | translate }}
+          </h1>
+        </div>
+
+        <div *ngIf="form.controls.addreses.controls.length>0" class="row page-content">
+
+          <!-- <ngb-panel *ngFor="let address of userProfileData?.addressList; let i = index" title="{{address.addressType}} Address"> -->
+          <div class="col-xl-4 col-lg-6 col-md-6" *ngFor="let ctrl of form.controls.addreses.controls; let i = index"
+            [formGroupName]="i" id="{{i}}">
+
+            <app-common-address-card #commonAddressCardForm [getaddressTypes]="getaddressTypes" [addressHeader]="addressHeader"
+              (emitOldItems)="emitOldItems($event)" (emitSaveAddress)="emitSaveAddress($event)"
+              (emitBackOperation)="emitBackOperation($event)" (emitCreateAddressModal)="emitCreateAddressModal($event)"
+              (emitGetAddressDetails)="emitGetAddressDetails()" [form]="form" [ctrl]="ctrl" [i]="i"
+              [isEditDeleteAllowed]="isEditDeleteAllowed"></app-common-address-card>
+
+
+
+          </div>
+        </div>
+        <br>
+
+      </div>
+    </form>
+  </div>
+</div>
+<jw-modal id="create-Address-type-modal">
+  <h1>{{ 'USER_PROFILE.USER_PROFILE_POPUP_NEW_ADDRESS_TYPE' | translate }}</h1>
+  <p>{{ 'USER_PROFILE.USER_PROFILE_POPUP_ADDRESS_TYPE' | translate }}<input type="text" [(ngModel)]="addressT"
+      placeholder="{{ 'USER_PROFILE.USER_PROFILE_POPUP_PLACEHOLDER_ENTER_ADDRESS_TYPE' | translate }}" /></p>
+  <div class="row">
+    <div class="col-sm-2">
+      <button class="btn btn-default" (click)="createAddresType(addressT,'create-Address-type-modal');">{{
+                'USER_PROFILE.USER_PROFILE_POPUP_SUBMIT' | translate }}</button>
+    </div>
+    <div class="col-sm-2">
+      <button class="btn btn-default" (click)="closeModal();">{{
+                'USER_PROFILE.USER_PROFILE_POPUP_CLOSE' | translate }}</button>
+    </div>
+  </div>
+</jw-modal>
+
+<ng-template #addressTypeTemp>
+  <div class="modal-header">
+    <h4 class="modal-title float-left">{{ 'USER_PROFILE.USER_PROFILE_POPUP_NEW_ADDRESS_TYPE' | translate }}</h4>
+    <button type="button" class="close float-right" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>{{ 'USER_PROFILE.USER_PROFILE_POPUP_ADDRESS_TYPE' | translate }}
+      <input type="text" [(ngModel)]="addressT"
+        placeholder="{{ 'USER_PROFILE.USER_PROFILE_POPUP_PLACEHOLDER_ENTER_ADDRESS_TYPE' | translate }}" />
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-sm btn-primary"
+      (click)="createAddresType();">{{ 'USER_PROFILE.USER_PROFILE_POPUP_SUBMIT' | translate }}</button>
+    <button type="button" class="btn btn-default"
+      (click)="closeModal()">{{ 'USER_GROUPS.USER_GROUPS_POPUP_CLOSE' | translate }}</button>
+  </div>
+</ng-template>
+<ng-template #addressname>{{'USER_PROFILE.ADD_ADDRESS_NAME' | translate}}</ng-template>

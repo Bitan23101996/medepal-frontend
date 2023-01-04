@@ -1,0 +1,149 @@
+<section class="pageMainContin">
+    <div class="content">
+      <div class="row page-content">
+        <div class="col-lg-12">
+          <form [formGroup]="refineDoctorForm" (ngSubmit)="searchDoctorList()">
+            <div class="row">
+              <div class="w-10 pr-0 pl-3 sml filter-panel-width" [ngClass]="panelVisible ? 'panelVisible' : 'panelNotVisible'">
+                <div class="card">
+                  <div class="filterPanel">
+                    <div class="row border-bottom">
+                      <div class="col-8">
+                        <h4 class="search-result-left-pen-heading">{{ 'PHARMACY_REQUISITION.REFINE_BY' | translate }}</h4>
+                      </div>
+                      <div class="col-4 text-right link-pos-adj">
+                        <a href="javascript:void(0);" (click)="resetAll()">{{ 'COMMON.RESET_ALL_BUTTON' | translate }}</a>
+                      </div>
+                    </div>
+                    <div class="row overflow-auto scrollarea">
+                      <div class="col-12">
+                          <div class="form-group">
+                              <label class="page-header">Doctor Name</label>
+                              <input type="text" formControlName="doctorName" class="form-control">
+                            </div>
+                        <div class="form-group">
+                          <label class="page-header">Registration No</label>
+                          <input type="text" formControlName="registrationNo" class="form-control" maxlength="4" numbersOnly>
+                        </div>
+                        <div class="form-group">
+                            <div class="row pb-2">
+                              <div class="col-8"><label class="page-header">Approval Status</label></div>
+                              <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0);" (click)="resetApprovalStatus()">{{
+                                  'COMMON.RESET_BUTTON' | translate }}</a></div>
+                            </div>
+    
+                            <div *ngFor="let m of approvalStatusList" class="form-check">
+                              <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" value="{{m.attributeValue}}"
+                                  formControlName="approvalStatus" (change)="approvalStatusChange($event, m)"><span>{{m.displayValue}}</span>
+                              </label>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                              <div class="row pb-2">
+                                <div class="col-8"><label class="page-header">Verification Status</label></div>
+                                <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0);" (click)="resetVerification()">{{
+                                    'COMMON.RESET_BUTTON' | translate }}</a></div>
+                              </div>
+      
+                              <div class="form-check">
+                                <label class="form-check-label">
+                                  <input type="radio" class="form-check-input" value="Y"
+                                    formControlName="verificationStatus"><span>Yes</span>
+                                </label>
+                              </div>
+                              <div class="form-check">
+                                  <label class="form-check-label">
+                                    <input type="radio" class="form-check-input" value="N"
+                                      formControlName="verificationStatus"><span>No</span>
+                                  </label>
+                                </div>
+  
+                            </div>
+
+
+                        
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group text-right border-top pt-2">
+                    <button type="submit" class="btn btn-primary btn-sm">{{ 'COMMON.SEARCH_BUTTON' | translate }}</button>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="col">
+                <div class="card">
+                  <div class="row header cardHeader  pl-0 pr-0 pt-0">
+                    <div class="col-10">
+                      <div>
+                        <h1>{{title}}</h1>
+                      </div>
+                    </div>
+                    <div class="col-2 text-right">
+                      <div class="filterBtn mr-4 cursor" (click)="refinePanelDisplay()">Filters</div>
+                    </div>
+                  </div>
+                  <div class="content table-responsive search-result">
+                    <p-table [value]="searchList" [paginator]="searchListLength > 10" [rows]=10>
+                      <ng-template pTemplate="header">
+                        <tr *ngIf="searchListLength > 0">
+                          <th width="20%">Doctor</th>
+                          <th width="15%">Reg. No.</th>
+                          <th width="15%">Approval Status</th>
+                          <th width="50%">Reason</th>
+  
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-q let-i="rowIndex">
+                        <tr>
+                          <ng-container>
+                            <td width="20%">
+                              <p>
+                                <strong>{{q.doctorName}}</strong>
+                                <span *ngIf="q.gender!=''"> ({{q.gender}})</span>
+                              </p>
+                              <p *ngIf="q.qualification!=''">
+                               ( {{q.qualification}} )
+                              </p>
+                              <p *ngIf="q.specialization!=''">
+                                  ( {{q.specialization}} )
+                                 </p>
+                              <p *ngIf="q.mobileNo!=null">
+                                <img _ngcontent-c2="" height="12px" src="../../../../../assets/image/phone.svg"> {{q.mobileNo}}
+                              </p>
+                              <p *ngIf="q.emailId!=null">
+                                <img _ngcontent-c2="" height="12px" src="../../../../../assets/image/info-ico.svg"> {{q.emailId}}
+                              </p>
+  
+                            </td>
+                            <td width="15%">
+                              <strong>
+                                {{q.registrationNo}}
+                                <!-- <span *ngIf="q.registrationNo!='' && q.yearOfRegistration!=null"> of {{q.yearOfRegistration}}</span> -->
+                              </strong>
+                            </td>
+                            <td width="15%">
+                               <span class="status-pending" *ngIf="q.approvalStatus=='PENDING_VERIFICATION'">Pending</span> 
+                               <span class="status-completed" *ngIf="q.approvalStatus=='APPROVED'">Approved</span> 
+                               <span class="status-confirmed " *ngIf="q.approvalStatus=='REVOKED'">Revoked</span> 
+                               <span class="status-cancel" *ngIf="q.approvalStatus=='REJECTED'">Rejected</span> 
+                            </td>
+                            <td width="50%">
+                             <app-search-action [index]="i" [docInfo]="q" (emitResponse)="getResponse($event)"></app-search-action>
+                            </td>
+                            
+                          </ng-container>
+                        </tr>
+                      </ng-template>
+                    </p-table>
+                    <div class="text-center text-info" *ngIf="searchListLength == 0">Sorry, no records found matching your search conditions</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>

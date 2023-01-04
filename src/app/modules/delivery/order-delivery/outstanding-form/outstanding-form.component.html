@@ -1,0 +1,31 @@
+<form [formGroup]="outstandingForm" (ngSubmit)="saveOutToPacked()">
+  <div class="form-group">
+    <label class="userKey control-label">
+      No. of Packages
+      <span class="validation-error">*</span>
+    </label>
+    <input type="number" class="form-control" min="1" formControlName="noOfPackage" required>
+    <div *ngIf="submitted && outstandingForm.controls.noOfPackage.errors">
+        <div class="validation-error" *ngIf="outstandingForm.controls.noOfPackage.errors.required">This field is required</div>
+      </div>
+    
+  </div>
+  <div class="form-group">
+      <label>Upload Invoice  <span class="validation-error">*</span></label>
+      <!-- <input type="file" (change)="selectSingleFile($event)"> -->
+      <div class="row">
+          <div class="col-md-9" *ngIf="fileName !=''"> <input type="text" [disabled]="true" title="{{fileName}}" class="form-control" [value]="fileName" ></div>
+          <div class="col-md-9" *ngIf="fileName ==''"><input type="text" [disabled]="true" class="form-control" [value]="'No File Uploaded'">
+            <div *ngIf="submitted && fileName ==''" class="validation-error">This field is required</div>
+          </div>
+          <input type="file" (change)="selectSingleFile($event)" [hidden]="true" id="{{idForFile}}" required>
+          
+          <div class="col-md-3 float-right">
+              <label ngbTooltip="Upload File" class="cursor" *ngIf="fileName ==''" for="{{idForFile}}"> <i class="fa fa-upload pointer"
+                      aria-hidden="true"></i></label>
+              <label ngbTooltip="Remove File" class="cursor" *ngIf="fileName !=''"><i class="fa fa-eraser pointer" aria-hidden="true" (click)="closeSingleFile()"></i></label>
+          </div>
+      </div>
+  </div>
+  <button type="submit" class="btn btn-primary mt-1">Packed</button>
+</form>

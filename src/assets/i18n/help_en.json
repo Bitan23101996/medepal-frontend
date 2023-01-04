@@ -1,0 +1,18 @@
+{
+    "IMPINFO":{
+      "TOP_HEADING_FETCH_PATIENT":"Displaying your appointments for",
+      "TOP_HEADING_FETCH_PATIENT_PERIOD":"Welcome! Here is a view of your appointments for the period",
+      "TODAY_APPT_FETCH_PATIENT":"View your appointments for today",
+      "MSG1_FETCH_PATIENT":"To <b>CONFIRM</b> or <b>REJECT</b> your pending appointments, click on <b>PENDING APPOINTMENTS</b>.",
+      "MSG2_FETCH_PATIENT":"Want to proceed with prescription, click on <b>START</b> or <b>RESUME</b>.",
+      "MSG3_FETCH_PATIENT":"You can view existing invoices or create a new invoice using the <b>INVOICE</b> link.",
+      "TOP_HEADING_LIST_OF_ALL_PENDING_APPOINTMENTS": "List of appointments that require your confirmation",
+      "MSG1_DOCTOR_CHAMBER": "Approximate time for a patient visit. Your appointment time slots will be determined accordingly.",
+      "MSG2_DOCTOR_CHAMBER": "Number of appointments that you can take beyond your normal schedule.",
+      "MSG3_DOCTOR_CHAMBER": "For online booking, appointment requests will be automatically confirmed, subject to availability. Else, each appointment has to be confirmed manually.",
+      "MSG4_DOCTOR_CHAMBER": "If selected, patients will be asked to come in a time range instead of a fixed time.",
+      "MSG5_DOCTOR_CHAMBER": "Whether your or the clinic's prescription will be used.",
+      "MSG6_DOCTOR_CHAMBER": "For an advance booking fee at the time of taking an appointment.",
+      "MSG_ACCECPT_ONLINE_APPOINTMENTS": "If selected, patient will be able to book appointments for online visit"
+    }
+}

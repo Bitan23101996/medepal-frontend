@@ -1,0 +1,119 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+<div class="row top-btn-area">
+</div>
+<div class="row">
+  <!-- new add to search medicine by medicine name-->
+  <div class="row col-md-12 height45">
+    <!-- <input class="form-control" placeholder="{{'HEADER.HEADER_SEARCH_FOR_DOCTORS_SPECIALITY_OR_CONDITION' | translate }}" type="search"> -->
+    <div class="col-md-6">
+      <p-autoComplete [style]="{'width':'100%'}" [suggestions]="results" (completeMethod)="search($event)"
+        field=" " [(ngModel)]="medBrand" placeholder="Search for medicines and add to cart">
+        <ng-template let-resultEl pTemplate="item">
+          <span class="display-inline-block width85">
+            <span class="font-size11px font-weight500">{{resultEl.brandName}}</span><br>
+            <span class="textDot font9px">Composition: {{resultEl.product_composition}}</span>
+          </span>
+          <span class="float-right display-inline-block">
+            <button class="float-right btn btn-primary"
+              (click)="onClickMedAddByMedSearchDrpDwn(resultEl)">{{'COMMON.ADD_BUTTON' | translate}}</button></span>
+          <!-- <i class="fas fa-plus-circle" (click)="onClickAddIconOnAddNewMedicineModal(results)"></i> -->
+        </ng-template>
+      </p-autoComplete>
+    </div>
+    <div class="col-md-2">
+      <i class="fas fa-search h4 text-body" style="margin-top: 0px!important;color: #ccc !important;">&nbsp;</i>
+    </div>
+  </div><br />
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-8 gridHeight">
+        <div class="col-md-12 border padding10">
+          <div class="row">
+            <div class="col-md-5">
+              <h6 class="margin-left13px">{{'ORDER_MEDICINE.GRID_HEADER_MEDICINE_LEBEL_NAME' | translate}}</h6>
+            </div>
+            <div class="col-md-2">
+              <h6 class="margin-left32px">{{'ORDER_MEDICINE.GRID_HEADER_QUANTITY_LEBEL_NAME' | translate}}</h6>
+            </div>
+            <div class="col-md-3 text-right">
+              <h6 class="margin-right6px">{{'ORDER_MEDICINE.GRID_HEADER_TOTAL_PRICE_LEBEL_NAME' | translate}}</h6>
+            </div>
+            <!-- <div class="col-md-3">
+              <h6>Prescription</h6>
+            </div> -->
+            <div class="col-md-1"></div>
+          </div>
+        </div><br>
+        <!--Data-->
+        <div class="col-md-12 border" *ngFor="let orders of cartData">
+          <div *ngFor="let orderList of orders.cartItems; let i = index" class="margin-bottom-18px">
+            <div class="row padding8">
+              <div class="col-md-5">
+                <div class="row margin-bottom-15px padding-left15px">
+                  <p class="order-med-name textDot width85"><b>{{orderList.itemName}}</b></p>&nbsp;&nbsp;&nbsp;<label *ngIf="orderList.prescriptionRequired"
+                    title="prescription required"><i class="fas fa-file-medical"></i></label>
+                </div>
+                <span title="by {{orderList.brandName}}">by {{orderList.brandName}}</span><br>
+                <span>{{orderList.product_package}}</span>
+              </div>
+              <div class="col-md-2 margin-top19px text-center">
+                <!-- <p>{{orderList.numUnits}}</p> -->
+                <input class="width-40px text-center" type="number" (input)="updatePriceByQuantity($event,orders,i)" min="1" name="medicineQuantity"
+                [(ngModel)]="orderList.numUnits" 
+                 /><!--(click)="updatePriceByQuantity($event,orders,i)" (keyUp)="updatePriceByQuantity($event,orders,i)"-->
+              </div>
+              <div class="col-md-3 margin-top19px text-right">
+                <p>{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{orderList.netAmount | number:'2.2-2'}}</p>
+              </div>
+              <!-- <div class="col-md-3">
+                <select class="width164 margin-top18px" [(ngModel)]="orderList.prescriptionRefNo" (change)="selectPrescription(orderList.prescriptionRefNo)">
+                  <option *ngFor="let prescription of prescriptionsForMe" value="{{prescription.prescriptionRefNo}}">
+                    <span>{{prescription.doctorName}}</span>({{prescription.prescriptionDate | dateFormat}})
+                  </option>
+                </select>
+              </div> -->
+              <div class="col-md-1 margin-top19px">
+                <label *ngIf="orderList.requsitionRefNo || medicineAdded"><i ngbTooltip="Delete Medicine"
+                    (click)="deleteMedicine(orders,i)" class="fas fa-trash-alt cursor"></i></label>
+                <!-- <label *ngIf="!orderList['requsitionPk']>0 && !medicineAdded" (click)="saveAddToCart(orders,orderList)" class="cursor" ngbTooltip="Add to cart"><i class="fas fa-cart-plus"></i></label> -->
+              </div>&nbsp;&nbsp;
+            </div><br>
+          </div>
+        </div><br>
+      </div>
+      <div class="col-md-4 min-height168px">
+        <div class="col-md-12 border min-height100percent-for-carted-medicine">
+          <div class="row padding10">
+            <div class="col-lg-8">
+              <p class="font-size-larger"><b>{{'ORDER_MEDICINE.SUBTOTAL_LEBEL_NAME' | translate}} ({{cardItemCount}}
+                    {{'ORDER_MEDICINE.ITEM_LEBEL_NAME' | translate}}<ng-container *ngIf="cardItemCount>1">s</ng-container>):
+                  </b></p>
+            </div>
+            <div class="col-lg-4 padding-top4px text-right">
+              <p>{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{totalAmount | number:'2.2-2'}}</p>
+            </div>
+          </div>
+          <div class="padding-top29px text-center">
+            <button [disabled]="subTotalIsZero" class="btn btn-primary"
+              (click)="placeOrder()">{{'ORDER_MEDICINE.PLACE_ORDER' | translate}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

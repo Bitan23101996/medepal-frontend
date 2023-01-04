@@ -1,0 +1,54 @@
+.upload-button
+{
+    margin-top: -17px;
+}
+.line-gap p
+{
+    line-height: 22px;
+}
+.multi-btn-w-divide2 {
+    border-left:1px solid #4d4d4d !important;
+    padding-left: 2px;
+    padding-top: 0px !important;
+    border-radius:0 !important;
+    font-size:11px !important;
+    height:12px;
+    margin-left: -30px;
+}
+
+.multi-btn-w2
+{
+
+    padding-top: 0px !important;
+    font-size:11px !important;
+    height:13px;
+}
+
+ .page-content .card .table-responsive td .btn {
+    margin-bottom:0 !important;
+    padding: 0 6px !important;
+}
+ .pd-heading
+ {
+     padding-left: 15px;
+ }
+
+ .heading-style
+ {
+     
+     font-size: 16px;
+ }
+.view-margin
+{
+    margin-left: 38px !important;
+
+}
+
+.prescription h2{
+    font-size:18px;
+    font-weight:400;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    color:#5f5f5f;
+}

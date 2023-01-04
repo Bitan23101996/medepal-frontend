@@ -1,0 +1,114 @@
+<!--Created by Shaan-->
+<div class="container-fluid" >
+
+  <!--<section class="content" *ngIf="userData && !userData.documentUploadComplete">-->
+  <section class="content" *ngIf="userData">
+    <div id="main-form-content">
+      <form [formGroup]="documentGrp" (ngSubmit)="OnSubmit(documentGrp.value)" #uploadDocumentsForm="ngForm"
+        ngNativeValidate>
+        <div class="container">
+          <!-- <div class="row">
+              <div class="col-sm-12">
+            <div class="col-sm-6">
+              <h6 class="page-header ">
+                Upload Documents
+              </h6>
+            </div>
+            <div class="col-sm-6">
+              <div class="float-right">
+                <button type="submit" [disabled]="!documentGrp.valid" class="btn btn-primary btn-sm">Save</button>
+              </div>
+            </div>
+            </div>
+          </div> -->
+         <!--  <h6 class="page-header ">
+              Upload Documents: ({{userData.spEntityDTO.name}})
+            </h6>
+           <hr>
+           -->
+         
+        </div>
+       <!--  <div class="container" style="margin-left:25px; width:95%;"> -->
+          <div class="row">
+            <div class="col-8">
+              <file-handle (onUpload)="onUpload($event)" formControlName="documents" [multiple]="true" [remove]="false"></file-handle>
+            </div>
+          </div>
+        <!-- </div> -->
+
+        <!-- <div class="box box-solid box-primary">
+
+          <div class="box-body" formArrayName="items">
+            <p>&nbsp;</p>
+            <div class="container">
+              <h6 class="page-header  text-blue ">
+                <i class="fa fa-files-o"></i> Upload Documents
+              </h6>
+            </div>
+            <div class="container" style="margin-left:25px; width:95%;">
+              <div class="row">
+                <div class="col-sm-12">
+
+
+                  <div *ngFor="let item of items.controls; let i = index;">
+                    <div [formGroupName]="i">
+                      <table id="tbl-upload" class="table table-bordered">
+                        <tbody>
+                          <tr *ngIf="i==0" class="active">
+                            <th>Document Description</th>
+                            <th>Document File</th>
+                            <th>Document Type</th>
+                            <th>&nbsp;</th>
+                          </tr>
+                          <tr>
+
+
+                            <td>
+                              <div class="form-group ">
+
+                                <input type="text" class="form-control" name="doc_description" formControlName="doc_description"
+                                  maxlength="100" placeholder="Enter document related descriptions" required="">
+
+                                <div class="help-block"></div>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="form-group  required">
+
+                                <input type="file" name="admission_docs_path" title="Browse Document" (change)="fileSelectionEvent($event)"
+                                  required="">
+                                <div class="help-block"></div>
+                              </div>
+                            </td>
+                            <td>
+                              <select name="pharmacyFileType" value="Select">
+                                <option>File Type 01</option>
+                                <option>File Type 01</option>
+                                <option>File Type 01</option>
+                              </select>
+                            </td>
+                            <td class="remove" *ngIf=" i==0 || i!=0">
+                              <button class="btn btn-primary btn-sm" title="Remove" (click)="removeItem(i)"><i class="fa fa-minus-square text-red"></i>Remove</button>
+                            </td>
+
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="float-right">
+                    <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                    <button class="btn btn-primary btn-sm" title="Add More" style="margin-left:5px;" (click)="addItem()">
+                      <i class="fas fa-plus"></i>&nbsp; Add More</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+      </form>
+    </div>
+
+
+  </section>
+</div>

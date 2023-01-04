@@ -1,0 +1,70 @@
+.input-sm{
+    width: 50px !important;
+}
+.input-md{
+    width: 110px !important;
+}
+.table-responsive{
+    overflow-x: inherit;
+}
+.unit{
+    margin-top: 7px;
+    margin-left: 10px;
+}
+
+.gen-invoice-header-area{
+  text-transform: uppercase;
+}
+
+.page-content .card-header.gen-invoice{
+  border-bottom:none;
+}
+
+.txtarea-width{
+  width:75px !important;
+}
+
+.page-content .card input{
+  font-size:12px !important;
+  font-weight:400 !important;
+}
+
+.total-area-padding{
+  padding-right:75px;
+}
+
+.num-of-days{
+  width:20%;
+  margin:auto;
+}
+
+.first-col-width{
+  width:50px;
+}
+
+.item-width{
+  width:90%;
+}
+
+
+.refundLabel{
+  border-radius: 20px;
+  background: #146199;
+  min-width: 100px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+}
+.paymentLabel{
+  border-radius: 20px;
+  background: #ce8a35;
+  min-width: 100px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+}
+.mt25{
+  margin-top: -25px !important;
+}

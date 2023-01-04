@@ -1,0 +1,18 @@
+.scrollareaForResourceList{
+    max-height: calc(100vh - 200px);
+    font-size: 11px;
+    text-align: left;
+    background: #f5f8f9;
+    border: 1px solid #dee2e6;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.refine-panel-border-bottom {
+    border-bottom: 1px solid #aba3ab!important;
+}
+
+.selected-refine-by-div {
+    background:#ced6d8;	
+}
+

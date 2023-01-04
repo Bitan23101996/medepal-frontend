@@ -1,0 +1,38 @@
+.mt-60{
+    margin-top: 60px;
+}
+/*.searchSection.top .btn-primary{
+    top: 0px !important;
+    right: 14px !important;
+}*/
+
+.main-header2{
+    font-size:18px;
+    font-weight:400;
+    padding-top:45px;
+    color:#5f5f5f;
+  }
+  
+  .style-margin2 p
+  {
+      margin-bottom: auto;
+  }
+  
+  .font2-style1
+  {
+      font-family: Georgia, 'Times New Roman', Times, serif;
+      font-size: 24px;
+      
+  }
+  .font2-style2
+  {
+      font-family: Georgia, 'Times New Roman', Times, serif;
+      font-size: 16px;
+  
+  }
+  
+  .gap-search2
+  {
+      padding-bottom: 15px;
+  }
+  

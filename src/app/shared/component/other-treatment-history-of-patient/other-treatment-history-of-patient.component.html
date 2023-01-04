@@ -1,0 +1,268 @@
+<!-- /*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */ -->
+
+
+<div class="row">
+<!-- start div to display prescription  -->
+<!-- <div class="col-12"> -->
+  <!-- <div class="col page-content"> -->
+    <div class="card other-patient-details">
+      <div class="row pb-2">
+        <div class="col-12 text-center">
+          <h1 class="top-label">
+            <span style="font-size:16px !important">{{ 'OTHER_TREATMENT_HISTORY.PRESCRIPTIONS' | translate}}</span>
+          </h1>
+        </div>        
+      </div>
+      <!-- <hr> -->
+      <!-- to show error msg(if there is no matched profile) -->
+      <div *ngIf="errorMsgObj.prescriptionNotFoundFlag" class="row page-content">
+        <div class="row col-lg-12 text-center padding-right0psx">
+          <div class="text-right not-found col-lg-8">
+            <h3>
+              <ng-container *ngIf="prescriptionListToview.length == 0">
+                {{'MY_PRESCRIPTION.NO_PRESCRIPTION_FOUND' | translate}}</ng-container>
+            </h3>
+          </div>         
+        </div>
+      </div>
+      <!-- end of error msg show -->      
+      <div class="content table-responsive for-medium search-result">
+        <p-table *ngIf="prescriptionListToview.length > 0" [value]="prescriptionListToview"
+          [paginator]="prescriptionListToview.length>10" [rows]=10>
+          <ng-template pTemplate="header">
+            <tr>
+              <!-- <th width="5%"></th> -->
+              <th width="22%">{{'MY_PRESCRIPTION.DATE' | translate}}</th>
+              <th width="26%">{{'MY_PRESCRIPTION.DOCTOR_NAME' | translate}}</th>
+             <th width="6%"></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-prescription>
+           <tr>
+                  <!-- <td *ngIf="prescription.source == 'SBIS'" title="Digital prescription"><img height="14px;"
+                      src="../../../../assets/image/logo-r.jpg">
+                  </td>
+                  <td *ngIf="prescription.source != 'SBIS'"></td>                 -->
+                  <td>{{prescription.prescriptionDate | dateFormat}}</td>                  
+                  <td>{{prescription.doctorName}}</td>
+                  <td>
+                    <i (click)="openPrescription(prescription,true)" title="view" class="fas fa-eye cursor"></i>
+                  </td>
+                  <!-- <td class="cursor">
+                    <button type="button" class="btn btn-secondary cursor table-action-btn multi-btn-w2 view-margin "
+                      container="body" href="javascript:void(0)"
+                      (click)="openPrescription(prescription,true)">{{'MY_PRESCRIPTION.VIEW' | translate}}</button>
+                  </td>                   -->
+                </tr>
+          </ng-template>
+        </p-table>
+      </div>
+      <!-- <div class="content table-responsive search-result">
+        <p-table [value]="prescriptionListToview" [paginator]="prescriptionListToview.length>10" [rows]=10>
+          <ng-template pTemplate="body" let-prescription>
+            <tr>
+              <ng-container>
+                <td class="mobile-table">
+                  <table>                   
+                    <tr>
+                      <td class="small-header">{{'MY_PRESCRIPTION.DATE' | translate}}</td>
+                      <td class="mb-0">{{prescription.prescriptionDate | dateFormat}}</td>
+                    </tr>
+                    <tr>
+                      <td class="small-header">{{'MY_PRESCRIPTION.DOCTOR_NAME' | translate}}</td>
+                      <td class="mb-0">{{prescription.doctorName}}</td>
+                    </tr>                   
+                    <tr>
+                      <td class="align-left">
+                        <div class="row">
+                          <div class="col-12" *ngIf="prescription.source == 'SBIS'">
+                            <img height="14px;" src="../../../../assets/image/logo-r.jpg">
+                          </div>                  
+                        </div>
+                      </td>
+                      <td>
+                        <div class="row">
+                          <div class="col-12 pr-5 text-right">
+                            <a href="javascript:void(0)" class="a-custom-color"
+                              (click)="openPrescription(prescription,true)">{{'MY_PRESCRIPTION.VIEW' | translate}}</a>
+                          </div>   
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </ng-container>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div> -->
+    </div>
+  <!-- </div> -->
+<!-- </div> -->
+
+<!-- end of div prescription -->
+
+
+<!-- start div treatment history -->
+
+<!-- <div class="col-12"> -->
+  <!-- <div class="col page-content"> -->
+    <div class="card other-patient-details">
+      <div class="row pb-2">
+        <div class="col-12 text-center">
+          <h1 class="top-label">
+            <span style="font-size:16px !important">{{'OTHER_TREATMENT_HISTORY.TEST_REPORTS' | translate}}</span>
+          </h1>
+        </div>        
+      </div>
+      <!-- <hr> -->
+      <!-- to show error msg(if there is no matched profile) -->
+      <div *ngIf="errorMsgObj.testReportNotFoundFlag" class="row page-content">
+        <div class="row col-lg-12 text-center padding-right0psx">
+          <div class="text-right not-found col-lg-8">
+            <h3>
+              <ng-container *ngIf="testReportsListToView.length == 0">
+                {{'MEDICAL_REPORTS.MEDICAL_REPORTS_NOT_FOUND' | translate}}</ng-container>
+            </h3>
+          </div>         
+        </div>
+      </div>
+      <!-- end of error msg show -->      
+      <div class="content table-responsive for-medium search-result">
+        <p-table *ngIf="testReportsListToView.length > 0" [value]="testReportsListToView"
+          [paginator]="testReportsListToView.length>10" [rows]=10>
+          <ng-template pTemplate="header">
+            <tr>
+              <!-- <th width="5%"></th> -->
+              <th width="21%">{{'MEDICAL_REPORTS.DATE' | translate}}</th>
+              <th width="24%">{{'MEDICAL_REPORTS.TEST_NAME' | translate}}</th>
+              <th width="19%">{{'MEDICAL_REPORTS.DOCTOR' | translate}}</th>
+              <th width="7%"></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-testreports>
+            <tr>
+              <!-- <td *ngIf="testreports.source == 'SBIS'"><img height="14px;" src="../../../../assets/image/logo-r.jpg">
+              </td>
+              <td *ngIf="testreports.source != 'SBIS'"></td> -->
+              <td class="textDot-myOrders">{{testreports.prescriptionDate | dateFormat}}</td>
+              <td *ngIf="testreports.testName" class="textDOT-display">{{testreports.testName}}</td>
+              <td *ngIf="!testreports.testName"><span class="notSpecified">not specified</span></td>
+              <td>{{testreports.doctorName}}</td>
+              <td>
+                <i (click)="openPrescription(testreports,false)" title="view" class="fas fa-eye cursor"></i>
+              </td>
+              <!-- <td><a href="javascript:void(0)" class="a-custom-color cursor"
+                  (click)="openPrescription(testreports,false)">{{'MY_PRESCRIPTION.VIEW' | translate}}</a>&nbsp;
+              </td>    -->
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+      <!-- <div class="content table-responsive search-result">
+        <p-table [value]="testReportsListToView" [paginator]="testReportsListToView.length>10" [rows]=10>
+          <ng-template pTemplate="body" let-testreports>
+            <tr>
+              <ng-container>
+                <td class="mobile-table">
+                  <table>                   
+                    <tr>
+                      <td class="small-header">{{'MEDICAL_REPORTS.DATE' | translate}}</td>
+                      <td class="mb-0">{{testreports.prescriptionDate | dateFormat}}</td>
+                    </tr>
+                    <tr>
+                      <td class="small-header">{{'MEDICAL_REPORTS.TEST_NAME' | translate}}</td>
+                      <td *ngIf="testreports.testName" class="mb-0">{{testreports.testName}}</td>
+                      <td *ngIf="!testreports.testName"><span class="notSpecified">not specified</span></td>
+                    </tr>
+                    <tr>
+                      <td class="small-header">{{'MEDICAL_REPORTS.DOCTOR' | translate}}</td>
+                      <td class="mb-0">{{testreports.doctorName}}</td>
+                    </tr>
+                    <tr>
+                      <td class="align-left">
+                        <div class="row">
+                          <div class="col-12" *ngIf="testreports.source == 'SBIS'">
+                            <img height="14px;" src="../../../../assets/image/logo-r.jpg">
+                          </div>                      
+                        </div>
+                      </td>
+                      <td>
+                        <div class="row">
+                          <div class="col-12 pr-5 text-right">
+                            <a href="javascript:void(0)" class="a-custom-color"
+                            (click)="openPrescription(testreports,false)">{{'MY_PRESCRIPTION.VIEW' | translate}}</a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </ng-container>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div> -->
+    </div>
+  <!-- </div> -->
+<!-- </div> -->
+
+
+<!-- end of div treatment history -->
+
+<!-- modal for prescription -->
+
+<ng-template #prescriptionPreviewModal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{'MY_PRESCRIPTION.PRESCRIPTION' | translate}}</h4>
+
+    <button type="button" class="close float-right" (click)="modalRef.hide()" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="row" *ngIf="!prescriptionSBIS">
+    <div class="col-md-12">
+      <div class="float-right mb-2">
+        <span class="ml-2" id="download-ico"><img src="../../../../assets/image/download.svg" (click)="downloadFile()"
+            height="15" class="cursor" /></span>
+        <span class="ml-2" id="print-ico"><img src="../../../../assets/image/print.svg" height="15"
+            class="cursor" /></span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="prescriptionSBIS">
+    <app-prescription-preview [modalRef]="modalRef" [appRefNo]="appRefNo" *ngIf="testReportDisplayModalFlag"></app-prescription-preview>
+
+    <app-prescription-preview [modalRef]="modalRef" [prescriptionRefNo]="prescriptionRefNo"
+      [prescription]="prescription" [appRefNo]="appRefNo" [prePrintOff]="true" *ngIf="!testReportDisplayModalFlag">
+    </app-prescription-preview>
+
+  </div>
+  <div *ngIf="!prescriptionSBIS">
+    <img *ngIf="download.contentType !='application/pdf'" class="prescription-img-size-full"
+      [src]="domSanitizer.bypassSecurityTrustUrl(download.downloadImageSrc)" id="image-corner" alt="">
+    <iframe width="100%" height="500" scrolling="no" frameborder="0" id="prescriptionIframe"
+      *ngIf="download.contentType =='application/pdf'"
+      [src]="domSanitizer.bypassSecurityTrustResourceUrl(download.downloadImageSrc)"></iframe>
+  </div>
+
+</ng-template>
+
+<!-- end of modal for prescription -->
+
+</div>

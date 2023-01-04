@@ -1,0 +1,103 @@
+<div class="row" *ngIf="allDataFetched">
+    <div class="col-lg-12">
+        <form [formGroup]="form">
+            <div class="row top-btn-area">
+                <div class="col-lg-10"></div>
+                <div class="col-lg-2">
+                    <button type="button" [disabled]="isAddNewButtonDisable" (click)="addExercise()" class="btn btn-sm btn-primary">
+                        {{ 'USER_PROFILE.USER_PROFILE_EXERCISE_ADD_EXERCISE_LABEL' | translate }}</button>
+                </div>
+            </div>
+            <div class="alert alert-warning" *ngIf="form.controls.exercise.controls.length==0">
+                {{ 'USER_PROFILE.USER_PROFILE_EXERCISE_EMPTY_ERROR_MESSAGE' | translate }}
+            </div><br>
+            <div *ngIf="form.controls.exercise.controls.length>0">
+                <div formArrayName="exercise">
+                    <div class="table-responsive">
+                        <table class="table table-fixed">
+                            <thead>
+                              <tr class="d-flex">
+                                <th scope="col" class="col-4">{{ 'USER_PROFILE.USER_PROFILE_EXERCISE_NATURE_OF_EXERCISE_LABEL' |
+                                    translate }}</th>
+                                <th scope="col" class="col-4">{{'USER_PROFILE.USER_PROFILE_EXERCISE_EXERCISE_FREQUENCY_LABEL' |
+                                    translate }}</th>
+                                <th scope="col" class="col-2">{{ 'USER_PROFILE.USER_PROFILE_EXERCISE_EXERCISE_TIME' |
+                                    translate }}</th>
+                                <th scope="col" class="col-2">{{ 'USER_PROFILE.USER_PROFILE_ACTIONS' |
+                                        translate }}</th>
+                              </tr>
+                            </thead>
+                            <tbody class="single-table">
+                                <tr *ngFor="let ctrl of form.controls.exercise.controls; let i = index" [formGroupName]="i">
+                                    <td class="col-4" *ngIf="!ctrl.get('isEdit').value">
+                                        <p class="textDot">{{ctrl.get('natureOfExercise').value}}</p>
+                                    </td>
+                                    <td class="col-4" *ngIf="ctrl.get('isEdit').value">
+                                        <select formControlName="natureOfExercise">
+                                            <option *ngFor="let exercise of masterEXERCISE" value="{{exercise.exerciseType}}">{{exercise.exerciseType}}</option>
+                                        </select>
+                                        <div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.natureOfExercise.dirty">
+                                            <span *ngIf="ctrl.hasError('required', 'natureOfExercise')" class="validation-error">{{
+                                                'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="col-4" *ngIf="!ctrl.get('isEdit').value">
+                                        <p class="textDot">{{ctrl.get('exerciseFrequency').value}}</p>
+                                    </td>
+                                    <td class="col-4" *ngIf="ctrl.get('isEdit').value">
+                                        <select formControlName="exerciseFrequency">
+                                            <option value="Weekly">{{
+                                                'USER_PROFILE.USER_PROFILE_EXERCISE_EXERCISE_FREQUENCY_WEEKLY_LABEL' |
+                                                translate }}</option>
+                                            <option value="Daily">{{
+                                                'USER_PROFILE.USER_PROFILE_EXERCISE_EXERCISE_FREQUENCY_DAILY_LABEL' |
+                                                translate }}</option>
+                                        </select>
+                                        <div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.exerciseFrequency.dirty">
+                                            <span *ngIf="ctrl.hasError('required', 'exerciseFrequency')" class="validation-error">{{
+                                                'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="col-2" *ngIf="!ctrl.get('isEdit').value">
+                                        <p class="textDot">{{ctrl.get('exerciseTime').value}}</p>
+                                    </td>
+                                    <td class="col-2" *ngIf="ctrl.get('isEdit').value">
+                                        <input type="number" min="1" max="300" maxlength="3" formControlName="exerciseTime" (keydown)="onKeydown($event)"/>
+                                        <div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.exerciseTime.dirty">
+                                            <span *ngIf="ctrl.hasError('required', 'exerciseTime')" class="validation-error">{{
+                                                'VALIDATION.VALIDATION_REQUIRED' | translate }}</span> 
+                                                <span *ngIf="ctrl.hasError('min', 'exerciseTime')" class="validation-error">
+                                                    Min Excercise time should be 1
+                                                </span> 
+                                                <span *ngIf="ctrl.hasError('max', 'exerciseTime')" class="validation-error">
+                                                        Max Excercise time should be 300
+                                                    </span>
+                                                    <span *ngIf="ctrl.hasError('maxlength', 'exerciseTime')" class="validation-error">
+                                                            Max length should be 3 digit
+                                                        </span>
+                                            
+                                            </div>
+                                    </td>
+                                    <td class="col-2"  *ngIf="!ctrl.get('isEdit').value">
+                                        <span *ngIf="isAddNewButtonDisable != true" (click)="editExercise(ctrl)" ngbTooltip="Edit Exercise" class="table-action-btn cursor grey"><img src="../../../../../assets/image/edit.svg" height="20" alt=""></span>
+                                        <span *ngIf="isAddNewButtonDisable == true" class="table-action-btn grey"><img src="../../../../../assets/image/edit.svg" height="20" alt=""></span>
+                                        <span *ngIf="isAddNewButtonDisable != true" (click)="deleteExercise(ctrl, i)" ngbTooltip="Delete Exercise" class="table-action-btn cursor grey"><img src="../../../../../assets/image/delete.svg" height="20" alt=""></span>
+                                        <span *ngIf="isAddNewButtonDisable == true" class="table-action-btn grey"><img src="../../../../../assets/image/delete.svg" height="20" alt=""></span>
+                                    </td>
+                                    <td class="col-2" *ngIf="ctrl.get('isEdit').value">
+                                        <span  [hidden]="ctrl.get('id').value==0" ngbTooltip="Cancel" class="table-action-btn cursor grey" (click)="backButtonOp(ctrl,i)"><img src="../../../../../assets/image/cancel.svg" height="20" alt=""></span>
+                                        <span [hidden]="ctrl.get('id').value!==0"  ngbTooltip="Cancel" class="table-action-btn cursor grey" (click)="backButtonOp(ctrl,i)"><img src="../../../../../assets/image/cancel.svg" height="20" alt=""></span>
+
+                                        <span ngbTooltip="Save Exercise" (click)="saveMoreExercise(ctrl);" class="table-action-btn cursor grey"><img src="../../../../../assets/image/save.svg" height="20" alt=""></span>
+                                        <!-- <span ngbTooltip="delete Exercise" (click)="deleteExercise(ctrl, i)" class="table-action-btn grey cursor"><img src="../../../../../assets/image/delete.svg" height="20" alt=""></span> -->
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

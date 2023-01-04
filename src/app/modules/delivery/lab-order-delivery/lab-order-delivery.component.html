@@ -1,0 +1,494 @@
+<!-- /*******************************************************************************
+ * * |///////////////////////////////////////////////////////////////////////|
+ * * |                                                                       |
+ * * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ * * | All Rights Reserved                                                   |
+ * * |                                                                       |
+ * * | This document is the sole property of StellaBlue Interactive          |
+ * * | Services Pvt. Ltd.                                                    |
+ * * | No part of this document may be reproduced in any form or             |
+ * * | by any means - electronic, mechanical, photocopying, recording        |
+ * * | or otherwise - without the prior written permission of                |
+ * * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ * * |                                                                       |
+ * * |///////////////////////////////////////////////////////////////////////|
+ ******************************************************************************/ -->
+<ng-template #prescriptionPreviewModal>
+  <div class="modal-header">
+    <h4 class="modal-title">Prescription</h4>
+    <button type="button" class="close float-right" (click)="modalRef.hide()" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div *ngIf="prescriptionSBIS">
+    <app-prescription-preview [modalRef]="modalRef" [appRefNo]="appRefNo"></app-prescription-preview>
+  </div>
+  <div *ngIf="!prescriptionSBIS">
+    <img *ngIf="download.contentType !='application/pdf'" class="prescription-img-size"
+      [src]="domSanitizer.bypassSecurityTrustUrl(download.downloadImageSrc)" id="image-corner" alt="">
+    <iframe width="100%" height="500" scrolling="no" frameborder="0" id="prescriptionIframe"
+      *ngIf="download.contentType =='application/pdf'"
+      [src]="domSanitizer.bypassSecurityTrustResourceUrl(download.downloadImageSrc)"></iframe>
+  </div>
+</ng-template>
+
+
+<section class="pageMainContin">
+  <div class="content">
+    <div class="row page-content" *ngIf="!orderDetailView">
+      <div class="col-lg-12">
+        <form [formGroup]="searchLabOrderForm" (ngSubmit)="searchOrder()">
+          <div class="row">
+            <div class="w-10 pr-0 pl-3 sml filter-panel-width"
+              [ngClass]="panelVisible ? 'panelVisible' : 'panelNotVisible'">
+              <div class="card">
+                <div class="filterPanel">
+                  <div class="row border-bottom">
+                    <div class="col-8">
+                      <h4 class="search-result-left-pen-heading">{{ 'ORDER_DELIVERY.REFINE_BY' | translate }}</h4>
+                    </div>
+                    <div class="col-4 text-right link-pos-adj">
+                      <a href="javascript:void(0);" (click)="resetAll()">{{ 'COMMON.RESET_ALL_BUTTON' | translate }}</a>
+                    </div>
+                  </div>
+                  <div class="row overflow-auto scrollarea">
+                    <div class="col-12">
+                      <div class="row mt-3 mb-3">
+                        <div class="col-8">
+                          <button [class]="buttonClassCurrent"
+                            (click)="changeClassButton1()">{{ 'ORDER_DELIVERY.ONE_DAY' | translate }}</button>
+                          <button [class]="buttonClassAnother"
+                            (click)="changeClassButton2()">{{ 'ORDER_DELIVERY.DURATION' | translate }}</button>
+                        </div>
+                        <div class="col-4 text-right link-pos-adj">
+                          <a href="javascript:void(0);"
+                            (click)="resetSearchDate()">{{ 'COMMON.RESET_BUTTON' | translate }}</a>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-6">
+                          <div class="form-group">
+                            <label>{{ 'ORDER_DELIVERY.FROM' | translate }}</label>
+                            <span class="float-left">
+                              <input type="text" placeholder="DD-MM-YYYY"
+                                (bsValueChange)="onValueChange('fromDate',$event)" bsDatepicker
+                                [bsConfig]="{ dateInputFormat: dateFormat, showWeekNumbers: false  }"
+                                class="form-control date" formControlName="fromDate" #dp="bsDatepicker"
+                                [readonly]="true">
+                            </span>
+                            <span class="pt-2">
+                              <i (bsValueChange)="onValueChange('fromDate',$event)" (click)="dp.toggle()"
+                                [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt"></i>
+                            </span>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="form-group">
+                            <label>{{ 'ORDER_DELIVERY.TO' | translate }}</label>
+                            <span class="float-left">
+                              <input type="text" placeholder="DD-MM-YYYY"
+                                (bsValueChange)="onValueChange('toDate',$event)" bsDatepicker
+                                [bsConfig]="{ dateInputFormat: dateFormat, showWeekNumbers: false }"
+                                class="form-control date" formControlName="toDate" #dp1="bsDatepicker"
+                                [readonly]="true">
+                            </span>
+                            <span>
+                              <i (bsValueChange)="onValueChange('toDate',$event)" (click)="dp1.toggle()"
+                                [attr.aria-expanded]="dp1.isOpen" class="far fa-calendar-alt"></i>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="row pb-2">
+                          <div class="col-8">
+                            <label class="page-header">{{ 'ORDER_DELIVERY.ORDER_STATUS' | translate }}</label>
+                          </div>
+                          <div class="col-4 text-right link-pos-adj">
+                            <a href="javascript:void(0);"
+                              (click)="resetOrderStatus()">{{ 'COMMON.RESET_BUTTON' | translate }}</a>
+                          </div>
+                        </div>
+
+                        <div *ngFor="let s of statusList" class="form-check">
+                          <label class="form-check-label">
+                            <input type="checkbox" class="form-check-input" value="{{s.attributeValue}}"
+                              formControlName="orderStatus"
+                              [checked]="stat.indexOf(s.attributeValue) > -1? true : false"
+                              (change)="statusChange($event, s)">
+                            <span>{{s.displayValue}}</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="row pb-2">
+                          <div class="col-8">
+                            <label class="page-header">{{ 'ORDER_DELIVERY.DELIVERY_MODE' | translate }}
+                            </label>
+                          </div>
+                          <div class="col-4 text-right link-pos-adj">
+                            <a href="javascript:void(0);"
+                              (click)="resetMode()">{{ 'COMMON.RESET_BUTTON' | translate }}</a>
+                          </div>
+                        </div>
+
+                        <div *ngFor="let m of modeList" class="form-check">
+                          <label class="form-check-label">
+                            <input type="checkbox" class="form-check-input" value="{{m.attributeValue}}"
+                              formControlName="mode" [checked]="modeArr.indexOf(m.attributeValue) > -1? true: false"
+                              (change)="modeChange($event, m)">
+                            <span>{{m.displayValue}}</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group text-right border-top pt-2">
+                  <button type="submit" class="btn btn-primary btn-sm">{{ 'COMMON.SEARCH_BUTTON' | translate }}</button>
+                </div>
+              </div>
+            </div>
+            <div class="col" *ngIf="allDataFetched">
+              <div class="card">
+                <div class="row header cardHeader  pl-0 pr-0 pt-0">
+                  <div class="col-10">
+                    <div>
+                      <h1>{{title}}</h1>
+                    </div>
+                  </div>
+                  <div class="filterBtn mr-4 cursor" (click)="refinePanelDisplay()">Filters</div>
+                </div>
+
+                <div class="content table-responsive search-result">
+                  <div *ngIf="searchList == null" class="text-center text-info">
+                    <p>{{ 'ORDER_DELIVERY.NO_ORDER' | translate }}</p>
+                  </div>
+                  <div class="searchList" *ngIf="searchList != null">
+                    <!-- Order List -->
+                    <div class="row" *ngFor="let q of searchList; let i = index">
+                      <div class="col-md-12">
+                        <div class="card">
+                          <div class="card-header">
+                            <div class="row">
+                              <div class="col-md-6">
+                                <h6 class="order-heading">
+                                  <a href="javascript:void(0);"
+                                    (click)="showOrderDetails(q)">{{ 'ORDER_DELIVERY.ORDER_ID' | translate }}{{ 'ORDER_DELIVERY.COLON' | translate }}{{q.requitionRefNo}}
+                                  </a>
+                                  <small class="ml-md-4 ml-0 text-capitalize"
+                                    *ngIf="q.deliveryMode !== null">{{q.deliveryMode}}
+                                    {{ 'ORDER_DELIVERY.DELIVERY' | translate }}</small>
+                                </h6>
+                              </div>
+                              <div class="col-md-6 text-md-right text-left">
+                                <div class="text-muted">
+                                  {{ 'ORDER_DELIVERY.DATE_TIME' | translate }}{{ 'ORDER_DELIVERY.COLON' | translate }}
+                                  <span>{{q.requisitionRcvDatetime | date : "dd-MM-yyyy HH:mm:ss"}}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="card-body">
+                            <div class="row">
+                              <div class="col-12 col-lg-5">
+                                <div class="table-responsive medicine-details">
+                                  <table class="table">
+                                    <tbody>
+                                      <tr *ngFor="let medicine of q.entityRequestDetailList">
+                                        <td>
+                                          <p>
+                                            <strong>{{medicine.productName}}</strong>
+                                          </p>
+                                          <p class="text-muted">{{medicine.productCompany}}</p>
+                                          <p class="text-muted">{{medicine.medicinePerStrip}}</p>
+                                        </td>
+                                        <td *ngIf="user.entityName != 'DIAGNOSTICS'"> {{medicine.availableQuantity}}</td>
+                                        <td>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                                          {{medicine.netAmount | number:'0.2-2'}}
+                                        </td>
+                                      </tr>
+
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                              <div class="col-lg-7 col-12">
+                                <div class="row">
+                                  <div class="col-md-5">
+                                    <h5>
+                                      <strong>{{q.requestBy}}</strong>
+                                    </h5>
+                                    <p>{{q.line1}}</p>
+                                    <p>
+                                      {{q.city}} {{'ORDER_DELIVERY.COMMA' | translate}} {{q.state}}
+                                      {{'ORDER_DELIVERY.COMMA' | translate}} {{q.pin}}
+                                    </p>
+                                    <div class="mt-3" *ngIf="q.prescriptionDTOList.length!=0">
+                                      <div class="row">
+                                        <div class="col-2">
+                                          <img alt="" src="assets/image/prescription.svg" width="50"
+                                            style="margin-top: 14px;">
+                                        </div>
+
+                                        <div class="col-10">
+                                          <div class="content table-responsive search-result mt-2">
+                                            <table style="width: 100%;" class="">
+                                              <thead>
+                                                <tr>
+                                                  <th>{{ 'PHARMACY_REQUISITION.PRESCRIPTION_DATE' | translate }}</th>
+                                                  <!-- <th>{{ 'PHARMACY_REQUISITION.ACTION' | translate }}</th> -->
+                                                </tr>
+                                              </thead>
+                                              <tbody>
+                                                <tr *ngFor="let p of q.prescriptionDTOList; let i = index"
+                                                  [attr.id]="'tr'+i">
+                                                  <td>
+                                                    <a href="javascript:void(0);"
+                                                      (click)="viewDownloadPrescription(p)">{{p.prescriptionDate |date:"dd-MM-yyyy"}}</a>
+                                                  </td>
+                                                </tr>
+                                              </tbody>
+                                            </table>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="col-md-7">
+                                    <p class="mb-2">
+                                      <strong>{{'ORDER_DELIVERY.CURRENT_STATE' | translate}}
+                                        {{'ORDER_DELIVERY.COLON' | translate}}
+                                      </strong> {{statusDisplayList[q.deliveryStatus]}} <!-- {{q.currentState}} -->
+                                    </p>
+                                    <div *ngIf="q.deliveryStatus=='CONFIRMED'">
+                                      <app-assign-collector [orderData]="q" [fromList]="true"
+                                        (emitResponse)="getResponse($event)"></app-assign-collector>
+                                      <!-- <app-sample-collected [orderData]="q" [fromList]="true" (emitResponse)="getResponse($event)"></app-sample-collected>
+                                      <app-sample-received [orderData]="q" [fromList]="true" (emitResponse)="getResponse($event)"></app-sample-received>
+                                      <app-process-report [orderData]="q" [fromList]="true" (emitResponse)="getResponse($event)"></app-process-report>
+                                      <app-send-report [orderData]="q" [fromList]="true" (emitResponse)="getResponse($event)"></app-send-report> -->
+                                    </div>
+                                    <div *ngIf="q.deliveryStatus=='ASSIGN_COLLECTOR'">
+                                      <app-sample-collected [orderData]="q" [fromList]="true"
+                                        (emitResponse)="getResponse($event)"></app-sample-collected>
+
+                                    </div>
+                                    <div *ngIf="q.deliveryStatus=='SAMPLE_COLLECTED'">
+                                      <app-sample-received [orderData]="q" [fromList]="true"
+                                        (emitResponse)="getResponse($event)"></app-sample-received>
+
+                                    </div>
+                                    <div *ngIf="q.deliveryStatus=='SAMPLE_RECEIVED_LAB'">
+                                      <app-process-report [orderData]="q" [fromList]="true"
+                                        (emitResponse)="getResponse($event)"></app-process-report>
+                                    </div>
+                                    <div *ngIf="q.deliveryStatus=='PROCESS_GEN_REPORT'">
+                                      <app-send-report [orderData]="q" [fromList]="true"
+                                        (emitResponse)="getResponse($event)"></app-send-report>
+
+                                    </div>
+                                    <!--  -->
+                                    <div *ngIf="q.deliveryStatus=='SEND_REPORT'">
+                                      <!-- new add to show the uploaded files-->
+                                      <div class="row ml-1">
+                                        <!-- <div *ngFor="let searchResp of searchList"> -->
+                                          <div *ngIf="q.documentDetails.length > 0">
+                                            <div *ngFor="let ppuploadedMRImg of q.documentDetails" class="col-2 col-md-2 mb-0 p-0 display-inline-block text-center">
+                                              <img
+                                                [src]="transform(ppuploadedMRImg.imgSrc)"
+                                                height="50px" width="50px" class="cursor border p-1 mr-1"
+                                                (click)="openImageInNewTab(ppuploadedMRImg.imgSrc)"
+                                                *ngIf="ppuploadedMRImg.contentType != 'application/pdf'" />
+
+                                              <img
+                                                *ngIf="ppuploadedMRImg.contentType == 'application/pdf'"
+                                                height="50px" width="50px" class="cursor border pt-1 pb-1 mr-1"
+                                                (click)="openPdf(ppuploadedMRImg.imgSrc)"
+                                                src="assets/image/pdf.svg" />
+                                            </div>
+                                          </div>
+                                        <!-- </div> -->
+                                      </div>
+                                      <!-- end of new add to show the uploaded files -->
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                    <!-- End Order List -->
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Order Details -->
+
+    <div class="row page-content" *ngIf="orderDetailView">
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="row header pl-2 pt-1">
+            <div class="col-8">
+              <div>
+                <h1>Order Details</h1>
+              </div>
+            </div>
+            <div class="col-4 text-right">
+              <button class="btn btn-secondary" (click)="backToOrderList()">Cancel</button>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="content table-responsive search-result">
+              <div class="row">
+                <div class="col-md-12">
+                  <h6 class="order-heading">
+                    {{'ORDER_DELIVERY.ORDER_ID' | translate }}{{ 'ORDER_DELIVERY.COLON' | translate }}{{orderDetails.requitionRefNo}}
+                    <small class="ml-4 text-capitalize"
+                      *ngIf="orderDetails.deliveryMode !== null">{{orderDetails.deliveryMode}}
+                      {{ 'ORDER_DELIVERY.DELIVERY' | translate }}</small>
+                  </h6>
+                </div>
+              </div>
+              <div class="border p-2 mt-2">
+                <p-steps [model]="orderStateList" [readonly]="true" [(activeIndex)]="activeIndex"
+                  styleClass="steps-custom"></p-steps>
+                <div class="row">
+                  <div class="col-md-12">
+                    <h6>
+                      <strong>{{'ORDER_DELIVERY.CURRENT_STATE' | translate}} {{'ORDER_DELIVERY.COLON' | translate}}
+                      </strong>
+                      <span>{{statusDisplayList[orderDetails.deliveryStatus]}}</span><!--orderDetails.currentState -- currentStatusMap[orderDetails.deliveryStatus]-->
+                    </h6>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col-md-6">
+                  <div class="table-responsive medicine-details">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Item</th>
+                          <th *ngIf="user.entityName != 'DIAGNOSTICS'">Quantity</th>
+                          <th>Price</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let medicine of orderDetails.entityRequestDetailList">
+                          <td>
+                            <p>
+                              <strong>{{medicine.productName}}</strong>
+                            </p>
+                            <p class="text-muted">{{medicine.productCompany}}</p>
+                            <p class="text-muted">{{medicine.medicinePerStrip}}</p>
+                          </td>
+                          <td *ngIf="user.entityName != 'DIAGNOSTICS'">{{medicine.availableQuantity}}</td>
+                          <td>{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{medicine.netAmount | number:'0.2-2'}}</td>
+                        </tr>
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h5>
+                        <strong>{{orderDetails.requestBy}}</strong>
+                      </h5>
+                      <p>{{orderDetails.line1}}</p>
+                      <p>
+                        {{orderDetails.city}} {{'ORDER_DELIVERY.COMMA' | translate}} {{orderDetails.state}}
+                        {{'ORDER_DELIVERY.COMMA' | translate}}
+                        {{orderDetails.pin}}
+                      </p>
+                      <div class="mt-3" *ngIf="orderDetails.prescriptionDTOList.length!=0">
+                        <div class="row">
+                          <div class="col-2">
+                            <img alt="" src="assets/image/prescription.svg" width="50" style="margin-top: 14px;">
+                          </div>
+
+                          <div class="col-10">
+                            <div class="content table-responsive search-result mt-2">
+                              <table style="width: 100%;" class="">
+                                <thead>
+                                  <tr>
+                                    <th>{{ 'PHARMACY_REQUISITION.PRESCRIPTION_DATE' | translate }}</th>
+                                    <!-- <th>{{ 'PHARMACY_REQUISITION.ACTION' | translate }}</th> -->
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr *ngFor="let p of orderDetails.prescriptionDTOList; let i = index"
+                                    [attr.id]="'tr'+i">
+                                    <td>
+                                      <a href="javascript:void(0);"
+                                        (click)="viewDownloadPrescription(p)">{{p.prescriptionDate |date:"dd-MM-yyyy"}}</a>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+                    </div>
+                    <div class="col-md-6">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <div *ngIf="orderDetails.deliveryStatus=='CONFIRMED'">
+                            <app-assign-collector [orderData]="orderDetails" [fromList]="false"
+                              (emitResponse)="getResponse($event)"></app-assign-collector>
+                          </div>
+                          <div *ngIf="orderDetails.deliveryStatus=='ASSIGN_COLLECTOR'">
+                            <app-sample-collected [orderData]="orderDetails" [fromList]="false"
+                              (emitResponse)="getResponse($event)"></app-sample-collected>
+
+                          </div>
+                          <div *ngIf="orderDetails.deliveryStatus=='SAMPLE_COLLECTED'">
+                            <app-sample-received [orderData]="orderDetails" [fromList]="false"
+                              (emitResponse)="getResponse($event)"></app-sample-received>
+
+                          </div>
+                          <div *ngIf="orderDetails.deliveryStatus=='SAMPLE_RECEIVED_LAB'">
+                            <app-process-report [orderData]="orderDetails" [fromList]="false"
+                              (emitResponse)="getResponse($event)"></app-process-report>
+                          </div>
+                          <div *ngIf="orderDetails.deliveryStatus=='PROCESS_GEN_REPORT'">
+                            <app-send-report [orderData]="orderDetails" [fromList]="false"
+                              (emitResponse)="getResponse($event)"></app-send-report>
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+    <!-- End Order Details -->
+  </div>
+</section>

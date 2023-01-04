@@ -1,0 +1,342 @@
+<div class="row top-btn-area book-diagnostics-top-btn-area">
+  <!-- <div class="col-lg-2 col-md-3 col-sm-3 col-3"></div> -->
+  <div  class="order-diagnostics-button col-lg-2 col-md-9 col-sm-12 col-12 text-right">
+    <button *ngIf="!isLab" class="btn btn-primary"
+      (click)="proceedDiagnostics()">PROCEED</button>
+    <button *ngIf="isLab" class="btn btn-primary"
+      (click)="orderDiagnostics()">BOOK DIAGNOSTICS</button>
+  </div>
+  <!-- <div *ngIf="isLab" class="order-diagnostics-button-book col-lg-2 col-md-9 col-sm-12 col-12 text-right">
+    <button class="btn btn-primary"
+      (click)="orderDiagnostics()">BOOK DIAGNOSTICS</button>
+  </div> -->
+</div>
+<div class="row">
+   <!-- new add to diagnostics by diagnostics name-->
+   <div *ngIf="!isLab" class="row col-md-12 height45">
+    <!-- <input class="form-control" placeholder="{{'HEADER.HEADER_SEARCH_FOR_DOCTORS_SPECIALITY_OR_CONDITION' | translate }}" type="search"> -->
+    <div class="col-md-6 col-sm-6 col-xs-6 col-8">
+      <p-autoComplete styleClass="order-diagnostics-autocomplete" [style]="{'width':'100%'}" [suggestions]="labTestList" (completeMethod)="search($event)" field=" "
+        placeholder="Search for diagnostics">
+        <ng-template let-resultEl pTemplate="item">
+          <span class="display-inline-block width85">
+            <span class="font-size11px font-weight500">{{resultEl.longName}}</span><br>
+            <!-- <span class="textDot font9px">Composition: {{resultEl.product_composition}}</span> -->
+          </span>
+          <span class="float-right display-inline-block">
+            <button class="float-right btn btn-primary"
+              (click)="onClickMedAddByMedSearchDrpDwn(resultEl)">{{'COMMON.ADD_BUTTON' | translate}}</button></span>
+          <!-- <i class="fas fa-plus-circle" (click)="onClickAddIconOnAddNewMedicineModal(results)"></i> -->
+        </ng-template>
+      </p-autoComplete>
+    </div>
+    <div class="col-md-2 col-sm-2 col-xs-2 col-2">
+      <i class="fas fa-search h4 text-body" style="margin-top: 0px!important;color: #ccc !important;">&nbsp;</i>
+    </div>
+  </div><br />
+  <!-- end of new add diagnostics by diagnostics name -->
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-xl-7 col-sm-12 col-12">
+        <div class="col-md-12 border padding10">
+          <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-6 textDot">Diagnostics Order</div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-4">Price</div>
+            <div *ngIf="!isLab" class="col-lg-2"></div>
+          </div>
+        </div>
+        <div class="border diagnostics-list-area">
+          <div class="col-lg-12" *ngFor="let diagnostics of diagnosticsList; let i = index">
+            <div class="row margin-top8px">
+              <div class="col-lg-6 col-md-6 col-sm-6 col-6 textDot-for-review-diagnostics">
+                {{diagnostics.longName}}
+              </div>
+              <div class="col-lg-4 col-md-4 col-sm-4 col-4">
+                {{diagnostics?.price}}
+              </div>
+              <div *ngIf="!isLab" class="col-lg-2 col-md-2 col-sm-2 col-2">
+                <label><i class="fas fa-trash-alt cursor" (click)="deleteDiagnostics(diagnostics, i)"></i></label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-md-12 col-xl-5 col-sm-12 col-12 line-break">
+        <div *ngIf="!isLab">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="margin-left-30px form-check-inline" *ngFor="let appoinmentTypeList of appoinmentTypeLists">
+                  <label class="radio diagnostic-radio-label">
+                    <label>{{appoinmentTypeList.label}}</label>
+                    <input type="radio" name="radio" (click)="getAppoinmentType(appoinmentTypeList.id)" [checked]="appoinmentTypeList.isChecked">
+                    <span style="margin-top: 4px;" class="checkmark"></span>
+                  </label>
+              </div>
+            </div>
+          </div>
+          <div class="row form-spacer appnt-for pt-0" *ngIf="!showAppoinmentForGroup && !showAppoinmentForMinor ">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
+              <label>{{'SEARCH.SEARCH_PATIENT_NAME' | translate}}</label>
+              <!-- <input type="text" [disabled]="fromAppointment" class="book-apt-patient-by" placeholder="{{'SEARCH.SEARCH_PATIENT_NAME' | translate }}"
+                [(ngModel)]="appSIgnUp.userName"> -->
+              <app-name [disabled]="fromAppointment" (onNameChange)="changeName($event, 'userName')" class="book-apt-patient-by" preventType="all" [(ngModel)]="appSIgnUp.userName" 
+                placeholder="{{'SEARCH.SEARCH_PATIENT_NAME' | translate }}"></app-name>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-12">
+              <label>{{'SEARCH.SEARCH_MOBILE_NUMBER' | translate}}</label>
+              <!-- <int-phone-prefix [locale]="'es'" [disabled]="fromAppointment" [defaultCountry]="'in'"
+              class="book-apt-patient-by" min="0" maxlength="12"
+              [(ngModel)]="appSIgnUp.mobileNo" ></int-phone-prefix> -->
+              <app-telephone class="book-apt-patient-by" [disabled]="fromAppointment"
+                (onPhoneNumberChange)="changeNumber($event, 'signupUserNumber')" [(ngModel)]="appSIgnUp.mobileNo" >
+              </app-telephone>
+            </div>
+          </div>
+          <div class="row appnt-for scroll-radio-list" *ngIf="showAppoinmentForGroup">
+            <div class="col-lg-6 col-mg-6 col-sm-6 col-12" *ngFor="let userGroupMember of userGroupMembers">
+              <div class="float-left">
+                <!-- <p-radioButton  name="options" value="{{userGroupMember.id}}" inputId="{{userGroupMember.id}}"
+                (click)="onclickGroupUser(userGroupMember)"></p-radioButton> -->
+                <label class="radio">
+                  <input type="radio" name="radio1" (click)="onclickGroupUser(userGroupMember)" [checked]="userGroupMember.isChecked">
+                  <span style="margin-top: 4px;" class="checkmark"></span>
+                </label>
+              </div>
+                <div class="float-left">{{userGroupMember.name}}</div>
+            </div>
+          </div>
+    
+          <div class="row appnt-for scroll-radio-list" *ngIf="showAppoinmentForMinor" >
+              <div class="col-lg-6 col-mg-6 col-sm-6 col-12" *ngFor="let user of userForMinor">
+                <div class="float-left">
+                  <label class="radio">
+                    <input type="radio" name="radio1" (click)="onclickMinorUser(user)" [checked]="user.minor.isChecked">
+                    <span style="margin-top: 4px;" class="checkmark"></span>
+                  </label>
+                  <!-- <p-radioButton name="options" value="{{user.id}}" inputId="{{user.id}}"
+                  (click)="onclickMinorUser(user)"
+                  ></p-radioButton> -->
+                </div>
+                  <div class="float-left">{{user.minor.name}}</div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-8 col-md-8 col-sm-8 col-12"><p>SELECT SAMPLE COLLECTION ADDRESS</p></div>
+              <div class="col-lg-4 col-md-4 col-sm-4 col-12 text-right pb-3">
+                <button class="btn btn-primary btn-sm" (click)="addNewAddress()">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_ADD_NEW_ADD' | translate}}</button>
+              </div>
+            </div>
+            <div *ngIf="!isEdit" class="row page-content diagnostics-address-list-area">
+              <div [ngClass]="addresses.customCssClassCursor" class="col-xl-6 col-lg-4 col-md-6 col-sm-6 col-12" *ngFor="let addresses of addressList; let i = index" id="{{i}}"
+                title="{{addresses.addressType}} Address">
+                <div class="card cursor" (click)="selectAddress(addresses)"
+                  [ngClass]="addresses.customCssClass">
+                  <div class="card-header">
+                    <h5>{{addresses.addressType}}</h5>
+                  </div>
+                  <div class="row card-body">
+                    <div class="col-12">
+                      <p>
+                        {{addresses.line1}} &nbsp; {{addresses.line2}}
+                      </p>
+                      <p>
+                        <span>{{addresses.city}}</span>&nbsp;<span>{{addresses.state}}</span>
+                        <br><span>{{addresses.pinCode}}</span>
+                      </p>
+                      <p>{{addresses.country}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--end of addresslist-->
+            <div *ngIf="isEdit">
+              <form [formGroup]="addressForm">
+                <div class="col-12 card-header-edit-mode">
+                  <div class="row">
+                    <!-- <div class="col-8"> -->
+                      <!-- <h5>Add Address</h5> -->
+                    <!-- </div> -->
+                    <div class="col-9 text-right">
+                      <span class="cursor"
+                        (click)="onBackOperation()">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_CANCEL' | translate}}</span>
+                    </div>
+                    <div class="col-3 text-right">
+                      <button type="button" class="btn btn-primary "
+                        (click)="saveAddress(addressForm);">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_SAVE' | translate}}</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-group">
+                    <label class="bt-style">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_ADD_TYPE' | translate}}</label>
+                    <div>
+                      <select class="form-control" formControlName="addressType"
+                        (change)="createNewAddressType($event,addressForm)">
+                        <option *ngFor="let addressType of addressTypeList" value="{{addressType.Type}}" class="cursor">
+                          {{addressType.Type}}</option>
+                      </select>
+                      <span *ngIf="addressForm.get('isSubmit').value || addressForm.controls.addressType.dirty">
+                        <span *ngIf="addressForm.hasError('required', 'addressType')" class="validation-error">{{
+                                    'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-group">
+                    <label class="control-label bt-style">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_COUNTRY' | translate}}</label>
+                    <div>
+                      <select formControlName="country" class="form-control"
+                        (change)="getStateCasCadeToCounntry(addressForm)">
+                        <option *ngFor="let country of masterCOUNTRY" value="{{country.countryName}}" class="cursor">
+                          {{country.countryName}}</option>
+                      </select>
+                      <span *ngIf="addressForm.get('isSubmit').value || addressForm.controls.country.dirty">
+                        <span *ngIf="addressForm.hasError('required', 'country')" class="validation-error">{{
+                                      'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-group">
+                    <label class="control-label bt-style">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_PINCODE' | translate}}</label>
+    
+                    <div>
+                      <input type="text" maxlength="6" class="form-control" min="0" formControlName="pinCode" />
+                      <span *ngIf="addressForm.get('isSubmit').value || addressForm.controls.pinCode.dirty">
+                        <span *ngIf="addressForm.hasError('required', 'pinCode')" class="validation-error">{{
+                                    'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                        <span *ngIf="addressForm.hasError('minlength', 'pinCode')" class="validation-error">{{
+                                            'VALIDATION.VALIDATION_PINCODE_MIN_LENGTH' |
+                                            translate }}</span>
+                        <span *ngIf="addressForm.hasError('min', 'pinCode')" class="validation-error">{{
+                                                        'VALIDATION.VALIDATION_PINCODE_MIN' |
+                                                        translate }}</span>
+                        <span *ngIf="addressForm.hasError('pattern', 'pinCode')" class="validation-error">{{
+                                                                'VALIDATION.VALIDATION_PINCODE_PATTERN' |
+                                                                translate }}</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-group">
+                    <label class="control-label bt-style">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_STATE' | translate}}</label>
+    
+                    <div>
+                      <select formControlName="state" class="form-control">
+                        <option *ngFor="let state of masterSTATE | sort:'stateName':true" value="{{state.stateName}}">
+                          {{state.stateName}}</option>
+                      </select>
+                      <span *ngIf="addressForm.get('isSubmit').value || addressForm.controls.state.dirty">
+                        <span *ngIf="addressForm.hasError('required', 'state')" class="validation-error">{{
+                                    'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-group">
+                    <label class="control-label bt-style">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_CITY' | translate}}</label>
+    
+                    <div>
+                      <input [required]="true" type="text" class="form-control" formControlName="city"
+                        (keydown)="onKeydown($event)" />
+                      <span *ngIf="addressForm.get('isSubmit').value || addressForm.controls.city.dirty">
+                        <span *ngIf="addressForm.hasError('required', 'city')" class="validation-error">{{
+                                    'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                        <span *ngIf="addressForm.hasError('minlength', 'city')" class="validation-error">{{
+                                    'VALIDATION.VALIDATION_CITY_NOT_LESS_THAN' |
+                                    translate }}</span>
+                        <span *ngIf="addressForm.hasError('maxlength', 'city')" class="validation-error">{{
+                                    'VALIDATION.VALIDATION_CITY_NOT_MORE_THAN' |
+                                    translate }}</span>
+                        <!-- <span *ngIf="addressForm.hasError('pattern', 'city')" class="validation-error">{{
+                                            'VALIDATION.VALIDATION_CITY_LETTER' |
+                                            translate }}</span> -->
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-group">
+                    <label class="control-label">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_LINE1' | translate}}</label>
+    
+                    <div>
+                      <input type="text" class="form-control" formControlName="line1" />
+                      <span *ngIf="addressForm.get('isSubmit').value || addressForm.controls.line1.dirty">
+                        <span *ngIf="addressForm.hasError('required', 'line1')" class="validation-error">{{
+                                          'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-group">
+                    <label class="control-label">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_LINE2' | translate}}</label>
+    
+                    <div>
+                      <input type="text" class="form-control" formControlName="line2" />
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+        </div>
+        <div *ngIf="isLab">
+          <div class="row">
+            <div class="col-lg-12"><label>SELECT LAB</label></div> 
+          </div><br>
+          <div class="row">
+            <div class="col-lg-12" *ngFor="let lab of labs">
+              <div class="card">
+                <div class="card-header">
+                  <div class="row">
+                    <div class="col-lg-11 col-sm-11 col-10"><label>{{lab.lab_name}}</label></div>
+                    <div class="col-lg-1 col-sm-1 col-2">
+                      <label class="radio">
+                        <input type="radio" [checked]="lab.isSelected" name="radio" (click)="selectLab(lab)">
+                        <span class="checkmark"></span>
+                      </label>
+                      <!-- <p-radioButton name="options" [value]="lab.isSelected" [(ngModel)]="selectedLab" (click)="selectLab(lab)"></p-radioButton> -->
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <!-- <div > -->
+                    <ul *ngFor="let testDetail of lab.diagnosticTestDetails">
+                      <li title="Rs: {{testDetail.price}} for {{testDetail.test_name_lab}}" class="textDot">Rs: {{testDetail.price}} for {{testDetail.test_name_lab}}</li>
+                    </ul>
+                  <!-- </div> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #addressTypeTemp>
+  <div class="modal-header">
+    <h4 class="modal-title float-left">{{ 'USER_PROFILE.USER_PROFILE_POPUP_NEW_ADDRESS_TYPE' | translate }}</h4>
+    <button type="button" class="close float-right" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>{{ 'USER_PROFILE.USER_PROFILE_POPUP_ADDRESS_TYPE' | translate }}
+      <input type="text" [(ngModel)]="addressT"
+        placeholder="{{ 'USER_PROFILE.USER_PROFILE_POPUP_PLACEHOLDER_ENTER_ADDRESS_TYPE' | translate }}" />
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-sm btn-primary"
+      (click)="createAddresType();">{{ 'USER_PROFILE.USER_PROFILE_POPUP_SUBMIT' | translate }}</button>
+    <button type="button" class="btn btn-default"
+      (click)="closeModal()">{{ 'USER_GROUPS.USER_GROUPS_POPUP_CLOSE' | translate }}</button>
+  </div>
+</ng-template>

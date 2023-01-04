@@ -1,0 +1,100 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="row top-btn-area">
+      <div class="col-lg-12 text-right">
+        <button type="button" class="btn btn-sm btn-primary float-right" (click)="addChamber()">Add Chamber</button>
+      </div>
+    </div>
+    <div class="page-heading-info" *ngIf="chamberList.length > 0">
+      <h2>Displaying all your chambers</h2>
+    </div>
+
+    <div class="row search-result page-content">
+
+      <div class="col-xl-12">
+        <div class="chamber information-header " *ngIf="chamberList.length > 0">
+
+          <h2>
+            These chamber will be visible to patients when they book appointments with you
+          </h2>
+        </div>
+        <div *ngIf="chamberList.length == 0" class="text-center not-found">
+          <h3>No chamber is associated with you</h3>
+        </div>
+      </div>
+
+      <div class="col-xl-4 col-lg-6 col-md-6" *ngFor="let results of chamberList;let i = index_">
+        <div class="card">
+          <div class="card-header">
+            <div class="float-left">
+              <!-- <span><img data-toggle="tooltip" title="Online Consultancy"
+                *ngIf="results.acceptonline == 'Y'"
+                src="../../../../../assets/image/consult-chat.svg" class="online-consult"
+                style="height: 15px;"></span>
+              <span><h5>{{results.hospitalName}}</h5></span> -->
+              <h5>
+                <span><img data-toggle="tooltip" title="Accept Online"
+                  *ngIf="results.acceptonline == 'Y'"
+                  src="../../../../../assets/image/consult-chat.svg" class="online-consult"
+                  style="height: 15px;margin-bottom: 4px !important;"></span>
+                {{results.hospitalName}}
+              </h5>
+            </div>
+            <div class="float-right small-text">{{'SEARCH.SEARCH_INR_SIGN' | translate
+          }}{{results.fees | number : '1.2-2'}}</div>
+          </div>
+          <div class="row card-body">
+            <div class="col-12">
+              <span>{{results.line1}}</span>
+              <span *ngIf="results.line2!=null && results.line2!=''">, {{results.line2}}</span>
+              <span *ngIf="results.city!=null && results.city!=''">, {{results.city}}</span>
+              <span>&nbsp;{{results.pinCode}}</span>
+              <p *ngIf="results.country!=null && results.country!=''">{{results.country}}</p>
+              <div class="row pt-2">
+                <div class="dayofweek col-6" *ngFor="let day of results.chamberTimingList.sort(sortFunc); let i =index">
+                  <div [ngClass]="i%2!=0 ? 'text-right':''">
+                    <p class="day" *ngIf="day.dayOfWeek==1"><span class="spacer">MON</span><span
+                        class="time">{{day.startTime | timeFormat}} - {{day.endTime | timeFormat}}</span></p>
+                    <p class="day" *ngIf="day.dayOfWeek==2"><span class="spacer">TUE</span> <span
+                        class="time">{{day.startTime | timeFormat}} - {{day.endTime | timeFormat}}</span></p>
+                    <p class="day" *ngIf="day.dayOfWeek==3"><span class="spacer">WED </span><span
+                        class="time">{{day.startTime | timeFormat}} - {{day.endTime | timeFormat}}</span></p>
+                    <p class="day" *ngIf="day.dayOfWeek==4"><span class="spacer">THU </span><span
+                        class="time">{{day.startTime | timeFormat}} - {{day.endTime | timeFormat}}</span></p>
+                    <p class="day" *ngIf="day.dayOfWeek==5"><span class="spacer">FRI</span> <span
+                        class="time">{{day.startTime | timeFormat}} - {{day.endTime | timeFormat}}</span></p>
+                    <p class="day" *ngIf="day.dayOfWeek==6"><span class="spacer">SAT</span> <span
+                        class="time">{{day.startTime | timeFormat}} - {{day.endTime | timeFormat}}</span></p>
+                    <p class="day" *ngIf="day.dayOfWeek==7"><span class="spacer">SUN</span> <span
+                        class="time">{{day.startTime | timeFormat}} - {{day.endTime | timeFormat}}</span></p>
+                  </div>
+                </div>
+              </div>
+              <!--<p *ngIf="results.chamberTimingList[i].dayOfWeek!=undefined">{{results.chamberTimingList[i].dayOfWeek}}</p>-->
+              <div class="float-right"><button type="submit" class="btn btn-secondary"
+                  (click)="chamberEdit(results.chamberRefNo)">Edit</button></div>
+              <div class="float-right"><button type="submit" class="btn btn-secondary"
+                  (click)="chamberDelete(index_, results)">Delete</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

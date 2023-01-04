@@ -1,0 +1,276 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+
+<div class="row">
+    <div class="col-lg-12">
+
+        <ngb-tabset #tab="ngbTabset" (tabChange)="onTabChange($event)">
+            <ngb-tab id="tab-personal" title="Personal Data">
+                <ng-template ngbTabContent>
+
+                    <div class="userProfileDetails">
+
+                        <ul class="userInformationDetails">
+
+                            <li> <span class="userKey">{{ 'USER_PROFILE.USER_PROFILE_NAME_LABEL' | translate }}
+                                    {{ 'USER_PROFILE.USER_PROFILE_VIEW_COLON' | translate }}</span> <span data-toggle="tooltip"
+                                    title="{{userProfileData?.firstName}}">{{userProfileData?.firstName}}</span> </li>
+
+                            <!-- <li> <span class="userKey">{{ 'USER_PROFILE.USER_PROFILE_LAST_NAME_LABEL' | translate }} {{
+                                    'USER_PROFILE.USER_PROFILE_VIEW_COLON' | translate }}</span> <span data-toggle="tooltip"
+                                    title="{{userProfileData?.lastName}}">{{userProfileData?.lastName}}</span> </li> -->
+
+                            <li> <span class="userKey">{{ 'USER_PROFILE.USER_PROFILE_CONTACTNO' | translate }} {{
+                                    'USER_PROFILE.USER_PROFILE_VIEW_COLON' | translate }}</span>
+                                <span>{{userProfileData?.contactNo}}</span>
+                            </li>
+
+                            <li> <span class="userKey">{{ 'USER_PROFILE.USER_PROFILE_EMAIL_LABEL' | translate }} {{
+                                    'USER_PROFILE.USER_PROFILE_VIEW_COLON' | translate }}</span>
+                                <span data-toggle="tooltip" title="{{userProfileData?.emailAddress}}">{{userProfileData?.emailAddress}}</span>
+                            </li>
+                            <li> <span class="userKey">{{ 'USER_PROFILE.USER_PROFILE_DATE_OF_BIRTH' | translate }} {{
+                                    'USER_PROFILE.USER_PROFILE_VIEW_COLON' | translate }}</span>
+                                <span>{{userProfileData?.dateOfBirth | date }}</span>
+                            </li>
+                            <li> <span class="userKey">{{ 'USER_PROFILE.USER_PROFILE_PHYSICALDATA_HEIGHT' | translate
+                                    }} {{ 'USER_PROFILE.USER_PROFILE_VIEW_COLON' | translate }}</span>
+                                <span>{{userProfileData?.physicalData?.height}} </span>
+                            </li>
+                            <li>
+                                <span class="userKey">{{ 'USER_PROFILE.USER_PROFILE_PHYSICALDATA_WEIGHT' | translate }}
+                                    {{ 'USER_PROFILE.USER_PROFILE_VIEW_COLON' | translate }}</span>
+                                <span>{{userProfileData?.physicalData?.weight}} </span>
+
+                            </li>
+                        </ul>
+
+                    </div>
+                    <p>    <button class="btn btn-sm btn-primary float-right" type="button" (click)="editProfile('tab-personal')">{{
+                            'USER_PROFILE.USER_PROFILE_EDIT_LABEL' | translate }}</button></p>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab-address" title="Address">
+                <ng-template ngbTabContent>
+                    <div class="alert alert-warning" *ngIf="userProfileData?.addressList.length==0">
+                        {{ 'USER_PROFILE.USER_PROFILE_ADDRESS_EMPTY_ERROR_MESSAGE' | translate }}
+                    </div>
+                    <div *ngIf="userProfileData?.addressList.length>0" class="form-horizontal">
+                        <ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0">
+                            <ngb-panel *ngFor="let address of userProfileData?.addressList; let i = index" title="{{address.addressType}} Address">
+                                <ng-template ngbPanelContent>
+                                    <!-- <div class="row">
+                  <div class="col-sm-1 address-style">
+                      <i ngbTooltip="Edit Address" class="far fa-edit cursor" (click)="editAddress('tab-address', address.id)"></i>
+                  </div>
+                  <div class="col-sm-1">
+                      <i ngbTooltip="Delete Address" (click)="deleteAddress(address)" class="fas fa-trash-alt cursor"></i>
+                  </div>
+                </div> -->
+                                    <div class="row address-style">
+                                        <div class="col-lg-6">
+                                            <div class="row">
+                                                <label class="col-xs-4 control-label bt-style"><b>{{
+                                                        'USER_PROFILE.USER_PROFILE_ADDRESS_TYPE' | translate }} {{
+                                                        'USER_PROFILE.USER_PROFILE_VIEW_COLON' | translate }}</b>&nbsp;</label>
+                                                <p class="form-control-static">{{address.addressType}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <i ngbTooltip="Edit Address" class="far fa-edit cursor" (click)="editAddress('tab-address', address.id)"></i>
+                                        </div>
+                                    </div>
+                                    <div class="row address-style">
+                                        <div class="col-lg-6">
+                                            <div class="row">
+                                                <label class="col-xs-4 control-label"><b>{{
+                                                        'USER_PROFILE.USER_PROFILE_ADDRESS_LINE1_LABEL' | translate }}
+                                                        {{ 'USER_PROFILE.USER_PROFILE_VIEW_COLON' | translate }}</b>&nbsp;</label>
+                                                <p class="form-control-static textDot">{{address.line1}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <i ngbTooltip="Delete Address" (click)="deleteAddress(address)" class="fas fa-trash-alt cursor"></i>
+                                        </div>
+                                    </div>
+                                    <div class="row address-style">
+                                        <div class="col-lg-6">
+                                            <div class="row">
+                                                <label class="col-xs-4 control-label"><b>{{
+                                                        'USER_PROFILE.USER_PROFILE_ADDRESS_LINE2_LABEL' | translate }}
+                                                        {{ 'USER_PROFILE.USER_PROFILE_VIEW_COLON' | translate }}</b>&nbsp;</label>
+                                                <p class="form-control-static textDot">{{address.line2}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row address-style">
+                                        <div class="col-lg-6">
+                                            <div class="row">
+                                                <label class="col-xs-4 control-label bt-style"><b>{{
+                                                        'USER_PROFILE.USER_PROFILE_PINCODE_LABEL' | translate }} {{
+                                                        'USER_PROFILE.USER_PROFILE_VIEW_COLON' | translate }}</b>&nbsp;</label>
+                                                <p class="form-control-static">{{address.pinCode}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row address-style">
+                                        <div class="col-lg-6">
+                                            <div class="row">
+                                                <label class="col-xs-4 control-label bt-style"><b>{{
+                                                        'USER_PROFILE.USER_PROFILE_STATE_LABEL' | translate }} {{
+                                                        'USER_PROFILE.USER_PROFILE_VIEW_COLON' | translate }}</b>&nbsp;</label>
+                                                <p class="form-control-static">{{address.state}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row address-style">
+                                        <div class="col-lg-6">
+                                            <div class="row">
+                                                <label class="col-xs-4 control-label bt-style"><b>{{
+                                                        'USER_PROFILE.USER_PROFILE_CITY_LABEL' | translate }} {{
+                                                        'USER_PROFILE.USER_PROFILE_VIEW_COLON' | translate }}</b>&nbsp;</label>
+                                                <p class="form-control-static">{{address.city}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </ngb-panel>
+                        </ngb-accordion>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <button type="button" (click)="editAddress('tab-address', -1)" class="btn btn-md btn-primary">{{
+                                'USER_PROFILE.USER_PROFILE_ADD_ADDRESS' | translate }}</button>
+                        </div>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab-occupation" title="Occupation">
+                <ng-template ngbTabContent>
+                    <div class="alert alert-warning" *ngIf="userProfileData?.occupationList.length==0">
+                        {{ 'USER_PROFILE.USER_PROFILE_OCCUPATION_EMPTY_ERROR_MESSAGE' | translate }}
+                    </div>
+                    <div class="jumbotron align-middle scroll" *ngIf="userProfileData?.occupationList.length>0">
+                        <div *ngFor="let occupation of userProfileData?.occupationList" class="row">
+                            <div class="col-lg-4">
+                                <div class="row">
+                                    <div class="col-lg-7">
+                                        <label class="col-xs-10 control-label"><b>{{
+                                            'USER_PROFILE.USER_PROFILE_OCCUPATION_NATURE_OF_JOB' | translate }} {{
+                                            'USER_PROFILE.USER_PROFILE_VIEW_COLON' | translate }}</b></label>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <p class="form-control-static textDot">{{occupation?.natureOfJob}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="row">
+                                    <div class="col-lg-7">
+                                        <label class="col-xs-10 control-label"><b> {{
+                                                    'USER_PROFILE.USER_PROFILE_OCCUPATION_TYPE_OF_JOB' | translate }} {{
+                                                    'USER_PROFILE.USER_PROFILE_VIEW_COLON' | translate }}</b></label>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <p class="form-control-static textDot" data-toggle="tooltip" title="{{occupation?.typeOfJob}}">{{occupation?.typeOfJob}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="row">
+                                    <div class="col-lg-10">
+                                        <label class="col-xs-10 control-label"><b> {{
+                                                    'USER_PROFILE.USER_PROFILE_OCCUPATION_WORKING_HOURS' | translate }} {{
+                                                    'USER_PROFILE.USER_PROFILE_VIEW_COLON' | translate }}</b></label>
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <p class="form-control-static textDot">{{occupation?.workingHours}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-1">
+                                <div class="row">
+                                    <div class="col-sm-1">
+                                        <i ngbTooltip="Edit Occupation" class="far fa-edit cursor" (click)="editOccupation('tab-occupation', occupation.id)"></i>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <i ngbTooltip="delete Occupation" class="fas fa-trash-alt cursor" (click)="deleteOccupation(occupation)"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <button type="button" (click)="editOccupation('tab-occupation', -1)" class="btn btn-md btn-primary">
+                            {{ 'USER_PROFILE.USER_PROFILE_OCCUPATION_ADD_LABEL' | translate }}</button>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+            <ngb-tab id="tab-exercise" title="Exercise">
+                <ng-template ngbTabContent>
+                    <div class="alert alert-warning" *ngIf="userProfileData?.exerciseList.length==0">
+                        {{ 'USER_PROFILE.USER_PROFILE_EXERCISE_EMPTY_ERROR_MESSAGE' | translate }}
+                    </div>
+                    <div *ngIf="userProfileData?.exerciseList.length>0">
+                        <div class="jumbotron align-middle scroll">
+                            <div *ngFor="let exercise of userProfileData?.exerciseList" class="row">
+                                <div class="col-sm-6">
+                                    <div class="row">
+                                        <label class="col-xs-5 control-label"><b> {{
+                                                'USER_PROFILE.USER_PROFILE_EXERCISE_NATURE_OF_EXERCISE_LABEL' |
+                                                translate }} {{ 'USER_PROFILE.USER_PROFILE_VIEW_COLON' | translate }}</b>&nbsp;</label>
+                                        <p class="form-control-static">{{exercise?.natureOfExercise}}</p>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="row">
+                                        <label class="col-xs-5 control-label"><b> {{
+                                                'USER_PROFILE.USER_PROFILE_EXERCISE_EXERCISE_FREQUENCY_LABEL' |
+                                                translate }} {{ 'USER_PROFILE.USER_PROFILE_VIEW_COLON' | translate }}</b>&nbsp;</label>
+                                        <p class="form-control-static">{{exercise?.exerciseFrequency}}</p>
+                                    </div>
+                                </div>
+                                <!--div  class="col-sm-3">
+                    <div class="row">
+                        <label class="col-xs-5 control-label"><b>Exercise time: </b>&nbsp;</label>
+                        <p class="form-control-static">{{exercise?.exerciseTime/60 | number}} hours</p>
+                    </div>
+                </div-->
+                                <div class="col-sm-1">
+                                    <div class="row">
+                                        <div class="col-sm-1">
+                                            <i ngbTooltip="Edit Exercise" class="far fa-edit cursor" (click)="modifyExercise('tab-exercise', exercise.id)"></i>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <i ngbTooltip="Delete Exercise" (click)="deleteExercise(exercise)" class="fas fa-trash-alt cursor"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <button type="button" (click)="modifyExercise('tab-exercise', -1)" class="btn btn-md btn-primary">
+                            {{ 'USER_PROFILE.USER_PROFILE_EXERCISE_ADD_EXERCISE_LABEL' | translate }}</button>
+                    </div>
+                </ng-template>
+            </ngb-tab>
+        </ngb-tabset>
+    </div>
+</div>

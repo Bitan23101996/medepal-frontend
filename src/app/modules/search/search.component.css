@@ -1,0 +1,151 @@
+/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+
+ /* start of page header design acording to clinic */
+
+ .custom-search-font-style {
+  font-size: 33px;
+  font-weight: 500;
+   color: #654321;
+ }
+ .dashb-card{
+  border-radius:5px;
+  padding:10px;
+  font-size:13px;
+  box-shadow: 2px 1px 5px rgba(0,0,0,.3);
+  height:100%;
+}
+
+
+.dashb-card .ng-star-inserted{
+  margin-bottom:0 !important;
+}
+
+.client-list-card{
+  background: #fff;
+  background-image: linear-gradient(#f1ebdc, #fff);
+  text-align:center;
+	font-weight:300;
+  color:#4d4d4d !important;
+	font-size:25px !important;
+
+}
+/* end of page header design acording to clinic */
+
+
+
+
+
+ div.scroll {
+    width: 250px;
+    height: 100px;
+    overflow: auto;
+}
+.card-custom {
+    width: 80px;
+    /* margin-left: 5px;
+    margin-right: 5px; */
+}
+agm-map {
+    height: 500px;
+}
+.justify-content-center-selected{
+    margin-left: 39%;
+    position: absolute;
+}
+
+
+.main-header{
+  font-size:18px;
+  font-weight:400;
+  padding-top:30px;
+  color:#5f5f5f;
+}
+
+.style-margin p
+{
+    margin-bottom: auto;
+}
+
+.font-style1
+{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 24px;
+    
+}
+.font-style2
+{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 16px;
+
+}
+
+.gap-search
+{
+    padding-bottom: 15px;
+}
+
+.cover{
+  height: 100vh;
+  width: calc(92% - 10px);
+  left:100px;
+  top:75px;
+  border-radius:5px;
+}
+
+.online-consult {
+  margin-bottom:0 !important;
+  margin-top:-2px;
+}
+
+.center-image{
+  display:flex;
+  align-items: center;
+}
+
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (orientation : portrait) {
+  .cover{
+    height: 100vh;
+    width: calc(85% - 10px);
+  }
+}
+
+
+@media (max-width: 576px) {
+  .cover{
+    height: 100vh;
+      width: calc(95% - 10px);
+    left:15px;
+  }
+}
+
+@media only screen and (max-width: 767px) and (min-width: 577px) {
+  .cover{
+    height: 100vh;
+    width: 95vw;
+    left:15px;
+  }
+}
+
+@media only screen and (max-width: 1024px) and (min-width: 769px){
+  .cover{
+    height: 100vh;
+    width: calc(89% - 10px);
+  }
+}

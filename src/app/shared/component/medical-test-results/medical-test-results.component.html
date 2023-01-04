@@ -1,0 +1,184 @@
+<!-- /*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */ -->
+
+<!-- new add for add medical reports -->
+<ng-template id="createRecord" #createViewMedicalRecordsModal>
+  <div *ngIf="loading" class="cover-for-modal">
+    <div class="loader-for-modal">
+        <div class="loading-img"><img width=250px src="../../../../../assets/image/logo.svg"/></div>
+        <div class="loading-txt">Loading<div class="dot-elastic"></div></div>
+    </div>
+  </div>
+  <div class="modal-add-med-rec">
+    <div class="modal-header">
+      <div class="col-11 padding0">
+        <h4 class="modal-title medical-details-modal-header-font-size float-left">{{firstHeading}}<i *ngIf="firstHeading.toUpperCase() == 'REPORT UPLOAD'"
+            class="fa fa-upload cursor"></i></h4>
+        <ng-container *ngIf="!isEdit">
+          <h4 class="margin-right-37px medical-details-modal-header-font-size medical-details-modal-header-secondary-link-style modal-title float-right cursor" (click)="onclickHeading()">{{secondHeading}} <i
+              *ngIf="secondHeading.toUpperCase() == 'REPORT UPLOAD'" class="fa fa-upload cursor"></i></h4>
+        </ng-container>
+      </div>
+      <button type="button" class="close" aria-label="close" (click)="onCloseModal()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>
+  <!--Edit Medical Record Header-->
+  <div class="modal-body pb-0" *ngIf="!testReportsHeadingFlag">
+    <div *ngIf="selectedPatientDetail && !selectedDiagnosticsDetails">
+      <p-autoComplete [style]="{'width':'100%'}" [suggestions]="addMedicalReportResults"
+        (completeMethod)="search($event)" field=" " [(ngModel)]="defaultmedDetAttr"
+        placeholder="{{'USER_MEDICAL_RECORDS.MEDICAL_TEST_RESULT_SEARCH_PLACEHOLDER' | translate }}"
+        (onSelect)="onSelectMedicalAttributes($event,addMedicalReportResults)">
+        <ng-template let-addMedicalReportResults pTemplate="item">
+          <span style="font-size:11px;font-weight: 500;">{{addMedicalReportResults.longName}}</span>
+        </ng-template>
+      </p-autoComplete>
+    </div>
+    <br />
+    <form [formGroup]="addMedicalAttributeForm" class="med-det-custom-form-style">
+      <div>
+        <div class="row" formArrayName="attributeArr"
+          *ngFor="let items of addMedicalAttributeForm.get('attributeArr').controls; let i = index;">
+          <div class="col-12 mb-0"
+            [ngClass]="(addMedicalAttributeForm.get('attributeArr').controls.length == i+1)? '': 'border-bottom'">
+            <div [formGroupName]="i" class="add-med-rec-spacer mb-0"
+              *ngIf="(items.get('attributeItems').controls?.length > 0)">
+              <div class="col-lg-12 pr-0 mb-0"
+                *ngIf="((items.get('attributeItems').controls?.length > 0) && items.get('parentName').value)">
+                <span class="display-inline-block float-left"><label class="med-test-result-parent-name-label-style"
+                    title="{{items.get('parentName').value}}">{{items.get('parentName').value}}</label></span>
+                <div class="text-right display-inline-block"
+                  *ngIf="((items.get('attributeItems').controls?.length > 0) && items.get('parentName').value)">
+                  <label class="text-center">
+                    <input type="file" (change)="fileChangeEvent($event, 'testresult', items)" [hidden]="true"
+                      formControlName="testresultupload" /><i class="fa fa-upload cursor"></i>
+                  </label>
+                  <label class="text-center">
+                    <span title="{{items.get('testResultUploadedFileName').value}}" placement="left"
+                      *ngIf="items.get('testResultUploadedFileName').value != null"
+                      class="textDot font11">{{items.get('testResultUploadedFileName').value}}</span>
+                  </label>
+                </div>
+              </div>
+              <div class="row col-12 mb-0 pr-1" formArrayName="attributeItems"
+                *ngFor="let item of items.get('attributeItems').controls; let ind = index;">
+                <div [formGroupName]="ind" class="add-med-rec-spacer mb-0">
+                  <!-- <div class="small-hide"> -->
+                    <div class="col-lg-4 col-md-12 col-sm-12 col-12 add-med-rec-title pr-0">
+                      <label title="{{item.get('attributeName').value}}">{{item.get('attributeName').value}}</label>
+                    </div>
+                    <div class="col-lg-2 col-md-12 col-sm-12 col-12 pl-1 pr-1 mt-1 margin-left11px">
+                      <!-- <ng-container *ngIf="item.get('attributeBPSysId').value == ''"> -->
+                      <div
+                        [ngClass]="item.get('unit').value !='' ? 'med-record-with-unit' : 'med-record-without-unit'">
+                        <input type="text" formControlName="value" placeholder="Value" class="med-det-input" required=""
+                          (keypress)="numberOnly($event)" />
+                      </div>
+                      <div *ngIf="item.get('unit').value != ''">{{item.get('unit').value}}
+                      </div>
+                    </div>
+                    <div class="col-lg-2 col-md-12 col-sm-12 col-12 pr-0 pl-0 margin-left1rem margin-top10px">
+                      <!-- of test report update -->
+                      <select *ngIf="selectedPatientDetail && !selectedDiagnosticsDetails" formControlName="source"
+                        class="form-control dropdown-style96">
+                        <option *ngFor="let medDetSourceEl of sourceValues" placeholder="Source"
+                          value="{{medDetSourceEl.displayValue}}">{{medDetSourceEl.displayValue}}</option>
+                      </select>
+                      <!-- end of test report update -->
+                      <!-- diagnostics details update -->
+                      <select disabled *ngIf="selectedPatientDetail && selectedDiagnosticsDetails"
+                        formControlName="source" class="form-control dropdown-style96">
+                        <option *ngFor="let medDetSourceEl of sourceValues" placeholder="Source"
+                          value="{{medDetSourceEl.attributeValue}}">{{medDetSourceEl.displayValue}}</option>
+                      </select>
+                      <!-- end of diagnostics details update -->
+                    </div>
+                    <div class="col-lg-2 col-md-7 col-sm-7 col-7 pl-3 pr-0 med-check">
+                      <app-datepicker [maxDate]="maxDate" formControlName="date" position="bottom" readonly>
+                      </app-datepicker>
+                    </div>
+                    <div class="col-lg-1 col-md-3 col-sm-3 col-3 mt-1 pr-0 text-right">
+                      <label *ngIf="items.get('parentName').value == null">
+                        <input type="file" (change)="fileChangeEvent($event, 'testresult', item)" [hidden]="true"
+                          formControlName="testresultupload" /><i class="fa fa-upload cursor"></i>
+                      </label>
+                      <label *ngIf="items.get('parentName').value == null">
+                        <span title="{{item.get('testResultUploadedFileName').value}}" placement="left"
+                          *ngIf="item.get('testResultUploadedFileName').value != null"
+                          class="textDot upload-doc-name">{{item.get('testResultUploadedFileName').value}}</span>
+                      </label>
+                    </div>
+
+                    <div *ngIf="selectedPatientDetail && !selectedDiagnosticsDetails"
+                      class="text-left col-lg-1 col-md-1 col-sm-2 col-2 pr-0 mt-1 text-right">
+                      <span ngbTooltip="Delete Medical Data"><img class="cursor" (click)="deleteRecords(i, ind)"
+                          src="../../../../../assets/image/delete.svg" height="15" alt=""></span>
+                    </div>
+                  <!-- </div> -->
+                  <!-- <div class="small-hide">
+
+                  </div> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+  </div>
+  <!-- Modal body for Record Upload -->
+  <div class="modal-body pb-0" *ngIf="testReportsHeadingFlag">
+    <form [formGroup]="uploadForm">
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-12">
+          <label>Patient</label>
+          <p *ngIf="loggedInuserDet.roleName=='DOCTOR' || loggedInuserDet.roleName=='ADMIN'">
+              {{selectedPatientDetail.name}}</p>
+          <p *ngIf="loggedInuserDet.roleName=='INDIVIDUAL'">{{loggedInuserDet.firstName}}</p>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-12">
+          <input type="file" (change)="fileChangeEvent($event)" formControlName="documents" />
+          <span *ngIf="uploadForm.get('isSubmit').value || uploadForm.controls.file.dirty">
+            <span *ngIf="uploadForm.hasError('required', 'file')" class="validation-error">{{
+                              'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+          </span>
+        </div>
+      </div>
+    </form>
+  </div>
+  <!-- End of Modal body for Record Upload -->
+
+  <div class="modal-footer pt-0 pb-0">
+    <div class="text-right">
+      <div class="display-inline-block">
+        <button class="btn btn-sm btn-secondary cursor" (click)="onCloseModal()">{{
+                'USER_PROFILE.USER_PROFILE_POPUP_CLOSE' | translate }}</button>
+      </div>
+      &nbsp;
+      <div class="display-inline-block">
+        <button *ngIf="selectedPatientDetail && !selectedDiagnosticsDetails" class="btn btn-sm btn-primary cursor"
+          type="submit"
+          (click)="onSubmitHealthRecords(addMedicalAttributeForm.value,'createViewMedicalRecordsModal');">{{'USER_MEDICAL_RECORDS.ADD_HEALTH_ATTRIBUTE_POPUP_SUBMIT' | translate }}</button>
+        <button *ngIf="selectedPatientDetail && selectedDiagnosticsDetails" class="btn btn-sm btn-primary cursor"
+          type="submit" (click)="updateSingleMedicalData(addMedicalAttributeForm.value, i);">UPDATE</button>
+      </div>
+
+    </div>
+  </div>
+</ng-template>

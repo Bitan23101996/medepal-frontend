@@ -1,0 +1,59 @@
+/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+
+ .content_logo_design {
+   background-color: #f3e0f3;
+   width: 6em;
+   height: 6em;
+   text-align: center;
+   padding: 18px;
+   border-radius: 50%;
+   /* box-shadow: 11px 13px 20px 1px rgba(184,149,184,0.82); */
+   box-shadow: 11px 5px 29px 1px rgba(184,149,184,0.82);
+ }
+
+ .content_logo_design_for_other {
+    font-size: 34px;
+    font-weight: 500;
+    color: #7d7d7d;
+ }
+
+ .content_logo_label_div {
+    text-align: center;
+    padding-top: 21px;
+    width: 267%;
+    margin-left: -38px;
+ }
+
+ .content_logo_label_div_for_other {
+  text-align: center;
+  padding-top: 8px;
+  width: 267%;
+  margin-left: -38px;
+}
+
+ .content_logo_label {
+    font-size: 12px !important;
+    font-weight: 400;
+    letter-spacing: 1px !important;
+ }
+
+ @media (min-width: 1200px) {
+  .col-xl-1 {
+    flex: 0 0 8.333333%;
+    max-width: 8.333333% !important;
+  }
+ }

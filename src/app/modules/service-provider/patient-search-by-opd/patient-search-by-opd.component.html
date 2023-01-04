@@ -1,0 +1,322 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+<div>
+  <form [formGroup]="searchPaitent">
+    <section class="pageMainContin">
+      <div *ngIf="loading" class="cover">
+        <div class="loader">
+            <div class="loading-img"><img width=250px src="../../../../../assets/image/logo.svg"/></div>
+            <div class="loading-txt">Loading<div class="dot-elastic"></div></div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="text-center mb-4">
+          <div class="main-header3 font3-style1"> Search for existing patients</div>
+          <div class="style-margin3 font3-style2 gap-search3">
+          <p>Search for patients by specifying either Patient name (partial names accepted) or Patient Mobile / Email. </p>
+          </div>
+          </div>
+        <div class="page-content">
+          <div class="container-fluid">
+            <section class="searchSection top hide-for-very-small">
+              <div class="container-fluid">
+                <div class="row no-gutters center-pos">
+                  <div class="col-6 pl-2">
+                    <label class="label-tx">Patient Name</label>
+                  </div>
+                  <div class="col-6 pl-2">
+                    <label class="label-tx">Email/Contact No.</label>
+                  </div>
+                </div>
+                <div class="row no-gutters main-search search-area-shadow center-pos">
+                  <div class="col-6">
+                    <div class="border-right-group">
+                      <div class="spacer">
+                        <input class="form-control" formControlName="name" type="text" placeholder="Enter Patient Name"
+                          pInputText>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div>
+                      <div class="spacer">
+                        <input class="form-control border-right-0 border" formControlName="eaddress" type="text"
+                          placeholder="Enter Email/Mobile No." pInputText>
+                      </div>
+                    </div>
+                  </div>
+                  <a href="javascript:void(0)" class="btn btn-primary" (click)="searchPaitentByDoctor()"
+                    role="button">Search</a>
+                </div>
+              </div>
+              <div *ngIf="noResultFound" class="w-100 not-found text-center pt-3">
+                <h3>Sorry, We could not find any patient matching your search conditions.</h3>
+              </div>
+            </section>
+            <section class="searchSection top show-for-very-small mb-0">
+              <div class="row pb-2">
+                <div class="col-6">
+                  <label class="label-tx">Patient Name</label>
+                  <input formControlName="name" type="text" placeholder="Enter Patient Name"
+                    pInputText>
+                </div>
+                <div class="col-6">
+                  <label class="label-tx">Email/Contact No.</label>
+                  <input formControlName="eaddress" type="text"
+                    placeholder="Enter Email/Mobile No." pInputText>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 text-center">
+                  <a href="javascript:void(0)" class="btn btn-primary" (click)="searchPaitentByDoctor()"
+                    role="button">Search</a>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+
+
+      <section class="srcResult searchSection" *ngIf="showResult">
+        <div class="container-fluid">
+          <hr>
+          <div class="row page-content">
+            <div class="col-lg-12">
+              <div class="row">
+                <div
+                  class="pr-0 ml-3 sml-for-admin-patient-search page-content filter-panel-width-for-admin-search-patient"
+                  [ngClass]="panelVisible ? 'panelVisible' : 'panelNotVisible'">
+                  <div class="card">
+                    <div class="filterPanel">
+                      <div class="row border-bottom">
+                        <div class="col-8">
+                          <h4 class="search-result-left-pen-heading">
+                            {{'SEARCH.REFINE_BY' | translate }}</h4>
+                        </div>
+                        <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0);"
+                            (click)="resetAll()">{{ 'FETCH_PATIENT.RESET_ALL' | translate }}</a>
+                        </div>
+                      </div>
+
+                      <div class="row overflow-auto scrollarea">
+                        <div class="col-12 pt-2">
+                          <div class="row">
+                            <div class="col-8"></div>
+                            <div class="col-4 text-right link-pos-adj float-right"><a href="javascript:void(0);"
+                                (click)="resetRefinePanelFields('date','lastAppointmentDate')">{{ 'FETCH_PATIENT.RESET' | translate }}</a>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-6">
+                              <div class="form-group">
+                                <label>{{ 'FETCH_PATIENT.FROM' | translate }}</label>
+                                <span class="float-left"><input type="text" placeholder="DD-MM-YYYY"
+                                    (bsValueChange)="onValueChange('fromDate',$event)" bsDatepicker
+                                    [bsConfig]="{ dateInputFormat: dateFormat, showWeekNumbers: false }"
+                                    class="form-control date" formControlName="fromDate" #dp="bsDatepicker"
+                                    [readonly]="true"></span>
+                                <span class="pt-1 float-left"><i (bsValueChange)="onValueChange('fromDate',$event)"
+                                    (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen"
+                                    class="far fa-calendar-alt"></i></span>
+                              </div>
+                            </div>
+                            <div class="col-6">
+                              <div class="form-group">
+                                <label>{{ 'FETCH_PATIENT.TO' | translate }}</label>
+                                <span class="float-left"><input type="text" placeholder="DD-MM-YYYY"
+                                    (bsValueChange)="onValueChange('toDate',$event)" bsDatepicker
+                                    [bsConfig]="{ dateInputFormat: dateFormat, showWeekNumbers: false }"
+                                    class="form-control date" formControlName="toDate" #dp1="bsDatepicker"
+                                    [readonly]="true"></span>
+                                <span class="pt-1 float-left"><i (bsValueChange)="onValueChange('toDate',$event)"
+                                    (click)="dp1.toggle()" [attr.aria-expanded]="dp1.isOpen"
+                                    class="far fa-calendar-alt"></i></span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="row pb-2">
+                              <div class="col-8"><label
+                                  class="page-header">{{'SEARCH.PATIENT_NAME' | translate }}</label>
+                              </div>
+                              <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0);"
+                                  (click)="resetRefinePanelFields('refinePanelPatientName','name')">{{ 'FETCH_PATIENT.RESET' | translate }}</a>
+                              </div>
+                            </div>
+                            <input type="text" class="form-control" formControlName="refinePanelPatientName"
+                              placeholder="{{'SEARCH.ENTER_PATIENT_NAME' | translate }}">
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!--start div to show refine panel error msg-->
+                <div *ngIf="refinePanelSearchMsgShow" class="w-100 col not-found text-center pt-3">
+                  <h3>Sorry, We could not find any patient matching your search conditions.</h3>
+                </div>
+                <!--end of div to show refine panel error msg-->
+                <div class="col" *ngIf="patientListToDisplay?.length>0">
+                  <div class="card">
+                    <div class="row header cardHeader  pl-0 pr-0 pt-0">
+                      <div class="col-10">
+                        <div>
+                          <h1>{{'SEARCH.PATIENT_SEARCH'|translate}}</h1>
+                        </div>
+                      </div>
+                      <div class="col-2 text-right"><span class="cursor filterBtn"
+                          (click)="refinePanelDisplay()">Filters</span></div>
+                    </div>
+
+                    <div class="content table-responsive for-medium search-result not-for-mobile">
+                      <p-table [value]="patientListToDisplay" [paginator]="isPaginator" [alwaysShowPaginator]="false"
+                        [rows]="10">
+
+                        <ng-template pTemplate="header">
+                          <tr>
+                            <th class="search-patient-small-name" width="25%">
+                              {{'OPD.PATIENT_NAME_VIEW_LABEL'| translate}}</th>
+                            <th class="search-patient-small-name" width="15%">
+                              {{'OPD.PATIENT_EMAIL_VIEW_LABEL'| translate}}</th>
+                            <th class="search-patient-small-name" width="10%">
+                              {{'OPD.PATIENT_CONTACT_NO_VIEW_LABEL'| translate}}</th>
+                            <th class="search-patient-small-name small-hide" width="18%">
+                              {{'OPD.PATIENT_LAST_APPOINTMENT_DATE_VIEW_LABEL'| translate}}
+                            </th>
+                            <th class="search-patient-small-consult small-hide" width="7%">
+                            </th>
+                          </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-rowData let-i="rowIndex">
+                          <tr>
+                            <td>{{rowData.name}} <span
+                                *ngIf="rowData.age!='Not Specified' && rowData.gender!='Not Specified'">(<span
+                                  *ngIf="rowData.age!='Not Specified'">{{rowData.age}}/</span><span
+                                  *ngIf="rowData.gender!='Not Specified'">{{rowData.gender}}</span>)</span>
+                            </td>
+                            <td>{{rowData.email}}</td>
+                            <td>{{rowData.mobile}}</td>
+                            <td class="small-hide">
+                              {{rowData.lastAppointmentDate | date: 'dd/MM/yyyy'}}</td>
+                            <td class="peer-consulting-td small-hide">
+                              <button class="btn btn-secondary"
+                                (click)="patientView(rowData)">{{'SEARCH.VIEW'| translate}}</button>&nbsp;
+                            </td>
+                          </tr>
+                          <tr class="small-show-1024-768">
+                            <td>
+                              <div class="small-header">
+                                {{'OPD.PATIENT_LAST_APPOINTMENT_DATE_VIEW_LABEL'| translate}}
+                              </div>
+                              <div class="align-top">
+                                {{rowData.lastAppointmentDate | date: 'dd/MM/yyyy'}}
+                              </div>
+                            </td>
+                            <td>
+                              <div class="small-header"></div>
+                              <div class="align-top">
+                                <button class="btn btn-secondary"
+                                  (click)="patientView(rowData)">{{'SEARCH.VIEW'| translate}}</button>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr class="small-show">
+                            <td>
+                              <div class="small-header">
+                                {{'OPD.PATIENT_LAST_APPOINTMENT_DATE_VIEW_LABEL'| translate}}
+                              </div>
+                              <div class="align-top">
+                                {{rowData.lastAppointmentDate | date: 'dd/MM/yyyy'}}
+                              </div>
+                            </td>
+                            <td>
+                              <div class="small-header"></div>
+                              <div class="align-top">
+                                <button class="btn btn-secondary"
+                                  (click)="patientView(rowData)">{{'SEARCH.VIEW'| translate}}</button>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr class="small-show-1024-768">
+                            <td class="show-border" colspan="3"></td>
+                          </tr>
+                          <tr class="small-show">
+                            <td class="show-border" colspan="3"></td>
+                          </tr>
+                        </ng-template>
+                      </p-table>
+                    </div>
+
+                    <!--start div to show small table data -->
+                    <div class="content table-responsive search-result for-very-small">
+                      <p-table [value]="patientListToDisplay" [paginator]="isPaginator" [alwaysShowPaginator]="false"
+                        [rows]="10">
+                        <ng-template pTemplate="body" let-rowData let-i="rowIndex">
+                          <tr>
+                            <ng-container>
+                              <td class="mobile-table">
+                                <table>
+                                  <tr>
+                                    <td class="small-header" width="50%">
+                                      {{'OPD.PATIENT_NAME_VIEW_LABEL'| translate}}</td>
+                                    <td>{{rowData.name}} <span
+                                        *ngIf="rowData.age!='Not Specified' && rowData.gender!='Not Specified'">(<span
+                                          *ngIf="rowData.age!='Not Specified'">{{rowData.age}}/</span><span
+                                          *ngIf="rowData.gender!='Not Specified'">{{rowData.gender}}</span>)</span>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td class="small-header">
+                                      {{'OPD.PATIENT_EMAIL_VIEW_LABEL'| translate}}</td>
+                                    <td>{{rowData.email}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td class="small-header">
+                                      {{'OPD.PATIENT_CONTACT_NO_VIEW_LABEL'| translate}}</td>
+                                    <td>{{rowData.mobile}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td class="small-header">
+                                      {{'OPD.PATIENT_LAST_APPOINTMENT_DATE_VIEW_LABEL'| translate}}
+                                    </td>
+                                    <td>{{rowData.lastAppointmentDate | date: 'dd/MM/yyyy'}}</td>
+                                  </tr>
+                                  <tr>
+                                    <td class="border-bottom"></td>
+                                    <td class="border-bottom"> <button class="btn btn-secondary"
+                                        (click)="patientView(rowData)">{{'SEARCH.VIEW'| translate}}</button>&nbsp;
+                                  </tr>
+                                </table>
+                              </td>
+                            </ng-container>
+                          </tr>
+                        </ng-template>
+                      </p-table>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+  </form>
+</div>

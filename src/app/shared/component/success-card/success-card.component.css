@@ -1,0 +1,58 @@
+.doctorRegistration h5{
+    font-size: 2rem;
+    font-weight: 300;
+}
+.doctorRegistration p{
+    color: #9250a4;
+    font-size: 17px;
+}
+.doctorRegistration p strong{
+    color: #9250a4;
+    font-size: 17px;
+}
+
+.main-header{
+    font-size:18px;
+    font-weight:400;
+    padding-top:20px;
+    color:#5f5f5f;
+    
+
+  }
+  .font-style1
+{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 24px;
+    
+}
+
+.style-margin p
+{
+    margin-top: 10px;
+}
+
+.font-style2
+{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 20px;
+    font-weight: 400;
+
+}
+@media (max-width: 576px)
+{
+    .font-style1
+    {
+       font-size: 18px;
+        
+    }
+    .font-style2
+    {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 16px;
+    font-weight: 400;
+
+    }
+}
+
+
+

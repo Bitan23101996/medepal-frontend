@@ -1,0 +1,331 @@
+/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+
+ .agreement{
+     height: calc(100vh - 320px);
+     overflow-y: auto;
+     border: 1px solid #d2cfcf;
+     padding: 10px 12px;
+ }
+ .agreement p{
+    font-size: 11px;
+ }
+ .ip{
+    margin-top: 30px;
+    font-size: 10px;
+    font-style: italic;
+}
+
+.dashb-card{
+    border-radius:5px;
+    padding:10px;
+    font-size:13px;
+    box-shadow: 2px 1px 5px rgba(0,0,0,.3);
+    height:100%;
+}
+.border-left-profile{
+    border:1px solid #ff808b;
+    background: -moz-linear-gradient(left, rgba(247,229,233,1) 0%, rgba(255,255,255,1)100%);
+    background: -webkit-gradient(left top, right top, color-stop(0%, rgba(255,255,255,1)), color-stop(100%, rgba(255,255,255,1)));
+    background: -webkit-linear-gradient(left, rgba(247,229,233,1)0%, rgba(255,255,255,1) 100%);
+    background: -o-linear-gradient(left, rgba(247,229,233,1)0%, rgba(255,255,255,1) 100%);
+    background: -ms-linear-gradient(left, rgba(247,229,233,1) 0%, rgba(255,255,255,1)100%);
+    background: linear-gradient(to right, rgba(247,229,233,1) 0%, rgba(255,255,255,1) 100%);
+    
+  }
+
+.green-card{
+    background:#f4faff;
+border:1px solid #c7e6ff;
+
+  }
+
+  
+
+
+.dashb-button{
+    display:inline-block;
+    padding:5px 20px;
+    color:#fff;
+    border-radius:20px;
+    font-size:18px;
+    font-weight:400;
+    background:#146199;
+    
+  }
+.dashb-button1{
+    display:inline-block;
+    padding:5px 20px;
+    color:#fff;
+    border-radius:20px;
+    font-size:18px;
+    font-weight:400;
+    background:#4dbeac;
+    
+  }
+.dashb-button2{
+    display:inline-block;
+    padding:5px 20px;
+    color:#fff;
+    border-radius:20px;
+    font-size:18px;
+    font-weight:400;
+    background:#ce8a35;
+    
+  }
+
+
+.name-white{
+    font-size:18px;
+    font-weight:400;
+    color: #000;
+    margin-top: 10px;
+    padding-left: 30px;
+  }
+.green-card1
+{
+    background:#f0fffd;
+border:1px solid #b6fff3;
+}
+
+.green-card2
+{
+    background:#fff7ee;
+    border:1px solid #ffd8ad;
+}
+
+.individual h2{
+    font-size:22px;
+    font-weight:400;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    color:#5f5f5f;
+}
+
+.in-margin
+{
+    margin-top: 20px;
+    
+}
+
+.name-white1 p{
+    font-size:16px;
+    font-weight:400;
+    color: #000;
+    line-height: 22px;
+  }
+.button-margin
+{
+    margin-bottom: 15px ;
+}
+
+  
+.heading{
+background:#146199;
+border-radius:30px;
+color:#fff;
+font-weight:400;
+padding:10px 17px;
+display: inline;
+margin-left: 13px;
+}
+
+.heading1{
+background:#4dbeac;
+border-radius:30px;
+color:#fff;
+font-weight:400;
+padding: 10px 17px;
+display: inline;
+ margin-left: 13px;
+}
+.heading2{
+background:#ce8a35;
+border-radius:30px;
+color:#fff;
+font-weight:400;
+padding:10px 17px;
+display: inline;
+ margin-left: 13px;
+}
+.line{
+    min-height: 9.8rem;
+
+}
+
+.header h1{
+color:#4d4d4d !important;
+font-size:22px !important;
+font-weight:400 !important;
+margin-bottom:10px !important;
+
+}
+.line-margin 
+{
+    margin-top: 15px;
+}
+.logo
+{
+    margin-top: -1px;
+}
+
+.logo1
+{
+    margin-top: 9px;
+    width: 28%
+    
+}
+.download-link-header h1{
+	font-size:17px !important;
+	font-weight:400 !important;
+}
+.download-link-text{
+	font-size:16px;
+}
+.download-link{
+	font-weight:500;
+	font-size:16px;
+	text-decoration: underline;
+}
+.dashb-background
+{
+    background:#f7e5e9;
+    border:1px solid #ff808b;
+}
+
+.playstore p{
+    font-size:20px;
+    font-weight:400;
+    color: #c22d39;
+    line-height: 22px;
+    text-transform: uppercase;
+    
+  }
+
+  .playstore1 p{
+    font-size:16px;
+    font-weight:400;
+    color: #000;
+    line-height: 16px;
+  }
+
+  
+@media (max-width: 1024px) {
+
+  .icon-display
+  {
+    display: none;
+    
+  }
+
+}
+
+@media (max-width: 576px) {
+  .name-white{
+                  font-size:14px;
+                  padding-left: 0px !important;
+                  text-align: center;
+                  
+                }
+ .individual h2{
+          font-size:16px;
+  
+          }
+  .name-white1 p{
+                  font-size:12px;
+          }
+  
+  .dashb-button{
+                 
+                  font-size:14px;
+           }
+  .dashb-button1{
+                 
+                  font-size:14px;
+           }
+  .dashb-button2{
+                 
+                  font-size:14px;
+           }
+.playstore p{
+            font-size:16px;
+           }
+.playstore1 p{
+            font-size:14px;
+            
+          }
+.icon-position-responsive
+{
+  padding: 5px , 5px ;
+}
+  }
+
+  @media (max-width: 1024px) {
+    .line{
+                    min-height: auto;
+            
+            }
+          }
+ @media (max-width: 765px)
+  {
+    .logo1
+    {
+        width: 45%;
+      
+        
+    }
+
+    .image-margin
+    {margin-left: 10px;
+    text-align: left !important;}
+    .image-margin1
+    {margin-left: -6px;}
+  }
+
+  @media only screen and (max-width: 1025px) and (min-width: 767px) 
+  {
+    .logo1
+    {
+       
+        width: 45%;
+      
+        
+    }
+  }
+  @media only screen and (max-width: 768px) and (min-width: 766px) 
+  {
+    .logo1
+    {
+        margin-top: 22px;
+        
+        
+    }
+  }
+
+  @media only screen and (max-width: 1377px) and (min-width: 1026px) 
+  {
+    .logo1
+    {
+        margin-top: 18px;
+        width: 35%;
+        
+        
+        
+    }
+  }
+
+

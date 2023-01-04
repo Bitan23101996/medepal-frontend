@@ -1,0 +1,140 @@
+<div class="content">
+    <div class="row page-content">
+        <div class="col-lg-12">
+            <div class="row">
+                <form [formGroup]="permissionFormFilterData">
+                    <div class="w-10 pr-0 pl-3 sml page-content filter-panel-width" [ngClass]="panelVisible ? 'panelVisible' : 'panelNotVisible'">
+                        <div class="card min-height292px prescription-panel-shadow">
+                            <div class="filterPanel">
+                                <div class="row border-bottom">
+                                    <div class="col-8">
+                                        <h4 class="search-result-left-pen-heading">
+                                            {{'MY_PRESCRIPTION.PRESCRIPTION_REFINE_BY' | translate}}
+                                        </h4>
+                                    </div>
+                                    <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0)" (click)="resetAllFilter()">{{'COMMON.RESET_ALL_BUTTON' | translate}}</a>
+                                    </div>
+                                </div>
+                                <div class="row overflow-auto scrollarea">
+                                    <div class="col-12">
+                                        <div class="resetBtn margin-top10">
+                                            <a (click)="resetDateRange()" href="javascript:void(0)">{{'COMMON.RESET_BUTTON' | translate}}</a>
+                                        </div>
+                                        <div class="row" style="padding: 13px;">
+                                            <div class="col-6 pl-1 pr-1">
+                                                <div class="form-group">
+                                                    <label>{{'COMMON.FROM_DATE_LEBEL' | translate}}</label>
+                                                    <app-datepicker [maxDate]="returnMaxFromDate()" formControlName="fromDate" (valueChange)="changeDate($event,'from')" position="bottom">
+                                                    </app-datepicker>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 pl-1 pr-1">
+                                                <div class="form-group">
+                                                    <label>{{'COMMON.TO_DATE_LEBEL' | translate}}</label>
+                                                    <app-datepicker formControlName="toDate" [minDate]="minDate" [maxDate]="maxDate" (valueChange)="changeDate($event,'to')" position="bottom">
+                                                    </app-datepicker>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-goup">
+                                            <div class="row pb-2">
+                                                <div class="col-8 ">
+                                                    <label class="page-header margin-top0">{{'MEDICAL_REPORTS.DOCTOR_NAME' | translate}}</label>
+                                                </div>
+                                                <!-- <div class="col-4 text-right link-pos-adj">
+                                                    <a (click)="resetAllFilterForPatient()" href="javascript:void(0)">{{'COMMON.RESET_BUTTON' | translate}}</a>
+                                                </div> -->
+                                            </div>
+                                            <div class="form-check pl-0">
+                                                <label class="form-check-label">
+                                                    <input type="text" formControlName="doctorName" (input)="nameInputFilter($event)">
+                                                    <!--formControlName="doctorName"-->
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- <div *ngIf="(fetchAllData && (!refinePanelShowFlag))" class="not-found text-center margin-top10">
+                  <h3> {{'COMMON.REFINE_PANEL_ERROR_MSG'| translate}}</h3>
+                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="col">
+                    <div style="min-height: 422px;" class="card">
+                        <div class="row">
+                            <div class="col-md-6 col-12">
+                                <h1 class="top-label">
+                                    <span>Permission to view records</span>
+                                </h1>
+                            </div>
+                            <div class="col-md-6 text-right col-12 pb-3">
+                                <span class="cursor mr-4 filterBtn" (click)="refinePanelDisplay()">Filters</span>
+                            </div>
+                        </div>
+                        <hr>
+                        <div *ngIf="!permissionDetails" class="row page-content min-height292px">
+                            <div class="row col-lg-12 text-center padding-right0px">
+                                <div class="text-center not-found col-lg-12">
+                                    <h3>No Data!</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="permissionDetails" style="overflow-x: hidden;" class="content table-responsive for-medium search-result not-for-mobile">
+                            <form [formGroup]="permissionForm">
+                                <p-table [value]="permissionForm.controls.permission.controls" [paginator]="permissionDetails.length>10" [rows]=10 *ngIf="permissionDetails.length>0">
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th width="13%">Doctor</th>
+                                            <th width="9%" class="text-center">Permission</th>
+                                            <th width="14%">From Date</th>
+                                            <th width="14%">To Date</th>
+                                            <th width="7%"></th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-users let-i="rowIndex">
+                                        <ng-container formArrayName="permission">
+                                            <tr [formGroupName]="i">
+                                                <td>{{users.get('doctorName').value}}</td>
+                                                <td class="text-center">
+                                                    <input *ngIf="!users.get('isEdit').value" type="checkbox" disabled formControlName="permissionCheck" [checked]="users.get('refNo').value">
+                                                    <input *ngIf="users.get('isEdit').value" type="checkbox" formControlName="permissionCheck" [checked]="users.get('refNo').value">
+                                                </td>
+                                                <td *ngIf="!users.get('isEdit').value">
+                                                    {{users.get('authorizationDateFrom').value | dateFormat}}
+                                                </td>
+                                                <td *ngIf="users.get('isEdit').value">
+                                                    <app-datepicker [disabled]="!users.get('permissionCheck').value" [minDate]="minDate" [maxDate]="maxDate" (change)="checkDates($event,users, i)" formControlName="authorizationDateFrom" position="bottom">
+                                                    </app-datepicker>
+                                                </td>
+                                                <td *ngIf="!users.get('isEdit').value">
+                                                    {{users.get('authorizationDateTo').value | dateFormat}}
+                                                </td>
+                                                <td *ngIf="users.get('isEdit').value">
+                                                    <app-datepicker [disabled]="!users.get('permissionCheck').value" [minDate]="minDate" [maxDate]="maxDate" formControlName="authorizationDateTo" position="bottom">
+                                                    </app-datepicker>
+                                                </td>
+                                                <td>
+                                                    <img class="cursor" *ngIf="!users.get('isEdit').value" (click)="editPermission(users, i)" src="../../../../../assets/image/edit.svg" height="20" alt="">
+                                                    <div *ngIf="users.get('isEdit').value" class="row">
+                                                        <span ngbTooltip="Cancel" (click)="backToViewMode(users, i)" class="table-action-btn grey cursor"><img
+                                                                src="../../../../../assets/image/cancel.svg" height="20"
+                                                                alt=""></span>
+                                                        <span ngbTooltip="Save Permission" (click)="savePermission(users)" class="table-action-btn grey cursor"><img
+                                                                src="../../../../../assets/image/save.svg" height="25"
+                                                                alt=""></span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </ng-container>
+                                    </ng-template>
+                                </p-table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

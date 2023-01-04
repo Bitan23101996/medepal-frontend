@@ -1,0 +1,147 @@
+#videoChat.video-chat-area{
+  background:#134c76;
+  position:fixed;
+  width:auto;
+  border-radius:0;
+  border-top-left-radius: 0px;
+  z-index:10000;
+  padding: 0 5px 0 5px;
+  transition: ease-in-out 400ms right;
+  box-shadow: 0 0 5px #000;
+  min-height: 170px;
+  min-width:120px;
+  cursor: move;
+  /*overflow:auto;*/
+}
+
+#videoChat.video-chat-pos{
+  top:calc(100vh - 170px);
+  left:calc(100vw - 150px);
+}
+
+#videoChat.video-chat-pos-max{
+  top:40vh;
+  left:47vw;
+}
+
+
+#videoChat.video-chat-area .header-area{
+  height:20px;
+  color:#fff;
+}
+
+#videoChat.video-chat-area .header .ng-star-inserted{
+  margin-bottom:0 !important;
+}
+
+#videoChat .close-msg{
+  position:absolute;
+  width:60%;
+  min-width:115px;
+  margin: auto;
+  top:30%;
+  left:0;
+  right:0;
+  background:rgba(255,255,255,.8);
+  padding:10px;
+  text-align:center;
+  z-index:999;
+  font-weight:bold;
+  border-radius:10px;
+}
+
+#videoChat .video-body{
+  min-height:110px;
+}
+
+#videoChat .footer-spacer{
+  margin-top:5px;
+}
+
+#videoChat .icon-body{
+  background:rgba(255,255,255,1);
+  border-radius:50%;
+  width:30px;
+  height:30px;
+  margin:auto;
+}
+
+
+/* for browser view */
+
+#videoChat-single-page.video-chat-area{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background:#146199;
+  box-shadow: 0 0 10px rgba(0,0,0,.5);
+  padding:10px;
+  min-width:70vw;
+  min-height:70vh;
+  border-radius:10px;
+}
+
+#videoChat-single-page.video-chat-area.fullScreen {
+  border-radius: 0;
+  padding:0;
+}
+
+#videoChat-single-page.video-chat-area.fullScreen .fs, #videoChat-single-page.video-chat-area .efs{
+  display:none;
+}
+
+#videoChat-single-page.video-chat-area.fullScreen .efs, #videoChat-single-page.video-chat-area .fs{
+  display:block;
+}
+
+
+
+#videoChat-single-page.video-chat-area .header-area{
+  display:none;
+}
+
+#videoChat-single-page .footer-area{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  height:35px;
+}
+
+#videoChat-single-page .icon-body{
+  background:rgba(255,255,255,1);
+  border-radius:50%;
+  width:30px;
+  height:30px;
+  margin:auto;
+}
+
+#videoChat-single-page .footer-area .full-screen{
+  position: absolute;
+  right:20px;
+  top:5px;
+}
+
+#videoChat-single-page .close-msg{
+  position:absolute;
+  width:60%;
+  min-width:115px;
+  margin: auto;
+  top:30%;
+  left:0;
+  right:0;
+  background:rgba(255,255,255,.8);
+  padding:10px;
+  text-align:center;
+  z-index:999;
+  font-weight:bold;
+  border-radius:10px;
+}
+
+
+@media only screen and (max-width: 767px) and (min-width: 577px) {
+
+  #videoChat-single-page.video-chat-area{
+    top:55%;
+  }
+}

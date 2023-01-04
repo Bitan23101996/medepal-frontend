@@ -1,0 +1,290 @@
+
+/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+ 
+
+
+.custom-online-circle-div-for-display-online {
+	border: 1.4px solid #28a745;
+    border-radius: 56px;
+    height: 21px;
+    width: auto;
+    max-width: 62px;
+    background-color: #caffcd;
+}
+
+.badge-noShow{
+    color: #fff;
+    background-color:#ad696f
+}
+
+
+.hr-style { 
+	margin-top: 0px;
+	margin-bottom: 2px;
+	margin-left: 0;
+	margin-right: 0;
+	color: black;
+	}
+.vl {
+    border-left: 2px solid rgb(113, 119, 113);
+		height: 450px;
+		margin-left: 10px;
+}
+.span-style1 {
+	background-color: rgb(15, 151, 15);
+	color: white;
+	border-radius: 6px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 20px;
+	padding-right: 20px;
+	background-origin: inherit;
+	font-family: 'Times New Roman', Times, serif;
+}
+.span-style2 {
+	background-color: rgb(122, 124, 122);
+	color: white;
+	border-radius: 6px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 25px;
+	padding-right: 25px;
+	background-origin: inherit;
+	font-family: 'Times New Roman', Times, serif;
+}
+.span-style3 {
+	background-color: rgb(201, 56, 51);
+	color: white;
+	border-radius: 6px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 25px;
+	padding-right: 25px;
+	background-origin: inherit;
+	font-family: 'Times New Roman', Times, serif;
+}
+.span-style4 {
+	background-color: rgb(53, 66, 187);
+	color: white;
+	border-radius: 6px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 24px;
+	padding-right: 24px;
+	background-origin: inherit;
+	font-family: 'Times New Roman', Times, serif;
+}
+.span-style5 {
+	background-color: rgb(241, 234, 234);
+	color: rgba(0, 0, 0, 0.514);
+	border-radius: 6px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-left: 33px;
+	padding-right: 33px;
+	background-origin: inherit;
+	border: 2px solid rgb(102, 98, 98);
+	font-family: 'Times New Roman', Times, serif;
+}
+.bt-style1 {
+	background-color: rgb(53, 66, 187);
+	color: white;
+	border-radius: 10px;
+	padding-left: 30px;
+	padding-right: 30px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	font-family: 'Times New Roman', Times, serif;
+}
+.bt-style2 {
+	background-color: rgb(154, 155, 167);
+	color: white;
+	border-radius: 10px;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	font-family: 'Times New Roman', Times, serif;
+}
+.bt-style3 {
+	background-color: rgb(43, 145, 39);
+	color: white;
+	border-radius: 10px;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	font-family: 'Times New Roman', Times, serif;
+}
+.span-top {
+	background-color: rgb(145, 145, 141);
+	color: white;
+	border-radius: 4px;
+	padding-top: 6px;
+	padding-bottom: 6px;
+	padding-left: 15px;
+	padding-right: 15px;
+	font-family: 'Times New Roman', Times, serif;
+}
+.p-heading {
+	color: rgb(124, 123, 122);
+	font-family: 'Times New Roman', Times, serif;
+	text-align: justify;
+}
+.span-style6 {
+	background-color: white;
+	padding-top: 2px;
+	padding-bottom: 3px;
+	padding-left: 33px;
+	padding-right: 33px;
+	border-top: 5px solid rgb(16, 160, 24);
+	border-bottom: 1px solid rgb(134, 134, 134);
+	border-left: 1px solid rgb(134, 134, 134);
+	border-right: 1px solid rgb(134, 134, 134);
+	border-radius: 6px;
+	font-family: 'Times New Roman', Times, serif;
+	font-size : 80%;overflow: hidden;
+}
+.span-style7 {
+	background-color: white;
+	padding-top: 2px;
+	padding-bottom: 3px;
+	padding-left: 24px;
+	padding-right: 24px;
+	border-top: 5px solid rgb(184, 14, 14);
+	border-bottom: 1px solid rgb(134, 134, 134);
+	border-left: 1px solid rgb(134, 134, 134);
+	border-right: 1px solid rgb(134, 134, 134);
+	border-radius: 6px;
+	font-family: 'Times New Roman', Times, serif;
+	font-size : 80%;overflow: hidden;
+}
+.span-style8 {
+	background-color: white;
+	padding-top: 2px;
+	padding-bottom: 3px;
+	padding-left: 10px;
+	padding-right: 10px;
+	border-top: 5px solid rgb(25, 14, 184);
+	border-bottom: 1px solid rgb(134, 134, 134);
+	border-left: 1px solid rgb(134, 134, 134);
+	border-right: 1px solid rgb(134, 134, 134);
+	border-radius: 6px;
+	font-family: 'Times New Roman', Times, serif;
+	font-size : 80%;overflow: hidden;
+}
+.pagination-style {
+	text-align: center;
+	margin-left: 530px;
+	margin-top: 16px;
+}
+div.scroll {
+    width: 250px;
+    height: 100px;
+    overflow: auto;
+}
+/* sbis-poc/app/issues/594 */
+.problem-narration{
+	
+	overflow-y: auto;
+}
+input[type="file"] {
+    display: none;
+}
+.margin-left-100{
+    margin-left: 100px;
+}
+.margin-right-100{
+    margin-right: 100px;
+}
+.cursor-pointer{
+	cursor: pointer;
+}
+
+.close-btn{
+	position:absolute;
+	left:-30px;
+	top:0;
+	height:30px;
+	width:30px;
+	background:#f5f8f9;
+	text-align:center;
+	line-height:30px;
+}
+.appointment h2{
+    font-size:18px;
+    font-weight:400;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    color:#5f5f5f;
+}
+.appointment-margin
+{
+	margin-top: 10px;
+}
+.requested-icon
+{
+	margin-top:10px;
+	margin-left: 5px;
+}
+
+
+.symtomps-style h4
+{
+	font-size: 18px;
+	font-family: Georgia, 'Times New Roman', Times, serif;
+	color: #5f5f5f;
+}
+.symtomps-style1
+{
+	font-size: 16px;
+	font-family: Georgia, 'Times New Roman', Times, serif;
+	color: black;
+}
+.symtopms-patient
+{
+	padding-top: 5px;
+	margin-bottom: -10px;
+	margin-top: 10px;
+}
+.symtomps-style2 h2{
+    font-size:18px;
+    font-weight:400;
+    padding-top: 0px;
+    padding-bottom: 10px;
+	color:#5f5f5f;
+	font-family: Georgia, 'Times New Roman', Times, serif;
+}
+.symtomps-style3 h2{
+	font-size:14px;
+    font-weight:400;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    color:#5f5f5f;
+	
+}
+
+.symtomps-margin h2
+{
+	margin-bottom: 0px ;
+}
+
+
+	
+
+

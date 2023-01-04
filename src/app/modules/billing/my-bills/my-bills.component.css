@@ -1,0 +1,113 @@
+
+
+/* .bill-table td{
+    text-align: left;
+    width: 50%;
+} */
+.bill-table thead tr{
+    border-bottom: 1px solid #c1c1c1;
+}
+.bill-table td, .bill-table th{
+    text-align: left;
+    padding: .35rem;
+}
+.priceTd{
+    width: 150px;
+    text-align: right;
+}
+.not-found {
+    font-weight: 300;
+    color: #ad4274;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+.found {
+    font-weight: 300;
+    color: #096;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+
+.billing-details h5{
+    font-weight: 400;
+    color: #8e4ca1;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+.billing-details h4{
+    font-weight: 500;
+    color: #8e4ca1;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+.border-left{
+    border-left: 1px solid #333;
+}
+.badge {
+    font-size: 11px;
+}
+
+.price-plan-msg{
+  background:#e4fffb;
+  padding:5px 10px;
+  color:#28882e;
+  font-size:16px;
+  font-weight:400;
+  border:5px solid #d1e0df;
+}
+
+.bill-pill-red{
+  border-radius:5px;
+  padding:5px;
+  color:#c03356;
+  font-weight:400;
+  border:1px solid #c03356;
+  font-size:12px;
+}
+
+.bill-pill-green{
+  border-radius:5px;
+  padding:5px;
+  color:#28882e;
+  font-weight:400;
+  border:1px solid #28882e;
+  font-size:12px;
+}
+
+.calendar-header{
+  color:#1b78bb;
+}
+
+.calendar-arrow-box{
+  border:1px solid #1b78bb;
+  padding:0 3px;
+  color:#fff;
+  height:20px;
+  margin: 0 5px;
+  font-size:13px;
+  background:#1b78bb;
+  cursor:pointer;
+}
+
+.page-content .card-header.no-btm-border{
+  border-bottom:none;
+  margin-bottom:0 !important;
+}
+
+.row.no-margin-btm{
+  margin-bottom:0 !important;
+}
+.billing-details{
+    height: calc(100vh - 226px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.header-padding 
+{
+  padding-left: 15px;
+
+}
+.margin-card 
+{
+  margin-bottom: 10px;
+}

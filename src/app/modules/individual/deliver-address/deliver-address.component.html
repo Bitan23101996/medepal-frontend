@@ -1,0 +1,333 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+<div *ngIf="!isEdit" class="row top-btn-area deliver-address-display-action-button-hide">
+  <div class="delivary-address-button col-lg-2 col-md-9 col-sm-12 col-12 text-right">
+    <button class="btn btn-primary margin-right-43px"
+      (click)="addNewAddress()">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_ADD_NEW_ADD' | translate}}</button>
+  </div>
+  <div class="delivary-address-button col-4">
+    <button class="btn btn-small btn-secondary"
+      (click)="backOperation()">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_BACK_BUTTON' | translate}}</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 deliver-address-display-action-button-show">
+    <div class="row page-content text-right mr-2">
+      <div class="col-7 col-xs-8 col-sm-8 pr-0">
+        <button class="btn btn-small btn-primary"
+          (click)="backOperation()">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_BACK_BUTTON' | translate}}</button>
+      </div>
+      <div class="col-5 col-xs-4 col-sm-4 pr-0">
+        <button class="btn btn-primary"
+          (click)="addNewAddress()">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_ADD_NEW_ADD' | translate}}</button>
+      </div>
+    </div>
+  </div>
+  <!--<div class="row col-md-12 height45"></div>
+  new add to set the gap-->
+  <div class="col-md-12 page-content">
+    <div class="row">
+      <div class="col-12">
+        <!--addresslist-->
+        <div *ngIf="!isEdit" class="row  delivery-address-card-list-scroll">
+          <div [ngClass]="addresses.customCssClassCursor" class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12"
+            *ngFor="let addresses of addressList; let i = index" id="{{i}}" title="{{addresses.addressType}} Address">
+            <div class="card" [ngClass]="addresses.customCssClass">
+              <div class="card-header">
+                <h5>{{addresses.addressType}}</h5>
+              </div>
+              <div class="row card-body delivery-address-card-size">
+                <div *ngIf="addresses.name != undefined || addresses.name != null" class="col-12 nomb">
+                  <p>{{addresses.name}} &nbsp; {{addresses.contactNo}}</p>
+                </div>
+                <div class="col-12">
+                  <p>
+                    {{addresses.line1}} &nbsp; {{addresses.line2}}
+                  </p>
+                  <p>
+                    <span>{{addresses.city}}</span>&nbsp;<span>{{addresses.state}}</span>&nbsp;<span>{{addresses.pinCode}}</span>
+                  </p>
+                  <p>{{addresses.country}}</p>
+                </div>
+
+              </div>
+              <div class="card-footer">
+                <div *ngIf="deliveryPossible" class="text-center possible">
+                  <button class="btn btn-primary" (click)="selectAddress(addresses);placeOrder()">Deliver to this address</button>
+                </div>
+                <div class="text-center not-possible">
+                  Sorry, service still not available in this pincode.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--end of addresslist-->
+        <div class="card" *ngIf="isEdit">
+          <form [formGroup]="addressForm">
+
+            <div class="row">
+              <div class="col-md-6 col-12">
+                <div class="form-group">
+                  <label class="control-label bt-style">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_NAME' | translate}}</label>
+                  <div>
+                    <!-- <input [required]="true" type="text" class="form-control" formControlName="name" /> -->
+                    <app-name preventType="all" formControlName="name" required="required"></app-name>
+                    <span *ngIf="addressForm.get('isSubmit').value || addressForm.controls.name.dirty">
+                      <span *ngIf="addressForm.hasError('required', 'name')" class="validation-error">{{
+                                    'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-12">
+                <div class="form-group mb-0 tel">
+                  <label
+                    class="control-label bt-style">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_CONTACT_NO' | translate}}</label>
+
+                  <div>
+                    <!-- <input [required]="true" type="text" class="form-control" formControlName="contactNo"
+                        (keydown)="onKeydown($event)" /> -->
+                    <app-telephone class="input-group" formControlName="contactNo">
+                    </app-telephone>
+                    <!-- <int-phone-prefix [locale]="'IN'" [defaultCountry]="'in'" formControlName="contactNo"></int-phone-prefix> -->
+                    <span *ngIf="addressForm.get('isSubmit').value || addressForm.controls.contactNo.dirty">
+                      <span *ngIf="addressForm.hasError('required', 'contactNo')" class="validation-error">{{
+                                    'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                      <span *ngIf="addressForm.hasError('minlength', 'contactNo')" class="validation-error">{{
+                                    'VALIDATION.VALIDATION_MOBILE_LENGTH' |
+                                    translate }}</span>
+                      <span *ngIf="addressForm.hasError('maxlength', 'contactNo')" class="validation-error">{{
+                                    'VALIDATION.VALIDATION_MOBILE_LENGTH' |
+                                    translate }}</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row editable">
+              <div class="col-md-6 col-12">
+                <div class="form-group">
+                  <label class="bt-style">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_ADD_TYPE' | translate}}</label>
+                  <div>
+                    <select class="form-control" formControlName="addressType"
+                      (change)="createNewAddressType($event,addressForm)">
+                      <option *ngFor="let addressType of addressTypeList" value="{{addressType.Type}}" class="cursor">
+                        {{addressType.Type}}</option>
+                    </select>
+                    <span *ngIf="addressForm.get('isSubmit').value || addressForm.controls.addressType.dirty">
+                      <span *ngIf="addressForm.hasError('required', 'addressType')" class="validation-error">{{
+                                  'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-12">
+                <div class="form-group">
+                  <label class="control-label bt-style">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_COUNTRY' | translate}}</label>
+                  <div>
+                    <select formControlName="country" class="form-control"
+                      (change)="getStateCasCadeToCounntry(addressForm)">
+                      <option *ngFor="let country of masterCOUNTRY" value="{{country.countryName}}" class="cursor">
+                        {{country.countryName}}</option>
+                    </select>
+                    <span *ngIf="addressForm.get('isSubmit').value || addressForm.controls.country.dirty">
+                      <span *ngIf="addressForm.hasError('required', 'country')" class="validation-error">{{
+                                    'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row editable">
+              <div class="col-md-2 col-12">
+                <div class="form-group">
+                  <label class="control-label bt-style">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_PINCODE' | translate}}</label>
+
+                  <div>
+                    <input type="text" maxlength="6" class="form-control" min="0" formControlName="pinCode" />
+                    <span *ngIf="addressForm.get('isSubmit').value || addressForm.controls.pinCode.dirty">
+                      <span *ngIf="addressForm.hasError('required', 'pinCode')" class="validation-error">{{
+                                  'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                      <span *ngIf="addressForm.hasError('minlength', 'pinCode')" class="validation-error">{{
+                                          'VALIDATION.VALIDATION_PINCODE_MIN_LENGTH' |
+                                          translate }}</span>
+                      <span *ngIf="addressForm.hasError('min', 'pinCode')" class="validation-error">{{
+                                                      'VALIDATION.VALIDATION_PINCODE_MIN' |
+                                                      translate }}</span>
+                      <span *ngIf="addressForm.hasError('pattern', 'pinCode')" class="validation-error">{{
+                                                              'VALIDATION.VALIDATION_PINCODE_PATTERN' |
+                                                              translate }}</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 col-12">
+                <div class="form-group">
+                  <label class="control-label bt-style">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_STATE' | translate}}</label>
+
+                  <div>
+                    <select formControlName="state" class="form-control">
+                      <option *ngFor="let state of masterSTATE | sort:'stateName':true" value="{{state.stateName}}">
+                        {{state.stateName}}</option>
+                    </select>
+                    <span *ngIf="addressForm.get('isSubmit').value || addressForm.controls.state.dirty">
+                      <span *ngIf="addressForm.hasError('required', 'state')" class="validation-error">{{
+                                  'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-12">
+                <div class="form-group">
+                  <label class="control-label bt-style">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_CITY' | translate}}</label>
+
+                  <div>
+                    <input [required]="true" type="text" class="form-control" formControlName="city"
+                      (keydown)="onKeydown($event)" />
+                    <span *ngIf="addressForm.get('isSubmit').value || addressForm.controls.city.dirty">
+                      <span *ngIf="addressForm.hasError('required', 'city')" class="validation-error">{{
+                                  'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                      <span *ngIf="addressForm.hasError('minlength', 'city')" class="validation-error">{{
+                                  'VALIDATION.VALIDATION_CITY_NOT_LESS_THAN' |
+                                  translate }}</span>
+                      <span *ngIf="addressForm.hasError('maxlength', 'city')" class="validation-error">{{
+                                  'VALIDATION.VALIDATION_CITY_NOT_MORE_THAN' |
+                                  translate }}</span>
+                      <!-- <span *ngIf="addressForm.hasError('pattern', 'city')" class="validation-error">{{
+                                          'VALIDATION.VALIDATION_CITY_LETTER' |
+                                          translate }}</span> -->
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row editable">
+              <div class="col-12">
+                <div class="form-group">
+                  <label class="control-label">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_LINE1' | translate}}</label>
+
+                  <div>
+                    <input type="text" class="form-control" formControlName="line1" />
+                    <span *ngIf="addressForm.get('isSubmit').value || addressForm.controls.line1.dirty">
+                      <span *ngIf="addressForm.hasError('required', 'line1')" class="validation-error">{{
+                                        'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group">
+                  <label class="control-label">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_LINE2' | translate}}</label>
+
+                  <div>
+                    <input type="text" class="form-control" formControlName="line2" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 edit card-footer">
+              <div class="row">
+                <!-- <div class="col-8"></div> -->
+                <div class="col-12 text-right">
+                  <span class="cursor mr-4 "
+                    (click)="onBackOperation()">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_CANCEL' | translate}}</span>
+                    <button type="button" class="btn btn-primary mt-md-0 mt-4"
+                      (click)="saveAddress(addressForm);placeOrderNewAddress();">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_SAVE' | translate}}</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!--<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 min-height168px">
+        <div class="col-md-12 border min-height100percent">
+          <div class="row padding20">
+            <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">
+              <p class="font-size-large"><b>{{'ORDER_MEDICINE.SUBTOTAL_LEBEL_NAME' | translate}} ({{cardItemCount}}
+                  {{'ORDER_MEDICINE.ITEM_LEBEL_NAME' | translate}}<ng-container *ngIf="cardItemCount>1">s</ng-container>
+                  ):
+                </b></p>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 padding-top2px pl-0 text-right">
+              <p class="price-font-size">{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{totalAmount | number:'2.2-2'}}</p>
+            </div>
+          </div>
+          <div class="padding-top29px-for-delivary-address text-center">
+            <button [disabled]="!delivarProceed" class="btn btn-primary" (click)="placeOrder()">Next</button>
+          </div>
+        </div>
+      </div>-->
+    </div>
+  </div>
+</div>
+
+<!-- <jw-modal id="create-Address-type-modal">
+    <h1>{{ 'USER_PROFILE.USER_PROFILE_POPUP_NEW_ADDRESS_TYPE' | translate }}</h1>
+    <p>{{ 'USER_PROFILE.USER_PROFILE_POPUP_ADDRESS_TYPE' | translate }}<input type="text" [(ngModel)]="addressT"
+            placeholder="{{ 'USER_PROFILE.USER_PROFILE_POPUP_PLACEHOLDER_ENTER_ADDRESS_TYPE' | translate }}" /></p>
+    <div class="row">
+        <div class="col-sm-2">
+            <button class="btn btn-default" (click)="createAddresType(addressT,'create-Address-type-modal');">{{
+                'USER_PROFILE.USER_PROFILE_POPUP_SUBMIT' | translate }}</button>
+        </div>
+        <div class="col-sm-2">
+            <button class="btn btn-default" (click)="closeModal('create-Address-type-modal','withoutSave');">{{
+                'USER_PROFILE.USER_PROFILE_POPUP_CLOSE' | translate }}</button>
+        </div>
+    </div>
+</jw-modal> -->
+
+<ng-template #addressTypeTemp>
+  <div class="modal-header">
+    <h4 class="modal-title float-left">{{ 'USER_PROFILE.USER_PROFILE_POPUP_NEW_ADDRESS_TYPE' | translate }}</h4>
+    <button type="button" class="close float-right" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>{{ 'USER_PROFILE.USER_PROFILE_POPUP_ADDRESS_TYPE' | translate }}
+      <input type="text" [(ngModel)]="addressT"
+        placeholder="{{ 'USER_PROFILE.USER_PROFILE_POPUP_PLACEHOLDER_ENTER_ADDRESS_TYPE' | translate }}" />
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-sm btn-primary"
+      (click)="createAddresType();">{{ 'USER_PROFILE.USER_PROFILE_POPUP_SUBMIT' | translate }}</button>
+    <button type="button" class="btn btn-default"
+      (click)="closeModal()">{{ 'USER_GROUPS.USER_GROUPS_POPUP_CLOSE' | translate }}</button>
+  </div>
+</ng-template>
+
+<jw-modal id="paytm-popup">
+  <div class="method-container">
+    <h1 class="text-center">{{'SEARCH.SEARCH_PLEASE_DO_NOT_REFRESH_THIS_PAGE' | translate }}</h1>
+  </div>
+  <form #someVar method="post" action="{{ paytmRespObj.redirectUrl }}" name="f1">
+    <input type="hidden" name="MID" value="{{ paytmRespObj.MID }}">
+    <input type="hidden" name="WEBSITE" value="{{ paytmRespObj.website }}">
+    <input type="hidden" name="CHANNEL_ID" value="{{ paytmRespObj.channelid }}">
+    <input type="hidden" name="INDUSTRY_TYPE_ID" value="{{ paytmRespObj.industrytypeid }}">
+    <input type="hidden" name="ORDER_ID" value="{{ paytmRespObj.orderid }}">
+    <input type="hidden" name="CUST_ID" value="{{ paytmRespObj.custid }}">
+    <input type="hidden" name="TXN_AMOUNT" value="{{ paytmRespObj.txnamount }}">
+    <input type="hidden" name="CALLBACK_URL" value="{{ paytmRespObj.callbackurl }}">
+    <input type="hidden" name="CHECKSUMHASH" value="{{ paytmRespObj.checksumhash }}">
+  </form>
+</jw-modal>

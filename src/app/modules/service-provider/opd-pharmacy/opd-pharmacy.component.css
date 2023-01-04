@@ -1,0 +1,39 @@
+/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+fieldset {
+    padding: .35em .625em .75em;
+    margin: 0 2px;
+    border: 1px solid silver;
+}
+legend {
+    width: auto;
+    max-width: 100%;
+    padding: 0;
+    margin-bottom: 0;
+    font-size: 20px;
+    line-height: inherit;
+    color: inherit;
+    white-space: normal;
+    border-bottom: none;
+}
+input[type="url"]{
+    font-size: 1.125rem !important;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    font-weight: 400;
+    box-shadow: none;
+    border-radius: 0;
+}

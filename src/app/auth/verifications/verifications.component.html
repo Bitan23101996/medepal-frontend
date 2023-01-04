@@ -1,0 +1,75 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+
+
+<div class="row card email-verification-page-row-custom-style" *ngIf="isEmailLogin">
+  <div class="col-12 text-center not-found">
+    <h3>{{'TOAST_MSG.EMAIL_NOT_VERIFIED' |translate }}</h3>
+    <br>
+    <div class="row">
+      <div class="col-12 text-center">
+        <button type="button" class="btn btn-primary btn-md" (click)="resendVerification()">{{'TOAST_MSG.RESEND_VER_MAIL' |translate }}</button>
+      </div>
+    </div>
+    <!-- <div class="alert alert-secondary auth-otp-verification">
+      <div class="row justify-content-center">{{'TOAST_MSG.EMAIL_NOT_VERIFIED' |translate }}</div>
+      <div class="row justify-content-center">
+          <span class="cursor link-color" (click)="resendVerification()">{{'TOAST_MSG.RESEND_VER_MAIL' |translate }}</span>
+      </div>
+    </div> -->
+  </div>
+</div>
+<!-- <div >
+  <div class="container text-center">
+  <ngb-alert *ngIf="isEmailVerified" (close)="isEmailVerified = false">{{'USER_PROFILE_TOAST.VERIFICATION_SENT'| translate}}</ngb-alert>
+  </div>
+</div> -->
+<div *ngIf="!isEmailLogin" class="row text-center card email-verification-page-row-custom-style">
+  <!-- <div class="col-lg-4"></div> -->
+  <div class="col-12 text-center not-found">
+    <h3>{{'TOAST_MSG.MOBILE_NOT_VERIFIED' |translate }}</h3>
+    <br>
+    <div class="row">
+      <div class="col-12 text-center">
+        <button class="btn btn-primary btn-sm" (click)="sendOtp()">{{'TOAST_MSG.VERIFY_MOBILE_NUMBER' |translate }}</button>
+      </div>
+    </div>
+    <!-- <div class="alert alert-secondary verify-mobile">
+      <span class="cursor link-color" (click)="sendOtp()">{{'TOAST_MSG.VERIFY_MOBILE_NUMBER' |translate }}</span>
+    </div> -->
+  </div>
+</div>
+
+<ng-template #mobile_otp_modal>
+  <h1>{{'TOAST_MSG.ENTER_OTP' |translate }}</h1>
+    <div class="row">
+      <div class="col-sm-12">
+        <input type="number" class="form-control" [(ngModel)]="mobile_otp" placeholder="Mobile OTP" />
+        <a class="link-color" href="javascript:void(0)" (click)="resendOtp()">Resend OTP</a>
+      </div>
+    </div>
+    <br />
+    <div class="row">
+      <div class="col-md-8"></div>
+      <div class="col-md-2 margin-left-24px">
+        <button class="btn btn-primary" (click)="submitOtp(mobile_otp);">Submit</button>
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-secondary" (click)="closeModal();">Close</button>
+      </div>
+    </div>
+</ng-template>

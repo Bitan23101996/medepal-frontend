@@ -1,0 +1,387 @@
+/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+
+
+.help-ul {
+    list-style-type: none;
+    margin-left: -38px;
+}
+
+body .ui-sidebar .carousel-indicators ol li {
+    background-color: black;
+}
+
+
+
+.help-ul li a.menu-link {
+	font-size:13px;
+	font-weight:400 ;
+	padding: 5px;
+	color:#ad4274;
+	display:block;
+}
+
+.help-arrow{
+	font-size:15px;
+	color:#4d4d4d;
+}
+
+.help-ul .sub-menu{
+	list-style-type:none;
+	padding-left:30px;
+  border-bottom:1px dashed #ccc;
+}
+
+.help-ul a.menu-sublink {
+	font-size:12px;
+	font-weight:400 ;
+	padding: 5px 0;
+	color:#4d4d4d;
+	display:block;
+}
+
+.help-ul .active-menu{
+	background:none;
+  border-bottom:1px dotted #ccc;
+}
+
+.help-slideshow{
+   object-fit: contain;
+   max-width: 100%;
+   max-height: 100%;
+   width: auto;
+   height: auto;
+}
+
+.help-slideshow-header {
+	font-size:13px;
+	color:#93278f;
+	padding: 10px 0;
+}
+
+.slideshow-img-area{
+	height:55vh;
+	border:1px solid #ccc;
+	padding:10px;
+	border-radius:5px;
+	box-shadow:1px 1px 5px rgba(0,0,0,0.30);
+}
+
+.slideshow-txt{
+	font-size:14px;
+	padding:10px 0;
+  font-weight:bold;
+}
+
+.quick-add-icon {
+	padding-right: 5px;
+  margin-top:-2px;
+}
+
+.quick-add-arrow {
+	font-size:11px;
+	color:#fff;
+}
+
+.quick-add-link-menu {
+	font-size:11px;
+	font-weight:400 ;
+	padding: 5px;
+	color:#000;
+	display:block;
+}
+
+
+
+#quick-add-id {
+	text-decoration: none;
+}
+.quick-add-link-submenu {
+	font-size:12px;
+	font-weight:400 ;
+	padding: 5px 0;
+	color:#4d4d4d;
+	display:block;
+}
+
+.cart-ico-padding{
+	padding-top:5px;
+}
+
+.help-ico-padding{
+	padding-top:6px;
+}
+
+
+
+.cart-item-count{
+	border: 1px solid #fff;
+	border-radius: 50%;
+	height:20px;
+  width:20px;
+	color: white;
+	background: red;
+  left:-10px;
+  top:-14px;
+  display:inline-block;
+  position: absolute;
+  text-align:center;
+}
+
+.firebase-count {
+  border: 1px solid #fff;
+    border-radius: 50%;
+    height: 20px;
+    width: 20px;
+    color: white;
+    background: red;
+    right: 57px;
+    top: 9px;
+    display: inline-block;
+    position: absolute;
+    text-align: center;
+}
+
+.profile-border{
+  border-right:1px solid #648986;
+  border-left:1px solid #648986;
+  padding:5px;
+  margin-top:-6px;
+  line-height:35px;
+}
+
+
+.switch-popup{
+  display:block;
+  position:absolute;
+  z-index:13;
+  border-radius:3px;
+  -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.35);
+  -moz-box-shadow: 0 0 5px rgba(0,0,0,0.35);
+  box-shadow: 0 0 5px rgba(0,0,0,0.35);
+  top:40px;
+  width:200px;
+  background:#f5f8f9;
+  right:0;
+  text-align:left;
+  padding:0 0 10px 0;
+  border:1px solid #93278f;
+}
+
+.switch-area{
+  background:#93278f;
+  color:#fff;
+  padding:5px;
+  text-align:center;
+}
+
+.switch-popup ul li{
+  display:block;
+  font-size:12px;
+  font-weight:400;
+  color:#000;
+  border-bottom:1px dotted #ccc;
+  width:100%;
+  margin-bottom:0 !important;
+}
+
+.switch-popup ul li:hover{
+  background:#ebedee;
+}
+
+.profile-arrow{
+  color:#000;
+  font-size:18px;
+  text-decoration: none;
+}
+
+.show-for-mobile{
+  display:none;
+}
+
+.environment-identifier {
+  position:absolute;
+  top:0;
+  left: 50%;
+  width: auto;
+  transform: translateX(-50%);
+  z-index:0;
+}
+
+.environment-identifier p {
+  font-size: 16px !important;
+  padding: 0px 5px 0px 5px;
+  color: #fceaea;
+  /* background-color: #53c653;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;*/
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+
+.quick-add-menu .dropdown-menu{
+  top:36px !important;
+  left:20px !important;
+  transform:none !important;
+  box-shadow: 0 0 10px #ccc;
+  border:1px solid #3db9d3;
+  background:rgba(238, 252, 255, .8)
+}
+
+
+.quick-add-menu.show>.btn-outline-primary.dropdown-toggle{
+  background: #3db9d3;
+}
+
+.quick-add-menu.show::before{
+  position:absolute;
+  content: '';
+  width: 0px;
+  height: 0px;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #3db9d3;
+  display: inline-block;
+  vertical-align: middle;
+  top:30px;
+  left:39px;
+}
+
+/*.quick-add-menu >.btn-outline-primary{
+  border:1px solid #71317f;
+  font-weight:500;
+  color:#71317f;
+  background:#d1f7ff;
+}*/
+
+.quick-add-menu >.btn-outline-primary{
+  border:1px solid #3db9d3;
+  font-weight:500;
+  color:#fff;
+  background:#3db9d3;
+  padding-top:1px !important;
+  padding-bottom:1px !important;
+  margin-top:6px;
+}
+
+
+.quick-add-menu >.btn-outline-primary:hover{
+  border:1px solid #146199;
+  background: #146199;
+  color:#fff;
+}
+
+.quick-add-menu >.btn-outline-primary:active, .quick-add-menu >.btn-outline-primary:focus{
+  border:1px solid #3db9d3;
+  background: #3db9d3;
+  color:#fff;
+}
+
+.customHeaderNav .quick-add-menu .dropdown-item{
+  padding:0;
+  margin-bottom:0 !important;
+  border-bottom:1px dashed #ccc;
+}
+
+.customHeaderNav .quick-add-menu .dropdown-item:hover{
+  background: #146199;
+}
+
+.customHeaderNav .quick-add-menu .dropdown-item a:hover{
+  color:#fff;
+}
+
+.customHeaderNav .quick-add-menu .dropdown-item:last-of-type{
+  border-bottom:none;
+}
+
+
+.header-dropdown-ico-width{
+  width:20px;
+}
+
+
+.profileRoundBg .headerUser {
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  border:1px solid #146199;
+  margin-right:0;
+  display:inline-block;
+  text-align:center;
+  background:#146199;
+  color:#fff;
+  font-weight:600;
+  line-height:36px;
+  font-size:18px;
+  text-transform:uppercase;
+}
+
+
+
+@media (max-width: 576px) {
+  .marginTop{
+    margin-top:-5px;
+  }
+
+  .header-role-link{
+    color:#fff !important;
+  }
+
+  .show-for-mobile{
+    display:block;
+  }
+
+  .role-select-color{
+    color:#fff;
+  }
+
+  .environment-identifier {
+    left: auto;
+    right:-1px;
+    top:0;
+    transform: none;
+
+  }
+
+  .environment-identifier p {
+    font-size: 14px !important;
+    padding:0 5px;
+    color: #fceaea;
+    /* background-color: #53c653; */
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 10px !important;
+    overflow: hidden;
+    width: 20px;
+  }
+
+  .hide-arrow-down{
+    display:none !important;
+  }
+
+  .quick-add-menu .dropdown-menu{
+    background:rgba(238, 248, 255, 1)
+  }
+
+  .customHeaderNav li{font-size: 10PX;}
+
+}
+
+@media only screen and (max-width: 1023px) and (min-width: 575px){
+  .customHeaderNav li{font-size: 10PX;}
+}

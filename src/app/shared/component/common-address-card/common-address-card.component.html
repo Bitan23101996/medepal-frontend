@@ -1,0 +1,221 @@
+<ng-container [formGroup]="addressCardForm" #myAddressCardForm>
+  <div class="card">
+    <!-- non editable mode -->
+    <div *ngIf="!ctrl.get('isEdit').value" class="card-header">
+      <h5>{{ctrl.get('addressType').value}}</h5>
+    </div>
+    <div *ngIf="!ctrl.get('isEdit').value" class="row card-body">
+      <div class="col-12">
+        <p>
+          {{ctrl.get('line1').value}} &nbsp; {{ctrl.get('line2').value}}
+        </p>
+        <p>
+          <span>{{ctrl.get('city').value}}</span>&nbsp;<span>{{ctrl.get('state').value}}</span>&nbsp;<span>{{ctrl.get('pinCode').value}}</span>
+        </p>
+        <p>{{ctrl.get('country').value}}</p><br>
+        <div class="row pb-2">
+          <div class="col-12">
+            <span *ngIf="ctrl.get('name').value" title="Contact person"><img
+                src="../../../../../assets/image/user-gray.svg" height="18">
+              {{ctrl.get('name').value}}</span> &nbsp;
+            <span style="white-space: nowrap;" title="Contact number" *ngIf="ctrl.get('contactNo').value"><img
+                src="../../../../../assets/image/phone.svg" height="16"> {{ctrl.get('contactNo').value}}</span>
+          </div>
+        </div>
+        <span *ngIf="isEditDeleteAllowed" class="cursor float-right"
+          (click)="deleteAddress(ctrl, i)">{{ 'USER_PROFILE.USER_PROFILE_DELETE' | translate }}</span>
+        <span *ngIf="isEditDeleteAllowed" class="float-right">|</span><span *ngIf="isEditDeleteAllowed"
+          class="cursor float-right"
+          (click)="editToggleAddress(ctrl, i)">{{ 'USER_PROFILE.USER_PROFILE_EDIT' | translate }}</span>
+      </div>
+    </div>
+    <!-- non editable mode -->
+    <!-- editable mode -->
+    <div *ngIf="ctrl.get('isEdit').value" class="row card-body">
+      <div class="col-12 card-header-edit-mode">
+        <div class="row">
+          <div class="col-xl-7 col-lg-7 col-md-6 col-sm-8 col-6">
+            <h5>{{ addressHeader}}</h5>
+          </div>
+          <div class="col-xl-2 col-lg-2 col-md-3 col-sm-2 col-3 text-right">
+            <span class="cursor"
+              (click)="onBackOperation(ctrl,i)">{{ 'USER_PROFILE.USER_PROFILE_CANCEL' | translate }}</span>
+          </div>
+          <div class="col-md-3 col-sm-2 col-3 text-right">
+            <button type="button" class="btn btn-primary "
+              (click)="saveAddress(ctrl);">{{ 'USER_PROFILE.USER_PROFILE_SAVE' | translate }}</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="form-group">
+          <label class="control-label bt-style">{{'USER_PROFILE.USER_PROFILE_NAME_LABEL' | translate }}</label>
+          <div>
+            <input [required]="true" *ngIf="ctrl.get('isEdit').value" type="text" class="form-control"
+              formControlName="name" (keydown)="onKeydown($event)" />
+            <span *ngIf="ctrl.get('isSubmit').value || ctrl.controls.name.dirty">
+              <span *ngIf="ctrl.hasError('required', 'name')"
+                class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="form-group">
+          <label class="control-label bt-style">{{'USER_PROFILE.USER_PROFILE_CONTACT_NO_LABEL' | translate }}</label>
+          <div>
+            <int-phone-prefix [locale]="'IN'" [defaultCountry]="'in'" formControlName="contactNo">
+            </int-phone-prefix>
+            <span
+              *ngIf="(ctrl.get('isSubmit').value || ctrl.controls.contactNo.dirty) && ctrl.get('country').value == 'India'">
+              <span *ngIf="ctrl.hasError('required', 'contactNo')"
+                class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+              <span *ngIf="ctrl.hasError('minlength', 'contactNo')"
+                class="validation-error">{{ 'VALIDATION.VALIDATION_MOBILE_LENGTH' | translate }}</span>
+              <span *ngIf="ctrl.hasError('maxLength', 'contactNo')"
+                class="validation-error">{{'VALIDATION.VALIDATION_MOBILE_LENGTH' | translate }}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="form-group">
+          <label class="bt-style">{{ 'USER_PROFILE.USER_PROFILE_ADDRESS_TYPE' | translate }}
+          </label>
+          <div>
+            <select class="form-control" formControlName="addressType" (change)="createNewAddressType($event,ctrl)">
+              <option *ngFor="let addressType of addressTypeList" value="{{addressType.Type}}" class="cursor">
+                {{addressType.Type}}</option>
+            </select>
+            <span *ngIf="ctrl.get('isSubmit').value || ctrl.controls.addressType.dirty">
+              <span *ngIf="ctrl.hasError('required', 'addressType')"
+                class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+  
+      <div class="col-12">
+        <div class="form-group">
+          <label class="control-label bt-style">{{ 'USER_PROFILE.USER_PROFILE_COUNTRY_LABEL' | translate }} </label>
+          <div>
+            <select formControlName="country" class="form-control" (change)="changeCountryEvent(ctrl, i)">
+              <option *ngFor="let country of masterCOUNTRY" value="{{country.countryName}}" class="cursor">
+                {{country.countryName}}</option>
+            </select>
+            <span *ngIf="ctrl.get('isSubmit').value || ctrl.controls.country.dirty">
+              <span *ngIf="ctrl.hasError('required', 'country')"
+                class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+  
+      <div class="col-4">
+        <div class="form-group">
+          <label class="control-label bt-style">{{ 'USER_PROFILE.USER_PROFILE_PINCODE_LABEL' | translate }} </label>
+          <div>
+            <input type="text" maxlength="6" class="form-control" min="0" formControlName="pinCode"
+              (keyup)="fetchCountryStateCityByPin(ctrl, $event)" />
+            <span *ngIf="(ctrl.get('isSubmit').value || ctrl.controls.pinCode.dirty)">
+              <span *ngIf="ctrl.hasError('required', 'pinCode')"
+                class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+              <span *ngIf="ctrl.hasError('minlength', 'pinCode') && ctrl.get('country').value == 'India'"
+                class="validation-error">{{ 'VALIDATION.VALIDATION_PINCODE_MIN_LENGTH' | translate }}</span>
+  
+              <span *ngIf="ctrl.hasError('min', 'pinCode') && ctrl.get('country').value == 'India'"
+                class="validation-error">{{ 'VALIDATION.VALIDATION_PINCODE_MIN' | translate }}</span>
+              <span *ngIf="ctrl.hasError('pattern', 'pinCode') && ctrl.get('country').value == 'India'"
+                class="validation-error">{{ 'VALIDATION.VALIDATION_PINCODE_PATTERN' | translate }}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+  
+      <div class="col-lg-8">
+        <div class="form-group">
+          <label class="control-label bt-style">{{ 'USER_PROFILE.USER_PROFILE_STATE_LABEL' | translate }}
+          </label>
+          <div>
+            <input type="text" class="form-control" id="state" formControlName="state" 
+              [readonly]="ctrl.get('country').value == 'India'">
+          </div>
+        </div>
+      </div>
+  
+      <div class="col-lg-12">
+        <div class="form-group">
+          <label class="control-label bt-style">{{ 'USER_PROFILE.USER_PROFILE_CITY_LABEL' | translate }}
+          </label>
+          <div>
+            <input [required]="true" [readonly]="ctrl.get('country').value == 'India'" *ngIf="ctrl.get('isEdit').value" type="text" class="form-control"
+              formControlName="city" (keydown)="onKeydown($event)" />
+            <span *ngIf="ctrl.get('isSubmit').value || ctrl.controls.city.dirty">
+              <span *ngIf="ctrl.hasError('required', 'city')"
+                class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+              <span *ngIf="ctrl.hasError('minlength', 'city')"
+                class="validation-error">{{ 'VALIDATION.VALIDATION_CITY_NOT_LESS_THAN' | translate }}</span>
+              <span *ngIf="ctrl.hasError('maxlength', 'city')"
+                class="validation-error">{{'VALIDATION.VALIDATION_CITY_NOT_MORE_THAN' | translate }}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="form-group">
+          <label class="control-label">{{ 'USER_PROFILE.USER_PROFILE_ADDRESS_LINE1_LABEL' | translate }}
+          </label>
+          <div>
+            <input type="text" class="form-control" formControlName="line1" />
+            <span *ngIf="ctrl.get('isSubmit').value || ctrl.controls.line1.dirty">
+              <span *ngIf="ctrl.hasError('required', 'line1')"
+                class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="form-group">
+          <label class="control-label">{{'USER_PROFILE.USER_PROFILE_ADDRESS_LINE2_LABEL' | translate}}
+          </label>
+          <div>
+            <input type="text" class="form-control" formControlName="line2" />
+          </div>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="row">
+          <div class="col-xl-7 col-lg-7 col-md-6 col-sm-8 col-6"></div>
+          <div class="col-xl-2 col-lg-2 col-md-3 col-sm-2 col-3">
+            <button type="button" class="btn btn-sm btn-secondary" (click)="onBackOperation(ctrl,i)">CANCEL</button>
+          </div>
+          <div class="col-md-3 col-sm-2 col-3 text-right">
+            <button type="button" class="btn btn-primary " (click)="saveAddress(ctrl);">SAVE</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- editable mode -->
+  </div>
+</ng-container>
+
+<ng-template #addressTypeTemp>
+  <div class="modal-header">
+    <h4 class="modal-title float-left">{{ 'USER_PROFILE.USER_PROFILE_POPUP_NEW_ADDRESS_TYPE' | translate }}</h4>
+    <button type="button" class="close float-right" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>{{ 'USER_PROFILE.USER_PROFILE_POPUP_ADDRESS_TYPE' | translate }}
+      <input type="text" [(ngModel)]="addressT"
+        placeholder="{{ 'USER_PROFILE.USER_PROFILE_POPUP_PLACEHOLDER_ENTER_ADDRESS_TYPE' | translate }}" />
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-sm btn-primary"
+      (click)="createAddresType();">{{ 'USER_PROFILE.USER_PROFILE_POPUP_SUBMIT' | translate }}</button>
+    <button type="button" class="btn btn-default"
+      (click)="closeModal()">{{ 'USER_GROUPS.USER_GROUPS_POPUP_CLOSE' | translate }}</button>
+  </div>
+</ng-template>

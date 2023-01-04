@@ -1,0 +1,376 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<div class="row" *ngIf="allDataFetched">
+    <div class="col-lg-12">
+        <form [formGroup]="userProfileCtrl" class="form-signin">
+            <!-- <div class="userProfileDetails"> --> <!--susmita-->
+                <div class="row top-btn-area">
+                    <div class="col-lg-12 text-right" *ngIf="!userProfileCtrl.get('isEdit').value">
+                        <button class="btn btn-sm btn-primary float-right" type="button"
+                            (click)="editOccupation(userProfileCtrl)">{{'USER_PROFILE.USER_PROFILE_EDIT_LABEL'
+                            | translate }}</button>
+                    </div>
+                    <div class="col-lg-12 text-right" *ngIf="userProfileCtrl.get('isEdit').value">
+                        <button class="btn btn-sm btn-secondary" type="button"
+                            (click)="backOperation()">{{'USER_PROFILE.USER_PROFILE_CANCEL' | translate}}</button>
+                        &nbsp;&nbsp;<button class="btn btn-sm btn-primary float-right" type="submit"
+                            (click)="profileSubmit();">{{
+                            'USER_PROFILE.USER_PROFILE_SAVE_PROFILE' | translate }}</button>
+                    </div>
+                </div>
+
+                <!-- Working on app/issues/782 -->
+                <app-registration-workflow [workflow]="workflow"
+                    [isRegistrationWorkflowCompleted]="isRegistrationWorkflowCompleted"></app-registration-workflow>
+                <!-- End Working on app/issues/782 -->
+
+                <!-- <div class="row"> --> <!--susmita-->
+                    <!-- <div class="col-sm-2">
+                        <div class="container">
+                            <div class="text-center" (mouseover)="progress.isShowUploadBtn=true"
+                                (mouseout)="progress.isShowUploadBtn=false">
+                                <div *ngIf="progress.percentage>0"
+                                    class="progress-bar progress-bar-info progress-bar-striped" role="progressbar"
+                                    attr.aria-valuenow="{{progress.percentage}}" aria-valuemin="0" aria-valuemax="100"
+                                    [ngStyle]="{width:progress.percentage+'%'}">
+                                    {{progress.percentage}}%</div>
+                                <img *ngIf="profileImageSrc ==''" src="../../../../../assets/image/user.png"
+                                    class="image" id="image-corner" alt="...">
+                                <img *ngIf="profileImageSrc !=''"
+                                    [src]="domSanitizer.bypassSecurityTrustUrl(profileImageSrc)" class="image"
+                                    id="image-corner" alt="...">
+                                <div class="middle">
+                                    <div class="profileBtnHolder">
+                                        <PF type="file" accept="image/*" [hidden]="true" id="profilePhoto"
+                                            (change)="selectFile($event)">
+                                        <label *ngIf="progress.percentage>0"><i class="fas fa-camera"></i></label>
+                                        <label *ngIf="!progress.percentage>0" for="profilePhoto"><i
+                                                class="fas fa-camera about-camera-pos"></i></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+
+
+                    <div class="row mobileview">
+                        <div class="indv-picture col-sm-2 col-12 col-md-3">
+                            <div class="text-center" (mouseover)="progress.isShowUploadBtn=true"
+                                (mouseout)="progress.isShowUploadBtn=false">
+                                <div *ngIf="progress.percentage>0"
+                                    class="progress-bar progress-bar-info progress-bar-striped" role="progressbar"
+                                    attr.aria-valuenow="{{progress.percentage}}" aria-valuemin="0" aria-valuemax="100"
+                                    [ngStyle]="{width:progress.percentage+'%'}">
+                                    {{progress.percentage}}%</div>
+                                <img *ngIf="profileImageSrc ==''" src="../../../../../assets/image/user.png"
+                                    class="image image-centre-mobile" id="image-corner" alt="...">
+                                <img *ngIf="profileImageSrc !=''"
+                                    [src]="domSanitizer.bypassSecurityTrustUrl(profileImageSrc)" class="image image-centre-mobile"
+                                    id="image-corner" alt="...">
+                                <div class="middle">
+                                    <div class="profileBtnHolder">
+                                        <input type="file" accept="image/*" [hidden]="true" id="profilePhoto"
+                                            (change)="selectFile($event)">
+                                        <label *ngIf="progress.percentage>0"><i class="fas fa-camera"></i></label>
+                                        <label *ngIf="!progress.percentage>0" for="profilePhoto"><i
+                                                class="fas fa-camera about-camera-pos"></i></label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        
+
+                    <div class="col-sm-10 col-12 col-md-6 pl-sm-5 nopadding-for-mobile">
+
+                        <!-- <div class="userInformationDetails"> --><!--susmita-->
+                            <div class="row">
+                            <!--User Name-->
+                            <div class="form-group col-sm-12" *ngIf="!userProfileCtrl.get('isEdit').value">
+                                <label class="userKey control-label">{{ 'USER_PROFILE.USER_PROFILE_NAME_LABEL' |
+                                    translate }}
+                                </label>
+                                <p data-toggle="tooltip" title="{{userProfileCtrl.get('firstName').value}}">
+                                    {{userProfileCtrl.get('firstName').value}}</p>
+                            </div>
+                            <div class="form-group col-sm-12" *ngIf="userProfileCtrl.get('isEdit').value">
+                                <label class="userKey">{{ 'USER_PROFILE.USER_PROFILE_NAME_LABEL' | translate }}
+                                </label>
+                                <!--(keyup)="replaceNumber(userProfileCtrl.value)" (<--this is for number resist-->
+                                <app-name class="col-7 display-inline-block margin-left-15px" preventType="onlyNumaric" formControlName="firstName" required="required" autofocus="autofocus"></app-name>&nbsp;
+                                <!-- <input type="text" (keydown)="onKeydown($event)" name="firstName"
+                                    class="col-7 display-inline-block" formControlName="firstName">&nbsp; -->
+                                <span class="display-inline-block"
+                                    *ngIf="userProfileCtrl.get('isSubmit').value || userProfileCtrl.controls.firstName.dirty">
+                                    <span *ngIf="userProfileCtrl.hasError('required', 'firstName')"
+                                        class="validation-error">{{
+                                        'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                    <span *ngIf="userProfileCtrl.hasError('minlength', 'firstName')"
+                                        class="validation-error">{{
+                                        'VALIDATION.VALIDATION_FIRST_NAME_NOT_LESS_THAN' | translate }}</span>
+                                    <span *ngIf="userProfileCtrl.hasError('maxlength', 'firstName')"
+                                        class="validation-error">{{
+                                        'VALIDATION.VALIDATION_FIRST_NAME_NOT_MORE_THAN' | translate }}</span>
+                                    <span *ngIf="userProfileCtrl.hasError('pattern', 'firstName')"
+                                        class="validation-error">{{
+                                        'VALIDATION.VALIDATION_ONLY_LETTER' | translate }}</span>
+                                </span>
+                            </div>
+                            <!--Email ID-->
+
+                            <div class="form-group col-sm-12" *ngIf="!userProfileCtrl.get('isEdit').value && !isEmailAvailable">
+                                <label class="userKey">{{ 'USER_PROFILE.USER_PROFILE_EMAIL_LABEL' | translate }}
+                                </label>
+                                <p *ngIf="userProfileCtrl.get('emailAddress').value">
+                                    {{userProfileCtrl.get('emailAddress').value}}
+                                    <span *ngIf="userProfileData.emailVerified == true" data-toggle="tooltip" class="ml-2"
+                                        title="Verified"><img src="../../../../../assets/image/verified.svg"
+                                            height="18px;"></span>
+                                    <span *ngIf="userProfileData.emailAddress != null">
+                                        <a style="font-size: 11px;" *ngIf="userProfileData.emailVerified == false"
+                                            (click)="emailVerify()" href="javascript:void(0)">Verify Email</a>
+                                    </span>
+                                </p>
+                                <p *ngIf="!userProfileCtrl.get('emailAddress').value"><i
+                                        class="notSpecified">{{'USER_PROFILE.USER_PROFILE_NOT_SPECIFIED' | translate}}</i>
+                                </p>
+
+                            </div>
+                            <div class="form-group col-sm-12" *ngIf="userProfileCtrl.get('isEdit').value && isEmailAvailable">
+                                <label class="userKey">{{ 'USER_PROFILE.USER_PROFILE_EMAIL_LABEL' | translate }}
+                                </label>
+                                <p>{{userProfileCtrl.get('emailAddress').value}}</p>
+
+                            </div>
+                            <div class="form-group col-sm-12 email1" *ngIf="userProfileCtrl.get('isEdit').value && !isEmailAvailable">
+                                <label class="userKey">{{ 'USER_PROFILE.USER_PROFILE_EMAIL_LABEL' | translate }}
+                                </label>
+                                <input class="form-control " (change)="checkUserName(userProfileCtrl.value.emailAddress)" class="display-inline-block col-7"
+                                    type="email" formControlName="emailAddress">&nbsp;
+                                <span
+                                    *ngIf="userProfileCtrl.get('isSubmit').value || userProfileCtrl.controls.emailAddress.dirty"
+                                    class="display-inline-block">
+                                    <!-- <span *ngIf="userProfileCtrl.hasError('required', 'emailAddress')" class="validation-error">{{
+                                        'VALIDATION.VALIDATION_REQUIRED' | translate }}</span> -->
+                                    <span *ngIf="userProfileCtrl.hasError('pattern', 'emailAddress')"
+                                        class="validation-error">{{
+                                        'VALIDATION.VALIDATION_EMAIL' | translate }}</span>
+                                </span>
+                            </div>
+                            <!--contact-->
+                            <div class="form-group col-sm-12" *ngIf="!userProfileCtrl.get('isEdit').value && !isPhoneNoAvailable">
+                                <label class="userKey">{{ 'USER_PROFILE.USER_PROFILE_CONTACTNO' | translate }} </label>
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <div class="row">
+                                            <p style="padding-left: 17px;">{{userProfileCtrl.get('contactNo').value}}
+                                            </p>
+                                            <p *ngIf="!userProfileCtrl.get('contactNo').value"><i
+                                                    class="notSpecified">{{'USER_PROFILE.USER_PROFILE_NOT_SPECIFIED' | translate}}</i>
+                                            </p>
+                                            &nbsp;<span class="ml-2"
+                                            *ngIf="userProfileData.mobileVerified == true || otpVerifySuccess"
+                                            data-toggle="tooltip" title="Verified"><img
+                                            src="../../../../../assets/image/verified.svg"
+                                            height="18px;"></span>
+                                            <!-- style="margin-left: 135px;margin-top: -39px;" -->
+                                        </div>
+                                    </div>
+                                    <div *ngIf="(!otpVerify) && !userProfileData.mobileVerified" class="col-lg-2">
+                                        <span *ngIf="userProfileData.contactNo">
+                                            <div *ngIf="!otpVerify">
+                                                <a style="font-size: 10px;"
+                                                    *ngIf="userProfileData.mobileVerified == false"
+                                                    href="javascript:void(0)" (click)="mobileVerify()">Verify Mobile</a>
+                                            </div>
+                                        </span>
+                                    </div>
+                                    <div *ngIf="otpVerify" class="col-lg-7">
+                                        <div class="row" *ngIf="otpVerify">
+                                            <input *ngIf="otpVerify" type="text" formControlName="otp"
+                                                class="form-control user-verify-otp">
+                                            <button style="margin-top: -15px;" *ngIf="otpVerify" type="button"
+                                                class="btn btn-secondary btn-sm"
+                                                (click)="cancelSection()">Cancel</button>
+                                            &nbsp;&nbsp;&nbsp;<button type="button" *ngIf="otpVerify"
+                                                style="margin-top: -15px;" class="btn btn-primary btn-sm"
+                                                (click)="otpSubmit(userProfileCtrl.value)">Submit OTP</button>
+                                        </div>
+                                        <div class="row" *ngIf="otpVerify">
+                                            <a style="margin-top: -11px;margin-left: 29px;" *ngIf="otpVerify"
+                                                href="javascript:void(0)" (click)="resendOtp()">resend OTP</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-12" *ngIf="userProfileCtrl.get('isEdit').value && isPhoneNoAvailable">
+                                <label class="userKey">{{ 'USER_PROFILE.USER_PROFILE_CONTACTNO' | translate }} </label>
+                                <p>{{userProfileCtrl.get('contactNo').value}}</p>
+                            </div>
+                            <div class="form-group col-sm-12" *ngIf="userProfileCtrl.get('isEdit').value && !isPhoneNoAvailable ">
+                                <label class="userKey">{{ 'USER_PROFILE.USER_PROFILE_CONTACTNO' | translate }} </label>
+                                <div class="display-inline-block">
+                                    <int-phone-prefix [locale]="'IN'" [defaultCountry]="'in'"
+                                        (change)="checkContactNumber(userProfileCtrl.value.contactNo)"
+                                        formControlName="contactNo"></int-phone-prefix>
+                                </div>&nbsp;
+                                <span
+                                    *ngIf="userProfileCtrl.get('isSubmit').value || userProfileCtrl.controls.contactNo.dirty"
+                                    class="display-inline-block">
+                                    <!-- working on issue number https://gitlab.com/sbis-poc/app/issues/846-->
+                                    <span *ngIf="userProfileCtrl.hasError('required', 'contactNo')"
+                                        class="validation-error">{{
+                                        'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                    <span *ngIf="userProfileCtrl.hasError('pattern', 'contactNo')"
+                                        class="validation-error">{{
+                                        'VALIDATION.VALIDATION_NUMBER' | translate }}</span>
+                                </span>
+                            </div>
+                            <!--DOB-->
+                            <div class="form-group col-sm-12" *ngIf="!userProfileCtrl.get('isEdit').value">
+                                <label class="userKey">{{ 'USER_PROFILE.USER_PROFILE_DATE_OF_BIRTH' | translate }}
+                                </label>
+                                <p *ngIf="userProfileCtrl.get('dateOfBirth').value">
+                                    {{userProfileCtrl.get('dateOfBirth').value | dateFormat }}</p>
+                                <p *ngIf="!userProfileCtrl.get('dateOfBirth').value"><i
+                                        class="notSpecified">{{'USER_PROFILE.USER_PROFILE_NOT_SPECIFIED' | translate}}</i>
+                                </p>
+
+                            </div>
+                            <div class="form-group col-sm-12" *ngIf="userProfileCtrl.get('isEdit').value">
+                                <label class="userKey">{{ 'USER_PROFILE.USER_PROFILE_DATE_OF_BIRTH' | translate }}
+                                </label>
+                                <div class="display-inline-block col-md-3 padding0">
+                                    <app-datepicker formControlName="dateOfBirth" position="top" [maxDate]="maxDate">
+                                    </app-datepicker>
+                                </div>
+                                <span class="display-inline-block"
+                                    *ngIf="userProfileCtrl.get('isSubmit').value && userProfileCtrl.controls.dateOfBirth.dirty">
+                                    <span *ngIf="userProfileCtrl.hasError('required', 'dateOfBirth')"
+                                        class="validation-error">{{
+                                        'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                </span>
+                            </div>
+                            <!--Gender-->
+                            <div class="form-group col-sm-12" *ngIf="!userProfileCtrl.get('isEdit').value">
+                                <label class="userKey">{{ 'USER_PROFILE.USER_PROFILE_GENDER' | translate }}
+                                </label>
+                                <p *ngIf="userProfileCtrl.get('displayGender').value">
+                                    {{(userProfileCtrl.get('displayGender').value)}}</p>
+                                <p *ngIf="!userProfileCtrl.get('displayGender').value"><i
+                                        class="notSpecified">{{'USER_PROFILE.USER_PROFILE_NOT_SPECIFIED' | translate}}</i>
+                                </p>
+
+                            </div>
+                            <div class="form-group col-sm-12" *ngIf="userProfileCtrl.get('isEdit').value">
+                                <label class="userKey">{{ 'USER_PROFILE.USER_PROFILE_GENDER' | translate }}
+                                </label>
+                                <select formControlName="gender">
+                                    <option *ngFor="let gender of masterGender" value="{{gender.attributeValue}}">
+                                        {{gender.displayValue}}</option>
+                                </select>&nbsp;
+                                <span
+                                    *ngIf="userProfileCtrl.get('isSubmit').value || userProfileCtrl.controls.gender.dirty">
+                                    <span *ngIf="userProfileCtrl.hasError('required', 'gender')"
+                                        class="validation-error">{{
+                                        'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                </span>
+                            </div>
+                            <!--BloodGroup-->
+                            <div class="form-group col-sm-12" *ngIf="!userProfileCtrl.get('isEdit').value">
+                                <label class="userKey">{{'USER_PROFILE.USER_PROFILE_EDIT_LABEL ' | translate}}                                
+                                </label>
+                                <p *ngIf="userProfileCtrl.get('displayBloodGroup').value">
+                                    {{(userProfileCtrl.get('displayBloodGroup').value)}}</p>
+                                <p *ngIf="!userProfileCtrl.get('displayBloodGroup').value"><i
+                                        class="notSpecified">{{'USER_PROFILE.USER_PROFILE_NOT_SPECIFIED' | translate}}</i>
+                                </p>
+
+                            </div>
+                            <div class="form-group col-sm-12" *ngIf="userProfileCtrl.get('isEdit').value">
+                                <label class="userKey">{{'USER_PROFILE.USER_PROFILE_EDIT_LABEL ' | translate}}
+                                <span class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span>
+                                </label>
+                                <div class="display-inline-block">
+                                    <select formControlName="bloodGroup">
+                                        <option *ngFor="let bloodgp of masterBloodGroup" value="{{bloodgp.attributeValue}}">
+                                            {{bloodgp.displayValue}}</option>
+                                    </select>
+                                </div>&nbsp;
+                                <span class="display-inline-block"
+                                    *ngIf="userProfileCtrl.get('isSubmit').value || userProfileCtrl.controls.bloodGroup.dirty">
+                                    <span *ngIf="userProfileCtrl.hasError('required', 'bloodGroup')"
+                                        class="validation-error">{{
+                                        'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                </span>
+                            </div>
+                            <!--Maritial Status-->
+                            <div class="form-group col-sm-12" *ngIf="!userProfileCtrl.get('isEdit').value">
+                                <label class="userKey">{{ 'USER_PROFILE.USER_PROFILE_MARITAL_STATUS' | translate }}
+                                </label>
+                                <p *ngIf="userProfileCtrl.get('maritialStatus').value">
+                                    {{userProfileCtrl.get('maritialStatus').value}}</p>
+                                <p *ngIf="!userProfileCtrl.get('maritialStatus').value"><i
+                                        class="notSpecified">{{'USER_PROFILE.USER_PROFILE_NOT_SPECIFIED' | translate}}</i>
+                                </p>
+                            </div>
+                            <div class="form-group col-sm-12" *ngIf="userProfileCtrl.get('isEdit').value">
+                                <label class="userKey">{{ 'USER_PROFILE.USER_PROFILE_MARITAL_STATUS' | translate }}
+                                <span class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }} </span>
+                                </label>
+                                <select formControlName="maritialStatus">
+                                    <option value="Married">{{ 'USER_PROFILE.USER_PROFILE_MARITAL_STATUS_VALUE1' |
+                                        translate }}</option>
+                                    <option value="Unmarried">{{ 'USER_PROFILE.USER_PROFILE_MARITAL_STATUS_VALUE2' |
+                                        translate }}</option>
+                                </select>
+                                <!--span *ngIf="userProfileCtrl.get('isSubmit').value || userProfileCtrl.controls.maritialStatus.dirty">
+                                    <span *ngIf="userProfileCtrl.hasError('required', 'maritialStatus')" class="validation-error">{{
+                                        'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                </span-->
+                            </div>
+                            
+                        <!-- </div> --><!--susmita-->
+                        
+                        
+                    </div>
+                    
+                </div><!--end of row -->
+                <!-- </div> --> <!-- susmita-->
+            <!-- </div> --><!--susmita-->
+            <div class="col-3 right-panel-border">
+                <div class="desc-box3">
+                  <div class="main-header">Why do we need your personal information?</div>
+                  <div class="profile">
+                      <p>MEDePAL provides services related to your health and medical requirements. We require some basic information that is mandatory for availing medical services like doctor appointment or getting admitted in a hospital. 
+                          Your Mobile and email helps us to communicate with you so that you do not miss out on anything important either for you, or your family members. </p>
+                    </div>
+                </div>
+                <div class="desc-box1">
+                    <div class="main-header">Is my Personal Information safe?</div>
+                    <div class="profile">
+                        <p>All your personal and medical information is safe in MEDePAL. You are in control of your data. Strict security standards have been implemented to ensure proper safekeep of your data.</p>
+                    </div>
+
+                  </div>
+              </div>
+            </div>
+        </form>
+    </div>
+</div>

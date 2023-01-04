@@ -1,0 +1,97 @@
+/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+
+ /* .diastolic{
+    position: absolute;
+    right: 160px;
+    top: 67px;
+ } */
+ .diastolic-label{
+    position: relative;
+    left: -91%;
+    top: 14px;
+ }
+ .diastolic-label:before{
+    content: "/";
+    font-size: 20px;
+    font-weight: 500;
+    color: #ad4274;
+    margin-right: 15px;
+ }
+ /* .separator{
+    position: relative;
+    left: -80px;
+    top: 28px;
+    font-size: 20px;
+    font-weight: 500;
+    color: #ad4274;
+ } */
+ .separator-lebel{
+    position: relative;
+    left: -112px;
+    top: 32px;
+    font-size: 20px;
+    font-weight: 500;
+    color: #ad4274;
+ }
+ .small-textbox-width{
+    width: 45px !important;
+ }
+ .sys{
+    float: left;
+ }
+
+ .sys.ng-star-inserted{
+    margin-bottom:0 !important;
+ }
+
+ .dias.ng-star-inserted{
+    margin-bottom:0 !important;
+ }
+
+
+ .dias{
+    float: left;
+    left: -96px;
+    position: relative;
+ }
+ .diastolic{
+    float: left;
+ }
+ .separator{
+    float: left;
+    margin-right: 6px;
+    font-size: 20px;
+    font-weight: 500;
+    color: #ccc;
+    margin-top:-2px;
+ }
+ 
+ 
+ 
+ @media only screen and (max-width: 815px) and (min-width: 768px){
+	.sys{
+		margin-top:15px;
+	}
+	
+	.separator{
+		margin-top:13px;
+	}
+	
+	.diastolic{
+		margin-top:15px;
+	}
+}

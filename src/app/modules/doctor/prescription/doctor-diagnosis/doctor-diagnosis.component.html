@@ -1,0 +1,98 @@
+<!-- /*******************************************************************************
+ * * |///////////////////////////////////////////////////////////////////////|
+ * * |                                                                       |
+ * * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ * * | All Rights Reserved                                                   |
+ * * |                                                                       |
+ * * | This document is the sole property of StellaBlue Interactive          |
+ * * | Services Pvt. Ltd.                                                    |
+ * * | No part of this document may be reproduced in any form or             |
+ * * | by any means - electronic, mechanical, photocopying, recording        |
+ * * | or otherwise - without the prior written permission of                |
+ * * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ * * |                                                                       |
+ * * |///////////////////////////////////////////////////////////////////////|
+ ******************************************************************************/ -->
+
+ <div class="prescription-widgets diagnosis">
+    <div class="card">
+      <div class="card-header display-header">
+          <h5 class="float-left">{{'PRESCRIPTION.DIAGNOSIS'| translate}}</h5>
+          <!-- <button type="button" class="btn btn-primary btn-sm float-right" (click)="openModal()">Add Diagnosis</button>
+          <span ngbTooltip="Edit Diagnosis" id="diagn-popup" (click)="openModal()" class="cursor">
+
+            <img src="../../../../../assets/image/edit-button.svg" width="15">
+          </span>
+      </div>
+      <div class="card-body display-box">
+          <ol>
+              <ng-container *ngFor="let d of diagnosisList; let i = index">
+                  <li *ngIf="d.status=='NRM'">
+                      {{d.diagnosis}}
+                  </li>
+              </ng-container>
+
+          </ol>-->
+
+          <button class="btn btn-secondary btn-sm float-right" (click)="freqDiagnosis()">Frequent Diagnosis List</button>
+
+      </div>
+
+      <div class="card-body display-box">
+        <form [formGroup]="doctorDiagnosisForm">
+             <div class="content table-responsive no-btm-border">
+                 <table style="width: 100.1%;" class="table ">
+                <thead>
+                  <tr>
+                      <th style="width: 1%;">{{'PRESCRIPTION.SL_NO'| translate}}</th>
+                      <th style="width: 93%;">{{'PRESCRIPTION.DIAGNOSIS'| translate}}</th>
+                      <th style="width: 6%;"></th>
+                  </tr>
+                </thead>
+                <tbody formArrayName="doctorDiagnosisList" *ngIf="doctorDiagnosisList.length > 0">
+                    <tr *ngFor="let diagno of doctorDiagnosisForm.get('doctorDiagnosisList').controls; let i = index"
+                      [formGroup]="diagno" [attr.id]="'tr'+i">
+                      <td>{{i+1}}</td>
+                      <td [attr.id] = "'cell'+i" >
+                        <p-autoComplete styleClass="medicineListAutoComplete" inputStyleClass="diagnosisStyle" placeholder="Diagnosis Name" [suggestions]="diagnosisNameList" autoHighlight="false" (onSelect)="setDiagnosisName($event, i)" [minLength]="1"
+                        (completeMethod)="getDiagnosisList($event)" formControlName="diagnosis" onkeyup="if (event.keyCode == 13) {document.getElementById('addDiagnosis').click()}"  required>
+                          <ng-template let-results pTemplate="item">
+                            <span>{{results.Description}}</span>
+                          </ng-template>
+                        </p-autoComplete>
+                        <span *ngIf="submitted && doctorDiagnosisForm.get('doctorDiagnosisList').controls[i].get('diagnosis').errors">
+                            <span *ngIf="doctorDiagnosisForm.get('doctorDiagnosisList').controls[i].get('diagnosis').errors.required"
+                              class="validation-error">{{'VALIDATION.VALIDATION_REQUIRED'| translate}}</span>
+                          </span>
+                      </td>
+                      <td>
+                          <!-- <button type="button" class="btn btn-danger btn-xs" (click)="deleteDoctorDiagnosis(i)"><i class="fas fa-trash-alt"></i> Remove </button> -->
+                        <!-- <button type="button" class="btn btn-link" (click)="deleteDoctorDiagnosis(i)">Remove</button> -->
+                        <span ngbTooltip="Delete Diagnosis" (click)="deleteDoctorDiagnosis(i)" class="cursor">
+                          <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+              </table>
+              <div class="text-right"><button type="button" class="btn btn-secondary btn-sm add-row" id="addDiagnosis" (click)="addDiagnosis()">
+                  <i class="fas fa-plus-square"></i>&nbsp;{{'PRESCRIPTION.ADD_ROW_LINK'| translate}}</button></div>
+              </div>
+              <!-- app/issues/1014 -->
+              <p-sidebar [(visible)]="displaySidebarDiagnosis" appendTo="body" position="right" styleClass="modal-sidebar" [style]="{width:'30em', overflow: 'auto', background: 'rgba(100, 137, 134, .9)', color:'#fff'}">
+                <h1 class="header-sidebar">{{'PRESCRIPTION.FREQUENT_DIAGNOSIS_LIST'| translate}}</h1>
+                <div class="rightSidebarList">
+                <ul class="mt-2">
+                    <li *ngFor="let fd of frequentDiagnosisList;let i = index">
+                        <a [class.disableLink]="clickedEvents[i]" (click)="setDiagnosis(fd)">{{fd.diagnosis}}</a>
+                    </li>
+                </ul>
+                </div>
+                </p-sidebar>
+            <!-- End app/issues/1014 -->
+
+         </form>
+       </div>
+
+    </div>
+</div>

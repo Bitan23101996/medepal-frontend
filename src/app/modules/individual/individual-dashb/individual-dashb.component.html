@@ -1,0 +1,214 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<div class="row">
+  <div class="col-12">
+
+    <div class="row mb-3">
+      <div class="col-lg-6 mb-lg-0 mb-2 col-12">
+        <div class="dashb-card border-left-profile">
+          <div class="row">
+            <div class="col-3 col-sm-2">
+              <div class="row">
+                <div class="col-12 text-center">
+                  <div>
+                  <img *ngIf="profileImageSrc ==''" src="../../../../../assets/image/user.png"
+                      class="image-round profile-image-bg" id="" alt="...">
+                  <img *ngIf="profileImageSrc !=''"
+                      [src]="domSanitizer.bypassSecurityTrustUrl(profileImageSrc)" class="image-round"
+                      id="" alt="...">
+                      </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 text-center profile-page "><span class="cursor" (click)="profilepage()">Edit Profile</span></div>
+              </div>
+
+            </div>
+            <div class="col-9 col-sm-10">
+              <div class="row">
+                <div id="name" class="col-12 name"></div>
+              </div>
+              <div class="row">
+                <div id="dob"  class="col-12 col-md-6 pr-md-0"></div>
+                <div id="mob" class="col-12 col-md-6 pr-md-0 pl-md-0"></div>
+
+              </div>
+              <div class="row">
+                <div id="bg" class="col-12 col-md-6 pr-md-0"></div>
+                <div id="gender" class="col-12 col-md-6 pr-md-0 pl-md-0"></div>
+              </div>
+              <div class="row">
+                <div id="address" class="col-12"></div>
+              </div>
+              <div class="row mb-0">
+                <div id="email" class="col-12"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <!--  <div class="col-4">
+        <div class="dashb-card blue-card">
+          <div class="row">
+            <div class="col-6 name-white">Pharmacy Orders</div>
+            <div class="col-6 text-right"><span class="cursor underline" (click)="myorderpage()">View All Orders</span></div>
+          </div>
+          <div class="row mt-2">
+            <div *ngIf="cardItemCount > 0" class="col-6"><span class="count">{{cardItemCount}}</span> item added to cart</div>
+            <div *ngIf="cardItemCount == 0 || cardItemCount == null" class="col-6">Cart is empty</div>
+            <div class="col-6 text-right"><img height="40px" src="../../../../../assets/image/drug-dashb.svg"/></div>
+          </div>
+          <div class="row band-area">
+            <div class="col-12 band text-center mt-2">
+              Easy online medicine ordering with home delivery facility
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 text-center">
+              <div class="dashb-button cursor" (click)="orderMedicine()">Order Medicine</div>
+            </div>
+          </div>
+        </div>
+      </div> -->
+      <div class="col-lg-6 col-12">
+        <div class="dashb-card green-card">
+          <div class="row">
+            <div class="col-6 name-white">Appointments</div>
+            <div class="col-6 text-right"><span class="cursor underline" (click)="myappointmentpage()">View All Appointments</span></div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-9">
+              <span class="count">{{conCount}}</span> confirmed, <span class="count">{{reqCount}}</span> requested
+              <!--<span *ngFor = "let appoinment of appoinmentList">{{appoinment.appointmentState}}</span>-->
+            </div>
+            <div class="col-3 text-right"><img height="40px" src="../../../../../assets/image/appointment.svg"/></div>
+          </div>
+          <div class="row band-area">
+            <div class="col-12 band-green text-center mt-2">
+              Hassle free appointments with favourite doctors
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 text-center">
+              <div class="dashb-button cursor" (click)="searchDoctor()">Book Appointment</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <!--  <div class="row mt-3">
+      <div class="col-12">
+        <div class="dashb-card white-card">
+          <div class="row">
+            <div class="col-3 border-right">
+              <div class="row">
+                <div class="col-12 name-blue">Blood Pressure <span class="normal" *ngIf="(bpResultsys <= 139 && bpResultsys >= 90)  || (bpResultdys <= 89 && bpResultdys >= 60)">(Normal)</span><span class="need-attention" *ngIf="bpResultsys > 139 || bpResultdys > 89">(Above Normal)</span><span class="need-attention" *ngIf="bpResultsys < 90 || bpResultdys < 60">(Below Normal)</span></div>
+              </div>
+              <div class="row">
+                <div class="col-9">
+                  <div class="name">{{bpResultsys}} Systoloic</div>
+                  <div class="name">{{bpResultdys}} Diastolic</div>
+                </div>
+                <div class="col-3 text-right"><img height="50px" src="../../../../../assets/image/blood.svg"/></div>
+              </div>
+              <div class="row">
+                <div class="col-12 mt-2 small-text">Last measured on : {{datedys | date}}</div>
+              </div>
+            </div>
+            <div class="col-3 border-right">
+              <div class="row">
+                <div class="col-12 name-blue-2">Weight <span class="normal" *ngIf="weight <= 80 && weight >=40">(Normal)</span><span class="need-attention" *ngIf="weight > 80">(Above Normal)</span><span class="need-attention" *ngIf="weight < 40">(Below Normal)</span></div>
+              </div>
+                <div class="row">
+                  <div class="col-9">
+                    <div class="name">{{weight}} {{unit}}</div>
+                  </div>
+                  <div class="col-3 text-right"><img height="50px" src="../../../../../assets/image/weight.svg"/></div>
+                </div>
+                <div class="row">
+                  <div class="col-12 mt-2 small-text">Last measured on : {{dateWt | date}}</div>
+                </div>
+            </div>
+            <div class="col-3 border-right">
+              <div class="row">
+                <div class="col-12 name-3">Pulse <span class="normal" *ngIf="pulse <= 90 && pulse >=60">(Normal)</span><span class="need-attention" *ngIf="pulse > 90">(Above Normal)</span><span class="need-attention" *ngIf="pulse < 60">(Below Normal)</span></div>
+              </div>
+              <div class="row">
+                <div class="col-9">
+                  <div class="name">{{pulse}} {{unitPulse}}</div>
+                </div>
+                <div class="col-3 text-right"><img height="50px" src="../../../../../assets/image/pulse.svg"/></div>
+              </div>
+              <div class="row">
+                <div class="col-12 mt-2 small-text">Last measured on : {{datepulse | date}}</div>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="row">
+                <div class="col-12 name-4">Cholesterol <span class="normal" *ngIf="chol <= 100">(Normal)</span><span class="need-attention" *ngIf="chol > 100">(Above Normal)</span></div>
+              </div>
+              <div class="row">
+                <div class="col-9">
+                  <div class="name">{{chol}} {{unitChol}}</div>
+                </div>
+                <div class="col-3 text-right"><img height="50px" src="../../../../../assets/image/cholesterol-dashb.svg"/></div>
+              </div>
+              <div class="row">
+                <div class="col-12 mt-2 small-text">Last measured on : {{dateChol | date}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 text-center">
+              <div class="dashb-button-green cursor" (click)="medicalDetails()">View All Health Metrics</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> -->
+    <div class="row">
+      <div class="col-12">
+        <div class="dashb-card client-list-card">
+          <div class="row">
+  					<div class="col-12 ">
+  						<div><div class="imp-message-pos pb-2">Consult online with doctors</div>
+          </div>
+  					</div>
+  					<div class="col-12 text-center quick-add-menu" ngbDropdown>
+              <img class="cursor"  src="./../../../../assets/image/amri-logo.jpg"  id="dropdownBasic2"  ngbDropdownToggle/>
+
+              <!-- div to show dropdown -->
+              <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
+                <button ngbDropdownItem  *ngFor="let h of hospitalList;let i = index">
+                  <a class="quick-add-link-menu quick-add-text" href="javascript:void(0);"
+                  (click)="hospitalNameClick(h,i,doctorSearchData[0])">
+                  {{h.hospitalName}}
+                  </a>
+                </button>
+              </div>
+              <!-- end of div to show dropdown -->
+              <img class="cursor" *ngFor="let list of vohra;let i = index" href="javascript:void(0);" (click)="hospitalNameClick(list,i,doctorSearchData[0])" src="assets/image/vohra-logo2.jpg"/>
+            </div>
+  				 <!-- <div class="col-md-6 col-12 text-md-left text-center">
+  				    <img class="cursor" (click)="goToDocSearch(this.doctorSearchData[1])" src="./../../../../assets/image/ink-logo.png" />
+  				  </div> -->
+  				</div>
+        </div>
+      </div>
+    </div>   
+  </div>
+</div>

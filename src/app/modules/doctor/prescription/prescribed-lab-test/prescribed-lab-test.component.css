@@ -1,0 +1,48 @@
+/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+ /* li{
+    list-style-type: none;
+} */
+.frequentSection{
+    border: 1px solid rgba(0,0,0,.125) !important;
+    position: absolute;
+    bottom: 0;
+    left:25px;
+}
+.frequentSection ul{
+    margin-left: -25px;
+}
+
+.frequentSection ul li{
+    border-bottom: 1px solid #efeded
+}
+.frequentSection ul li a{
+    color: #93278f;
+}
+.frequentSection ul li a:hover{
+    color: #93278f;
+}
+.frequentSection ul li a.disableLink{
+    color: #93278f;
+    text-decoration: line-through;
+    pointer-events: none;
+}
+.frequentSection .card-body{
+    transition: 1s;
+}
+.frequentSection .card-footer{
+    cursor: pointer;
+}

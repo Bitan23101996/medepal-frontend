@@ -1,0 +1,44 @@
+<!-- /*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */ -->
+<div class="prescription-widgets">
+    <div class="card">
+      <div class="card-header display-header">
+          <h5 class="float-left">{{'PRESCRIPTION.NOTE'| translate}}<span class="smallText">{{'PRESCRIPTION.NOTE_DESC'| translate}}</span></h5>
+      </div>
+      <div class="card-body display-box">
+          <!-- <button type="button" class="btn btn-primary btn-sm float-right" (click)="openModal()">Edit Narration</button> -->
+          <form [formGroup]="doctorNoteForm" (ngSubmit)="saveDoctorNote()">
+            <div class="pb-0">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <!-- sbis-poc/app/issues/801   -->
+                    <!-- <label>Brief note</label> -->
+                    <textarea #docNoteDet id="docNote" rows="20" column="20" maxlength="2024" class="form-control" formControlName ="note"></textarea>
+                    <!-- sbis-poc/app/issues/801 and 855  -->
+                    <i style="font-size: 10px; color: black;text-align: right;">({{2024 - docNoteDet.value.length}} {{'PRESCRIPTION.REMAINING_CHAR'| translate}} )</i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+      </div>
+      <div class="card-body display-box">
+
+      </div>
+
+    </div>
+</div>

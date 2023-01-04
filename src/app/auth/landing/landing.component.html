@@ -1,0 +1,1305 @@
+<!--
+*  * |///////////////////////////////////////////////////////////////////////|
+*  * |                                                                       |
+*  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+*  * | All Rights Reserved                                                   |
+*  * |                                                                       |
+*  * | This document is the sole property of StellaBlue Interactive          |
+*  * | Services Pvt. Ltd.                                                    |
+*  * | No part of this document may be reproduced in any form or             |
+*  * | by any means - electronic, mechanical, photocopying, recording        |
+*  * | or otherwise - without the prior written permission of                |
+*  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+*  * |                                                                       |
+*  * |///////////////////////////////////////////////////////////////////////|
+*  -->
+<div *ngIf="landingArea">
+	<div class="auth-area">
+		<div class="float-left">
+			<div *ngIf="environmentIdentifier != ''" class="environment-identifier">
+                <p [ngStyle]="{'background-color': environmentIdentifierColor}">{{environmentIdentifier}}</p>
+            </div>
+		</div>
+		<div class="float-left mr-0 mr-sm-3">
+			<ul class="loginPageHeaderNav landingHead infoArea info-area">
+				<li class="text-left"><img src="../../../../../assets/image/info-ico.svg"
+						height="15px" />&nbsp;support@medepal.com</li>
+				<li class="text-left"><img src="../../../../../assets/image/phone.svg" height="15px" />&nbsp;+91
+					9433811598</li>
+			</ul>
+		</div>
+		<div class="float-left">
+			<a href="javascript:void(0)" (click)="openSignUp()" class="btn btn-primary margin-right-10"
+				role="button">Signup</a>
+		</div>
+		<div class="float-left">
+			<a href="javascript:void(0)" (click)="openLogin()" class="btn btn-primary margin-right-10"
+				role="button">Login</a>
+		</div>
+	</div>
+	<div class="w-100 landing-header-pos">
+		<div class="row ml-0 mr-0">
+			<div class="col-12">
+				<div class="row">
+					<div class="col-12 pl-0 pr-0 landing-slide">
+						<ngb-carousel [showNavigationArrows]="false"  [showNavigationIndicators]="false" #landing="ngbCarousel">
+						  <ng-template ngbSlide>
+								<div class="row">
+									<div class="col-xl-7 col-lg-6 col-md-5 col-12 slide1-bg pr-0">
+										<div class="row">
+											<div class="col-12 text-center">
+												<h1 class="tagline-text">The Healthcare Terminus</h1>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-12">
+												<p class="slide1-txt">Smart environment<br>for real time end-to-end interaction and information exchange<br>between healthcare service providers and users.</p>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-12">
+												<div (click)="openVideoModal('video')" class="video-btn cursor">MEDePAL Explained<span class="play-ico"><i class="fas fa-play-circle"></i></span></div>
+											</div>
+										</div>
+
+										<div class="row app-store-spacer-top">
+											<div class="col-6 text-right">
+												<a href="https://apps.apple.com/in/app/medepal/id1483207993?mt=8" target="_blank"><img src="assets/image/apple.gif" class="cursor" width="40%" /></a>
+											</div>
+											<div class="col-6">
+												<a href="https://play.google.com/store/apps/details?id=com.stellablueis.medepal.serviceprovider"
+														target="_blank"><img src="assets/image/google.gif" class="cursor" width="40%" /></a>
+											</div>
+											<!--<div class="col-6">
+												<img (click)="openDownloadModal('download')" src="assets/image/google.gif" class="cursor" width="40%" />
+											</div>-->
+										</div>
+
+									</div>
+									<div class="col-xl-5 col-lg-6 col-md-7 col-12 text-md-left text-center pr-0 pl-0 slide1-image-bg">
+										<img src="assets/image/slide1.jpg" width="85%"/>
+									</div>
+									<div class="col-xl-7 col-lg-6 col-md-5 col-12 slide1-bg-mobile pr-0">
+										<div class="row">
+											<div class="col-12 text-center">
+												<h1 class="tagline-text">The Healthcare Terminus</h1>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-12 text-justify">
+												<p class="slide1-txt">Smart platform to enable all interaction between healthcare service providers and users, with real time medical record management according to international standards.</p>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-12">
+												<div (click)="openVideoModal('video')" class="video-btn cursor">MEDePAL Explained<span class="play-ico"><i class="fas fa-play-circle"></i></span></div>
+											</div>
+										</div>
+
+										<div class="row app-store-spacer-top">
+											<div class="col-6 text-right">
+												<a href="https://apps.apple.com/in/app/medepal/id1483207993?mt=8" target="_blank"><img src="assets/image/apple.gif" class="cursor" width="40%" /></a>
+											</div>
+											<!--<div class="col-6">
+												<img (click)="openDownloadModal('download')" src="assets/image/google.gif" class="cursor" width="40%" />
+											</div>-->
+											<div class="col-6">
+												<a href="https://play.google.com/store/apps/details?id=com.stellablueis.medepal.serviceprovider"
+														target="_blank"><img src="assets/image/google.gif" class="cursor" width="40%" /></a>
+											</div>
+										</div>
+
+									</div>
+								</div>
+						  </ng-template>
+						  <!--<ng-template ngbSlide>
+								<div class="row">
+									<div class="col-7 slide1-bg pr-0">
+										<div class="row">
+											<div class="col-12 text-center">
+												<h1 class="tagline-text">The Healthcare Terminus 2</h1>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-12 text-justify">
+												<p class="slide1-txt">MEDePAL ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis. </p>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-12">
+												<div (click)="openVideoModal('video')" class="video-btn cursor">MEDePAL Explained<span class="play-ico"><i class="fas fa-play-circle"></i></span></div>
+											</div>
+										</div>
+
+										<div class="row app-store-spacer-top">
+											<div class="col-6 text-right">
+												<a href="https://apps.apple.com/in/app/medepal/id1483207993?mt=8" target="_blank"><img src="assets/image/apple.gif" class="cursor" width="40%" /></a>
+											</div>
+											<div class="col-6">
+												<a href="https://play.google.com/store/apps/details?id=com.stellablueis.medepal.serviceprovider"
+														target="_blank"><img src="assets/image/google.gif" class="cursor" width="40%" /></a>
+											</div>
+										</div>
+
+									</div>
+									<div class="col-5 text-left pr-0 pl-0 slide1-image-bg">
+										<img src="assets/image/slide1.jpg" width="85%"/>
+									</div>
+								</div>
+						  </ng-template>-->
+						</ngb-carousel>
+
+
+
+
+
+					</div>
+				</div>
+				<div class="row imp-message-bg">
+					<div class="col-12 ">
+						<div><div class="d-inline-block imp-message-img"><img src="../../../../../assets/image/doctor-on.svg" height="50px" /></div>&nbsp;&nbsp;<div class="imp-message-pos">Telehealth enabled: Video consulting with doctor and follow-up from the safety of your home</div></div>
+
+					</div>
+				<!--	<div class="col-12 text-center amri-logo-pos">
+				    <img  src="assets/image/amri-logo.png"/>
+				  </div> -->
+				  <!--<div class="col-md-6 col-12 text-md-left text-center">
+				    <img src="assets/image/ink-logo.png" />
+				  </div>-->
+				</div>
+				<div class="row">
+					<div class="col-12 landing-app-short-desc">
+						<h1 class="text-center">Explore Features</h1>
+						<div class="row desc-area">
+							<div class="col-4">
+								<div class="row eq-height">
+									<div id="doctor" class="col-12 desc-box-pad doc h-100">
+										<div class="desc-box mb-1 ">
+											<div class="heading">DOCTOR</div>
+											<p>Automate appointment management, facilitate clinical examination and treatment records with smart tools and configurable analytics.</p>
+											<div class="text-center pb-3"><img src="assets/image/block1.jpg" width="90%" /></div>
+											<div class="text-right read" (click)="highlightItem($event,'doctor-readmore','doctor','docArea')"><a class="doctor-readmore cursor" href="javascript:void(0)">Read More...</a></div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-4">
+								<div class="row eq-height">
+									<div id="individual" class="col-12 desc-box-pad ind h-100 active">
+										<div class="desc-box mb-1">
+											<div class="heading">PATIENT / FAMILY</div>
+											<p>Connect with doctors, hospitals, labs, pharmacies and more, for yourself and your family. All medical records at your fingertips.</p>
+											<div class="text-center pb-3"><img src="assets/image/block2.jpg" width="90%" /></div>
+											<div class="text-right read" (click)="highlightItem($event,'patient-readmore','individual','patientArea')"><a class="patient-readmore cursor dis-none" href="javascript:void(0)">Read More...</a></div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-4">
+								<div class="row eq-height">
+									<div id="hospital" class="col-12 desc-box-pad hospital">
+										<div class="desc-box mb-1">
+											<div class="heading">HOSPITAL / NURSING HOME / OPD</div>
+											<p>Digitise entire patient interaction with real time updates to patient, treatment record management  and configurable analytics.</p>
+											<div class="text-center pb-3"><img src="assets/image/block3.jpg" width="90%" /></div>
+											<div class="text-right read" (click)="highlightItem($event,'hospital-readmore','hospital','hospitalArea')"><a class="hospital-readmore cursor" href="javascript:void(0)">Read More...</a></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="fade-area">
+							<div class="row desc-area" id="docArea">
+								<div class="col-12 desc-box-pad">
+									<div class="doctor-desc ">
+										<div class="doctor-desc-inner">
+											<h1 class="text-center">Key Features For Doctors</h1>
+											<div class="row ml-0 mr-0 mt-4">
+												<div class="col-md-4 col-3"></div>
+												<div class="col-md-8 col-9">
+													<div class="row">
+														<div class="col-md-6 col-12">
+															<div class="row mb-4">
+																<div class="col-12">
+																	<div class="landing-desc-small-box">
+																		<div class="doc-ico"><img src="assets/image/doc1.svg" width="50%" /></div>
+																		<ul>
+																			<li>Manage Chamber-wise Appointments And Schedule</li>
+																			<li>Add Assisant/Reception With Limited Access</li>
+																		</ul>
+																	</div>
+																</div>
+															</div>
+															<div class="row mb-4">
+																<div class="col-12">
+																	<div class="landing-desc-small-box">
+																		<div class="doc-ico"><img src="assets/image/doc3.svg" width="50%" /></div>
+																		<ul>
+																			<li>Prescribe Using Smart Prescription Features</li>
+																			<li>Maintain OT Procedure Notes With Expenses Break-up</li>
+																		</ul>
+																	</div>
+																</div>
+															</div>
+															<div class="row">
+																<div class="col-12">
+																	<div class="landing-desc-small-box">
+																		<div class="doc-ico"><img src="assets/image/doc5.svg" width="50%" /></div>
+																		<ul>
+																			<li>Generate Invoice</li>
+																			<li>Maintain And Access Medical Records</li>
+																			<li>Configure Your Own Analytics</li>
+																		</ul>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="col-md-6 col-12">
+															<div class="row mb-4 mt-4 mt-md-0">
+																<div class="col-12">
+																	<div class="landing-desc-small-box">
+																		<div class="doc-ico"><img src="assets/image/doc2.svg" width="50%" /></div>
+																		<ul>
+																			<li>Engage With Patient In Real-time</li>
+																			<li>View Patient History</li>
+																		</ul>
+																	</div>
+																</div>
+															</div>
+															<div class="row">
+																<div class="col-12">
+																	<div class="landing-desc-small-box" style="height:auto">
+																		<div class="doc-ico"><img src="assets/image/doc4.svg" width="55%" /></div>
+																		<ul>
+																			<li><b>Consult Online</b></li>
+																			<li>Video consultation with patients</li>
+																			<li>Consultation with peers</li>
+																			<li>Consultation with co-workers</li>
+																		</ul>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+
+											<div class="row ml-4 mr-4 mt-4 mb-4">
+
+												<div class="pricing-area">
+													<h1>PRICING</h1>
+													<div class="text-center">
+														<div class="d-inline-block block1">Pay per use only</div>
+														<div class="d-inline-block block2">No fixed fees</div>
+														<div class="d-inline-block block3">No hidden cost</div>
+													</div>
+													<!--<div class="row">
+															<div class="col-12 table text-left">
+																<table class="table-bordered pricing-table">
+																	<tr>
+																		<td class="landing-label">Appointment</td>
+																		<td>Rs.1.50 +18% GST</td>
+																	</tr>
+																	<tr>
+																		<td class="landing-label">Procedure Record</td>
+																		<td>Rs.10 +18% GST</td>
+																	</tr>
+																</table>
+															</div>
+													</div>-->
+													<h2 class="text-center">As low as &#8377;1.50 + tax per appointment</h2>
+													<div class="row mb-3 mt-3">
+														<div class="col-12 text-center">
+															<a href="javascript:void(0)" (click)="openSignUp()" class="btn btn-primary btn-big margin-right-10"
+																role="button">REGISTER AND START</a>
+														</div>
+													</div>
+												</div>
+
+
+											</div>
+
+
+
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row desc-area area-show" id="patientArea">
+								<div class="col-12 desc-box-pad">
+									<div class="ind-desc">
+										<div class="patient-desc-inner">
+											<h1 class="text-center">Key Features For Patient / Family</h1>
+											<div class="row ml-0 mr-0 mt-4">
+												<div class="col-md-4 col-3"></div>
+												<div class="col-md-8 col-9">
+													<div class="row mb-4">
+														<div class="col-md-6 col-12 mb-md-0 mb-4">
+															<div class="landing-desc-small-box">
+																<div class="ind-ico"><img src="assets/image/pat1.svg" width="60%" /></div>
+																<ul>
+																	<li>Track Own Health</li>
+																	<li>Track Family Members Health From Any Location</li>
+																</ul>
+															</div>
+														</div>
+														<div class="col-md-6 col-12">
+															<div class="landing-desc-small-box">
+																<div class="ind-ico"><img src="assets/image/pat2.svg" width="50%" /></div>
+																<ul>
+																	<li>Search and Interact with Doctors and Clinics</li>
+																	<li>Video consultation with doctor</li>
+																	<li>Buy Medicine From Reputed Pharmacies</li>
+																</ul>
+															</div>
+														</div>
+													</div>
+													<div class="row mb-4">
+														<div class="col-md-6 col-12 mb-md-0 mb-4">
+															<div class="landing-desc-small-box">
+																<div class="ind-ico"><img src="assets/image/pat3.svg" width="60%" /></div>
+																<ul>
+																	<li>Get Tests Done By Top Diagnostic Centers</li>
+																	<li>Track Medical Expenses</li>
+																</ul>
+															</div>
+														</div>
+														<div class="col-md-6 col-12">
+															<div class="landing-desc-small-box">
+																<div class="ind-ico"><img src="assets/image/pat4.svg" width="55%" /></div>
+																<ul>
+																	<li>Maintain Health Records And Share As You Want</li>
+																	<li>Upload Old Records</li>
+																</ul>
+															</div>
+														</div>
+													</div>
+
+												</div>
+
+												<div class="pricing-area mt-4">
+													<h1>PRICING</h1>
+													<h2 class="text-center">It is completely free !</h2>
+													<div class="row mb-3 mt-3">
+														<div class="col-12 text-center">
+															<a href="javascript:void(0)" (click)="openSignUp()" class="btn btn-big btn-primary margin-right-10"
+																role="button">Signup</a>
+														</div>
+													</div>
+												</div>
+											</div>
+
+
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row desc-area" id="hospitalArea">
+								<div class="col-12 desc-box-pad">
+									<div class="hospital-desc">
+										<div class="opd-desc-inner">
+											<h1 class="text-center">Key Features For HOSPITAL / NURSING HOME / OPD</h1>
+											<div class="row ml-0 mr-0 mt-4">
+												<div class="col-md-4 col-3"></div>
+												<div class="col-md-8 col-9">
+													<div class="row mb-4">
+														<div class="col-md-6 col-12 mb-md-0 mb-4">
+															<div class="landing-desc-small-box">
+																<div class="hospital-ico"><img src="assets/image/opd1.svg" width="50%" /></div>
+																<ul>
+																	<li>Complete Front Office Integration</li>
+																	<li>Paperless Operations</li>
+																	<li>Real-time Engagement With Patient</li>
+																</ul>
+															</div>
+														</div>
+														<div class="col-md-6 col-12">
+															<div class="landing-desc-small-box">
+																<div class="hospital-ico"><img src="assets/image/opd2.svg" width="50%" /></div>
+																<ul>
+																	<li>Appointment And Scheduling</li>
+																	<li>Doctors Prescription</li>
+																	<li>OT Procedure Notes</li>
+																</ul>
+															</div>
+														</div>
+													</div>
+													<div class="row mb-4">
+														<div class="col-md-6 col-12 mb-md-0 mb-4">
+															<div class="landing-desc-small-box">
+																<div class="hospital-ico"><img src="assets/image/opd3.svg" width="50%" /></div>
+																<ul>
+																	<li>Invoice Generation</li>
+																	<li>Complete Medical Record Management</li>
+																	<li>Analytics Configurable By Management</li>
+																</ul>
+															</div>
+														</div>
+														<div class="col-md-6 col-12">
+															<div class="landing-desc-small-box">
+																<div class="hospital-ico"><img src="assets/image/opd4.svg" width="55%" /></div>
+																<ul>
+																	<li>Notifications And Reminders</li>
+																	<li>PR/Awareness Messaging</li>
+																</ul>
+															</div>
+														</div>
+													</div>
+													<div class="row mb-4">
+														<div class="col-md-6 col-12">
+															<div class="landing-desc-small-box">
+																<div class="hospital-ico"><img src="assets/image/opd5.svg" width="50%" /></div>
+																<ul>
+																	<li>In-App Advertising</li>
+																	<li>Data Feed To Back Office</li>
+																</ul>
+															</div>
+														</div>
+														<div class="col-md-6 col-12">
+															<div class="landing-desc-small-box">
+																<div class="hospital-ico"><img src="assets/image/opd6.svg" width="50%" /></div>
+																<ul>
+																	<li>Virtual OPD : video consultation between doctor and patient</li>
+																</ul>
+															</div>
+														</div>
+													</div>
+
+												</div>
+												<div class="pricing-area mt-4">
+													<h1>PRICING</h1>
+													<p class="text-center pt-0">Please contact our sales and support team for pricing details</p>
+													<h2 class="text-center">sales@medepal.com</h2>
+
+												</div>
+											</div>
+
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					<!--	<div class="row desc-area">
+							<div class="col-5  contact-box">
+								<h1>Contact our support and sales team</h1>
+								<div class="text-center pt-2"><img src="assets/image/contact-ico.svg" width="15%" /></div>
+								<p>Our team is happy to help you. Please fill out the form and we will get in touch as soon as possible</p>
+							</div>
+							<div class="col-2 pl-0">
+								<div class="arrow-right"></div>
+							</div>
+							<div class="col-5 contact-box">
+									<div class="row mb-3">
+										<div class="col-3">Name</div>
+										<div class="col-9"><input type=text /></div>
+									</div>
+									<div class="row mb-3">
+										<div class="col-3">Email</div>
+										<div class="col-9"><input type=email /></div>
+									</div>
+									<div class="row mb-3">
+										<div class="col-3">Your Questions</div>
+										<div class="col-9"><textarea class="w-100" style="height:70px;"></textarea></div>
+									</div>
+									<div class="row">
+										<div class="col-12 text-center">
+											<button class="btn btn-primary">Send</button>
+										</div>
+									</div>
+							</div>
+						</div>-->
+
+					</div>
+				</div>
+				<div class="row clientarea">
+					<div class="col-12">
+						<div class="row desc-area">
+							<div class="col-12 ">
+								<div class="row">
+									<div class="col-12"><h1>Consult with doctors from</h1></div>
+								</div>
+								<div class="row">
+									<div class="col-12 text-center"><img  src="assets/image/amri-logo.jpg"/><img src="assets/image/vohra-logo2.jpg"/><img  src="assets/image/air-logo.jpg"/><span style="font-weight:bold;">and many more...</span></div>
+									<div class="col-12 text-center"></div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+				<div class="row landing-footer">
+					<div class="col-12">
+						<ul>
+							<!--<li><a href="javascript:void(0)">About Us</a></li>-->
+							<!--<li><a href="javascript:void(0)">Contact</a></li>-->
+							<li><a href="javascript:void(0)" (click)="openPrivacy()">Privacy Policy</a></li>
+							<li><a href="javascript:void(0)" (click)="openTerms()">Terms and Conditions</a></li>
+						</ul>
+					</div>
+					<div class="col-12">
+						<p class="small-text text-center pb-1">&copy; 2020 Stellablue Interactive Services Private
+							Limited </p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- App store modal
+<ng-template #appStore>
+  <div class="modal-header">
+      <h4 class="modal-title">Download</h4>
+      <button type="button" class="close" aria-label="close" (click)="modalRef.hide('cross click')">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+  <div class="modal-body">
+      <h1 class="text-center">Coming Soon</h1>
+      <p class="app-download-modal">We are currently working on this feature<br> and will launch soon !</p>
+  </div>
+</ng-template>-->
+
+<!-- Video modal -->
+<ng-template #download>
+	<div class="modal-header">
+      <h4 class="modal-title">Download</h4>
+      <button type="button" class="close" aria-label="close" (click)="modalRef.hide('cross click')">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+	<div class="modal-body text-center">
+		<h1 class="mb-2 download-link-header text-left">Due to worldwide COVID-19 pandemic, approval of an Android app by the Play Store now takes a long time.</h1>
+		<p class="download-link-text text-left">We have released critical updates to the app for our telehealth facility. Download the latest version on your mobile device from our trusted local store. </p>
+		<p class="download-link-text text-left" *ngIf="!mobileBrowserCheck"><b>Open https://www.medepal.com from your mobile browser and click on Google Play Store icon to download the latest version from our local store.</b></p>
+		<div *ngIf="mobileBrowserCheck"><a href="assets/apk/MEDePAL.apk" class="btn btn-primary">Download Latest Version</a></div>
+		<h1 class="pt-2 mb-2">Or</h1>
+		<h5 class="download-link"><a href="https://play.google.com/store/apps/details?id=com.stellablueis.medepal.serviceprovider"
+				target="_blank">Download the available version at Play store</a></h5>
+	</div>
+</ng-template>
+
+<ng-template #video>
+
+	<div class="modal-body">
+		<span>
+
+			<video height="100%" width="80%" src="assets/image/medepal-video.mp4" controls=true autoplay=true></video>
+			<span class="close" aria-label="close" (click)="modalRef.hide('cross click')">
+				<span aria-hidden="true">&times;</span>
+			</span>
+		</span>
+
+	</div>
+</ng-template>
+
+
+<p-sidebar [(visible)]="displaySidebar" blockScroll="true" styleClass="privacy-terms-landing" [style]="{width:'50vw'}"
+	appendTo="body" position="right">
+	<button pButton type="button" (click)="displaySidebar = false" label="Close"
+		class="btn  btn-primary btn-sm close-btn"></button>
+	<app-privacycontent></app-privacycontent>
+</p-sidebar>
+
+<p-sidebar [(visible)]="SignUpPrivacy" blockScroll="true" styleClass="privacy-terms-landing" [style]="{width:'50vw'}"
+	appendTo="body" position="left">
+	<button pButton type="button" (click)="SignUpPrivacy = false" label="Close"
+		class="btn  btn-primary btn-sm close-btn"></button>
+	<app-privacycontent></app-privacycontent>
+</p-sidebar>
+
+
+
+
+<p-sidebar [(visible)]="displaySidebarTerms" blockScroll="true" [style]="{width:'50vw'}"
+	styleClass="privacy-terms-landing" appendTo="body" position="right">
+	<button pButton type="button" (click)="displaySidebarTerms = false" label="Close"
+		class="btn  btn-primary btn-sm close-btn"></button>
+	<app-termscontent></app-termscontent>
+</p-sidebar>
+
+<p-sidebar [(visible)]="SignUpTerms" blockScroll="true" [style]="{width:'50vw'}" styleClass="privacy-terms-landing"
+	appendTo="body" position="left">
+	<button pButton type="button" (click)="SignUpTerms = false" label="Close"
+		class="btn  btn-primary btn-sm close-btn"></button>
+	<app-termscontent></app-termscontent>
+</p-sidebar>
+
+
+<p-sidebar [(visible)]="displaySidebarLogin" blockScroll="true" [dismissible]="false" styleClass="signup"
+	[style]="{width:'40vw'}" appendTo="body" position="right">
+	<div (click)="closeLogin()" class="close-btn cursor"><i class="fas fa-times"></i></div>
+	<div class="signupsidebarArea">
+		<form class="form-signin" [formGroup]="loginForm">
+
+			<div class="page-content">
+				<div class="text-center"><img src="assets/image/logo.svg" height="80px" /></div>
+
+				<div *ngIf="otpLoginEntry" class="card top-border pt-2 pb-3 mb-3 mt-2">
+					<img src="assets/image/confirm.svg" height="30px" />
+					<h3 class="signin-subheading text-center pt-1">{{"TOAST_MSG.OTP_SENT_ON_MOBILE" | translate}}</h3>
+				</div>
+
+				<div class="card mb-3 top-border" [ngClass]="firstStep == true ? '': 'd-none'">
+					<div class="row mb-4" *ngIf="!otpLoginEmail">
+						<div class="col-12"><h3 class="signin-subheading">LOGIN</h3></div>
+						<div class="col-12 text-center">
+							<div class="d-inline-block mr-4 position-relative">
+
+
+								<label class="radio">
+									<label class="pl-0 login-method-label">Using Mobile</label>
+									<input id="mobileLoginCheck" [checked]="mobileLogin" type="radio" value="mobile" value="userMobile" (click)="loginMethod($event, 'mobile')"/><!--[checked]="role.checked"-->
+									<span style="margin-top: 4px;" class="checkmark"></span>
+								</label>
+
+
+								<!--<div class="login-method-position"><input type="radio" value="mobile" value="userMobile" [checked]="mobileLogin" (click)="loginMethod($event)"/></div>
+								<label for="userMobile" class="d-inline-block login-method-label">Using Mobile</label>-->
+							</div>
+							<div class="d-inline-block ml-4 position-relative">
+
+								<label class="radio">
+									<label class="pl-0 login-method-label">Using Email</label>
+									<input id="emailLoginCheck" [checked]="!mobileLogin" type="radio" (click)="loginMethod($event, 'email')" value="userEmail" value="userEmail"/><!--[checked]="role.checked"-->
+									<span style="margin-top: 4px;" class="checkmark"></span>
+								</label>
+
+								<!--<div class="login-method-position"><input type="radio" (click)="loginMethod($event)" [checked]="!mobileLogin" value="userEmail" value="userEmail"/></div>
+								<label for="userEmail"  class="d-inline-block login-method-label">Using Email</label>-->
+							</div>
+					 </div>
+					</div>
+					<div class="row mb-3" *ngIf="!mobileLogin">
+						<div class="col-12">
+							<label class="label "><b>{{'SIGNUP.SIGNUP_EMAIL_LABEL' | translate}}</b></label>
+							<span><input type="email" id="emailLogin"
+									class="form-control" name="email" formControlName="userName"
+									(keyup)="enterToSendLogin($event, loginForm.value)"
+									placeholder="{{ 'SIGNUP.SIGNUP_EMAIL' | translate }}" /></span>
+							<span *ngIf="submitted && lControls.emailAddress.errors">
+								<span *ngIf="lControls.emailAddress.errors.email" class="validation-error">{{
+											'VALIDATION.VALIDATION_EMAIL_NOT_CORRECT' | translate }}</span>
+							</span>
+						</div>
+					</div>
+					<div class="row mb-2" *ngIf="mobileLogin">
+						<div class="col-12">
+							<label class="signupLabel "><b>{{'SIGNUP.SIGNUP_MOBILE_LABEL' | translate}}&nbsp;
+								</b></label><span class="mobile-message">(Indian mobile numbers only)</span>
+						</div>
+					</div>
+					<div class="row mb-3" *ngIf="mobileLogin">
+						<div class="col-12">
+							<app-telephone (paste)="onPaste($event.clipboardData.getData('text/plain'))" (keydown)="onKeydownPhone($event)" (keyup)="enterToSendLogin($event, loginForm.value);passFocus($event)" formControlName="phoneNo">
+							</app-telephone>
+
+							<span *ngIf="submitted && lControls.phoneNo.errors">
+								<span *ngIf="lControls.phoneNo.errors.minlength" class="validation-error">
+									{{ 'VALIDATION.VALIDATION_MIN_LENGTH_10' | translate }}
+								</span>
+							</span>
+
+						</div>
+					</div>
+					<div class="row mb-1" *ngIf="!otpLoginEmail">
+						<div class="col-12">
+							<label class="label"><b>{{'LOGIN.LOGIN_YOUR_PASSWORD' | translate }}</b></label>
+						</div>
+					</div>
+
+
+					<div *ngIf="!otpLoginEmail" class="row mb-2">
+						<div class="col-6">
+							<input #passwordFocus [readonly]="otpLoginText" type="password" [type]="show_eye ? 'text' : 'password'"
+								class="form-control allow-all-char" name="password"
+								(keypress)="enterToSendLogin($event, loginForm.value)"
+								placeholder="{{ 'LOGIN.LOGIN_INPUT_PLACEHOLDER_PASSWORD' | translate }}"
+								formControlName="password" required="" />
+						</div>
+						<div class="col-6">
+							<i [class]="show_eye ? 'fa fa-eye' : 'fa fa-eye-slash' " (click)="showPassword()"></i>
+						</div>
+						<!--<span *ngIf="submitted && lControls.password.errors">
+	                <span *ngIf="lControls.password.errors.required" class="validation-error">{{
+	                  'VALIDATION.VALIDATION_PASSWORD_REQUIRED' | translate }}</span>
+	              </span>-->
+					</div>
+
+					<div class="validation-error col-12" id="errorMsg"></div>
+
+					<div class="row mb-1" *ngIf="otpLoginEntry">
+						<div class="col-12">
+							<label class="label"><b>{{'LOGIN.LOGIN_OTP' | translate }}</b></label>
+						</div>
+						<div class="col-3">
+							<input type="password" class="form-control" name="otp"
+								(keypress)="enterToOtpLogin($event, loginForm.value)" placeholder="OTP"
+								formControlName="password" required="" />
+						</div>
+
+					</div>
+
+					<div class="row mb-1" *ngIf="otpLoginEntry">
+						<div class="col-12">
+							<a href="javascript:void(0)"
+								(click)="resendOtpLogin()">{{'LOGIN.LOGIN_RESEND_OTP' | translate }}</a>
+						</div>
+					</div>
+
+					<div class="row mb-1">
+						<div class="col-12">
+							<div *ngIf="!otpVerified">
+								<div class="text-right" *ngIf="!otpLoginText && mobileLogin">
+									<a href="javascript:void(0);"
+										(click)="otpLogin();"><b>{{'LOGIN.LOGIN_WITH_OTP' | translate }}</b></a>
+								</div>
+								<div class="text-right" *ngIf="otpLoginText">
+									<a href="javascript:void(0);"
+										(click)="passwordLogin();"><b>{{'LOGIN.LOGIN_WITH_PASSWORD' | translate }}</b></a>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div *ngIf="!otpLoginText" class="row mb-2">
+						<div class="col-12 text-center">
+							<button class="btn btn-primary" type="button" (click)="roleCheckLogin(loginForm.value)">{{
+									'LOGIN.LOGIN_BUTTON' | translate }}</button>
+						</div>
+					</div>
+					<div *ngIf="otpLoginText" class="row mb-2">
+						<div class="col-12 text-center">
+							<button class="btn  btn-primary" type="button"
+								(click)="loginWithOtpLogin(loginForm.value)">{{'LOGIN.LOGIN_GET_OTP' | translate }}</button>
+						</div>
+					</div>
+					<div *ngIf="otpLoginText" class="validation-error col-12" id="errorMsg"></div>
+					<div *ngIf="!otpLoginText" class="row">
+						<div class="col-12 small-text mt-2">
+							<span>{{ 'LOGIN.LOGIN_CONDITIONS' | translate }}</span>&nbsp;<span><a
+									href="javascript:void(0)"
+									(click)="openPrivacySignUp()">{{ 'SIGNUP.SIGNUP_PRIVACY' | translate }}</a></span>&nbsp;<span>{{ 'SIGNUP.SIGNUP_AND' | translate }}</span>&nbsp;<span><a
+									href="javascript:void(0)"
+									(click)="openTermsSignUp()">{{ 'SIGNUP.SIGNUP_TERMS' | translate }}</a></span>
+						</div>
+					</div>
+					<div class="row">
+						<!-- <div class="col-md-12">
+											<label class="checkbox">
+												<input type="checkbox" value="remember-me" id="rememberMe" name="rememberMe">{{ 'LOGIN.LOGIN_REMEMBER_ME' | translate }}
+											</label>
+										</div>-->
+						<div class="col-md-12">
+							<p style="margin-bottom: -9px;" class="text-center"> <a class="forgotPassword"
+									(click)="forgotPasswordModal('forgot-password-modal')">{{
+									'LOGIN.FORGOT_PASSWORD' | translate }}
+								</a></p>
+							<p class="bt-style forgotPassword">New User?&nbsp;<a href="javascript:void(0)"
+									(click)="showSignup()" class="cursor">{{ 'LOGIN.LOGIN_SIGNUP'
+								| translate }}</a></p>
+						</div>
+					</div>
+					<div class="row mt-4">
+						<div class="col-sm-6 col-12 mb-2 mb-sm-0 text-sm-right text-center"><button type="button"
+								id="googleBtn" (click)="socialSignIn('google')" class="btn btn-big"><img class="cursor"
+									src="assets/image/google.svg" height="30px" />&nbsp;&nbsp;GMAIL</button></div>
+						<div class="col-sm-6 col-12 text-sm-left text-center"><button type="button" class="btn btn-big"
+								(click)="socialSignIn('facebook')"><img class="cursor" src="assets/image/facebook.svg"
+									height="30px" />&nbsp;&nbsp;FACEBOOK</button></div>
+					</div>
+
+
+				</div>
+				<div class="card mb-3 top-border" [ngClass]="secondStep == true ? '': 'd-none'">
+					<h3 class="signin-subheading text-center pt-1">{{'LOGIN.LOGIN_ROLES' | translate }}</h3>
+					<div class="signin-smallheading text-center pt-2 pb-2">{{'LOGIN.LOGIN_SELECT_A_ROLE' | translate }}
+					</div>
+					<div class="row justify-content-center">
+						<div *ngFor="let role of modalRoles;let i = index" class="user-login-roles-not-for-mobile">
+							<label class="radio">
+								<label class="pl-0">{{role.roleDescription}}</label>
+								<input id="{{i}}" type="radio" name="radio" [checked]="role.checked == checked" (click)="activateRoleLogin(role)" >
+								<span style="margin-top: 4px;" class="checkmark"></span>
+							</label>
+						</div>
+						<div *ngFor="let role of modalRoles;let i = index" class="col-12 user-login-roles-for-mobile">
+							<label class="radio">
+								<label class="pl-0">{{role.roleDescription}}</label>
+								<input id="{{i}}" type="radio" name="radio" [checked]="role.checked" (click)="activateRoleLogin(role)">
+								<span style="margin-top: 4px;" class="checkmark"></span>
+							</label>
+						</div>
+					</div>
+					<div class="validation-error col-12" id="errorMsg"></div>
+					<div class="row">
+						<div class="col-12 text-center"><button type="button" class="btn btn-primary" [disabled]="!roleSelectLogin"
+								(click)="loginAfterRoleSelect()">{{'LOGIN.LOGIN_BUTTON' | translate }}</button></div>
+					</div>
+				</div>
+			</div>
+
+		</form>
+	</div>
+</p-sidebar>
+
+
+<p-sidebar [(visible)]="displaySidebarSignUp" blockScroll="true" [dismissible]="false" styleClass="signup" (onShow)="sidenavShow()"
+	[style]="{width:'40vw'}" appendTo="body" position="right">
+	<div (click)="closeSignUp()" class="close-btn cursor"><i class="fas fa-times"></i></div>
+	<div class="signupsidebarArea">
+		<form class="form-signin" [formGroup]="signupForm">
+			<div class="page-content">
+				<div *ngIf="signupScreen1">
+					<div class="text-center"><img src="assets/image/logo.svg" height="80px" /></div>
+					<!--<h2 class="signin-heading text-center">{{'SIGNUP.SIGNUP_HEADER' | translate }}</h2>-->
+
+					<div  class="card mb-3 top-border" *ngIf="roleArea">
+						<h3 class="signin-subheading">Signing up as</h3>
+						<div class="row">
+							<div class="col-sm-6 col-12 mb-2 mb-sm-0 text-sm-right text-center"><button
+									(click)="activateTab('DOCTOR')" id="signUpDoc" type="button" class="btn btn-big">Doctor</button>
+							</div>
+							<div class="col-sm-6 col-12 text-sm-left text-center"><button type="button"
+									(click)="activateTab('INDIVIDUAL')" id="signUpInd"
+									class="btn btn-big">Individual</button></div>
+						</div>
+					</div>
+					<div class="card top-border mb-3" *ngIf="mobOrEmail">
+						<h3 class="signin-subheading">Signup using</h3>
+						<div class="row">
+							<div class="col-sm-6 col-12 mb-2 mb-sm-0 text-sm-right text-center"><button type="button"
+									(click)="otpMobile()" id="mobileBtn" class="btn btn-big">Mobile</button></div>
+							<div class="col-sm-6 col-12 text-sm-left text-center"><button (click)="otpEmail()" type="button"
+									id="emailBtn" class="btn btn-big">Email</button></div>
+						</div>
+
+						<div class="row mt-4">
+							<div class="col-sm-6 col-12 mb-2 mb-sm-0 text-sm-right text-center"><button type="button"
+									(click)="socialSignIn('google')" class="btn btn-big"><img class="cursor"
+										src="assets/image/google.svg" height="30px" />&nbsp;&nbsp;GMAIL</button></div>
+							<div class="col-sm-6 col-12 text-sm-left text-center"><button class="btn btn-big" type="button"
+									(click)="socialSignIn('facebook')"><img class="cursor"
+										src="assets/image/facebook.svg" height="30px" />&nbsp;&nbsp;FACEBOOK</button>
+							</div>
+						</div>
+					</div>
+
+					<div *ngIf="verifyOTP" class="card top-border pt-2 pb-3 mb-3 mt-2">
+						<img src="assets/image/confirm.svg" height="30px" />
+						<div>
+							<h3 class="signin-subheading text-center pt-1">
+								{{'TOAST_MSG.OTP_SENT_SUCCESSFULLY' | translate }}</h3>
+						</div>
+					</div>
+
+					<div *ngIf="multiRoleArea" class="card top-border pt-2 pb-3 mb-3 mt-2">
+						<h3 class="signin-subheading">You are already registered as</h3>
+						<div *ngFor="let role of roleList; let first = first"
+							class="col-12 text-center signin-subheading">
+							<b>{{role.roleName}}</b>
+						</div>
+					</div>
+
+
+
+					<div class="card top-border mb-3" *ngIf="otpMobileArea">
+						<h3 class="signin-subheading">Signing up as <span>{{roleName}}</span>
+							<!--<span class="labelColor" *ngIf="verifyOTP">using {{mediumName}}</span>-->
+						</h3>
+						<div class="row mb-2">
+							<div class="col-12">
+								<label class="signupLabel"><b>Mobile Number</b></label>&nbsp;<span
+									class="mobile-message">(Indian mobile numbers only)</span>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6 col-12 mb-2 mb-sm-0">
+								<app-telephone *ngIf="sendOTP" (paste)="onPaste($event.clipboardData.getData('text/plain'))" (keydown)="onKeydownPhone($event)" (keyup)="enterToSend($event, signupForm.value)"
+									formControlName="phoneNo"></app-telephone>
+								<span *ngIf="submitted && lControls.phoneNo.errors">
+									<span *ngIf="lControls.phoneNo.errors.minlength" class="validation-error">
+										{{ 'VALIDATION.VALIDATION_MIN_LENGTH_10' | translate }}
+									</span>
+								</span>
+								<div *ngIf="verifyOTP"><b>{{signupForm.value.phoneNo.internationalNumber}}</b></div>
+							</div>
+							<div *ngIf="sendOTP" class="col-sm-6 col-12 text-center text-sm-left">
+								<button (click)="phoneCheckSignup(signupForm.value)" class="btn btn-primary">Send
+									OTP</button>
+							</div>
+						</div>
+						<div class="validation-error col-12" id="errorMsgSignUp"></div>
+						<div class="row">
+
+							<div *ngIf="sendOTP" class="col-12 pt-3 pb-3">
+								We will send an OTP to your mobile to verify your number
+							</div>
+						</div>
+
+						<div *ngIf="verifyOTP" class="row mt-2">
+							<div class="col-12">
+								<label><b>Verify OTP</b></label>
+							</div>
+							<div class="col-sm-4 col-12">
+								<input type="number" class="verifyOTPinput" placeholder="Mobile OTP"
+									formControlName="mobileOtp">
+								<div class="text-left"><a href="javascript:void(0)"
+										(click)="phoneCheckSignup(signupForm.value)">Resend OTP</a></div>
+							</div>
+							<div *ngIf="verifyOTP" class="col-sm-8 col-12 mt-2 mt-sm-0 text-center text-sm-left">
+								<button type="button" class="btn btn-primary btn-sm"
+									(click)="verifyMobileForDiffRole()">Verify Mobile</button>
+							</div>
+						</div>
+
+						<div class="row ml-0 mr-0">
+							<div class="validation-error col-12" id="verifyErrorMsg"></div>
+						</div>
+
+					</div>
+
+
+					<div class="card top-border mb-3" *ngIf="emailSection">
+
+
+						<h3 class="signin-subheading pb-2">Signing up as <span>{{roleName}}</span>
+							<!--<span  *ngIf="verifyOTP"> using <span class="labelColor">{{mediumName}}</span></span>-->
+						</h3>
+						<div class="row mb-2">
+							<div class="col-12">
+								<label class="signupLabel"><b>Email Address</b></label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6 col-12 mb-2 mb-sm-0">
+								<input *ngIf="sendOTP" type="email" class="form-control" name="emailAddress"
+									formControlName="emailAddress" placeholder="{{ 'SIGNUP.SIGNUP_EMAIL' | translate }}"
+									(keyup)="enterToSend($event, signupForm.value)" autofocus="" />
+
+
+
+								<div *ngIf="verifyOTP"><b>{{ signupForm.value.emailAddress}}</b></div>
+							</div>
+
+							<div *ngIf="sendOTP" class="col-sm-6 col-12 text-center text-sm-left">
+								<button (click)="phoneCheckSignup(signupForm.value)" class="btn btn-primary">Send
+									OTP</button>
+							</div>
+							<!--<div *ngIf="submitted && lControls.emailAddress.errors"  class="col-12">
+				<span *ngIf="lControls.emailAddress.errors.email"  class="validation-error">{{
+						'VALIDATION.VALIDATION_EMAIL_NOT_CORRECT' | translate }}</span>
+			</div>-->
+
+
+						</div>
+						<div class="row ml-0 mr-0">
+							<div class="validation-error col-12" id="errorMsgSignUp"></div>
+						</div>
+
+						<div class="row">
+							<div *ngIf="sendOTP" class="col-12 pt-3 pb-3">
+								We will send an OTP to your Email to verify your Email address
+							</div>
+						</div>
+
+						<div *ngIf="verifyOTP" class="row mt-2">
+
+							<div class="col-12">
+								<label><b>Verify Email</b></label>
+							</div>
+							<div class="col-sm-4 col-12">
+								<input type="number" placeholder="OTP" formControlName="emailOtp">
+								<div class="text-left"><a href="javascript:void(0)"
+										(click)="phoneCheckSignup(signupForm.value)">Resend OTP</a></div>
+							</div>
+							<div *ngIf="verifyOTP" class="col-sm-8 col-12 mt-2 mt-sm-0 text-center text-sm-left">
+								<button type="button" class="btn btn-primary btn-sm"
+									(click)="verifyEmailForDiffRole()">Verify Email</button>
+							</div>
+
+						</div>
+						<div class="row ml-0 mr-0">
+							<div class="validation-error col-12" id="verifyErrorMsg"></div>
+						</div>
+					</div>
+					<p *ngIf="roleArea" class="bt-style forgotPassword">Existing user?&nbsp;<a href="javascript:void(0)"
+							(click)="showLogin()" class="cursor">Login</a></p>
+				</div>
+				<div *ngIf="signupScreen2">
+					<div class="text-center"><img src="assets/image/logo.svg" height="80px" /></div>
+					<div class="card top-border pt-2 pb-3 mb-3 mt-2">
+						<img src="assets/image/confirm.svg" height="30px" />
+						<h3 class="signin-subheading text-center pt-1">Thank you for completing the verification</h3>
+					</div>
+					<div class="card top-border pt-2 pb-3 mb-3">
+						<div class="row">
+							<div class="col-12">
+								<label><b>{{ 'SIGNUP.SIGNUP_NAME_LABEL' | translate }}</b></label>
+								<input type="text" class="form-control" name="firstName" (keydown)="onKeydown($event)"
+									formControlName="firstName" placeholder="{{ 'SIGNUP.SIGNUP_NAME' | translate }}"
+									(keypress)="enterToSend($event, signupForm.value)" />
+
+							</div>
+						</div>
+						<div class="row ml-0 mr-0 mt-2">
+							<div class="col-12 validation-error" id="nameError"></div>
+						</div>
+
+						<div class="row mt-2">
+							<div class="col-12">
+								<label class="signupLabel"><b>Create Password</b></label>&nbsp;<span
+									class="mobile-message">(Minimum length 8)</span>
+								<div class="row">
+									<div class="col-10 col-sm-6">
+										<input type="password" autocomplete="new-password"
+											[type]="show_eye ? 'text' : 'password'" class="form-control allow-all-char"
+											name="password" (keyup)="enterToSend($event, signupForm.value)"
+											formControlName="password"
+											placeholder="{{ 'SIGNUP.SIGNUP_PASSWORD' | translate }}" required="" />
+									</div>
+									<div class="col-2 col-sm-6 text-left">
+										<i [class]="show_eye ? 'fa fa-eye' : 'fa fa-eye-slash' "
+											(click)="showPassword()"></i>
+									</div>
+								</div>
+								<div class="row ml-0 mr-0 mt-2">
+									<div class="col-12 validation-error" id="passwordError"></div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-12 small-text mt-2">
+								<span>{{ 'SIGNUP.SIGNUP_CONDITIONS' | translate }}</span>&nbsp;<span><a
+										href="javascript:void(0)"
+										(click)="openPrivacySignUp()">{{ 'SIGNUP.SIGNUP_PRIVACY' | translate }}</a></span>&nbsp;<span>{{ 'SIGNUP.SIGNUP_AND' | translate }}</span>&nbsp;<span><a
+										href="javascript:void(0)"
+										(click)="openTermsSignUp()">{{ 'SIGNUP.SIGNUP_TERMS' | translate }}</a></span>
+							</div>
+						</div>
+						<div class="row mt-2">
+							<div class="col-12 text-center">
+								<button class="btn btn-md btn-primary" type="button"
+									(click)="signUpInDiffRole()">{{'SIGNUP.SIGNUP_BUTTON' | translate }}</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</p-sidebar>
+
+
+<!-- alert modal for confirmation -->
+<ng-template #confirmationAlert>
+	<div class="modal-header">
+		<h4 class="modal-title">Your email/mobile is registered with another profile</h4>
+		<button type="button" class="close" aria-label="close" (click)="closeModal()">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body pb-0">
+		<div class="row">
+			<div *ngFor="let role of roleList; let first = first" class="col-lg-2">
+				<label class="radio">
+					<p><b>{{role.roleName}}</b></p>
+					<input type="radio" [checked]="first" name="radio" (click)="activateRole(role)">
+					<span style="margin-top: 4px;" class="checkmark"></span>
+				</label>
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer pt-0 pb-0">
+		<div class="row">
+			<div class="col-12 text-right">
+				<button type="button" class="btn btn-primary btn-sm"
+					(click)="verifyExistingEmailMobile()">Confirm</button>&nbsp;
+				<button type="button" class="btn btn-secondary btn-sm" (click)="closeModal()">Close</button>
+			</div>
+		</div>
+	</div>
+</ng-template>
+<!-- alert modal for confirmation end -->
+
+
+<!-- User role select modal -->
+<ng-template #getUserRoleName>
+	<div class="row smlPop">
+		<div class="col-lg-12">
+			<div class="modal-header">
+				<h4 class="modal-title">{{'LOGIN.LOGIN_ROLES' | translate }}</h4>
+				<button type="button" class="close" aria-label="close" (click)="modalRef.hide('cross click')">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body pb-0">
+				<h3>{{'LOGIN.LOGIN_SELECT_A_ROLE' | translate }}</h3>
+				<div class="row">
+					<div *ngFor="let role of modalRoles" class="col-md-2">
+						<label class="radio">
+							<label>{{role.roleDescription}}</label>&nbsp;&nbsp;
+							<input type="radio" name="radio" (click)="activateRoleLogin(role)">
+							<span style="margin-top: 4px;" class="checkmark"></span>
+						</label>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer pt-0 pb-0">
+				<div class="col-12 text-right">
+					<button type="button" class="btn btn-secondary" (click)="closeM()">Cancel</button>&nbsp;
+					<!--<button type="button" class="btn btn-primary" [disabled]="!roleSelectLogin" (click)="loginAfterRoleSelect()">{{'LOGIN.LOGIN_BUTTON' | translate }}</button>-->
+					<button type="button" class="btn btn-primary"
+						(click)="loginAfterRoleSelect()">{{'LOGIN.LOGIN_BUTTON' | translate }}</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</ng-template>
+<!-- User role select modal end-->
+
+<ng-template #viewForgotPasswordModal>
+	<form class="form-signin" [formGroup]="loginForm">
+		<div class="row smlPop">
+			<div class="col-lg-12">
+				<div class="modal-header">
+					<h4 class="modal-title">{{'LOGIN.FORGOT_PASSWORD' | translate }}</h4>
+					<button type="button" class="close" aria-label="close" (click)="modalRef.hide('cross click')">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body pb-0">
+					<div class="row">
+						<div class="col-12">
+							<div *ngIf="!showMobileOtp" class="row">
+								<div class="col-12">
+									<h3>{{'LOGIN.LOGIN_WITH_PASSWORD_EMAIL' | translate }}</h3>
+									<label class="radio FP">
+										<label>{{'LOGIN.LOGIN_EMAIL' | translate }}</label>
+										<input (click)="emailChecked()" type="radio" name="radio">
+										<span class="checkmark "></span>
+									</label>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-12">
+									<div *ngIf="isCheckedEmail">
+										<input id="input" class="add-mem-input-name" type="email"
+											[readonly]="!textBoxDisabled" formControlName="emailFP" name="email"
+											(keyup)="checkValueEmail($event, loginForm.value)"
+											(click)="checkValueEmail($event, loginForm.value)"
+											placeholder="Enter Email Address" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-12 mt-2">
+							<div class="row">
+								<div class="col-6">
+									<div class="row">
+										<div class="col-12">
+											<label class="radio FP">
+												<label>{{'LOGIN.LOGIN_MOBILE_NO' | translate }}</label>
+												<input (click)="phoneChecked()" type="radio" name="radio">
+												<span class="checkmark "></span>
+											</label>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-12">
+											<div *ngIf="isCheckedMobile" class="col-md-4 text-right pl-0 tel-comp-modal"
+												style="margin-top: 8px;">
+												<!-- 4 -->
+												<app-telephone formControlName="phoneNoFP"
+													(keyup)="checkValue($event, loginForm.value)">
+												</app-telephone>
+
+												<!--<int-phone-prefix [disabled]="!textBoxDisabled" [locale]="'es'" [defaultCountry]="'in'" [(ngModel)]="bodyText"></int-phone-prefix>-->
+											</div>
+										</div>
+									</div>
+								</div>
+								<div *ngIf="showMobileOtp" class="col-6">
+									<div class="form-group">
+										<label>{{'LOGIN.LOGIN_OTP' | translate }}</label>
+										<input type="text" class="otpInput" placeholder="OTP"
+											formControlName="otpFP"><span><a href=javascript:void(0)
+												(click)="resendOtpForForgetPassword()">{{'LOGIN.LOGIN_RESEND_OTP' | translate }}</a></span>
+										<div *ngIf="IsOTP" class="validation-error">
+											{{'LOGIN.LOGIN_OTP_CANT_BLANK' | translate }}</div>
+									</div>
+
+								</div>
+							</div>
+
+							<div class="row" *ngIf="showMobileOtp">
+								<div class="col-6">
+									<div class="form-group">
+										<label>{{'LOGIN.LOGIN_CREATE_NEW_PASSWORD' | translate }}</label>
+										<input type="password" name="password1" placeholder="password"
+											formControlName="password1">
+									</div>
+
+								</div>
+								<div class="col-6">
+									<div class="form-group">
+										<label>{{'LOGIN.LOGIN_RECONFIRM_PASSWORD' | translate }}</label>
+										<input type="password" name="password2" placeholder="Confirm password"
+											formControlName="password2" required>
+										<span *ngIf="IsMatch"
+											class="validation-error">{{'LOGIN.LOGIN_PASSWORD_NOT_MATCH' | translate }}</span>
+									</div>
+
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+
+
+
+
+
+
+				</div>
+
+				<div class="modal-footer pb-0">
+					<div class="row" *ngIf="!showMobileOtp">
+						<div class="col-sm-12 text-right">
+							<button class="btn btn-secondary" (click)="modalRef.hide()">Close</button>&nbsp;
+							<button class="btn btn-primary" [disabled]="!bodyText"
+								(click)="submitForgetPassEmailMobile(bodyText);">Submit</button>&nbsp;&nbsp;
+
+						</div>
+					</div>
+					<div class="row" *ngIf="showMobileOtp">
+						<div class="col-sm-12 text-right">
+							<button class="btn btn-primary" (click)="submitResetPasswordMobile()">Submit</button>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<!-- <div class="row">
+         <div class="col-md-2"></div>
+         <div class="col-md-5 text-right">
+           <input id="input" class="add-mem-input-name" type="text" [readonly]="!textBoxDisabled" [(ngModel)]="bodyText" placeholder="Enter Email Address/Phone No" />
+         </div>
+     </div> -->
+
+	</form>
+</ng-template>
+
+
+<!-- <cookie-law #cookieLaw expiration="365" name="ng4CookieLaw" (isSeen)="cookieLawSeen = $event" learnMore="/false" target="_blank"></cookie-law> -->
+<cookie-law name="ng4topCookieLaw" #cookieLaw expiration="365">
+	By using our site, you acknowledge that you have read and understand our Cookie Policy.This message expires after
+	one
+	year.
+	<!-- <a href="#">more info.</a> &nbsp; -->
+	<button type="button" class="btn btn-primary" (click)="dismiss()">Ok,Got it</button>
+</cookie-law>

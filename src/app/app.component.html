@@ -1,0 +1,40 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<div >
+  <div id="side-bar" class="sidebar" *ngIf="isAuthenticated" data-background-color="white" data-active-color="danger">
+    <app-menus *ngIf="!hideHeader"></app-menus>
+  </div>
+  <app-header id="appHeader" [isAuthenticated]="isAuthenticated" *ngIf="!hideHeader"></app-header>
+  <div  id="appContainer">
+    <div [ngClass]="{'dynamic-container':isAuthenticated}">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+  <!--<div *ngIf="isAuthenticated" class="footer">
+    <app-feedback  id="appFooter"></app-feedback>
+  </div>-->
+
+  <div id="snackbar"></div>
+  <div id="overlay">
+    <div id="overlay-text">Processing...</div>
+  </div>
+  <ngx-spinner bdColor="rgba(209, 224, 223, 1)" size="medium" color="#93278f" type="line-scale">
+  </ngx-spinner>
+  <custom-toast-component></custom-toast-component>
+  <app-video-chat-component *ngIf="isAuthenticated && onlineDoc"  (onCloseClick)="onlineDoc = false" [appointmentRefNo]="refNo"></app-video-chat-component>
+</div>
+

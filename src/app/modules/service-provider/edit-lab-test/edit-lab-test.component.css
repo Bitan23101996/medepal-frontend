@@ -1,0 +1,85 @@
+/*
+*  * |///////////////////////////////////////////////////////////////////////|
+*  * |                                                                       |
+*  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+*  * | All Rights Reserved                                                   |
+*  * |                                                                       |
+*  * | This document is the sole property of StellaBlue Interactive          |
+*  * | Services Pvt. Ltd.                                                    |
+*  * | No part of this document may be reproduced in any form or             |
+*  * | by any means - electronic, mechanical, photocopying, recording        |
+*  * | or otherwise - without the prior written permission of                |
+*  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+*  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+.alphabetList{
+    list-style-type: none;
+}
+.alphabetList li{
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 1px solid #8F4FA1;
+    border-radius: 30%;
+    text-align: center;
+    /* vertical-align: middle; */
+    margin:0 4px;
+    box-shadow: 0px 2px;
+}
+.alphabetList li:hover{
+    background: #8F4FA1;
+}
+.alphabetList li a{
+    display: block;
+    text-transform: uppercase;
+    color: #8F4FA1;
+    font-size: 10px;
+    height: 18px;
+}
+.alphabetList li a:hover{
+    color: #fff;
+    text-decoration:none;
+}
+
+
+.show-for-large{
+  display:flex;
+}
+
+.for-medium{
+  display:none;
+}
+
+@media only screen and (min-width : 768px) and (max-width : 1024px){
+
+  .table-responsive td{
+    border:none !important;
+  }
+  .show-for-large{
+    display:none;
+  }
+
+  .for-medium{
+    display:block;
+  }
+
+}
+
+
+@media only screen and (min-width: 575px) and (max-width: 767px){
+  .show-for-large{
+    display:none;
+  }
+}
+
+
+@media (max-width: 576px) {
+  .for-medium{
+    display:none;
+  }
+  .show-for-large{
+    display:none;
+  }
+
+}

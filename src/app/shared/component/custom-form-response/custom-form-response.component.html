@@ -1,0 +1,131 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+      <!-- <div class="row">
+          <div class="col-lg-4 col-sm-12">
+            <div class="form-group">
+              <label class="userKey control-label">Form Name
+                <span class="validation-error">*</span>
+              </label>
+              <select class="form-control" #form (change)="populateForm(form.value)">
+                <option value="0">Select Form</option>
+                <option *ngFor="let f of formList" [value]="f.formRefNo">
+                  {{f.formName}}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div> -->
+  
+        <div class="form-block" *ngIf="customForm!=null">
+          <fieldset *ngIf="!hideForm">
+            <!-- <h1 class="top-label">{{customForm.formName}}</h1> -->
+            <ng-container *ngIf="customForm.questionList!=null">
+            <div class="row" *ngIf="customForm.questionList.length==0">
+              <div class="col-sm-12">
+                No Question available
+              </div>
+            </div>
+            <div class="row" *ngIf="customForm.questionList.length > 0">
+              <div class="col-sm-12">
+                <div class="col-sm-12" *ngFor="let q of customForm.questionList; let i = index">
+                  <div class="question-block mt-2">
+                    <h1>
+                      <span class="q-label">Q{{i+1}}. </span>
+                      {{q.question}}
+                    </h1>
+                    <ng-container *ngIf="q.answerType=='ST'">
+                        <ng-container *ngIf="q.reponseList.length>0">
+                            <input type="text" class="form-control" [attr.value]="q.reponseList[0].response" placeholder="Answer will be short text" maxlength="255" #stxt (blur)="setTextToAnswerset(stxt.value, q)">
+                        </ng-container>
+                        <ng-container *ngIf="q.reponseList.length==0">
+                            <input type="text" class="form-control" placeholder="Answer will be short text" maxlength="255" #stxt (blur)="setTextToAnswerset(stxt.value, q)">
+                        </ng-container>
+                    </ng-container>
+                    <ng-container *ngIf="q.answerType=='LT'">
+                        <ng-container *ngIf="q.reponseList.length>0">
+                            <textarea class="form-control" style="height: 50px !important;" placeholder="Answer will be large text"  maxlength="2000" #ltxt (blur)="setTextToAnswerset(ltxt.value, q)">
+                                {{q.reponseList[0].response}}
+                              </textarea>
+                        </ng-container>
+                        <ng-container *ngIf="q.reponseList.length==0">
+                            <textarea class="form-control" style="height: 50px !important;" placeholder="Answer will be large text"  maxlength="2000" #ltxt (blur)="setTextToAnswerset(ltxt.value, q)"></textarea>
+                        </ng-container>
+                    </ng-container>
+                    <ng-container *ngIf="q.answerType=='DD'">
+                        <ng-container *ngIf="q.reponseList.length>0">
+                            <select #ddVal (change)="setAnswerForDropdown(ddVal.value, q)">
+                                <option *ngFor="let a of q.answerList" [value]="a.answerPk" [selected]="a.answerPk==q.reponseList[0].answerPk">
+                                  {{a.answer}}
+                                </option>
+                              </select>
+                        </ng-container>
+                        <ng-container *ngIf="q.reponseList.length==0">
+                            <select #ddVal (change)="setAnswerForDropdown(ddVal.value, q)">
+                                <option *ngFor="let a of q.answerList" [value]="a.answerPk">
+                                  {{a.answer}}
+                                </option>
+                              </select>
+                          </ng-container>
+                      
+                    </ng-container>
+                    <ng-container *ngIf="q.answerType=='RD'">
+                        <ng-container *ngIf="q.reponseList.length>0">
+                            <span *ngFor="let a of q.answerList; let j = index" class="inline-ans">
+                                <input type="radio" [name]="'opt'+q.questionRefNo" (change)="setAnswerForRadio(q, a)" [checked]="a.answerPk==q.reponseList[0].answerPk"> {{a.answer}}
+                              </span>
+                        </ng-container>
+                        <ng-container *ngIf="q.reponseList.length==0">
+                            <span *ngFor="let a of q.answerList; let j = index" class="inline-ans">
+                                <input type="radio" [name]="'opt'+q.questionRefNo" (change)="setAnswerForRadio(q, a)" > {{a.answer}}
+                              </span>
+                          </ng-container>
+                      
+                    </ng-container>
+                    <ng-container *ngIf="q.answerType=='CH'">
+                        <ng-container *ngIf="q.reponseList.length>0">
+                            <span *ngFor="let a of q.answerList; let j = index" class="inline-ans">
+                             
+                                  <input type="checkbox" [name]="'chk'+a.answerPk" (change)="setAnswerForCheckbox(q, a, $event)" [checked]="a.checked">{{a.answer}}
+                             
+                              </span>
+                              
+                                <!-- <span *ngFor="let r of q.reponseList; let x = index" class="inline-ans">
+                                    <input type="checkbox" [name]="'chk'+r.answerPk" (change)="setAnswerForCheckbox(q, r, $event)" checked> {{r.answer}}
+                                </span>
+                                <span *ngFor="let a of q.answerList; let j = index" class="inline-ans">
+                                    <ng-container *ngFor="let r of q.reponseList; let x = index">
+                                        <ng-container *ngIf="a.answerPk!==r.answerPk">
+                                            <input type="checkbox" [name]="'chk'+a.answerPk" (change)="setAnswerForCheckbox(q, a, $event)"> {{a.answer}}
+                                        </ng-container>
+                                    </ng-container>
+                                </span> -->
+                        </ng-container>
+                        <ng-container *ngIf="q.reponseList.length==0">
+                            <span *ngFor="let a of q.answerList; let j = index" class="inline-ans">
+                                <input type="checkbox" [name]="'chk'+a.answerPk" (change)="setAnswerForCheckbox(q, a, $event)"> {{a.answer}}
+                              </span>
+                        </ng-container>
+                      
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          </fieldset>
+  
+  
+        </div>

@@ -1,0 +1,576 @@
+<ng-container [formGroup]="appointmentForm" #myFormPost>
+  <div class="row page-content">
+    <div class="col-sm-6">
+        <div class="card padding10 custom-bg-procedure-normal">
+            <label class="bt-style-label"><strong>Patient Details:</strong></label>
+      <div class="row">
+        <div class="col-sm-12">
+          <!--*ngIf="!appointmentForm.value.forMinor"-->
+          <div class="form-group mb-2">
+            <label>Patient Mobile</label>
+            <p *ngIf="appointmentForm.controls.appointmentRefNo.value!==null">
+              {{appointmentForm.controls.patientContactNo.value}}
+            </p>
+            <div *ngIf="appointmentForm.controls.appointmentRefNo.value==null">
+              <int-phone-prefix [locale]="'IN'" [defaultCountry]="'in'" formControlName="patientContactNo" #mobile
+                (keyup)="populatePatientDetailsByPhone(mobile.value)"></int-phone-prefix>
+
+              <div *ngIf="submitted && appointmentForm.controls.patientContactNo.errors">
+                <div class="validation-error" *ngIf="appointmentForm.controls.patientContactNo.errors.required">This
+                  field
+                  is
+                  required</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <div class="form-group mb-2">
+            <label>Patient Name
+              <span *ngIf="!editFor.name && appointmentForm.controls.appointmentRefNo.value!=null"
+                (click)="editModeOn('name')" ngbTooltip="Edit">&nbsp;&nbsp;
+                <img src="../../../../assets/image/edit.svg" height="13" alt=""></span>
+              <span class="mr-2" *ngIf="editFor.name"  ngbTooltip="Cancel" (click)="editModeOn('cancel')">
+                  <img src="../../../../assets/image/cancel.svg" height="13" alt="">
+              </span>
+              <span class="mr-2" *ngIf="editFor.name" ngbTooltip="Save" (click)="saveIndividualDetails()"> 
+                <img src="../../../../assets/image/save.svg" height="13" alt="">
+              </span>
+            </label>
+            <app-name preventType="all"
+              [readonly]="(appointmentForm.controls.appointmentRefNo.value!==null || (!appointmentForm.value.forMinor && isExistMultiRole==true) || isExistingMinorPatient || appointmentForUserItself) && !editFor.name"
+              formControlName="patientName" required="required"></app-name>
+              <!-- <p *ngIf="appointmentForm.controls.appointmentRefNo.value!==null || ((!appointmentForm.value.forMinor && isExistMultiRole==true) || isExistingMinorPatient || appointmentForUserItself) && !editFor.name">
+                  {{appointmentForm.controls.patientName.value}}
+                </p> -->
+            <div *ngIf="submitted && appointmentForm.controls.patientName.errors">
+              <div class="validation-error" *ngIf="appointmentForm.controls.patientName.errors.required">This field is
+                required</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <div class="form-group mb-2">
+            <label class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_AGE' | translate}}</label>
+
+            <ng-container *ngIf="isDob">
+              <p>
+                {{appointmentForm.value.patientAgeInMonth}}
+              </p>
+            </ng-container>
+            <ng-container *ngIf="!isDob">
+              <ng-container *ngIf="appointmentForm.controls.appointmentRefNo.value!==null">
+                <p>
+                  {{appointmentForm.value.patientAgeInMonth}}
+                </p>
+              </ng-container>
+              <ng-container *ngIf="appointmentForm.controls.appointmentRefNo.value==null">
+                <input type="text" [attr.disabled]="isAgeInMonthDisabled?'':null" #age (blur)="changeAge(age.value)"
+                  formControlName="patientAgeInMonth" class="form-control age-value" maxlength="3" numbersOnly />
+                <span class="or-position">OR </span>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+
+
+        <div class="col-6 col-sm-6">
+          <div class="form-group mb-2">
+            <label class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_DOB' | translate}}
+              <span *ngIf="!editFor.dateOfBirth && appointmentForm.controls.appointmentRefNo.value!=null"
+                ngbTooltip="Edit" (click)="editModeOn('dob')">&nbsp;&nbsp;
+                <img src="../../../../assets/image/edit.svg" height="13" alt=""></span>
+                <span class="mr-2" *ngIf="editFor.dateOfBirth"  ngbTooltip="Cancel" (click)="editModeOn('cancel')">
+                    <img src="../../../../assets/image/cancel.svg" height="13" alt="">
+                </span>
+                <span class="mr-2" *ngIf="editFor.dateOfBirth" ngbTooltip="Save" (click)="saveIndividualDetails()"> 
+                  <img src="../../../../assets/image/save.svg" height="13" alt="">
+                </span>
+            </label>
+            <ng-container *ngIf="isDob && appointmentForm.value.patientAgeInMonth==null">
+              <p>
+                {{appointmentForm.value.patientDateOfBirth | date:'dd-MM-yyyy'}}
+              </p>
+            </ng-container>
+            <ng-container *ngIf="!isDob">
+              <ng-container>
+                <p *ngIf="appointmentForm.controls.appointmentRefNo.value!==null && !editFor.dateOfBirth">
+                  {{appointmentForm.value.patientDateOfBirth | date:'dd-MM-yyyy'}}
+                </p>
+                <app-datepicker *ngIf="appointmentForm.controls.appointmentRefNo.value!==null && editFor.dateOfBirth"
+                  [maxDate]="minDate" [readonly]="true" [disabled]="isDobDisabled" [minDate]="minorDateRange"
+                  formControlName="patientDateOfBirth" position="right" (valueChange)="changeDate($event)">
+                </app-datepicker>
+              </ng-container>
+              <ng-container *ngIf="appointmentForm.controls.appointmentRefNo.value==null">
+                <app-datepicker [maxDate]="minDate" [readonly]="true" [disabled]="isDobDisabled"
+                  [minDate]="minorDateRange" formControlName="patientDateOfBirth" position="right"
+                  (valueChange)="changeDate($event)"></app-datepicker>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+
+
+      </div>
+      <div class="row">
+        <div class="col-md-5">
+          <div class="form-group mb-2" *ngIf="!isGender">
+            <label class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_GENDER' | translate}}
+              <span *ngIf="!editFor.gender && appointmentForm.controls.appointmentRefNo.value!=null" ngbTooltip="Edit"
+                (click)="editModeOn('gender')">&nbsp;&nbsp;
+                <img src="../../../../assets/image/edit.svg" height="13" alt="">
+              </span>
+              <span class="mr-2" *ngIf="editFor.gender"  ngbTooltip="Cancel" (click)="editModeOn('cancel')">
+                  <img src="../../../../assets/image/cancel.svg" height="13" alt="">
+              </span>
+              <span class="mr-2" *ngIf="editFor.gender" ngbTooltip="Save" (click)="saveIndividualDetails()"> 
+                <img src="../../../../assets/image/save.svg" height="13" alt="">
+              </span>
+            </label>
+            <ng-container>
+              <p *ngIf="appointmentForm.controls.appointmentRefNo.value !== null && !editFor.gender">
+                {{appointmentForm.value.patientGender==='M'?'Male':appointmentForm.value.patientGender==='F'?'Female':"Other"}}
+              </p>
+              <select *ngIf="appointmentForm.controls.appointmentRefNo.value !== null && editFor.gender" id="gender"
+                name="gender" class="form-control" formControlName="patientGender">
+                <option *ngFor="let gender of masterGender" value="{{gender.attributeValue}}">{{gender.displayValue}}
+                </option>
+              </select>
+            </ng-container>
+            <ng-container *ngIf="appointmentForm.controls.appointmentRefNo.value == null">
+              <select id="gender" name="gender" class="form-control" formControlName="patientGender">
+                <option *ngFor="let gender of masterGender" value="{{gender.attributeValue}}">{{gender.displayValue}}
+                </option>
+              </select>
+              <div *ngIf="submitted && appointmentForm.controls.patientGender.errors">
+                <div class="validation-error" *ngIf="appointmentForm.controls.patientGender.errors.required">This field
+                  is
+                  required</div>
+              </div>
+            </ng-container>
+
+          </div>
+          <div class="form-group mb-2" *ngIf="isGender">
+            <label class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_GENDER' | translate}}
+              <span *ngIf="!editFor.gender" ngbTooltip="Edit" (click)="editModeOn('gender')">
+                &nbsp;&nbsp;<img src="../../../../assets/image/edit.svg" height="13" alt="">
+              </span>
+              <span *ngIf="editFor.gender">&nbsp;&nbsp;<i ngbTooltip="Cancel" (click)="editModeOn('cancel')"
+                  class="far fa-times-circle"></i></span>
+            </label>
+            <p>
+              {{appointmentForm.value.patientGender==='M'?'Male':appointmentForm.value.patientGender==='F'?'Female':"Other"}}
+            </p>
+          </div>
+        </div>
+      </div>
+      </div>
+
+
+      <!-- app#2399 -->
+      <div class="row page-content mt-2">
+          <div class="col-md-12">
+            <div *ngIf="!procedureFlag" class="card padding10 custom-bg-procedure-normal">
+                <div *ngIf="!procedureFlag" class="row">
+                    <div class="col-md-8">
+                      <label class="bt-style-label"><strong>Appointment Details:</strong></label>
+                    </div>                    
+                    <div class="col-md-4 text-right">
+                        <div class="btn-app">
+                            <span class="mr-2" *ngIf="!editForApp && appointmentForm.controls.appointmentRefNo.value!=null" 
+                            ngbTooltip="Re-schedule Appointment" (click)="editModeAppointmentOn('appointment')">
+                                <img src="../../../../assets/image/edit.svg" height="13" alt="">
+                              </span>
+                          <span class="mr-2" *ngIf="editForApp" ngbTooltip="Cancel" (click)="editModeAppointmentOn('cancel')">
+                              <img src="../../../../assets/image/cancel.svg" height="13" alt="">
+                          </span>
+                          <span class="mr-2" *ngIf="editForApp" ngbTooltip="Save" (click)="updateAppointment()">
+                              <img src="../../../../assets/image/save.svg" height="13" alt="">
+                          </span>
+                        </div>
+                    </div>
+              </div>
+              <div class="row" *ngIf="(appointmentForm.controls.appointmentRefNo.value==null || editForApp) && !procedureFlag">
+                <div class="col-md-12 col-md-12 float-right text-right">
+                  <label>Online
+                    <span class="switch">
+                      <input type="checkbox" formControlName="onlineConsultationFlag">
+                      <span class="slider round"></span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="row card-body" *ngIf="appointmentForm.controls.appointmentRefNo.value==null || editForApp">
+                <div class="col-md-12">
+                    <div class="row">
+                        <ng-container *ngIf="entityName =='DOCTOR'">
+                          <div class="col-md-12" *ngIf="!procedureFlag">
+                            <div class="form-group mb-2">
+                              <label>Chamber Name</label>
+                              <!-- <select class="form-control" formControlName="chamberRefNo"
+                                *ngIf="appointmentForm.controls.appointmentRefNo.value!==null && !editForApp" disabled>
+                                <option *ngFor="let i of chamberList" [value]="i.chamberRefNo"
+                                  [selected]="i.chamberRefNo==appointmentForm.controls.chamberRefNo.value">
+                                  {{i.hospitalName}}</option>
+                              </select> -->
+                
+                              <select class="form-control" formControlName="chamberRefNo" (change)="onChamberChange($event, 'chamber')"
+                                >
+                                <option value="">Select</option>
+                                <option *ngFor="let i of chamberList" [value]="i.chamberRefNo">
+                                  {{i.hospitalName}}</option>
+                              </select>
+                              <div *ngIf="submitted && appointmentForm.controls.chamberRefNo.errors">
+                                <div class="validation-error" *ngIf="appointmentForm.controls.chamberRefNo.errors.required">This field
+                                  is
+                                  required</div>
+                              </div>
+                            </div>
+                          </div>
+                        </ng-container>
+                        
+                      </div>
+                    <div class="row">
+                        <ng-container *ngIf="usingComponentStr=='calender'">
+                          <div class="col-md-6">
+                            <div class="form-group mb-2">
+                              <label>Appointment Date</label>
+                              <!-- <input type="text" *ngIf="appointmentForm.controls.appointmentRefNo.value!=null" placeholder="DD-MM-YYYY" bsDatepicker (ngModelChange)="onDateChange($event)"
+                                [bsConfig]="{ dateInputFormat: dtFormat, showWeekNumbers: false  }" class="form-control"
+                                formControlName="appointmentDate" [readonly]="addNew?false:true"
+                                [isDisabled]="appointmentForm.controls.appointmentRefNo.value!==null && !editForApp?addNew?false:true:false" required> -->
+                              <input type="text"  placeholder="DD-MM-YYYY" bsDatepicker (ngModelChange)="onDateChange($event)"
+                              [bsConfig]="{ dateInputFormat: dtFormat, showWeekNumbers: false  }" class="form-control"
+                              formControlName="appointmentDate" [readonly]="addNew?false:true"
+                              required>
+                              <div *ngIf="submitted && appointmentForm.controls.appointmentDate.errors">
+                                <div class="validation-error" *ngIf="appointmentForm.controls.appointmentDate.errors.required">This
+                                  field
+                                  is required</div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group mb-2">
+                              <label>Time</label>
+                              <!-- <input type="time" class="form-control" *ngIf="appointmentForm.controls.appointmentRefNo.value!=null" (blur)="timeValidate('stTime',stTime.value)"
+                                formControlName="appointmentTime" #stTime (change)="convertTiming(stTime.value,'stTime')"
+                                [readonly]="appointmentForm.controls.appointmentRefNo.value!==null && !editForApp"> -->
+                              <input type="time" class="form-control" (blur)="timeValidate('stTime',stTime.value)"
+                              formControlName="appointmentTime" #stTime (change)="convertTiming(stTime.value,'stTime')"
+                              >  
+                
+                              <div *ngIf="submitted && appointmentForm.controls.appointmentTime.errors">
+                                <div class="validation-error" *ngIf="appointmentForm.controls.appointmentTime.errors.required">This
+                                  field
+                                  is required</div>
+                              </div>
+                            </div>
+                          </div>
+                        </ng-container>
+                      </div>
+                
+                      
+                </div>
+              </div>
+              
+              <div class="row card-body" *ngIf="appointmentForm.controls.appointmentRefNo.value!=null && !editForApp">
+                <div class="col-12" *ngIf="!editForApp">
+                  <div class="col-md-12 col-md-12 float-right text-right">
+                    <label>Online 
+                      <span class="switch">
+                        <input type="checkbox" formControlName="onlineConsultationFlag" disabled>
+                        <span class="slider round"></span>
+                      </span> 
+                    </label>
+                  </div>
+                </div>
+
+                  <div class="col-12" *ngIf="entityName =='DOCTOR'">
+                      <label>Chamber Name</label>
+                      <p>
+                        {{appointmentForm.controls.chamberName.value}}
+                      </p>
+                  </div>
+                <div class="col-8">
+                    <label>Appointment Date</label>
+                    <p>
+                      {{appointmentForm.controls.appointmentDate.value | date:'dd-MM-yyyy'}}
+                    </p>
+                </div>
+                <div class="col-4">
+                    <label>Time</label>
+                    <p>
+                      {{appointmentForm.controls.appointmentTime.value}}
+                    </p>
+                </div>
+                
+                
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      <!--End Working on app/issues/937 -->
+      <div class="col-md-12">
+          <!-- Working on app/issues/937 -->
+          <!-- <div class="form-group mb-2"
+        *ngIf="appointmentForm.controls.referredBy.value!=null || appointmentForm.controls.appointmentRefNo.value==null">
+        <label>Referred By<span class="optional-label"> (Optional)</span></label>
+        <p-autoComplete formControlName="referredBy" [suggestions]="referralNameList"
+          (completeMethod)="filteredReferralSingle($event)" [size]="100" (onSelect)="referredNameSelect($event)"
+          [minLength]="1" [readonly]="appointmentForm.controls.appointmentRefNo.value!==null"></p-autoComplete>
+
+      </div> -->
+        <div *ngIf="appointmentForm.controls.appointmentState.value == null">
+          <div class="form-group mb-2 mt-1"
+            *ngIf="appointmentForm.controls.referredBy.value!=null || appointmentForm.controls.appointmentRefNo.value==null">
+            <div class="row">
+              <!--app#1430-->
+              <div class="col-6">
+                <label>Referred By<span class="optional-label"> (Optional)</span></label>
+                <input type="text" formControlName="referredBy" class="form-control" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+          <!--End Working on app/issues/937 -->
+        </div>
+        <div class="col-12 mt-1" *ngIf="appointmentForm.controls.referredBy.value!=null && appointmentForm.controls.appointmentRefNo.value!=null">
+            <label>Referred By</label>
+            <p>
+              {{appointmentForm.controls.referredBy.value}}
+            </p>
+        </div>
+      <div class="form-group mb-2"
+        *ngIf="appointmentForm.controls.appointmentRefNo.value!==null && (appointmentForm.controls.appointmentState.value==APP_STATE.REQUESTED || appointmentForm.controls.appointmentState.value==APP_STATE.CONFIRMED)">
+        <label>Reason for Cancellation</label>
+        <textarea class="form-control" formControlName="appointmentCxlReason"></textarea>
+      </div>
+
+    </div>
+    <div class="col-sm-6">
+      
+      <div class="row page-content" *ngIf="appointmentForm.controls.appointmentRefNo.value!=null">
+        <div class="col-md-12" *ngIf="userAddressDetails">
+          <div class="card padding10 custom-bg-procedure-normal">
+            <label class="bt-style-label"><strong>Patient Address:</strong></label>
+            <div class="row card-body">
+              <div class="col-12">
+                <p>
+                  {{userAddressDetails.line1}} &nbsp; {{userAddressDetails.line2}}
+                </p>
+                <p>
+                  <span>{{userAddressDetails.city}}</span>&nbsp;<span>{{userAddressDetails.state}}</span>&nbsp;<span>{{userAddressDetails.pinCode}}</span>
+                </p>
+                <p>{{userAddressDetails.country}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row scrollarea" *ngIf="appointmentForm.controls.appointmentRefNo.value==null">
+        <div class="col-md-12" *ngIf="!procedureFlag">
+          <!-- <div class="row">
+                  <div class="col-lg-12 text-right">
+                      <button class="btn btn-secondary mr-2" type="button" *ngIf="isEdit && userAddressList.length > 0" (click)="onBackOperation()">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_CANCEL' | translate}}</button>
+                      <button class="btn btn-primary" type="button" (click)="addNewAddress()" [disabled]="isEdit">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_ADD_NEW_ADD' | translate}}</button>
+                  </div>
+              </div> -->
+
+          <div class="row">
+            <div class="col-md-12 gridHeight">
+              <!--addresslist-->
+              <!-- <div *ngIf="!isEdit" class="row page-content">
+                          <div class="col-12" *ngFor="let addresses of userAddressList; let i = index" id="{{i}}" title="{{addresses.addressType}} Address">
+                              <div class="card cursor" (click)="selectAddress(addresses)" [ngClass]="{'selected-card': addresses['selected']}">
+                                  <div class="card-header">
+                                      <h5>{{addresses.addressType}}</h5>
+
+                                  </div>
+                                  <div class="row card-body">
+                                      <div class="col-12">
+                                          <p>
+                                              {{addresses.line1}} &nbsp; {{addresses.line2}}
+                                          </p>
+                                          <p>
+                                              <span>{{addresses.city}}</span>&nbsp;<span>{{addresses.state}}</span>&nbsp;<span>{{addresses.pinCode}}</span>
+                                          </p>
+                                          <p>{{addresses.country}}</p>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div> -->
+              <!--end of addresslist-->
+              <div>
+                <form formGroupName="addressForm">
+                  <div class="card padding10 custom-bg-procedure-normal">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <h5 class="inner">
+                          <label class="bt-style-label"><strong>Patient Address</strong> <span
+                              class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span></label>
+                        </h5>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label>{{'DELIVER_ADDRESS.DELIVER_ADDRESS_COUNTRY' | translate}}</label>
+                        <div>
+                          <select formControlName="country" class="form-control"
+                            (change)="getStateCasCadeToCounntry(addressForm)">
+                            <option *ngFor="let country of masterCOUNTRY" value="{{country.countryName}}"
+                              class="cursor">
+                              {{country.countryName}}</option>
+                          </select>
+                          <!-- <span *ngIf="addressForm.get('isSubmit').value || addressForm.controls.country.dirty">
+                                  <span *ngIf="addressForm.hasError('required', 'country')" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                </span> -->
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label>{{'DELIVER_ADDRESS.DELIVER_ADDRESS_PINCODE' | translate}}</label>
+
+                        <div>
+                          <input type="text" maxlength="6" class="form-control" min="0" formControlName="pinCode"
+                            (keyup)="fetchCountryStateCityByPin(addressForm, $event)" />
+                          <span *ngIf="addressForm.get('isSubmit').value || addressForm.controls.pinCode.dirty">
+                            <!-- <span *ngIf="addressForm.hasError('required', 'pinCode')" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span> -->
+                            <span *ngIf="addressForm.hasError('minlength', 'pinCode')"
+                              class="validation-error">{{ 'VALIDATION.VALIDATION_PINCODE_MIN_LENGTH' | translate }}</span>
+                            <span *ngIf="addressForm.hasError('min', 'pinCode')"
+                              class="validation-error">{{ 'VALIDATION.VALIDATION_PINCODE_MIN' | translate }}</span>
+                            <span *ngIf="addressForm.hasError('pattern', 'pinCode')"
+                              class="validation-error">{{ 'VALIDATION.VALIDATION_PINCODE_PATTERN' | translate }}</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label>{{'DELIVER_ADDRESS.DELIVER_ADDRESS_STATE' | translate}}</label>
+
+                        <div>
+                          <!-- <select formControlName="state" class="form-control">
+                                  <option *ngFor="let state of masterSTATE | sort:'stateName':true" value="{{state.stateName}}">
+                                    {{state.stateName}}</option>
+                                </select> -->
+                          <input type="text" class="form-control" id="state" formControlName="state" [readonly]="true">
+                          <!-- <span *ngIf="addressForm.get('isSubmit').value || addressForm.controls.state.dirty">
+                                  <span *ngIf="addressForm.hasError('required', 'state')" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                </span> -->
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label>{{'DELIVER_ADDRESS.DELIVER_ADDRESS_CITY' | translate}}</label>
+
+                        <div>
+                          <input type="text" class="form-control" formControlName="city"
+                            (keydown)="onKeydown($event)" />
+                          <span *ngIf="addressForm.get('isSubmit').value || addressForm.controls.city.dirty">
+                            <!-- <span *ngIf="addressForm.hasError('required', 'city')" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span> -->
+                            <span *ngIf="addressForm.hasError('minlength', 'city')"
+                              class="validation-error">{{ 'VALIDATION.VALIDATION_CITY_NOT_LESS_THAN' | translate }}</span>
+                            <span *ngIf="addressForm.hasError('maxlength', 'city')"
+                              class="validation-error">{{ 'VALIDATION.VALIDATION_CITY_NOT_MORE_THAN' | translate }}</span>
+                            <!-- <span *ngIf="addressForm.hasError('pattern', 'city')" class="validation-error">{{
+                                                                              'VALIDATION.VALIDATION_CITY_LETTER' |
+                                                                              translate }}</span> -->
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label>{{'DELIVER_ADDRESS.DELIVER_ADDRESS_LINE1' | translate}}</label>
+                        <div>
+                          <input type="text" class="form-control" formControlName="line1" />
+                          <!-- <span *ngIf="addressForm.get('isSubmit').value || addressForm.controls.line1.dirty">
+                                  <span *ngIf="addressForm.hasError('required', 'line1')" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                </span> -->
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label>{{'DELIVER_ADDRESS.DELIVER_ADDRESS_LINE2' | translate}}
+                          <span class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span>
+                        </label>
+                        <div>
+                          <input type="text" class="form-control" formControlName="line2" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div *ngIf="!prescriptionFlag && !procedureFlag" class="row page-content mt-2">
+          <div class="col-md-12">
+            <div class="card padding10 custom-bg-procedure-normal" *ngIf="doctorNotAvailableFlag">
+                <div class="text-center not-found">
+                  <h3>{{'DOCTOR_SEARCH_TOAST.DOC_NOT_AVAILABLE_ON_SELECTED_DATE' | translate}}</h3>
+                </div>
+            </div>
+            <div class="card padding10 custom-bg-procedure-normal" *ngIf="slotNotAvailableFlag">
+                <div class="text-center not-found">
+                  <h3>{{'DOCTOR_SEARCH_TOAST.NO_SLOT_AVAILABLE' | translate}}</h3>
+                </div>
+            </div>
+            <div class="card padding10 custom-bg-procedure-normal" *ngIf="timingList.length>0">
+                <div class="row">
+                    <div class="col-md-12">
+                      <label class="bt-style-label"><strong>Time Slots:</strong></label>
+                    </div>
+              </div>
+              <div class="row card-body">
+                <div class="col-md-12">
+                    <span class="timeslot mr-2" [class.active]="selectedTime==t.id"  *ngFor="let t of timingList" (click)="setAppointmentTime(t.id)">
+                      {{t.id}}
+                    </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    </div>
+  </div>
+
+  <!-- fetch list for minor start -->
+  <p-sidebar [(visible)]="displaySidebar" (onHide)="emitDisplayFlag($event)"
+    [styleClass]="isModal? ((entityName =='DOCTOR')? 'custom-p-sidebar-user-list-modal-in-modal custom-style-doctor-modal': 'custom-p-sidebar-user-list-modal-in-modal custom-style-opd-modal' ) : 'custom-p-sidebar-user-list-modal'"
+    appendTo="body" position="left"
+    [style]="{width:'30em', height:'500px', overflow: 'hidden', background: '#f7fffe', position:'absolute'}"
+    [baseZIndex]="99">
+    <p><strong>{{'MY_PRESCRIPTION.SELECT_PATIENT' | translate}}</strong></p>
+    <hr>
+    <div class="substituteMedicineList custom-x-scroll-for-modal">
+      <ul class="mt-2">
+        <li *ngFor="let associatedUser of associatedUserDetailsList;let i = index">
+          <a href="javascript:void(0);" (click)="setPatientIfMinorHave(associatedUser)">
+            {{associatedUser.name}} <span class="minor" *ngIf="associatedUser.isMinor">(Minor)</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="pl-4 pt-1"><a href="javascript:void(0)" (click)="registerNewPatient()">Register a new Patient</a></div>
+  </p-sidebar>
+  <!-- fetch list for minor end -->
+</ng-container>

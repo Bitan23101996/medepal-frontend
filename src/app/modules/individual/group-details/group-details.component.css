@@ -1,0 +1,177 @@
+/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+
+.bt-style {
+    padding-top: 0px;
+}
+div.scroll {
+    background-color: white;
+    width: 900px;
+    height: 480px;
+    overflow: auto;
+}
+.table-style {
+    border-collapse: collapse;
+    overflow: hidden;
+    background-color: #f2f2f2;
+}
+.table-thead-style {
+    background-color: #f2f2f2;
+}
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color:rgb(242, 242, 242);
+}
+.right-action{
+    margin-top: 8px;
+}
+.scroll {
+    background-color: white;
+    width: 305px;
+    height: 200px;
+    overflow: auto;
+}
+
+.age-add-user{
+    width:20px;
+}
+
+.invitation-list {
+    overflow-y: auto;
+    max-height: 16em;
+    overflow-x: hidden;
+    margin-bottom:30px;
+}
+
+.invitation-list-opened {
+    max-height: 70vh;
+    transition: ease-in-out 600ms max-height;
+    overflow-y: hidden;
+}
+
+.invitation-list-closed {
+    max-height: 0;
+    transition: ease-in-out 400ms max-height;
+    overflow-y: hidden;
+}
+
+.invitation-title-opened {
+    display: block;
+}
+.invitation-title-closed {
+    display: none;
+}
+
+
+.invitation-title-opened h5{
+    font-size:18px;
+    font-weight:400;
+    padding-top:10px;
+    color:#5f5f5f;
+}
+
+
+.invitation-list-area{
+  background: #fff;
+  color:#000;
+  margin-bottom:20px;
+  border-bottom:1px solid #ccc;
+}
+
+.invitation-list-area h2{
+    font-size:14px;
+    font-weight:400;
+    padding-top:10px;
+    padding-right:30px;
+}
+
+.btn-secondary.reject{
+  color:#c03356 !important;
+  margin-top:4px;
+}
+
+.btn-secondary.accept{
+  color:#28882e !important;
+  margin-top:4px;
+}
+
+.Group h2{
+    font-size:18px;
+    font-weight:400;
+    padding-top: 0px;
+    padding-bottom: 20px;
+    color:#5f5f5f;
+}
+.Group2 h2{
+    font-size:14px;
+    font-weight:400;
+    padding-top: 0px;
+    padding-bottom: 20px;
+    color:#5f5f5f;
+}
+.Group3 h2{
+    font-size:18px;
+    font-weight:400;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    color:#5f5f5f;
+}
+
+
+.Group4 p
+{
+
+    line-height: 22px;
+}
+
+.AddMemberIcon
+{
+
+    padding-left: 10px;
+}
+
+.Group5 h2{
+    font-size:14px;
+    font-weight:400;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    color:#5f5f5f;
+}
+
+.invitation-area
+{
+margin-top: -10px;
+
+}
+
+.hidelist.ng-star-inserted{
+    margin-bottom: 0px !important;
+}
+
+.information-header1 h5
+{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.heading h2{
+
+    margin-bottom: 0px;
+}
+
+.pl-13
+{
+    padding-left: 12px;
+}

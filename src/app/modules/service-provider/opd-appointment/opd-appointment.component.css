@@ -1,0 +1,159 @@
+/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+ 
+.page-content .card .table-responsive td .btn{
+    font-size: 10px !important;
+}
+
+.table-responsive td.no-padding-left-large{
+		padding-left:0 !important;
+}
+
+.badge{
+    font-size: 11px;
+}
+
+@media only screen and (max-width: 1023px) and (min-width: 768px){
+
+	.opd-action{
+		width:27%;
+	}
+
+}
+
+.sidebarList {
+    height: calc(100vh - 112px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.close-btn {
+    position: absolute;
+    left: -30px;
+    top: 0;
+    height: 30px;
+    width: 30px;
+    background: #f5f8f9;
+    text-align: center;
+    line-height: 30px;
+}
+
+.top-card .badge{
+    font-size: 14px;
+}
+.badge-text{
+    font-weight: 400;
+    font-size: 12px;
+}
+.badge-success-txt{
+    color:#28a745;
+}
+.badge-secondary-txt{
+    color:#6c757d;
+}
+.badge-primary-txt{
+    color:#007bff;
+}
+.badge-danger-txt{
+    color:#dc3545;
+}
+
+/* Working on app/issue/2403 */
+.quick-add-menu .dropdown-menu{
+    top:36px !important;
+    left:20px !important;
+    transform:none !important;
+    box-shadow: 0 0 10px #ccc;
+    border:1px solid #3db9d3;
+    background:rgba(238, 252, 255, .8)
+  }
+  
+  
+  .quick-add-menu.show>.btn-outline-primary.dropdown-toggle{
+    background: #3db9d3;
+  }
+  
+  .quick-add-menu.show::before{
+    position:absolute;
+    content: '';
+    width: 0px;
+    height: 0px;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #3db9d3;
+    display: inline-block;
+    vertical-align: middle;
+    top:30px;
+    left:39px;
+  }
+
+  
+.quick-add-menu >.btn-outline-primary{
+    border:1px solid #3db9d3;
+    font-weight:500;
+    color:#fff;
+    background:#3db9d3;
+    padding-top:1px !important;
+    padding-bottom:1px !important;
+    margin-top:6px;
+  }
+  
+  
+  .quick-add-menu >.btn-outline-primary:hover{
+    border:1px solid #146199;
+    background: #146199;
+    color:#fff;
+  }
+  
+  .quick-add-menu >.btn-outline-primary:active, .quick-add-menu >.btn-outline-primary:focus{
+    border:1px solid #3db9d3;
+    background: #3db9d3;
+    color:#fff;
+  }
+  
+  .quick-add-menu .dropdown-item{
+    padding:0;
+    margin-bottom:0 !important;
+    border-bottom:1px dashed #ccc;
+  }
+  
+  .quick-add-menu .dropdown-item:hover{
+    background: #146199;
+  }
+  
+  .quick-add-menu .dropdown-item a:hover{
+    color:#fff;
+  }
+  
+  .quick-add-menu .dropdown-item:last-of-type{
+    border-bottom:none;
+  }
+
+  .quick-add-link-menu {
+    font-size: 11px;
+    font-weight: 400;
+    padding: 5px;
+    color: #000;
+    display: block;
+  }
+  .quick-add-text {
+    text-decoration: none;
+  }
+
+  .badge-noShow{
+    color: #fff;
+    background-color:#ad696f
+  }
+  /* End Working on app/issue/2403 */

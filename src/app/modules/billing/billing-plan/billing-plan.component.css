@@ -1,0 +1,257 @@
+/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+
+.plan-detail-tbl{
+    width: 100%;
+    margin-top:-7px;
+    margin-bottom:0;
+}
+.plan-detail-tbl th{
+    text-align: left;
+    vertical-align: text-top;
+}
+.plan-detail-tbl td, .plan-detail-tbl td .plan-detail-tbl td{
+    text-align: left;
+    font-size: 14px;
+}
+.plan-detail-tbl .ng-star-inserted{
+    margin-bottom: 0px !important;
+}
+
+.plan-card{
+    cursor: pointer;
+    border: 1px solid rgba(0,0,0,.125) !important;
+}
+.plan-card .card-header{
+    background: #fff;
+}
+.plan-card.selected{
+    border: 2px solid #662d91 !important;
+}
+.lower{
+    text-transform: lowercase;
+}
+.ip{
+    margin-top: 30px;
+    font-size: 10px;
+    font-style: italic;
+}
+
+.chargeUnitAttribute{
+    height: 40px;
+     padding: 5px 0;
+    font-size: 18px;
+    font-weight: 400;
+    padding-left:20px;
+    color:#1b78bb;
+}
+/* .plan-detail-tbl td:nth-child(2) .rateText,.plan-detail-tbl td:nth-child(3) .rateText,.plan-detail-tbl td:nth-child(4) .rateText{
+    height: 50px;
+} */
+.rateText{
+    height: 40px;
+    padding: 5px 0;
+    font-size: 14px;
+    font-weight: 400;
+}
+.commitment{
+    height: 55px;
+    font-size: 14px;
+    font-weight: 400;
+}
+.side-header{
+    background: #fff;
+    border: none;
+}
+.side-details{
+    background: #fff;
+    border: 1px solid #beb5c6;
+    width:20%;
+}
+.plan-detail-tbl td{
+    padding: 0 !important;
+}
+.plan-detail-tbl tr:nth-child(1){
+    border-bottom: 1px solid #d095e9;
+}
+.plan-detail-tbl tr:nth-child(1) th{
+    font-size: 20px;
+}
+.plan-detail-tbl tr:nth-child(1) th:nth-child(1){
+    font-size: 18px;
+    font-weight: 400;
+}
+.plan-detail-tbl td.accept:nth-child(1) {
+    display: none;
+}
+.plan-detail-tbl td:nth-child(1) .currency{
+    display: none;
+}
+
+
+
+
+.chargeUnit{
+    height: auto;
+}
+.trialMonth{
+    /* height: auto; */
+    height: 30px;
+    /* padding: 5px 2px; */
+    font-weight: 400;
+    background:#1b78bb;
+    color:#fff;
+    line-height: 30px;
+    vertical-align: middle;
+}
+.trialMonthLbl{
+    /* padding: 2px 2px; */
+    font-size: 18px;
+    font-weight: 400;
+    /* height: auto; */
+    height: 30px;
+    background:#1b78bb;
+    color:#fff;
+    padding-left:20px;
+}
+.billingStartDate{
+    /* height: auto; */
+    min-height: 55px;
+    /* padding: 5px 2px; */
+    font-weight: 400;
+    background:#e5f4ff;
+
+    color:#c93557;
+
+}
+.billingStartDateLbl{
+    /* padding: 2px 2px; */
+    font-size: 18px;
+    font-weight: 400;
+    /* height: auto; */
+    min-height: 55px;
+    background:#e5f4ff;
+    color:#c93557;
+    padding-left:20px;
+}
+.table-bordered td, .table-bordered th {
+     border: none !important;
+}
+.border-top{
+    background:#146199 !important;
+    border-bottom-left-radius:10px;
+    border-bottom-right-radius:10px;
+}
+
+.border-top h1{
+  font-size:16px !important;
+  color:#fff !important;
+  margin-bottom: 0 !important;
+  padding: 10px 5px !important;
+}
+.billing-rules{
+    font-style: italic;
+    font-size: 11px;
+    font-weight: 300;
+    background:#e5f4ff;
+    color:#000;
+    padding-right:10px;
+}
+
+.standard-box{
+  box-shadow: 2px 2px 5px rgba(0,0,0,.5);
+  /*border-top:5px solid #1b78bb;*/
+  background:#fff;
+  border-radius:10px;
+  max-width:500px;
+  margin: 0 10px;
+  border-bottom-left-radius:10px;
+  border-bottom-right-radius:10px;
+}
+
+.standard-box .box-header h3{
+  color:#fff;
+  border-top-left-radius:10px;
+  border-top-right-radius:10px;
+  font-size:18px;
+  font-weight:400;
+  padding:5px 10px;
+  background:#146199;
+}
+
+
+
+.billing-date-border{
+  border-top:1px solid #1b78bb;
+  border-bottom:1px solid #1b78bb;
+  margin-top:10px;
+  margin-bottom:10px;
+  background:#e5f4ff !important;
+}
+
+.btn.btn-primary.accept-btn{
+  color:#fff;
+  font-size:14px !important;
+  margin-top:10px;
+  margin-bottom:10px;
+}
+
+.notesArea{
+  font-size:12px;
+  font-weight:400;
+  padding-right:10px;
+}
+
+ .block4{
+	border:1px solid #3db9d3;
+	border-radius:20px;
+	padding:5px 10px;
+	margin: 10px 10px 20px 10px;
+	color:#fff;
+	background:#3db9d3;
+	font-size:16px;
+	font-weight:400;
+}
+
+ .block5{
+	border:1px solid #28882e;
+	border-radius:20px;
+	padding:5px 10px;
+	margin: 10px 10px 20px 10px;
+	color:#fff;
+	background:#28882e;
+	font-size:16px;
+	font-weight:400;
+}
+
+.block6{
+	border:1px solid #ce8a35;
+	border-radius:20px;
+	padding:5px 10px;
+	margin: 10px 10px 20px 10px;
+	color:#fff;
+	background:#ce8a35;
+	font-size:16px;
+	font-weight:400;
+}
+
+.billing-date-border1{
+
+    border-bottom:1px solid #1b78bb;
+    margin-top: 0px;
+    margin-bottom:10px;
+    
+  }

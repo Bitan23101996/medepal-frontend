@@ -1,0 +1,202 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+<div [ngClass]="canvasDetailsFromProcedure ? 'page-container':'container' " ><!--class="container"-->
+    <div class="row prescription-widgets">
+        <div [ngClass]="canvasDetailsFromProcedure ? 'col-xl-12 pt-2':'col-xl-12 padding0 pt-2 pb-2' "><!-- class="col-xl-12 padding0"-->
+            <h5 class="pt-2 float-left">{{'PRESCRIPTION_DRAW_IMAGE.DRAW_IMAGE'| translate}}</h5>
+            <button type="button" class="btn btn-primary btn-sm float-right" (click)="save()">{{'PRESCRIPTION_DRAW_IMAGE.SAVE'| translate}}</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-2 col-lg-2 col-md-12">
+            <div [ngClass]="canvasDetailsFromProcedure ? 'col-xl-12':'col-xl-12 padding0' "><!--class="col-xl-12 padding0"-->
+                <div class="padding0">
+                    <div class="padding0">
+                      <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-6 col-6">
+                        <div class="toolbar-bg pb-1">
+							<div class="toolbar-header">{{'PRESCRIPTION_DRAW_IMAGE.ADD_FIGURE'| translate}}</div>
+							<div class="pt-2 text-center">
+								<span (click)="addFigure('arrow');"><i class="figure-ico fas fa-arrow-right"></i></span>
+								<span (click)="addFigure('square');"><i class="figure-ico far fa-square"></i></span>
+								<span (click)="addFigure('circle');"><i class="figure-ico far fa-circle"></i></span>
+								<span id="add-text" (click)="addText()"><i class="figure-ico fas fa-font"></i></span>
+							</div>
+						</div>
+                  </div>
+
+                       <!-- <label class="page-header">{{'PRESCRIPTION_DRAW_IMAGE.SELECT_COLOR' | translate}}</label> -->
+            <div class="col-xl-12 col-lg-12 col-md-6 col-6">
+             <div class="toolbar-bg">
+						   <div class="toolbar-header">{{'PRESCRIPTION_DRAW_IMAGE.SELECT_COLOR' | translate}}</div>
+						   <div class="pt-2 text-center">
+								<div *ngFor="let c of colors" class="cursor display-inline-block mr-1">
+									<div >
+										<span (click)="onClickColor(c)" [style.background-color]="c" [style.border]="c" [ngClass]="(c == canvas.freeDrawingBrush.color)? 'canvasSelectedBorderStyle cursor': 'cursor color-block' "
+											>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
+								</div>
+							</div>
+						</div>
+            </div>
+
+            <div class="col-xl-12 col-lg-12 col-md-6 col-6">
+						<div class="toolbar-bg">
+							<div class="toolbar-header">{{'PRESCRIPTION_DRAW_IMAGE.SELECT_BRUSH_SIZE'| translate}}</div>
+							<div class="pt-2 text-center">
+							<div *ngFor="let bs of brushSize" class="cursor display-inline-block brush-ico">
+                            <!-- <div [ngClass]="(bs.bs == canvas.freeDrawingBrush.width)? 'canvasSelectedBorderStyle': none">
+                                <p style="border-radius: 1px;margin:5px" [style.background]="canvas.freeDrawingBrush.color"
+                                    [style.height]="bs.size" [style.width]="bs.size" (click)="brushSizeClick(bs.bs)"></p>
+                            </div> -->
+                            <div
+                                [ngClass]="(bs.bs == canvas.freeDrawingBrush.width)? 'canvasSelectedBorderStyle': none">
+                                <p class="margin5" (click)="pencil(bs.bs)"><i class="fas fa-pencil-alt"
+                                        [ngStyle]="{'font-size':bs.size}"></i>
+                                </p>
+                            </div>
+							</div>
+							</div>
+                        </div>
+
+                        </div>
+
+                            <!--<label class="page-header">{{'PRESCRIPTION_DRAW_IMAGE.ACTIONS' | translate}}</label>-->
+                            <div class="col-xl-12 col-lg-12 col-md-6 col-6">
+                            <div class="toolbar-bg pt-2">
+                                <button data-toggle="tooltip" data-placement="bottom" title="Remove Item"
+                                    type="button" class="toolbar-btn"
+                                    [disabled]="!selected" (click)="removeSelected();">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>&nbsp;Remove Item
+                                </button>
+                                <button data-toggle="tooltip" type="button" class="toolbar-btn"
+                                    title="Eraser" data-placement="bottom" (click)="eraser()">&nbsp;&nbsp;<i
+                                        class="fas fa-eraser"></i><span class="pl-2">Eraser</span></button>
+                                <button data-toggle="tooltip" data-placement="bottom" title="Clean All" type="button"
+                                    class="toolbar-btn" (click)="confirmClear();">
+                                    <i class="fa fa-ban display-inline-block" aria-hidden="true"></i>&nbsp;Clean All</button>
+                            </div>
+                            </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-xl-8 col-lg-8 col-md-12 mb-xl-0 mb-lg-0 mb-md-4 mb-4 padding0">
+            <canvas id="canvas" class="canvas-style"></canvas>
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-12">
+
+
+
+
+
+
+
+
+
+
+					<div class="row">
+            <div class="col-lg-12 col-md-6 col-6" *ngIf="recentImagesList.length>0">
+            <div class="toolbar-bg recent-img-margin-btm ">
+
+    						<div  class="row recent-img-padding-btm ">
+    							<p-accordion class="drImage-panel-accordian col-lg-12">
+    								<p-accordionTab styleClass="primeng-accordion" [selected]="true">
+    									<p-header (click)="accordianHeaderClick('recentImg',canvasGroupImage)">
+    										<div class="row mr-0 ml-0">
+
+    											<div class="col-lg-10 col-md-10 col-10 display-inline-block padding0">{{'PRESCRIPTION_DRAW_IMAGE.RECENT_IMAGE' | translate}}</div>
+    											<div *ngIf="!accordianflagForRecentImage"
+    												class="text-right col-lg-2 col-md-2 col-2 display-inline-block padding0">
+    												<i class="fas fa-chevron-right arrow-ico"></i>
+    											</div>
+    											<div *ngIf="accordianflagForRecentImage"
+    												class="text-right col-lg-2 col-md-2 col-2 display-inline-block padding0">
+    												<i class="fas fa-chevron-down arrow-ico"></i>
+    											</div>
+    										</div>
+    									</p-header>
+    									<div class="row mr-0 ml-0">
+                                    <ng-container *ngFor="let recentImage of recentImagesList">
+                                        <div class="col-lg-6 pl-0 pr-0 text-center">
+    										<div class="canvas-ind-img-style">
+                                            <img class="images-item "
+                                                (click)="getImgPolaroid($event,recentImage)"
+                                                [src]="domSanitizer.bypassSecurityTrustUrl(recentImage.imageUrl)">
+    										</div>
+                                        </div>
+                                    </ng-container>
+                                </div>
+    								</p-accordionTab>
+    							</p-accordion>
+    						</div>
+
+    				</div>
+            </div>
+
+                  <!-- end of general[figure n text] -->
+
+
+              <div class="col-lg-12 col-md-6 col-6" *ngFor="let canvasGroupImage of groupByImageList;let i=index">
+                    <ng-container >
+                        <p-accordion class="drImage-panel-accordian col-12 canvas-group-image-style">
+							<div class="toolbar-bg mb-0  pb-2">
+                            <p-accordionTab styleClass="primeng-accordion" [selected]="false">
+                                <p-header (click)="accordianHeaderClick('groupImg',canvasGroupImage,i)" class="height20">
+                                    <div class="row mr-0 ml-0">
+
+                                        <div class="col-lg-10 col-md-10 col-10 display-inline-block padding0">{{canvasGroupImage.medicalImageGroupName}}
+                                        </div>
+										<div *ngIf="!canvasGroupImage.accordianFlag"
+                                            class="text-right col-lg-2 col-md-2 col-2 display-inline-block padding0">
+                                            <i class="fas fa-chevron-right  arrow-ico"></i>
+                                        </div>
+                                        <div *ngIf="canvasGroupImage.accordianFlag"
+                                            class="text-right col-lg-2 col-md-2 col-2 display-inline-block padding0">
+                                            <i class="fas fa-chevron-down  arrow-ico"></i>
+                                        </div>
+                                    </div>
+                                </p-header>
+                                <div class="row mr-0 ml-0">
+                                    <ng-container *ngFor="let imageURlList of canvasGroupImage.groupImageUrlList">
+                                        <div class="col-lg-6 pl-0 pr-0" >
+											<div class="canvas-ind-img-style">
+                                                <img class="images"
+                                                (click)="getImgPolaroid($event,imageURlList)"
+                                                [src]="domSanitizer.bypassSecurityTrustUrl(imageURlList.imageUrl)">
+											</div>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </p-accordionTab>
+							</div>
+                        </p-accordion>
+                    </ng-container>
+                </div>
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+
+</div>

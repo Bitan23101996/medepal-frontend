@@ -1,0 +1,442 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<header class="login-header" *ngIf="!isAuthenticated">
+  <div class="row" *ngIf="isLanding">
+    <div class="col-2"><a href="auth/landing"><img src="assets/image/logo.jpg" width="120" alt=""></a></div>
+  </div>
+  <div class="row" *ngIf="!isLanding">
+    <div class="topNavnotloggedin">
+      <!-- <ul class="loginPageHeaderNav leftLavTx float-left" *ngIf=!isHeaderVeryfied>
+        <li> <a href="javascript:void(0)" [routerLink]="['/search']"><img
+              src="../../../../../assets/image/book-find.svg"
+              height="25px" />{{'HEADER.HEADER_FIND_AND_BOOK_DOCTORS' | translate }}</a> </li>
+        <li> <a href="javascript:void(0)" [routerLink]="['/individual/order-medicine']"><img
+              src="../../../../../assets/image/order-med.svg"
+              height="25px" />{{'HEADER.HEADER_ORDER_MEDICINE' | translate }}</a> </li>
+        <li> <a href="javascript:void(0)"><img src="../../../../../assets/image/medical-records.svg"
+              height="25px" />{{'HEADER.HEADER_MEDICAL_RECORDS' | translate }}</a> </li>
+      </ul> -->
+    </div>
+    <div class="col-sm-2 col-3">
+      <a *ngIf="isFullProfileVerified" href="auth/landing"><img src="assets/image/logo.jpg" width="120" alt=""></a>
+      <a *ngIf="!isFullProfileVerified" href="javascript:void(0)"><img src="assets/image/logo.jpg" width="120"
+          alt=""></a>
+    </div>
+    <div class="col-sm-10 col-9 text-right">
+      <ul class="loginPageHeaderNav float-right notLoggedinInfoarea" *ngIf=!isHeaderVeryfied>
+        <li>
+          <p class="mb-0"><img src="../../../../../assets/image/info-ico.svg" height="15px" />&nbsp;support@medepal.com
+          </p>
+          <p class="text-left"><img src="../../../../../assets/image/phone.svg" height="15px" />&nbsp;+91 9433811598</p>
+        </li>
+        <li>
+          <a href="javascript:void(0)" *ngIf="isHeaderSignUp" [routerLink]="['/auth/signUp']"
+            class="btn btn-primary margin-right-10" role="button">{{'HEADER.HEADER_SIGNUP' | translate }}</a>
+        </li>
+        <li>
+          <a href="javascript:void(0)" *ngIf="isHeaderSignUp" [routerLink]="['auth/login']" class="btn btn-primary"
+            role="button">{{'HEADER.HEADER_LOGIN' | translate}}</a>
+        </li>
+      </ul>
+      <ul class="loginPageHeaderNav float-right" *ngIf=isHeaderVeryfied>
+        <li class="profile-right-border">
+          <span class="profileRoundBg header-profile-img float-left">
+            <img *ngIf="profileImageSrc !=''" [src]="domSanitizer.bypassSecurityTrustUrl(profileImageSrc)" width="150"
+              class="rounded-circle" alt="...">
+            <img *ngIf="profileImageSrc ==''" src="../../../../../assets/image/user.png" width="150"
+              class="rounded-circle hide-for-mobile" alt="...">
+          </span>
+          <!--<span
+            [ngClass]="profileImageSrc !=''? 'textDot-header float-left dropdownBasic1s hide-for-mobile':'textDot-header float-left dropdownBasic1s' "
+            title="{{userName}}" id="dropdownBasic1"> {{userName}}</span>-->
+        </li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<div class="main-panel" *ngIf="isAuthenticated">
+  <nav class="navbar navbar-default headerNavBar">
+    <div id="menuToggle" (click)="slideMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="containerfluidHead">
+      <div *ngIf="environmentIdentifier != ''" class="environment-identifier">
+        <p [ngStyle]="{'background-color': environmentIdentifierColor}">{{environmentIdentifier}}</p>
+      </div>
+      <div class="row">
+        <!-- In case of OPD comment -->
+        <div class="col-sm-4" *ngIf="user_role == 'DOCTOR' || user_role == 'SYSADMIN'"></div>
+        <div class="col-sm-4 search-panel-large" *ngIf="user_role == 'INDIVIDUAL'">
+        </div>
+        <!-- In case of OPD comment -->
+
+        <!-- In case of OPD uncomment -->
+        <div class="col-sm-6 opd-large" *ngIf="entityName == 'HOSPITAL' || entityName == 'PHARMACY' || entityName == 'DIAGNOSTICS'
+    || (entityName == 'DOCTOR' && roleName == 'ASSISTANT')">
+          <div [ngClass]="logoImageSrc === '' ? 'hide-for-small small-hide' : 'float-left pt-1' "><img
+              *ngIf="logoImageSrc === '' " src="../../../../../assets/image/opd_logo.svg" height="50" alt="..."></div>
+          <div class="float-left pt-1"><img class="pr-1" *ngIf="logoImageSrc !== '' "
+              [src]="domSanitizer.bypassSecurityTrustUrl(logoImageSrc)" height="50" alt="..."></div>
+          <span [ngClass]="logoImageSrc !== '' ? 'header hide-for-small small-hide' : 'header' ">
+            <h2 *ngIf="!isChild">{{serviceProviderName}}</h2>
+            <h2 *ngIf="isChild && childServiceProvider.length == 1">
+              {{childServiceProvider[0].name}}
+            </h2>
+            <select style="margin-top: 15px;margin-left: 18px;" *ngIf="isChild && childServiceProvider.length > 1" class="form-control" [(ngModel)]="selectedChild" (change)="changeHospital()">
+              <option [ngValue]="child" *ngFor="let child of childServiceProvider">
+                {{child.name}}
+              </option>
+            </select>
+          </span>
+        </div>
+        <!-- In case of OPD uncomment -->
+
+        <!-- In case of OPD comment -->
+
+        <div
+          [class]="(entityName == 'HOSPITAL' || entityName == 'PHARMACY' || entityName == 'DIAGNOSTICS' || 
+        (entityName == 'DOCTOR' && roleName == 'ASSISTANT'))?'col-sm-6 text-right opd-spacer header-right-col-nopadding':'col-sm-8 text-right header-right-col-nopadding'">
+          <!-- In case of OPD comment -->
+          <div [ngClass]="profileImageSrc !=''?'mobileView':''">
+            <ul [ngClass]="entityName == 'DOCTOR' ? 'customHeaderNav marginTop' : 'customHeaderNav' "
+              aria-labelledby="dropdownBasic1">
+
+              <li *ngIf="quickAddIcon.length != 0">
+                <div class="row">
+                  <div class="col-12">
+                    <div ngbDropdown class="d-inline-block quick-add-menu">
+                      <button (click)="inQuickAdd()" class="btn btn-outline-primary" id="dropdownBasic2"
+                        ngbDropdownToggle>CREATE</button>
+                      <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
+                        <button ngbDropdownItem *ngFor="let menu of quickMenu;let i = index">
+                          <a id="quick-add-id" class="quick-add-link-menu" href="javascript:void(0);"
+                            (click)="goToQuickAddSubMenu(menu,i)">
+                            {{menu.menuLabel}}
+                          </a>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+
+              </li>
+
+              <!--<li *ngIf="quickAddIcon.length != 0" class="quick-add-icon">
+                <a href="javascript:void(0)" class="dropdown-item cursor" style="padding-top:8px">
+                  <img *ngIf="!isOverlay" class="help-ico" src="../../../../assets//image/quick-add.svg" width="22"
+                    alt="" (click)="qa.show($event); inQuickAdd()">
+                  <img *ngIf="isOverlay" class="help-ico" src="../../../../assets//image/quick-close.svg" width="22"
+                    alt="" (click)="qa.hide($event); inQuickAddExit()">
+                </a>
+              </li>-->
+              <li *ngIf="userRoles?.length > 0" class="mr-2 hide-for-mobile profile-border">
+                <div>Logged in as <b><span class="role-select-color">{{user_role_to_display}}</span></b></div>
+                <!-- user_role -->
+              </li>
+              <li class="position-relative cursor">
+                <span class="profileRoundBg header-profile-img  float-left">
+                  <img (click)="switchDropdown()" *ngIf="profileImageSrc !=''"
+                    [src]="domSanitizer.bypassSecurityTrustUrl(profileImageSrc)" width="150"
+                    [ngClass]="userRoles?.length > 0 ? 'rounded-circle user-name-click link-userName-image mr-0':'rounded-circle user-name-click mr-0' "
+                    alt="...">
+                  <span class="rounded-circle headerUser link-userName-image"
+                    *ngIf="profileImageSrc ==''">{{userNameForHeader}}</span>
+                  <!--<img (click)="switchDropdown()" *ngIf="profileImageSrc ==''"
+                    src="../../../../../assets/image/user.png" width="150" class="rounded-circle user-name-click link-userName-image mr-0"
+                    alt="...">-->
+                  <i (click)="switchDropdown()"
+                    [ngClass]="profileImageSrc =='' ? 'fa fa-caret-down profile-arrow link-color-userName' : 'fa fa-caret-down profile-arrow link-color-userName'"
+                    class=""></i>
+                </span>
+                <!--<span
+                  [ngClass]="profileImageSrc !=''? 'textDot-header float-left dropdownBasic1s username-hide hide-for-mobile':'textDot-header float-left dropdownBasic1s user-name-click username-hide' "
+                  title="{{userName}}" id="dropdownBasic1" (click)="switchDropdown()"> <span
+                    [ngClass]="userRoles?.length > 0 ? 'link-color-userName':'' "></span></span>-->
+                <div class="switch-popup" *ngIf="switchPop">
+                  <div class="show-for-mobile switch-area">Logged in as <b><span
+                        class="role-select-color">{{user_role_to_display}}</span></b></div><!-- user_role -->
+                  <ul class="pl-0">
+                    <li *ngFor="let role of userRoles"><a (click)="switchWithSelectedRole(role)"
+                        class="dropdown-item cursor"><span class="d-inline-block header-dropdown-ico-width"><img
+                            title="Switch" src="assets/image/switch.svg" height="16" alt=""></span><span
+                          class="d-inline-block">Switch to {{role.roleDescription}}</span></a></li>
+                    <li><a class="dropdown-item cursor" [routerLink]="['/change-password']">
+                        <span class="d-inline-block header-dropdown-ico-width"><img title="Logout"
+                            src="assets/image/login.svg" height="16" alt=""></span><span class="d-inline-block">Change
+                          Password</span></a>
+                    </li>
+                    <li class="logout"> <a class="dropdown-item cursor" (click)="logOut()">
+                        <span class="d-inline-block header-dropdown-ico-width"><img title="Logout"
+                            src="assets/image/logout.svg" height="16" alt=""></span><span
+                          class="d-inline-block">Logout</span></a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+
+              <!--firebase test-->
+              <li>
+                <a href="javascript:void(0)" class="dropdown-item cursor help-ico-padding"><img class="help-ico"
+                    src="../../../../assets/image/help.svg" height="24" title="Help" alt="Help"
+                    (click)="inAppHelp()"></a>
+              </li>
+              <li>
+                <app-feedback></app-feedback>
+              </li>
+              <li (click)="onClickFirebaseNotification()">
+                <a class="dropdown-item cursor" (click)="op.toggle($event)">
+                  <img title="Notification" class="notification-ico"
+                    src="../../../../assets/image/notifications-bell.svg" height="24" alt="">
+                  <span><span *ngIf="firebaseCount" class="firebase-count">{{firebaseCount}}</span></span>
+                </a>
+              </li>
+              <!--end of firebase test-->
+              <li>
+                <a *ngIf="user_role == 'INDIVIDUAL'" (click)="goToMyCart()"
+                  class="dropdown-item cursor cart-ico-padding">
+                  <img title="Cart" src="assets/image/cart.svg" height="25" alt="">
+                  <span class="position-relative"><span *ngIf="cardItemCount"
+                      class="cart-item-count">{{cardItemCount}}</span></span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<!--<div class="main-panel search-panel-mobile mb-0" *ngIf="entityName == 'HOSPITAL' || entityName == 'PHARMACY'
+    || (entityName == 'DOCTOR' && roleName == 'ASSISTANT')">
+  <div class="navbar navbar-default headerNavBar mt-0 mb-0">
+    <div *ngIf="logoImageSrc !== ''" class="text-center pt-1"><img *ngIf="logoImageSrc !== '' "
+        [src]="domSanitizer.bypassSecurityTrustUrl(logoImageSrc)" height="40" alt="..."></div>
+    <div [ngClass]="logoImageSrc !== '' ? 'header hide-for-mobile ' : 'header' ">
+      <h2 class="textDot">{{serviceProviderName}}</h2>
+    </div>
+  </div>
+</div>-->
+
+<div class="main-panel search-panel-mobile mb-0"
+  *ngIf="entityName == 'HOSPITAL' || (entityName == 'DOCTOR' && roleName == 'ASSISTANT')">
+  <div class="navbar navbar-default headerNavBar mt-0 mb-0">
+    <div *ngIf="logoImageSrc !== ''" class="text-center pt-1"><img *ngIf="logoImageSrc !== '' "
+        [src]="domSanitizer.bypassSecurityTrustUrl(logoImageSrc)" height="40" alt="..."></div>
+    <div [ngClass]="logoImageSrc !== '' ? 'header hide-for-mobile ' : 'header' ">
+      <h2 class="textDot">{{serviceProviderName}}</h2>
+    </div>
+  </div>
+</div>
+
+<!--firebase test-->
+<p-overlayPanel #op>
+  <p *ngIf="notificationFirebaseData.length == 0">No Alert Found</p>
+  <!-- <table *ngIf="firebaseNotifications?.length>0" class="table table-striped">
+    <thead scope="row">
+      <tr class="text-dark">
+        <th scope="col" class="text-left;"><strong>NOTIFICATIONS</strong></th>
+      </tr>
+    </thead>
+    <div style="overflow-x: scroll; height:500px;">
+      <tbody *ngFor="let firebase of firebaseNotifications">
+        <tr>
+          <td class="text-left">{{firebase.msg}}</td>
+        </tr>
+      </tbody>
+    </div>
+  </table> -->
+  <table *ngIf="notificationFirebaseData.length > 0" class="table table-striped">
+    <thead scope="row">
+      <tr class="text-dark">
+        <th scope="col" class="text-left;"><strong>NOTIFICATIONS</strong></th>
+      </tr>
+    </thead>
+    <div style="max-height: 400px;overflow-y: auto;">
+      <tbody *ngFor="let notification of notificationFirebaseData">
+        <tr>
+          <td>{{notification.data.msg}}</td>
+        </tr>
+      </tbody>
+    </div>
+  </table>
+</p-overlayPanel>
+<!--end of firebase test-->
+
+<ng-template #loginModal>
+  <div class="modal-header">
+    <h4 style="padding-left: 181px;" class="modal-title text-center">Login required to avail this service</h4>
+    <button type="button" class="close float-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="">
+      <form class="form-signin" [formGroup]="loginForm">
+        <div class="loginMainContain">
+          <div class="row">
+            <div class="col-sm-5">
+              <div class="form-group fomrLabel">
+                <div *ngIf="givenNumber">
+                  <label class="label">Phone No.</label>
+                  <input readonly type="text" value="{{loginForm.get('userName').value}}" class="form-control"
+                    name="email" placeholder="{{ 'LOGIN.LOGIN_INPUT_PLACEHOLDER_EMAIL' | translate }}"
+                    formControlName="userName" autofocus="" />
+                </div>
+                <div *ngIf="!otpLoginText">
+                  <label class="label ">Phone No</label>
+                  <int-phone-prefix [locale]="'es'" (keypress)="enterToSend($event,loginForm.value)"
+                    formControlName="userName" [defaultCountry]="'in'"></int-phone-prefix>
+                </div>
+                <div *ngIf="!otpLoginText">
+                  <label class="label ">Email Address</label>
+                  <input type="email" class="form-control" name="email" (keypress)="enterToSend($event,loginForm.value)"
+                    placeholder="{{ 'LOGIN.LOGIN_INPUT_PLACEHOLDER_ONLY_EMAIL' | translate }}"
+                    formControlName="userName" required="" autofocus="" />
+                </div>
+                <div *ngIf="loginWithPassword">
+                  <label class="label ">Email Address/Phone Number</label>
+                  <input type="text" class="form-control" (keypress)="enterToSend($event,loginForm.value)"
+                    placeholder="{{ 'LOGIN.LOGIN_INPUT_PLACEHOLDER_EMAIL' | translate }}" formControlName="userName"
+                    required="" autofocus="" />
+                  <span *ngIf="submitted && lControls.userName.errors">
+                    <span *ngIf="lControls.userName.errors.required" class="validation-error">{{
+                        'VALIDATION.VALIDATION_EMAIL_REQUIRED' | translate }}</span>
+                  </span>
+                </div>
+              </div>
+              <div *ngIf="passwordEntry" class="form-group fomrLabel">
+                <label class="label">Password</label>
+                <input type="password" class="form-control allow-all-char" name="password"
+                  (keypress)="enterToSend($event, loginForm.value)"
+                  placeholder="{{ 'LOGIN.LOGIN_INPUT_PLACEHOLDER_PASSWORD' | translate }}" formControlName="password"
+                  required="" />
+                <span *ngIf="submitted && lControls.password.errors">
+                  <span *ngIf="lControls.password.errors.required" class="validation-error">{{
+                      'VALIDATION.VALIDATION_PASSWORD_REQUIRED' | translate }}</span>
+                </span>
+              </div>
+              <div *ngIf="otpLoginEntry" class="form-group fomrLabel">
+                <label class="label">OTP</label>
+                <input type="password" class="form-control" name="otp" placeholder="OTP" formControlName="password"
+                  required="" />
+                <a href="javascript:void(0)" (click)="resendOtp()">resend OTP</a>
+                <span *ngIf="submitted && lControls.password.errors">
+                  <span *ngIf="lControls.password.errors.required" class="validation-error">* OTP is required</span>
+                </span>
+              </div>
+              <div>
+                <div class="text-right" *ngIf="usePassword">
+                  <a href="javascript:void(0);" (click)="otpLogin();">Use OTP</a>
+                </div>
+                <div class="text-right" *ngIf="!usePassword">
+                  <a href="javascript:void(0);" (click)="passwordLogin();">Use Password</a>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <button *ngIf="passwordLoginButton" class="btn btn-lg btn-primary btn-block" type="button"
+                    (click)="roleCheckLogin(loginForm.value)">{{
+                      'LOGIN.LOGIN_CONTINUE' | translate }}</button>
+                  <button *ngIf="!otpLoginText" class="btn btn-lg btn-primary btn-block" type="button"
+                    (click)="loginWithOtp(loginForm.value)">Get OTP</button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <p>By availing this service you agree to our &nbsp;<a href="javascript:void(0)"
+                      (click)="openPrivacyModal('privacyAlert')">Privacy Policy</a> and &nbsp;<a
+                      href="javascript:void(0)" (click)="openTermsModal('termsAlert')">Terms and Conditions</a></p>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="roleName != 'OTHER'" class="col-sm-1"> <img src="assets/image/or.jpg" /> </div>
+            <div *ngIf="roleName != 'OTHER'" class="col-sm-6 socMediaLogin">
+              <button class="btn btn-md btn-primary btn-block" type="button" (click)="socialSignIn('google')"><i
+                  class="fab float-left"><img src="assets/image/g.jpg" /></i> {{ 'SIGNUP.SIGNUP_GOOGLE_BUTTON'
+                  | translate }}</button>
+              <button class="btn btn-md btn-primary btn-block" type="button" (click)="socialSignIn('facebook')"><i
+                  class="fab float-left"><img src="assets/image/f.png" /></i>
+                {{ 'SIGNUP.SIGNUP_FACEBOOK_BUTTON' | translate }}</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<p-sidebar [(visible)]="displaySidebar" appendTo="body" position="right" blockScroll="true"
+  styleClass="medipal-help-sidebar " [style]="{width:'50vw', height:'98vh', background: '#fff'}">
+  <div class="right-sidebar">
+    <div class="row border-bottom pb-2">
+      <div class="col-lg-12 pr-0">
+        <h2 class="float-left pt-1">HELP</h2>
+        <div *ngIf="isCarousel" class="float-right mr-5"><button class="btn btn-sm btn-primary"
+            href="javascript:void(0)" (click)="inAppHelp()">All Topics</button></div>
+      </div>
+    </div>
+    <div *ngIf="!isCarousel" class="row">
+      <div class="col-12 vertical-scroll">
+        <ng-container *ngIf="roleMenu.length == 0">
+          <div class="row justify-content-center w-100 not-found-help text-center pt-5">
+            <h3>No help topics available to show!</h3>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="roleMenu.length > 0">
+          <ul class="mt-2 help-ul">
+            <li [ngClass]="selectedIndex == i ? 'active-menu border-bottom' : 'border-bottom'"
+              *ngFor="let menu of roleMenu;let i = index">
+              <a class="menu-link" href="javascript:void(0);" (click)="goToSubmenu(menu,i)"><i
+                  *ngIf="selectedIndex != i" class="help-arrow fa fa-caret-right"></i><i *ngIf="selectedIndex == i"
+                  class="help-arrow fa fa-caret-down"></i>&nbsp;{{menu.topic}}</a>
+              <ul class="sub-menu" *ngIf="selectedIndex == i">
+                <li *ngFor="let subMenu of subRoleMenu;let i = index">
+                  <a class="menu-sublink" href="javascript:void(0);"
+                    (click)="goToInsideSubmenu(subMenu)">{{subMenu.subTopic}}</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </ng-container>
+      </div>
+    </div>
+
+    <div *ngIf="isCarousel" id="help-carousal" class="vertical-scroll">
+      <ngb-carousel #help interval='false' [wrap]='false' data-interval='false' [pauseOnHover]='true'
+        (click)="onSlideClicked(help)">
+        <ng-template ngbSlide *ngFor="let event of download.downloadImages">
+          <div class="row">
+            <div class="col-lg-12">
+              <h6 class="help-slideshow-header ">{{event.subTopic}}</h6>
+              <div class="text-center slideshow-img-area"><img class="border" class="help-slideshow"
+                  [src]="domSanitizer.bypassSecurityTrustUrl(event.downloadImageSrc)" alt="Random slide"></div>
+              <pre class="slideshow-txt ">{{event.narration}}</pre>
+            </div>
+          </div>
+
+
+        </ng-template>
+      </ngb-carousel>
+    </div>
+  </div>
+</p-sidebar>

@@ -1,0 +1,197 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+<div class="row">
+  <div class="col-12">
+    <div class="row top-btn-area mr-1"><button (click)="backClicked()" class="btn btn-primary">Back</button></div>
+  </div>
+  <div class="pr-3 col-md-6 page-content filter-panel-width padding-top3px">
+    <div class="">
+      <div class="row">
+        <div class="col-12 mb-2">
+          <h4 class="top-label"><label>{{'PEER_CONSLT.MESSAGE_TO_PANEL_MEMBER' | translate}}</label></h4>
+          <P>{{peerConsultingCaseDetails.comments[0].comment}}</P>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 mb-2">
+          <h4 class="top-label"><label>{{'PEER_CONSLT.OPINION_OF_PANEL_LIST' | translate}}</label></h4>
+        </div>
+      </div>
+	  <div class="panel-list">
+      <div class="row pcComment" *ngFor="let comment of peerConsultingCaseDetails.comments">
+	     <div class="col-12">
+		 <div class="row">
+          <div class="col-lg-12 text-left peerConsulting-list">
+              <h5>{{comment.commentByName}}</h5>&nbsp;&nbsp;<span class="peerConsulting-datetime">{{comment.commentDate}}</span>&nbsp;&nbsp;<span><img *ngIf="comment.docs.length >0" src="../../../../assets/image/download.svg" height="15"
+                (click)="peerConsultingCommentDocDownload(comment)" class="cursor" /></span>
+          </div>
+		  </div>
+		  <div class="row">
+			<div [ngClass]="peerConsultingCaseDetails.doctorName == comment.commentByName ? 'col-11 bubble-user mb-3 mt-3 ml-3': 'col-11 bubble mb-3 mt-3 ml-3'">
+				<p class="peerConsulting-comment pb-1 pt-1">{{comment.comment}}</p>
+			</div>
+		  </div>
+      </div>
+	  </div>
+	  </div>
+      <p-accordion class="peer-panel-accordian">
+        <p-accordionTab class="peer-panel" styleClass="primeng-accordion" [selected]="true">
+          <p-header (click)="accordianHeaderClick()">
+            <div class="row color-white">
+              <div class="col-lg-10">
+                  {{'PEER_CONSLT.MY_OPINION' | translate}}
+              </div>
+              <div *ngIf="!accordianHeader" class="text-right col-lg-2">
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div *ngIf="accordianHeader" class="text-right col-lg-2">
+                <i class="fas fa-chevron-up"></i>
+              </div>
+            </div>
+          </p-header>
+          <textarea rows="5" class="peer-consulting-textarea" [(ngModel)]="myOpinion"
+            placeholder="message..."></textarea>
+          <form [formGroup]=uploadForm>
+            <div class="row">
+              <div class="col-lg-5 col-md-5">
+                <label for="file-upload" class="btn btn-primary">{{'PEER_CONSLT.UPLOAD_IMAGE' | translate}}</label>
+                <input type="file" accept=".pdf,.png,.jpg" id="file-upload"
+                  (change)="peerConsultingFileSelected($event)">
+              </div>
+              <div class="col-lg-4 col-md-3 text-left selectedImage">
+                {{selectedFiles}}
+              </div>
+              <div class="col-lg-3 col-md-4 text-right">
+                <button [disabled]="!myOpinion" class="btn btn-primary btn-sm"
+                  (click)="setPeerConsultingComment()">{{'PEER_CONSLT.SAVE' | translate}}</button>
+              </div>
+            </div>
+          </form>
+        </p-accordionTab>
+      </p-accordion>
+      <br>
+    </div>
+  </div>
+  <div class="my-prescription-table col-md-6 page-content pt-0">
+      <div class="row">
+        <div class="col-xl-6 col-lg-12 col-md-12">
+          <label class="peerConsulting-patient">{{'PEER_CONSLT.PATIENT_LABEL' | translate}}</label>&nbsp;
+           <span *ngIf="ownStatus"><b>{{peerConsultingCaseDetails.patientName}}</b>&nbsp;({{peerConsultingCaseDetails.patientAge}}Y/{{peerConsultingCaseDetails.patientGender}})</span>
+		   <span *ngIf="otherStatus">{{peerConsultingCaseDetails.patientAge}}Y/{{peerConsultingCaseDetails.patientGender}}</span>
+        </div>
+		<div class="col-xl-6 col-lg-12 col-md-12 text-xl-right text-lg-left text-md-left">
+          <label class="peerConsulting-patient">{{'PEER_CONSLT.INITIATED_BY' | translate}}</label>&nbsp;
+           <span><b>{{peerConsultingCaseDetails.doctorName}}</b>&nbsp;on {{peerConsultingCaseDetails.createdDate | dateFormat}}</span>
+        </div>
+      </div>
+	  <div class="row pt-2">
+        <div class="col-md-12">
+			<label>{{'PEER_CONSLT.PROBLEM_SUMMERY' | translate}}</label>
+			<p>{{peerConsultingCaseDetails.consultingMessage}}</p>
+		</div>
+	  </div>
+	  <div class="row pt-2">
+	  <div class="col-12 mb-0"  *ngFor="let patientDiagnosis of this.patientDiagnosisDetailsArr">
+      <div class="card pl-0 pr-0" *ngIf="patientDiagnosis.diagnosisList.length > 0 || patientDiagnosis.medicationDTOList.length > 0 || patientDiagnosis.doctorRecommendedTestList.doctorRecommendedTestList !=null || patientDiagnosis.doctorRecommendedTestList.doctorRecommendedTestList != undefined">
+		<div class="col-12">
+        <div class="row card-header">
+		 <div class="col-lg-6">
+			<span class="peerConsulting-datetime">Prescribed By</span>&nbsp;<span>{{peerConsultingCaseDetails.doctorName}}</span>
+		  </div>
+          <div class="col-lg-6 text-right peerConsulting-datetime">
+            {{patientDiagnosis.peerConsDt | dateFormat}}
+          </div>
+        </div>
+       <!-- <div class="row" *ngIf="patientDiagnosis.patientProblemNarration!=null">
+          <div class="col-12">
+            <label>{{'PEER_CONSLT.PROBLEM_SUMMERY' | translate}}</label>
+            {{patientDiagnosis.patientProblemNarration}}
+          </div>
+		 </div> -->
+		 <div class="row pc-card-body">
+			  <div class="col-12" *ngIf="patientDiagnosis.diagnosisList.length > 0">
+				<div class="row">
+					<div class="col-xl-3 col-lg-4 col-md-12">
+					<label>{{'PEER_CONSLT.DIAGNOSIS' | translate}}</label>
+					</div>
+					<div class="col-xl-9 col-lg-8 col-md-12">
+						<ol class="pl-3">
+						<li *ngFor="let diagnosis of patientDiagnosis.diagnosisList">
+						  {{diagnosis.diagnosis}}
+						</li>
+						</ol>
+					</div>
+				</div>
+			  </div>
+			  <div class="col-12" *ngIf="patientDiagnosis.medicationDTOList.length > 0">
+				<div class="row">
+					<div class="col-xl-3 col-lg-4 col-md-12">
+						<label>{{'PEER_CONSLT.MEDICATION' | translate}}</label>
+					</div>
+					<div class="col-xl-9 col-lg-8 col-md-12">
+						<ol class="pl-3">
+							<li *ngFor="let medication of patientDiagnosis.medicationDTOList">
+							  {{medication.medicineName}} => For {{medication.duration}}
+							  <span *ngIf="medication.durationUnit == 'D'">{{'PEER_CONSLT.DAY' | translate}}<ng-container *ngIf="medication.duration > 1">s
+								</ng-container></span>
+							  <span *ngIf="medication.durationUnit == 'W'">{{'PEER_CONSLT.WEEK' | translate}}<ng-container *ngIf="medication.duration > 1">s
+								</ng-container></span>
+							  <span *ngIf="medication.durationUnit == 'M'">{{'PEER_CONSLT.MONTH' | translate}}<ng-container *ngIf="medication.duration > 1">s
+								</ng-container></span>
+							</li>
+						</ol>
+					</div>
+				</div>
+			  </div>
+			   <div class="col-12" *ngIf="patientDiagnosis.doctorRecommendedTestList.doctorRecommendedTestList !=null || patientDiagnosis.doctorRecommendedTestList.doctorRecommendedTestList != undefined">
+           <div class="row">
+             <div class="col-xl-3 col-lg-4 col-md-12">
+					      <label class="">{{'PEER_CONSLT.TEST_RESULTS' | translate}}</label>
+             </div>
+             <div class="col-xl-9 col-lg-8 col-md-12">
+   						<ol>
+   							<li *ngFor="let testResult of patientDiagnosis.doctorRecommendedTestList">
+   								{{testResult.doctorRecommendedTestList}}
+   							</li>
+   						</ol>
+   					</div>
+          </div>
+			</div>
+		  </div>
+		</div>
+      </div>
+	  </div>
+	  </div>
+  </div>
+</div>
+
+<ng-template #peerConsultingDownloadedFilePreview>
+  <div class="modal-header">
+    <h4 class="modal-title">{{'PEER_CONSLT.PREVIEW' | translate}}</h4>
+
+    <button type="button" class="close float-right" (click)="modalRef.hide()" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="text-center">
+    <img *ngIf="download.contentType !='application/pdf'" class="prescription-img-size"
+      [src]="domSanitizer.bypassSecurityTrustUrl(download.downloadImageSrc)" id="image-corner" alt="">
+    <iframe width="100%" height="500" scrolling="no" frameborder="0" id="prescriptionIframe"
+      *ngIf="download.contentType =='application/pdf'"
+      [src]="domSanitizer.bypassSecurityTrustResourceUrl(download.downloadImageSrc)"></iframe>
+  </div>
+
+</ng-template>

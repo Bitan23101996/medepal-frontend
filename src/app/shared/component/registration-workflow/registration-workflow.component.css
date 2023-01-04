@@ -1,0 +1,202 @@
+.registration-workflow .card{
+    border-radius: 0;
+}
+.registration-workflow .card .card-body{
+    padding: 5px;
+}
+.registration-workflow .card h6{
+    font-size: 22px;
+    color: #b04874;
+    margin: 0 0 13px 0px;
+    text-transform: initial;
+    font-weight: 400;
+    letter-spacing: 1px;
+}
+.registration-workflow .nav{
+    padding: 4px 8px;
+    margin-top: 11px;
+    display: inline-flex !important;
+    margin: auto;
+}
+.registration-workflow .nav li{
+    margin-right: 16px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #b04874;
+    text-align: center;
+    font-weight: 400;
+    width: 225px;
+}
+.registration-workflow .nav li a.active, .registration-workflow .nav li a.done{
+    font-size: 14px;
+    text-decoration: none;
+    color: #b04874;
+}
+.registration-workflow .nav li a.active .desc, .registration-workflow .nav li a.done .desc{
+    display: block;
+    font-size: 14px;
+    text-decoration: none;
+    color: #b04874;
+}
+.registration-workflow .nav li a.done .circle{
+    font-size: 14px;
+    color: #602a93;
+    background: #602a93;
+    /* border: 1px solid #602a93; */
+    width: 24px;
+    height: 24px;
+    margin: auto;
+    border-radius: 100%;
+    line-height: 24px;
+}
+.registration-workflow .nav li a.done .circle:after{
+    content: "\2714";
+    color:#fff;
+    font-size: 13px;
+    margin-left: -6px;
+}
+.registration-workflow .nav li a.active .circle{
+    font-size: 14px;
+    color: #fff;
+    background: #ae6eeb;
+    width: 24px;
+    height: 24px;
+    margin: auto;
+    border-radius: 100%;
+    line-height: 24px;
+}
+.registration-workflow .nav li a.inactive .circle{
+    font-size: 14px;
+    color: #fff;
+    background: #a0999c;
+    width: 24px;
+    height: 24px;
+    margin: auto;
+    border-radius: 100%;
+    line-height: 24px;
+}
+.registration-workflow .nav li a.inactive{
+    display: block;
+    font-size: 14px;
+    text-decoration: none;
+    color: #a0999c;
+    pointer-events: none;
+}
+.registration-workflow .nav li a.inactive  .desc{
+    display: block;
+    font-size: 14px;
+    text-decoration: none;
+    color: #a0999c;
+}
+.registration-workflow .nav li:not(:first-child) a .circle:before {
+    content: "";
+    position: relative;
+    width: 212px;
+    background: #d5b8f1;
+    display: block;
+    height: 1px;
+    top: 11px;
+    left: -215px;
+}
+
+
+
+
+@media only screen and (max-width: 1110px) and (min-width: 1024px){
+	.registration-workflow .nav li:not(:first-child) a .circle:before {
+		width: 187px;
+		left:-190px;		
+	}
+	
+	.registration-workflow .nav li{
+		width:200px;
+		
+	}
+	
+	
+}
+
+@media only screen and (max-width: 1023px) and (min-width: 970px){
+	.registration-workflow .nav li:not(:first-child) a .circle:before {
+		width: 187px;
+		left:-190px;		
+	}
+	
+	.registration-workflow .nav li{
+		width:190px;
+		
+	}
+	
+	
+}
+
+@media only screen and (max-width: 969px) and (min-width: 670px){
+	.registration-workflow .nav li:not(:first-child) a .circle:before {
+		width: 125px;
+		left:-128px;		
+	}
+	
+	.registration-workflow .nav li{
+		width:140px;
+		
+	}
+	
+	.registration-workflow .nav li a.inactive  .desc{
+		font-size: 12px;
+	}
+	
+	.registration-workflow .nav li a.active .desc, .registration-workflow .nav li a.done .desc{
+		font-size: 12px;
+	}
+
+	
+	
+}
+
+@media only screen and (max-width: 669px) and (min-width: 577px){
+	.registration-workflow .nav li:not(:first-child) a .circle:before {
+		width: 100px;
+		left:-101px;		
+	}
+	
+	.registration-workflow .nav li{
+		width:110px;
+		
+	}
+	
+	.registration-workflow .nav li a.inactive  .desc{
+		font-size: 12px;
+	}
+	
+	.registration-workflow .nav li a.active .desc, .registration-workflow .nav li a.done .desc{
+		font-size: 12px;
+	}
+	
+}
+
+@media only screen and (max-width: 576px){
+	.registration-workflow .card h6{
+		font-size:18px;
+	}
+	
+	.registration-workflow .nav li:not(:first-child) a .circle:before {
+		width: 45px;
+		left:-44px;		
+	}
+	
+	.registration-workflow .nav li{
+		width:53px;
+		
+	}
+	.registration-workflow .nav li a.inactive  .desc{
+		font-size: 11px;
+	}
+	
+	.registration-workflow .nav li a.active .desc, .registration-workflow .nav li a.done .desc{
+		font-size: 11px;
+	}
+	
+	
+
+}
+

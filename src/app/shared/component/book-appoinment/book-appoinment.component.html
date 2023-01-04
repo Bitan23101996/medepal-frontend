@@ -1,0 +1,950 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<div *ngIf="!isReview && !ispayment" id="app-modal" class="col-lg-12">
+    <div *ngIf="appoinment">
+
+
+        <div class="row modal-header">
+
+            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 col-12 text-center">
+                <p class="profileRoundPic profileRoundPicsmall mb-0">
+                    <img *ngIf="appoinment.profileImageSrc ==''" src="../../../assets/image/doctor-pic.svg">
+                    <img *ngIf="appoinment.profileImageSrc !=''"
+                        [src]="domSanitizer.bypassSecurityTrustUrl(appoinment.profileImageSrc)">
+                </p>
+
+            </div>
+            <div class="col-xl-10 col-lg-10 col-md-9 col-sm-12 col-12 pl-3">
+                <div class="row">
+                    <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <h4 class="modal-title textDot"><span>{{appoinment.doctorName}}</span><span
+                                *ngIf="appoinment?.doctorQualifications">&nbsp;(<span
+                                    class="doc-dtl">{{appoinment?.doctorQualifications}}</span>)</span>
+                        </h4>
+                        <div class="row doc-spl-spacer small-text">
+                            <div *ngIf="appoinment?.doctorSpecializations" class="col-12 mb-0">
+                                <span class="doc-dtl">{{appoinment?.doctorSpecializations}}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="float-left mb-0  small-text">
+                                    <span>{{appoinment?.yearsOfExperience}}
+                                        {{'SEARCH.SEARCH_YEARS_EXPERIENCE' | translate }} <span
+                                            *ngIf="appoinment?.visit">|</span> {{appoinment?.visit}}
+                                    </span>&nbsp;
+                                </div>
+                                <div class="float-left rating-spacer-adj">
+                                    <app-rating [rating]=appoinment?.rating></app-rating>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-12 text-right"
+                        *ngIf="(appoinment.homeVisitFlag=='Y' || appoinment.onlineConsultation=='Y') && !isOnlineConsultationBooloean">
+                        <!-- Working on app/issues/595 -->
+                        <a href="javascript:void(0);" class="common-link float-right"
+                            *ngIf="appoinment.homeVisitFlag=='Y'" (click)="showHomeVisitSection()">
+                            <span *ngIf="!showHomeVisitLayout">Request for Home Visit</span>
+                            <span *ngIf="showHomeVisitLayout">Back to General Appointment</span>
+                        </a>
+                        <!--End Working on app/issues/595 -->
+                        <!-- Working on app/issues/1615 -->
+                        <a href="javascript:void(0);" class="common-link float-right"
+                            *ngIf="appoinment.onlineConsultation=='Y'" (click)="showOnlineSection()">
+                            <span *ngIf="!showOnlineLayout">Request for Online Consultation</span>
+                            <span *ngIf="showOnlineLayout">Back to General Appointment</span>
+                        </a>
+                        <!--End Working on app/issues/1615 -->
+                    </div>
+                    <!--<div class="col-2"><app-rating [rating]=appoinment?.rating></app-rating></div>-->
+                </div>
+
+            </div>
+            <!--<div class="col-1">
+            <img class="grey cursor" (click)="backClicked()" width=20 src="../../../assets/image/delete.svg" />
+          </div>-->
+
+        </div>
+        <div class="row page-content modal-body">
+            <div class="col-xl-5 col-lg-12 col-md-12 col-sm-12 col-12">
+                <div class="row scrollarea" *ngIf="!showHomeVisitLayout">
+                    <!-- Working on app/issues/595 -->
+
+                    <ng-container *ngIf="!showOnlineLayout">
+                        <div class="col-12" *ngFor="let clinicData of appoinment?.doctorChamberList">
+                            <div class="card cursor" (click)="slectClinic(clinicData)"
+                                [ngClass]="{'selected-card': clinicData['selected']}"> <!--id="{{clinicData.id}}"-->
+                                <div class="card-header" *ngIf="clinicData.chamberName !=''">
+                                    <div class="row">
+                                        <div class="col-8  pl-0 pl-1">
+                                            <h5>
+                                                <span><img data-toggle="tooltip" title="Online Consultancy"
+                                                        *ngIf="clinicData.acceptonline =='Y'"
+                                                        src="../../../../../assets/image/online_con.svg"
+                                                        style="height: 12px;margin-bottom: 5px !important;"></span>
+                                                {{clinicData.chamberName}}
+                                            </h5>
+                                        </div>
+                                        <div class="col-4 text-right pr-0 pr-1">
+                                            <p class="small" *ngIf="clinicData.chamberTimingList.length>0">
+                                                <b>{{'SEARCH.SEARCH_INR_SIGN' | translate }}{{clinicData.fees}}</b>
+                                            </p>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 pl-0 pl-1">
+                                            <p class="small  mb-1">{{clinicData.line1}} {{clinicData.line2}}
+                                                {{clinicData.city}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+
+                                    <div class="row pl-1">
+                                        <div *ngFor="let chamber of clinicData.chamberTimingList;"
+                                            class="doc-schedule text-center">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <b>{{getDayByNo(chamber.dayOfWeek)}}</b>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    {{chamber.startTime | slice:0:-2}}:{{chamber.startTime | slice:2}} -
+                                                    {{chamber.endTime | slice:0:-2}}:{{chamber.endTime | slice:2}}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="showOnlineLayout">
+                        <div class="col-12" *ngIf="chamberForOnlineVisit">
+                            <div class="card cursor" (click)="slectClinic(chamberForOnlineVisit)"
+                                [ngClass]="{'selected-card': chamberForOnlineVisit['selected']}">
+                                <div class="card-header" *ngIf="chamberForOnlineVisit">
+                                    <div class="row">
+                                        <div class="col-8  pl-0 pl-1">
+                                            <h5>Online Consultation</h5>
+                                        </div>
+                                        <div class="col-4 text-right pr-0 pr-1">
+                                            <p class="small">
+                                                <b>{{'SEARCH.SEARCH_INR_SIGN' | translate }}{{chamberForOnlineVisit.fees}}</b>
+                                            </p>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div class="card-body">
+
+                                    <div class="row pl-1">
+                                        <div *ngFor="let chamber of chamberForOnlineVisit.chamberTimingList;"
+                                            class="doc-schedule text-center">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <b>{{getDayByNo(chamber.dayOfWeek)}}</b>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12">{{chamber.startTime | slice:0:5}} -
+                                                    {{chamber.endTime | slice:0:5}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                </div>
+
+                <!-- Working on app/issues/595 -->
+                <div class="row scrollarea" *ngIf="showHomeVisitLayout">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-lg-12 text-right">
+                                <button class="btn btn-primary"
+                                    (click)="addNewAddress()">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_ADD_NEW_ADD' | translate}}</button>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 gridHeight mt-2">
+                                <!--addresslist-->
+                                <div *ngIf="!isEdit" class="row page-content">
+                                    <div class="col-12" *ngFor="let addresses of userAddressList; let i = index"
+                                        id="{{i}}" title="{{addresses.addressType}} Address">
+                                        <div class="card cursor" (click)="selectAddress(addresses)"
+                                            [ngClass]="{'selected-card': addresses['selected']}">
+                                            <div class="card-header">
+                                                <h5>{{addresses.addressType}}</h5>
+
+                                            </div>
+                                            <div class="row card-body">
+                                                <div class="col-12">
+                                                    <p>
+                                                        {{addresses.line1}} &nbsp; {{addresses.line2}}
+                                                    </p>
+                                                    <p>
+                                                        <span>{{addresses.city}}</span>&nbsp;<span>{{addresses.state}}</span>&nbsp;<span>{{addresses.pinCode}}</span>
+                                                    </p>
+                                                    <p>{{addresses.country}}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--end of addresslist-->
+                                <div *ngIf="isEdit">
+                                    <form [formGroup]="addressForm">
+                                        <div class="col-12 card-header-edit-mode">
+                                            <div class="row">
+                                                <div class="col-8">
+                                                    <!-- <h5>Add Address</h5> -->
+                                                </div>
+                                                <div class="col-2 text-right">
+                                                    <span class="cursor"
+                                                        (click)="onBackOperation()">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_CANCEL' | translate}}</span>
+                                                </div>
+                                                <div class="col-2 text-right">
+                                                    <button type="button" class="btn btn-primary "
+                                                        (click)="saveAddress(addressForm);">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_SAVE' | translate}}</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label
+                                                    class="bt-style">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_ADD_TYPE' | translate}}</label>
+                                                <div>
+                                                    <select class="form-control" formControlName="addressType"
+                                                        (change)="createNewAddressType($event,addressForm)">
+                                                        <option *ngFor="let addressType of addressTypeList"
+                                                            value="{{addressType.Type}}" class="cursor">
+                                                            {{addressType.Type}}</option>
+                                                    </select>
+                                                    <span
+                                                        *ngIf="addressForm.get('isSubmit').value || addressForm.controls.addressType.dirty">
+                                                        <span *ngIf="addressForm.hasError('required', 'addressType')"
+                                                            class="validation-error">{{
+                                                      'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label
+                                                    class="control-label bt-style">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_COUNTRY' | translate}}</label>
+                                                <div>
+                                                    <select formControlName="country" class="form-control"
+                                                        (change)="getStateCasCadeToCounntry(addressForm)">
+                                                        <option *ngFor="let country of masterCOUNTRY"
+                                                            value="{{country.countryName}}" class="cursor">
+                                                            {{country.countryName}}</option>
+                                                    </select>
+                                                    <span
+                                                        *ngIf="addressForm.get('isSubmit').value || addressForm.controls.country.dirty">
+                                                        <span *ngIf="addressForm.hasError('required', 'country')"
+                                                            class="validation-error">{{
+                                                        'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label
+                                                    class="control-label bt-style">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_PINCODE' | translate}}</label>
+
+                                                <div>
+                                                    <input type="text" maxlength="6" class="form-control" min="0"
+                                                        formControlName="pinCode" />
+                                                    <span
+                                                        *ngIf="addressForm.get('isSubmit').value || addressForm.controls.pinCode.dirty">
+                                                        <span *ngIf="addressForm.hasError('required', 'pinCode')"
+                                                            class="validation-error">{{
+                                                      'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                                        <span *ngIf="addressForm.hasError('minlength', 'pinCode')"
+                                                            class="validation-error">{{
+                                                              'VALIDATION.VALIDATION_PINCODE_MIN_LENGTH' |
+                                                              translate }}</span>
+                                                        <span *ngIf="addressForm.hasError('min', 'pinCode')"
+                                                            class="validation-error">{{
+                                                                          'VALIDATION.VALIDATION_PINCODE_MIN' |
+                                                                          translate }}</span>
+                                                        <span *ngIf="addressForm.hasError('pattern', 'pinCode')"
+                                                            class="validation-error">{{
+                                                                                  'VALIDATION.VALIDATION_PINCODE_PATTERN' |
+                                                                                  translate }}</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label
+                                                    class="control-label bt-style">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_STATE' | translate}}</label>
+
+                                                <div>
+                                                    <select formControlName="state" class="form-control">
+                                                        <option
+                                                            *ngFor="let state of masterSTATE | sort:'stateName':true"
+                                                            value="{{state.stateName}}">
+                                                            {{state.stateName}}</option>
+                                                    </select>
+                                                    <span
+                                                        *ngIf="addressForm.get('isSubmit').value || addressForm.controls.state.dirty">
+                                                        <span *ngIf="addressForm.hasError('required', 'state')"
+                                                            class="validation-error">{{
+                                                      'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label
+                                                    class="control-label bt-style">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_CITY' | translate}}</label>
+
+                                                <div>
+                                                    <input [required]="true" type="text" class="form-control"
+                                                        formControlName="city" (keydown)="onKeydown($event)" />
+                                                    <span
+                                                        *ngIf="addressForm.get('isSubmit').value || addressForm.controls.city.dirty">
+                                                        <span *ngIf="addressForm.hasError('required', 'city')"
+                                                            class="validation-error">{{
+                                                      'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                                        <span *ngIf="addressForm.hasError('minlength', 'city')"
+                                                            class="validation-error">{{
+                                                      'VALIDATION.VALIDATION_CITY_NOT_LESS_THAN' |
+                                                      translate }}</span>
+                                                        <span *ngIf="addressForm.hasError('maxlength', 'city')"
+                                                            class="validation-error">{{
+                                                      'VALIDATION.VALIDATION_CITY_NOT_MORE_THAN' |
+                                                      translate }}</span>
+                                                        <!-- <span *ngIf="addressForm.hasError('pattern', 'city')" class="validation-error">{{
+                                                              'VALIDATION.VALIDATION_CITY_LETTER' |
+                                                              translate }}</span> -->
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label
+                                                    class="control-label">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_LINE1' | translate}}</label>
+
+                                                <div>
+                                                    <input type="text" class="form-control" formControlName="line1" />
+                                                    <span
+                                                        *ngIf="addressForm.get('isSubmit').value || addressForm.controls.line1.dirty">
+                                                        <span *ngIf="addressForm.hasError('required', 'line1')"
+                                                            class="validation-error">{{
+                                                            'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label
+                                                    class="control-label">{{'DELIVER_ADDRESS.DELIVER_ADDRESS_LINE2' | translate}}</label>
+
+                                                <div>
+                                                    <input type="text" class="form-control" formControlName="line2" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!--End Working on app/issues/595 -->
+            </div>
+            <div class="col-xl-7 col-lg-12 col-md-12 col-sm-12 col-12 scrollarea" *ngIf="!showHomeVisitLayout">
+                <!-- Working on app/issues/595 -->
+                <div class="row ">
+                    <div class="col-12">
+                        <h1 class="mb-2">{{selectedChamberName}}</h1>
+                    </div>
+                    <div *ngIf="appoinment.onlineConsultation == 'N'"
+                        class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <label>{{'SEARCH.SEARCH_SELECT_DATE' | translate }}</label>
+                        <div>
+                            <app-datepicker [disabled]="!dateTimeDisabled" [maxDate]="maxDate" [minDate]="minDate"
+                                [(ngModel)]="appAppointment.appointmentDate"
+                                (valueChange)="onSelectDate($event,appAppointment)"
+                                [ngModelOptions]="{standalone: true}" showButtonBar="true" position="bottom">
+                            </app-datepicker>
+                            <!-- <p-calendar [disabled]="!dateTimeDisabled" placeholder="{{'SEARCH.SEARCH_CHOOSE_A_NEW_DATE' | translate }}" [minDate]="minDate"
+                        showButtonBar="true" [(ngModel)]="appAppointment.appointmentDate" dateFormat="dd-mm-yy" (onSelect)="onSelectDate($event)"></p-calendar> -->
+                        </div>
+
+                    </div>
+                    <div *ngIf="appoinment.onlineConsultation == 'Y' && appAppointment.fullTime"
+                        class="col-xl-8 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <label>Your Appointment will start tentatively today at <b>
+                                {{this.appAppointment.fullTime?.label.slice(0, 5)}}</b></label>
+                    </div>
+                    <div *ngIf="appoinment.onlineConsultation == 'Y' && !appAppointment.fullTime"
+                        class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <label>Sorry no time slots are available. </label>
+                    </div>
+                    <div *ngIf="appoinment.onlineConsultation == 'N'"
+                        class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12 margin-left-35px">
+                        <label>{{'SEARCH.SEARCH_SELECT_TIME' | translate }}</label>
+                        <div>
+                            <p-dropdown [disabled]="!timeSlotDisabled" [options]="appoinment.timeList"
+                                optionLabel="label" placeholder="{{'SEARCH.SEARCH_SELECT_CLINIC_TIME' | translate }}"
+                                [showClear]="true" [(ngModel)]="appAppointment.fullTime"></p-dropdown>
+                        </div>
+                    </div>
+                    <div *ngIf="appAppointment.isAcceptOnline" class="col-4 text-right">
+                        <label>Online
+                            <span class="switch">
+                                <input type="checkbox" [(ngModel)]="appAppointment.onlineConsultationFlag">
+                                <span class="slider round"></span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <!--*ngIf="!fromAppointment"-->
+                    <div class="col-lg-12">
+                        <div class="form-check-inline" *ngFor="let appoinmentTypeList of appoinmentTypeLists">
+                            <p-radioButton [(ngModel)]="appoinmentUser.userType" name="option"
+                                value="{{appoinmentTypeList.id}}" label="{{appoinmentTypeList.label}}"
+                                (click)="getAppoinmentType(appoinmentUser.userType)"
+                                inputId="{{appoinmentTypeList.id}}"></p-radioButton>
+                        </div>
+                    </div>
+                </div>
+                <div class="row form-spacer appnt-for pt-0" *ngIf="!showAppoinmentForGroup && !showAppoinmentForMinor ">
+                    <div class="col-12 mb-3">
+                        <label>{{'SEARCH.SEARCH_PATIENT_NAME' | translate}}</label>
+                        <!-- <input type="text" [disabled]="fromAppointment" class="book-apt-patient-by" placeholder="{{'SEARCH.SEARCH_PATIENT_NAME' | translate }}"
+                      [(ngModel)]="appSIgnUp.userName"> -->
+                        <app-name [disabled]="fromAppointment" (onNameChange)="changeName($event, 'userName')"
+                            class="book-apt-patient-by" preventType="all" [(ngModel)]="appSIgnUp.userName"
+                            placeholder="{{'SEARCH.SEARCH_PATIENT_NAME' | translate }}"></app-name>
+                    </div>
+                    <div *ngIf="!fromAppointment" class="col-12">
+                        <label>{{'SEARCH.SEARCH_MOBILE_NUMBER' | translate}}</label>
+                        <!-- <int-phone-prefix [locale]="'es'" [disabled]="fromAppointment" [defaultCountry]="'in'"
+                    class="book-apt-patient-by" min="0" maxlength="12"
+                    [(ngModel)]="appSIgnUp.mobileNo" ></int-phone-prefix> -->
+                        <app-telephone class="book-apt-patient-by" [disabled]="fromAppointment"
+                            (onPhoneNumberChange)="changeNumber($event, 'signupUserNumber')"
+                            [(ngModel)]="appSIgnUp.mobileNo">
+                        </app-telephone>
+                    </div>
+                </div>
+                <div class="row appnt-for" *ngIf="showAppoinmentForGroup">
+                    <div class="col-6" *ngFor="let userGroupMember of userGroupMembers">
+                        <div class="float-left">
+                            <p-radioButton name="options" value="{{userGroupMember.id}}"
+                                inputId="{{userGroupMember.id}}" (click)="onclickGroupUser(userGroupMember)">
+                            </p-radioButton>
+                        </div>
+                        <div class="float-left">{{userGroupMember.name}}</div>
+                    </div>
+                </div>
+
+                <div class="row appnt-for" *ngIf="showAppoinmentForMinor">
+                    <div class="col-6" *ngFor="let user of userForMinor">
+                        <div class="float-left">
+                            <p-radioButton name="options" value="{{user.id}}" inputId="{{user.id}}"
+                                (click)="onclickMinorUser(user)">
+                            </p-radioButton>
+                        </div>
+                        <div class="float-left">{{user.minor.name}}</div>
+                    </div>
+                </div>
+                <ng-container *ngIf="showOnlineLayout">
+                    <div class="row mt-2">
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 padding-left18px">
+                            <label class="radio">
+                                <p><b>Full Payment ({{'SEARCH.SEARCH_INR_SIGN' | translate }}{{fees}})</b></p>
+                                <input type="radio" name="radio" (click)="paymentTypeFull()" checked>
+                                <span style="margin-top: 2px;" class="checkmark"></span>
+                            </label>
+                            <!-- <p-radioButton name="radio"  (click)="paymentTypeFull()"></p-radioButton> -->
+                            <!-- <label>Full Payment ({{'SEARCH.SEARCH_INR_SIGN' | translate }}{{fees}})</label> -->
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="!showOnlineLayout">
+                    <div class="row" *ngIf="appoinment.onlineConsultation == 'Y'">
+                        <div class="col-12">
+                            <h1 class="mb-2">{{'SEARCH.SEARCH_BOOKING_OPTIONS' | translate}}</h1>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                            <label class="radio">
+                                <p><b>Full Payment ({{'SEARCH.SEARCH_INR_SIGN' | translate }}{{fees}})</b></p>
+                                <input type="radio" checked name="radio" (click)="paymentTypeFull()">
+                                <span style="margin-top: 2px;" class="checkmark"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="prepayAmount > 0.0 && appoinment.onlineConsultation == 'N'">
+                        <div class="col-12">
+                            <h1 class="mb-2">{{'SEARCH.SEARCH_BOOKING_OPTIONS' | translate}}</h1>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                            <label class="radio">
+                                <p><b>Advance({{'SEARCH.SEARCH_INR_SIGN' | translate }}{{prepayAmount}})</b></p>
+                                <input type="radio" name="radio" [checked]="advancedPayAutoCheck"
+                                    (click)="paymentTypeAdvanced()">
+                                <span style="margin-top: 2px;" class="checkmark"></span>
+                            </label>
+                            <!-- <input type="radio" [checked]="advancedPayAutoCheck" (click)="paymentTypeAdvanced()"> -->
+                            <!-- <p-radioButton name="radio" (click)="paymentTypeAdvanced()"></p-radioButton> -->
+                            <!-- <label>Advance({{'SEARCH.SEARCH_INR_SIGN' | translate }}{{prepayAmount}})</label> -->
+                        </div>
+
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                            <label class="radio">
+                                <p><b>Full Payment ({{'SEARCH.SEARCH_INR_SIGN' | translate }}{{fees}})</b></p>
+                                <input type="radio" name="radio" (click)="paymentTypeFull()">
+                                <span style="margin-top: 2px;" class="checkmark"></span>
+                            </label>
+                            <!-- <p-radioButton name="radio" (click)="paymentTypeFull()"></p-radioButton> -->
+                            <!-- <label>Full Payment ({{'SEARCH.SEARCH_INR_SIGN' | translate }}{{fees}})</label> -->
+                        </div>
+                    </div>
+                    <div class="row"
+                        *ngIf="(prepayAmount == 0.0 || prepayAmount == null) && appoinment.onlineConsultation == 'N'">
+                        <div class="col-12">
+                            <h1 class="mb-2">{{'SEARCH.SEARCH_BOOKING_OPTIONS' | translate}}</h1>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                            <label class="radio">
+                                <p><b>{{'SEARCH.SEARCH_ONLY_BOOKING' | translate}}</b></p>
+                                <input type="radio" [checked]="onlyBookAutoCheck" name="radio" (click)="onlyBook()">
+                                <span style="margin-top: 2px;" class="checkmark"></span>
+                            </label>
+                            <!-- <input type="radio" [checked]="onlyBookAutoCheck" name="radio" (click)="onlyBook()"> -->
+                            <!-- <p-radioButton name="radio" (click)="onlyBook()"></p-radioButton> -->
+                            <!-- <label>{{'SEARCH.SEARCH_ONLY_BOOKING' | translate}}</label> -->
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 padding-left18px">
+                            <label class="radio">
+                                <p><b>Full Payment ({{'SEARCH.SEARCH_INR_SIGN' | translate }}{{fees}})</b></p>
+                                <input type="radio" name="radio" (click)="paymentTypeFull()">
+                                <span style="margin-top: 2px;" class="checkmark"></span>
+                            </label>
+                            <!-- <p-radioButton name="radio"  (click)="paymentTypeFull()"></p-radioButton> -->
+                            <!-- <label>Full Payment ({{'SEARCH.SEARCH_INR_SIGN' | translate }}{{fees}})</label> -->
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+
+            <!-- Working on app/issues/595 -->
+            <div class="col-7 scrollarea" *ngIf="showHomeVisitLayout">
+                <div class="row " *ngIf="chamberForHomeVisit!=null">
+                    <div class="col-6">
+                        <label>{{'DOCTOR_PROFILE.DOCTOR_HOME_VISIT_AREA' | translate }}</label>
+                        <p>{{chamberForHomeVisit.homeVisitArea}}</p>
+                    </div>
+                    <div class="col-6">
+                        <label>{{'DOCTOR_PROFILE.DOCTOR_HOME_VISIT_FEES' | translate }}</label>
+                        <p>{{'SEARCH.SEARCH_INR_SIGN' | translate }}{{chamberForHomeVisit.fees}}</p>
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-12">
+                        <label>{{'SEARCH.SEARCH_SELECT_DATE' | translate }}</label>
+                        <div>
+                            <app-datepicker [disabled]="!dateTimeDisabled" [maxDate]="maxDate" [minDate]="minDate"
+                                [(ngModel)]="appAppointment.appointmentDate"
+                                (valueChange)="onSelectDate($event,appAppointment)"
+                                [ngModelOptions]="{standalone: true}" showButtonBar="true" position="bottom">
+                            </app-datepicker>
+                            <!-- <p-calendar [disabled]="!dateTimeDisabled" placeholder="{{'SEARCH.SEARCH_CHOOSE_A_NEW_DATE' | translate }}" [minDate]="minDate"
+                            showButtonBar="true" [(ngModel)]="appAppointment.appointmentDate" dateFormat="dd-mm-yy" (onSelect)="onSelectDate($event)"></p-calendar> -->
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row" *ngIf="!fromAppointment">
+                    <div class="col-lg-12">
+                        <div class="form-check-inline" *ngFor="let appoinmentTypeList of appoinmentTypeLists">
+                            <p-radioButton [(ngModel)]="appoinmentUser.userType" name="option"
+                                value="{{appoinmentTypeList.id}}" label="{{appoinmentTypeList.label}}"
+                                (click)="getAppoinmentType(appoinmentUser.userType)"
+                                inputId="{{appoinmentTypeList.id}}"></p-radioButton>
+                        </div>
+                    </div>
+                </div>
+                <div class="row form-spacer appnt-for pt-0" *ngIf="!showAppoinmentForGroup && !showAppoinmentForMinor ">
+                    <div class="col-12 mb-3">
+                        <label>{{'SEARCH.SEARCH_PATIENT_NAME' | translate}}</label>
+                        <!-- <input type="text" [disabled]="fromAppointment" class="book-apt-patient-by" placeholder="{{'SEARCH.SEARCH_PATIENT_NAME' | translate }}"
+                        [(ngModel)]="appSIgnUp.userName"> -->
+                        <app-name [disabled]="fromAppointment" (onNameChange)="changeName($event, 'userName')"
+                            class="book-apt-patient-by" preventType="all" [(ngModel)]="appSIgnUp.userName"
+                            placeholder="{{'SEARCH.SEARCH_PATIENT_NAME' | translate }}"></app-name>
+                    </div>
+                    <div class="col-12">
+                        <label>{{'SEARCH.SEARCH_MOBILE_NUMBER' | translate}}</label>
+                        <!-- <int-phone-prefix [locale]="'es'" [disabled]="fromAppointment" [defaultCountry]="'in'"
+                      class="book-apt-patient-by" min="0" maxlength="12"
+                      [(ngModel)]="appSIgnUp.mobileNo" ></int-phone-prefix> -->
+                        <app-telephone class="book-apt-patient-by" [disabled]="fromAppointment"
+                            (onPhoneNumberChange)="changeNumber($event, 'signupUserNumber')"
+                            [(ngModel)]="appSIgnUp.mobileNo">
+                        </app-telephone>
+                    </div>
+                </div>
+                <div class="row appnt-for" *ngIf="showAppoinmentForGroup">
+                    <div class="col-6" *ngFor="let userGroupMember of userGroupMembers">
+                        <div class="float-left">
+                            <p-radioButton name="options" value="{{userGroupMember.id}}"
+                                inputId="{{userGroupMember.id}}" (click)="onclickGroupUser(userGroupMember)">
+                            </p-radioButton>
+                        </div>
+                        <div class="float-left">{{userGroupMember.name}}</div>
+                    </div>
+                </div>
+
+                <div class="row appnt-for" *ngIf="showAppoinmentForMinor">
+                    <div class="col-6" *ngFor="let user of userForMinor">
+                        <div class="float-left">
+                            <p-radioButton name="options" value="{{user.id}}" inputId="{{user.id}}"
+                                (click)="onclickMinorUser(user)">
+                            </p-radioButton>
+                        </div>
+                        <div class="float-left">{{user.minor.name}}</div>
+                    </div>
+                </div>
+                <div class="row" *ngIf="appoinment.onlineConsultation == 'Y'">
+                    <div class="col-12">
+                        <h1 class="mb-2">{{'SEARCH.SEARCH_BOOKING_OPTIONS' | translate}}</h1>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                        <label class="radio">
+                            <p><b>Full Payment ({{'SEARCH.SEARCH_INR_SIGN' | translate }}{{fees}})</b></p>
+                            <input type="radio" checked name="radio" (click)="paymentTypeFull()">
+                            <span style="margin-top: 2px;" class="checkmark"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="row" *ngIf="prepayAmount > 0.0 && appoinment.onlineConsultation == 'N'">
+                    <div class="col-12">
+                        <h1 class="mb-2">{{'SEARCH.SEARCH_BOOKING_OPTIONS' | translate}}</h1>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                        <label class="radio">
+                            <p><b>Advance({{'SEARCH.SEARCH_INR_SIGN' | translate }}{{prepayAmount}})</b></p>
+                            <input type="radio" name="radio" [checked]="advancedPayAutoCheck"
+                                (click)="paymentTypeAdvanced()">
+                            <span style="margin-top: 2px;" class="checkmark"></span>
+                        </label>
+                        <!-- <input type="radio" [checked]="advancedPayAutoCheck" (click)="paymentTypeAdvanced()"> -->
+                        <!-- <p-radioButton name="radio" [checked]="advancedPayAutoCheck" (click)="paymentTypeAdvanced()"></p-radioButton> -->
+                        <!-- <label>Advance({{'SEARCH.SEARCH_INR_SIGN' | translate }}{{prepayAmount}})</label> -->
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                        <label class="radio">
+                            <p><b>Full Payment ({{'SEARCH.SEARCH_INR_SIGN' | translate }}{{fees}})</b></p>
+                            <input type="radio" [checked]="isOnlineConsultationBooloean" name="radio"
+                                (click)="paymentTypeFull()">
+                            <span style="margin-top: 2px;" class="checkmark"></span>
+                        </label>
+                        <!-- <p-radioButton name="radio" (click)="paymentTypeFull()"></p-radioButton> -->
+                        <!-- <label>Full Payment ({{'SEARCH.SEARCH_INR_SIGN' | translate }}{{fees}})</label> -->
+                    </div>
+                </div>
+                <div class="row"
+                    *ngIf="(prepayAmount == 0.0 || prepayAmount == null) && appoinment.onlineConsultation == 'N'">
+                    <div class="col-12">
+                        <h1 class="mb-2">{{'SEARCH.SEARCH_BOOKING_OPTIONS' | translate}}</h1>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                        <label class="radio">
+                            <p><b>{{'SEARCH.SEARCH_ONLY_BOOKING' | translate}}</b></p>
+                            <input type="radio" [checked]="onlyBookAutoCheck" name="radio" (click)="onlyBook()">
+                            <span style="margin-top: 2px;" class="checkmark"></span>
+                        </label>
+                        <!-- <input type="radio" [checked]="onlyBookAutoCheck" name="radio" (click)="onlyBook()"> -->
+                        <!-- <p-radioButton [checked]="onlyBookAutoCheck" name="radio" (click)="onlyBook()"></p-radioButton> -->
+                        <!-- <label>{{'SEARCH.SEARCH_ONLY_BOOKING' | translate}}</label> -->
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 padding-left18px">
+                        <label class="radio">
+                            <p><b>Full Payment ({{'SEARCH.SEARCH_INR_SIGN' | translate }}{{fees}})</b></p>
+                            <input type="radio" [checked]="isOnlineConsultationBooloean" name="radio"
+                                (click)="paymentTypeFull()">
+                            <span style="margin-top: 2px;" class="checkmark"></span>
+                        </label>
+                        <!-- <p-radioButton name="radio"  (click)="paymentTypeFull()"></p-radioButton> -->
+                        <!-- <label>Full Payment ({{'SEARCH.SEARCH_INR_SIGN' | translate }}{{fees}})</label> -->
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!--End Working on app/issues/595 -->
+
+
+        </div>
+        <div class="row">
+            <div class="col-6 text-left">
+                <!-- <div class="row ml-3">
+          <input type="checkbox" style="margin-top: 4px;" [checked]="isDocPermissionChecked" id="setPermission" (change)="isDocPermissionChecked=$event.target.checked;">
+          <label style="color: black !important;" class="cursor" for="setPermission">&nbsp;Permission</label>
+        </div> -->
+            </div>
+            <div class="col-6 text-right">
+                <button class="btn btn-primary" [disabled]="!activeRadio"
+                    (click)="createAppointment(appoinment?.doctorChamberList)">{{'SEARCH.SEARCH_PROCEED' | translate}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="isReview" id="reviewAppt">
+    <div class="container">
+        <div class="row">
+            <div class="modal-header  col-12">
+                <h4 class="modal-title"> {{'SEARCH.SEARCH_REVIEW_APPOINMENT' | translate}} </h4>
+            </div>
+            <div class="modal-body col-12">
+                <div class="row appt-review-scrollarea">
+                    <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <div class="row pb-2">
+                            <div class="col-12">
+                                <h1 class="mb-0">{{appoinment.doctorName}}&nbsp;<span class="doc-degree"
+                                        *ngIf="appoinment.qualifications">(<span>{{appoinment.qualifications}}</span>)</span>
+                                </h1>
+                                <div>
+                                    <span class="small-text">
+                                        {{appoinment.speciality}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="!showHomeVisitLayout">
+                            <!--Working on app/issues/595 -->
+                            <div class="col-6" *ngIf="!showOnlineLayout">
+                                <label *ngIf="appoinment.onlineConsultation == 'N'"
+                                    class="mb-0">{{'SEARCH.CHAMBER_NAME'| translate}}</label>
+                                <label *ngIf="appoinment.onlineConsultation == 'Y'" class="mb-0">Online
+                                    Consultation</label>
+                                <div *ngIf="appoinment.onlineConsultation == 'N'" class="mb-0">
+                                    <span><img data-toggle="tooltip" title="Online Consultancy"
+                                        *ngIf="appAppointment.isAcceptOnline"
+                                        src="../../../../../assets/image/online_con.svg"
+                                        style="height: 12px;margin-bottom: 5px !important;"></span>
+                                    {{appAppointment.chamber.chamberName}}</div>
+                                <div *ngIf="appoinment.onlineConsultation == 'N'" class="small-text mb-1"><span
+                                        class="cursor ml-1"><img
+                                            (click)="displayGoogleMapLocationInModal(appAppointment.chamber)"
+                                            src="../../../assets/image/pin.svg"
+                                            height="12px" /></span><span>{{appAppointment.chamber.displayAddress }}</span>
+                                </div>
+                                <label>{{'SEARCH.SEARCH_APPOINMENT' | translate }}</label>
+                                <span>{{appointmentDateFormat | dateFormat}},&nbsp;{{appAppointment.fullTime.label}}</span>
+                            </div>
+                            <div class="col-6" *ngIf="showOnlineLayout">
+                                <label class="mb-0">Online Consultation</label>
+                                <span>{{appointmentDateFormat | dateFormat}},&nbsp;{{appAppointment.fullTime.label}}</span>
+                            </div>
+                            <div class="col-6">
+                                <label class="mb-0">{{'SEARCH.SEARCH_PATIENT'| translate}}</label>
+                                <div class="mb-0">{{appAppointment.name}}</div>
+                                <div class="mb-0 small-text">{{appAppointment.contactNo}}</div>
+                                <div class="small-text">{{appAppointment.emailAddress}}</div>
+                            </div>
+
+                        </div>
+
+                        <!--Working on app/issues/595 -->
+                        <div class="row" *ngIf="showHomeVisitLayout">
+                            <div class="col-6">
+                                <label class="mb-0">Patient Address</label>
+                                <div class="mb-0" *ngIf="selectedAddress">
+                                    {{selectedAddress.line1}} &nbsp; {{selectedAddress.line2}}
+                                    <br>
+                                    <span>{{selectedAddress.city}}</span>&nbsp;<span>{{selectedAddress.state}}</span>&nbsp;<span>{{selectedAddress.pinCode}}</span>
+                                    <br> {{selectedAddress.country}}
+                                </div>
+                                <label>Appointment Date</label>
+                                <span>{{appointmentDateFormat}}</span>
+                            </div>
+                            <div class="col-6">
+                                <label class="mb-0">Patient Info</label>
+                                <div class="mb-0">{{appAppointment.name}}</div>
+                                <div class="mb-0 small-text">{{appAppointment.contactNo}}</div>
+                                <div class="small-text">{{appAppointment.emailAddress}}</div>
+                            </div>
+                        </div>
+                        <!--End Working on app/issues/595 -->
+
+                    </div>
+                    <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <div *ngIf="!onlyBookProceed" class="row pay-now text-right">
+
+                        </div>
+                        <div *ngIf="!onlyBookProceed"
+                            [ngClass]="onlyBookProceed ? 'doctor-payment-due':'doctor-payment-fee' ">
+                            <div class="row">
+                                <div class="col-7"><label>{{'SEARCH.SEARCH_FEESA'| translate}}</label></div>
+                                <div class="col-5 text-right">
+                                    <h6>{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{payableAmount | number:'1.2-2'}}</h6>
+                                </div>
+                            </div>
+                            <!-- <div *ngIf="!isAdvancedPay && grandTotal > 0" class="row">
+                                <div class="col-7"><label>{{'SEARCH.SEARCH_TAX'| translate}}</label></div>
+                                <div class="col-5 text-right">
+                                    <h6>{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{tax | number:'1.2-2'}}</h6>
+                                </div>
+                            </div> -->
+                            <!-- <div *ngIf="!isAdvancedPay && grandTotal > 0" class="row">
+                                <div class="col-7"><label>{{'SEARCH.SEARCH_DISCOUNT'| translate}}</label></div>
+                                <div class="col-5 text-right">
+                                    <h6>{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{discount | number:'1.2-2'}}</h6>
+                                </div>
+                            </div> -->
+                            <hr>
+                            <div class="row">
+                                <div class="col-7"><label>{{'SEARCH.SEARCH_TOTAL_PAY'| translate}}</label></div>
+                                <div *ngIf="grandTotal < 10" class="col-lg-5 text-right">
+                                    <h6>{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{grandTotal | number:'1.2-2'}}</h6>
+                                </div>
+                                <div *ngIf="grandTotal >= 10" class="col-lg-5 text-right">
+                                    <h6>{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{grandTotal | number:'2.2-2'}}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="row pl-3">
+                            <div style="margin-right: -70px;" class="col-1 pl-0">
+                                <input type="checkbox" style="margin-top: 4px;" [checked]="isPermissionCheckboxChecked"
+                                    id="setPermission" (change)="checkPermission($event, appoinment);">
+                            </div>
+                            <div class="col-11">
+                                <label style="color: black !important;" class="cursor" for="setPermission">
+                                    <span *ngIf="!isDocPermissionChecked">
+                                        I authorize {{appoinment?.doctorName}} to view my previous treatment records.
+                                        This authorization is
+                                        valid from {{permissionDates?.authDateFrom}} to
+                                        {{permissionDates?.authDateTo}}.
+                                        <span style="font-style: italic;font-size: small;">(If you authorize, the doctor
+                                            will be able to view all treatment records of other doctors
+                                            that you have on MEDePAL platform. Else the doctor's access will be
+                                            restricted to the treatment
+                                            records created by the himself/herself)</span>
+                                    </span>
+                                    <span class="pl-2" *ngIf="isDocPermissionChecked">
+                                        You have an existing authorization that allows the doctor to view your treatment
+                                        records.
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer col-12">
+                <div class="doctor-payment-button pay-now text-right">
+                    <div class="row text-right">
+                        <button class="btn btn-secondary mr-2"
+                            (click)="back()">{{'SEARCH.SEARCH_BACK_BUTTON'| translate}}</button>
+                        <!--<button type="button" *ngIf="!onlyBookProceed" class="btn btn-primary" [disabled]="!activePaymentRadio" (click)="bookAndPayFromReviewModal(fees)">Pay & Book</button> -->
+                        <button type="button" *ngIf="!onlyBookProceed" class="btn btn-primary"
+                            (click)="bookAndPayFromReviewModal(fees)">{{'SEARCH.SEARCH_PAY_BOOK_BUTTON'| translate}}</button>
+
+                        <button *ngIf="onlyBookProceed" class="btn btn-primary"
+                            (click)="bookAndPayFromReviewModal()">{{'SEARCH.SEARCH_BOOK_BUTTON'| translate}}</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="ispayment" class="method-container">
+    <h1 style="text-align: center">{{'SEARCH.SEARCH_PLEASE_DO_NOT_REFRESH_THIS_PAGE' | translate }}</h1>
+    <form #someVar method="post" action="{{ paytmRespObj.redirectUrl }}" name="f1" (ngSubmit)="onSubmit()">
+        <input type="hidden" name="MID" value="{{ paytmRespObj.MID }}">
+        <input type="hidden" name="WEBSITE" value="{{ paytmRespObj.website }}">
+        <input type="hidden" name="CHANNEL_ID" value="{{ paytmRespObj.channelid }}">
+        <input type="hidden" name="INDUSTRY_TYPE_ID" value="{{ paytmRespObj.industrytypeid }}">
+        <input type="hidden" name="ORDER_ID" value="{{ paytmRespObj.orderid }}">
+        <input type="hidden" name="CUST_ID" value="{{ paytmRespObj.custid }}">
+        <input type="hidden" name="TXN_AMOUNT" value="{{ paytmRespObj.txnamount }}">
+        <input type="hidden" name="CALLBACK_URL" value="{{ paytmRespObj.callbackurl }}">
+        <input type="hidden" name="CHECKSUMHASH" value="{{ paytmRespObj.checksumhash }}">
+    </form>
+</div>
+
+<!-- <jw-modal id="payment-method-popup">
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="method-header">
+          <h2>{{'SEARCH.SEARCH_SELECT_PAYMENT_METHOD' | translate }}</h2>
+        </div>
+        <div class="method-container row">
+          <div class="method col-sm-6" (click)="paymentMethod('PAYTM')">
+            <img src="assets/png/paytm.png" alt="">
+          </div>
+          <div class="method col-sm-6" (click)="paymentMethod('PAYPAL')">
+            <img src="assets/png/paypal.png" alt="">
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </jw-modal> -->
+
+<ng-template #googleMapLocation>
+    <div class="modal-header">
+        <pre class="overflow-hidden google-map-pre-style">
+                <h5 class="modal-title">{{googleMapDisplayObj.chamberName}}</h5>
+                <p class="google-map-p-modal-style modal-title">{{googleMapDisplayObj.chamberAddress}}</p>
+              </pre>
+        <button type="button" class="close" aria-label="close" (click)="modalRef.hide('cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body overflow-hidden" id="user-review">
+        <google-map-modal [lat]="googleMapDisplayObj.lat" [long]="googleMapDisplayObj.long"></google-map-modal>
+    </div>
+    <div class="modal-footer">
+
+    </div>
+</ng-template>

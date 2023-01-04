@@ -1,0 +1,32 @@
+<div class="row registration-workflow" *ngIf="!isRegistrationWorkflowCompleted">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-12 text-center">
+                        <h6 class="nav-item">Get started with MEDePAL in {{workFlowSteps.length}} steps</h6>
+                        
+                        <ul class="nav nav-pills ">
+                            
+                            <li class="nav-item" *ngFor="let wf of workFlowSteps; let i = index">
+                              
+                                <!-- [class.active]="isChabmerExist"  -->
+                              <!-- <a [ngClass]="wf.sequenceNo==1 && !isValidProfile ?'active': wf.sequenceNo==1 && isValidProfile ? 'done' : wf.sequenceNo==2 && isValidProfile ? 'active' : 'inactive'" href="javascript:void(0);" (click)="navigateUrl(wf.routeUrl)"> -->
+                              <a [ngClass]="currentStepNo==i+1 ?'active': currentStepNo > i+1 ? 'done' : 'inactive'" href="javascript:void(0);" (click)="navigateUrl(wf.routeUrl)">
+                                <div class="circle">{{wf.sequenceNo}}</div>
+                                <!-- <div class="circle" *ngIf="wf.sequenceNo==1 && isValidProfile"><i class="fa fa-check"></i></div> -->
+                                <div class="desc">{{wf.stepInstruction}}</div>
+                                <!-- <img *ngIf="wf.sequenceNo==1 && isValidProfile"  height="15px;" src="../../../../../assets/image/verified.svg">  -->
+                              </a>
+                              
+                            </li>
+                            <!-- <li class="nav-item">
+                              <a [class.disabled]="!isChabmerExist" href="javascript:void(0);"><span>2</span> Chamber</a>
+                            </li> -->
+                          </ul>
+                    </div>
+                </div>      
+              </div>
+        </div>    
+    </div>
+</div>

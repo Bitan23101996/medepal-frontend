@@ -1,0 +1,74 @@
+<div *ngIf="successMsgFor=='signUp'">
+  <div class="card mt-3 mb-3 m-auto" style="width: 50%">
+    <div class="card-body mt-3">
+      <h5><strong>Congratulations!!</strong></h5>
+      <p>Your registration is almost complete. We have sent an email verification link to your email
+        <i>{{successMsgEl}}</i>. </p>
+      <p>You should complete the verification within 24 hours. Please complete your verification to access great
+        services on <strong>MEDePAL - Your Healthcare Terminus.</strong></p>
+    </div>
+  </div>
+</div>
+<div  *ngIf="successMsgFor=='doctorRegistration'">
+  <div class="mt-1 mb-1">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-12 text-center">
+          <img src="../../../../assets/image/confirm.svg" height="50" alt="" />
+          <div class="main-header font-style1">Your MEDePAL registration is complete.</div>
+          <!--<div class="style-margin font-style2">
+            <p>Your profile will be activated within 24 hours after we verify your professional details</p></div>-->
+        
+        </div>
+        </div>
+        
+<!-- <h5><strong>Congratulations!!</strong></h5> -->
+     <!-- <h1>
+        Thank you for accepting the Agreement.
+      </h1>
+      <p>
+        A copy of the contract can be downloaded from your profile in MEDePAL.
+      </p>
+      <div class="text-center">
+        <button class="btn btn-primary" type="button" (click)="navigate('D')">Go to My Appointments</button>
+      </div>-->
+    </div>
+  </div>
+</div>
+<div  *ngIf="successMsgFor=='userRegistration'">
+  <div class="mt-1 mb-1">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-12 text-center">
+          <img src="../../../../assets/image/confirm.svg" height="50" alt="" />
+          <div class="main-header font-style1">Your MEDePAL registration is successful.</div>
+          <div class="style-margin font-style2">
+            <p>Extend you a warm welcome to the MEDePAL family. Stay healthy, stay safe.</p></div>
+         
+        </div>
+        </div>
+        
+      <!--<div class="text-center">
+        <button class="btn btn-primary" type="button" (click)="navigate('I')">Go to book Appointments</button>
+      </div>-->
+    </div>
+  </div>
+</div>
+<div class="doctorRegistration" *ngIf="successMsgFor=='partialRegistration'">
+    <div class="mt-1 mb-1">
+      <div class="card-body">
+        <h5><strong>Congratulations!!</strong></h5>
+        <p>Your registration is successfully completed. Now you can access great services on <strong>MEDePAL - Your
+            Healthcare Terminus.</strong></p>
+        <div class="text-center">
+          <button class="btn btn-primary" type="button" (click)="navigate('D')">Go to my Appointments</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<div class="text-center not-found" *ngIf="successMsgFor=='changePassword'">
+  <h3>Your password has been changed successfully!</h3>
+</div>
+<div class="text-center not-found" *ngIf="successMsgFor=='setPassword'">
+  <h3>Your password has been successfully set!</h3>
+</div>

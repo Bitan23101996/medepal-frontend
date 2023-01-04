@@ -1,0 +1,42 @@
+
+.fixed-bottom{
+    position: fixed;
+    right: 0;
+    bottom: -19px;
+    left: 0;
+    z-index: 1030;
+    border-top: 1px solid #9552a4;
+}
+
+.past-invoice .content {
+    padding: 3px 15px 3px 15px;
+}
+.current-invoice .card-body {
+    padding: 4px 5px 2px 0px;
+}
+.fixed-bottom .card-body{
+    padding: .75rem;
+    background: #fff;
+}
+.header{
+    text-transform: uppercase;
+    font-size: 18px !important;
+}
+.input-sm{
+    width: 40px !important;
+}
+.input-md{
+    width: 82px !important;
+}
+.table-responsive{
+    overflow-x: inherit;
+}
+.unit{
+    margin-top: 7px;
+    margin-left: 10px;
+}
+/* Working on app/issue/1933 */
+.table-responsive td {
+    border-bottom: none !important;
+}
+/* End Working on app/issue/1933 */

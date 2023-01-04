@@ -1,0 +1,66 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<div class="row" *ngIf="vCode || (fpCode && securityKey)">
+    <div style="margin-top: 100px;" class="col-lg-4"></div>
+    <div class="col-lg-4">
+      <div class="alert alert-danger bt-middle" role="alert">
+          <span *ngIf="showMsg">
+              {{message}}
+          </span>
+      </div>
+  </div>
+</div>
+
+<jw-modal id="reset-password-modal">
+  <h1>Reset Password</h1>
+  <p>Password: <input class="form-control allow-all-char" type="password" [(ngModel)]="newPassword" placeholder="Enter your new password" /></p>
+  <p>Re enter Password: <input class="form-control allow-all-char" type="password" [(ngModel)]="repeatPassword" placeholder="Enter your new password" /></p>
+  
+  <div class="row">
+      <div class="col-sm-2">
+          <button class="btn btn-md btn-primary btn-block" (click)="resetPassword(newPassword);">Submit</button>
+      </div>
+  </div>
+</jw-modal>
+
+<ng-template #resetPasswordModal>
+    <h1>Reset Password</h1>
+    <p class="margin-bottom0px">Password: </p>
+    <div class="row">
+        <div class="col-lg-10">
+            <input class="form-control" [type]="showeye ? 'text' : 'password'" (focusout)="passwordCheck()" [(ngModel)]="newPassword" placeholder="Enter your new password" />
+        </div>
+        <div class="col-lg-2">
+            <i [class]="showeye ? 'fa fa-eye' : 'fa fa-eye-slash' " (click)="showPassword()"></i>
+        </div>
+    </div><br>
+    <p class="margin-bottom0px">Re enter Password: </p>
+    <div class="row">
+        <div class="col-lg-10">
+            <input class="form-control" [type]="showeye_repeatPassword ? 'text' : 'password'" (focusout)="passwordCheck()" [(ngModel)]="repeatPassword" placeholder="Enter your password again" />
+        </div>
+        <div class="col-lg-2">
+            <i [class]="showeye_repeatPassword ? 'fa fa-eye' : 'fa fa-eye-slash' " (click)="showRepeatPassword()"></i>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm-3">
+            <button [disabled]="!isPasswordMatch" type="button" class="btn btn-sm btn-primary" (click)="resetPassword(newPassword);">Submit</button>
+        </div>
+    </div>
+</ng-template>

@@ -1,0 +1,143 @@
+/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+ .modal-header{
+    border-bottom: 1px solid #e9ecef !important;
+    padding:5px !important;
+}
+.modal-content {
+    padding: 5px 10px;
+}
+.addNew{
+    position: fixed;
+    right: -38px;
+    top:50%;
+    transform: rotate(90deg)
+}
+
+.addNewFeedback{
+    position: fixed;
+    right: -38px;
+    top:77%;
+    transform: rotate(90deg)
+}
+
+.feedbackFileUpload {
+    background: linear-gradient(to right, #a25ca8 0%,#582491 100%);
+    color: #e4d6d6;
+    border-radius: 4px;
+    padding: 3px;
+    cursor: pointer;
+    font-weight: 400;
+    font-size: 14px;
+    margin-right: 10px;
+}
+
+input[type="file"] {
+    display: none;
+}
+/*select.form-control{
+    font-size: 1.125rem !important;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    font-weight: 400;
+    box-shadow: none;
+    border-radius: 0;
+}*/
+input[type=time]{
+    -webkit-appearance: none; 
+    border: none;
+    border-bottom: 1px solid #ccc;
+    width: 100%;
+    border-radius: 0;
+    font-size: 15px !important;
+    box-shadow: none;
+}
+/* input[type=time]:before {
+content:'HH:MM';
+margin-right:.6em;
+color:#9d9d9d;
+} */
+
+.dateNextPrev .btn{
+    font-size: 20px !important;
+}
+.modal-footer .ng-star-inserted{
+    margin-bottom: 0 !important;
+}
+
+.days-of-week-custom-style {
+    font-size: 11px;
+    color: #662d91;
+    font-weight: 400;
+}
+.form-check input[type=checkbox].mt-5-custom {
+    margin-top: 16px !important;
+}
+
+.scrollareaForOpdCalenderDocList{
+    max-height: calc(100vh - 200px);
+    font-size: 11px;
+    text-align: left;
+    background: #f5f8f9;
+    border: 1px solid #dee2e6;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.refine-panel-label-style {
+    font-size: 12px;
+    color: #ad4274;
+    font-weight: 400;
+    text-transform: uppercase;
+    margin-top: 15px;
+}
+
+.doc-calender a{
+    font-size: 12px;
+    color: #662d91;
+    font-weight: 400;
+}
+
+
+
+.refine-panel-border-bottom {
+  border-top: 1px solid #aba3ab!important;
+}
+
+.refine-panel-border-bottom:first-child {
+  border-top: none!important;
+}
+
+.refine-panel-border-bottom.selected-refine-by-div {
+    background:#fffbf5;
+    border-top:1px solid #cf8a35 !important;
+
+	/* border:1px solid #648986 !important; */
+}
+
+.refine-panel-border-bottom.selected-refine-by-div + .refine-panel-border-bottom{
+    border-top:1px solid #cf8a35 !important;
+
+	/* border:1px solid #648986 !important; */
+}
+
+.custom-mt-3 {
+    margin-top: -3px;
+}
+
+.cover{
+  top:-51px;
+}

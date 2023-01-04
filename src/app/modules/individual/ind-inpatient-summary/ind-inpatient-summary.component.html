@@ -1,0 +1,877 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+<div class="content">
+  <div *ngIf="loading" class="cover">
+     <div class="loader">
+         <div class="loading-img"><img width=250px src="../../../../../assets/image/logo.svg"/></div>
+         <div class="loading-txt">Loading<div class="dot-elastic"></div></div>
+     </div>
+   </div>
+    <div class="row page-content">
+        <div class="col-lg-12">
+            <form #form="ngForm">
+                <div class="row">
+                    <!--<div class="w-10 pr-0 pl-3 sml filter-panel-width"
+                        [ngClass]="panelVisible ? 'panelVisible' : 'panelNotVisible'">
+                        <div class="card prescription-panel-shadow">
+                            <div class="filterPanel">
+                                <div class="row border-bottom">
+                                    <div class="col-8">
+                                        <h4 class="search-result-left-pen-heading">
+                                            {{'MY_PRESCRIPTION.PRESCRIPTION_REFINE_BY' | translate}}</h4>
+                                    </div>
+                                    <div class="col-4 text-right link-pos-adj">
+                                        <a href="javascript:void(0);"
+                                            >{{ 'FETCH_PATIENT.RESET_ALL' | translate }}</a>
+                                    </div>
+                                </div>
+                                <div class="row overflow-auto scrollarea">
+                                    <div class="col-12 col-lg-12">
+                                        <div class="form-group">
+                                            <div class="row pb-2">
+                                                <div class="col-8"><label
+                                                        class="page-header">{{ 'FETCH_PATIENT.PATIENT_NAME' | translate }}</label>
+                                                </div>
+                                                <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0);"
+                                                       >{{
+                                                          'COMMON.RESET_BUTTON' | translate }}</a></div>
+                                            </div>
+                                            <div>
+                                                <input type="text" class="form-control" name="filterPatientName"
+                                                    #patient (keyup)="filterTable(patient.value, 'patient')">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-12">
+                                        <div class="form-group" *ngIf="showDoctorFilter">
+                                            <div class="row pb-2">
+                                                <div class="col-8"><label class="page-header">Doctor Name</label>
+                                                </div>
+                                                <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0);"
+                                                        (click)="resetOrderStatus()">{{
+                                                            'COMMON.RESET_BUTTON' | translate }}</a></div>
+                                            </div>
+                                            <div>
+                                                <input type="text" class="form-control"
+                                                    (keyup)="filterTable($event.target.value, 'doctor')"
+                                                    [(ngModel)]="filterDoctorName" name="filterDoctorName">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-12">
+                                        <div class="form-group" *ngIf="isShowChember">
+                                            <div class="row pb-2">
+                                                <div class="col-8"><label class="page-header">Clinics</label>
+                                                </div>
+                                                <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0);"
+                                                        (click)="resetOrderStatus()">{{
+                                                            'COMMON.RESET_BUTTON' | translate }}</a></div>
+                                            </div>
+                                            <div *ngFor="let chember of chamberList;" class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="checkbox" class="form-check-input"
+                                                        (change)="filterData($event,chember)">
+                                                    <span>{{chember.hospitalName}}</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                    <!--end of filter-->
+
+                    <!--start div to show data as table format-->
+                    <div class="col">
+                        <div class="card">
+                            <div class="row">
+                                <div class="col-md-6 col-12">
+                                    <h1 class="top-label">
+                                        <span>{{title}}</span>
+                                    </h1>
+                                </div>
+                                <div class="col-12 col-sm-6 page-header-link">
+                                    <div class="row">
+                                      <div class="col-12 text-right">
+                                       <span *ngFor="let headingData of headingsArray">
+                                            <a href="javascript:void(0)" id="mem-myself" (click)="onClickSecondHeader(headingData)" *ngIf="headingData.inPatientFor != inPatientFor">
+                                              <ng-container *ngIf="headingData.inPatientFor != inPatientFor">{{ headingData.headingLabel | translate}}</ng-container>
+                                            </a>
+                                          </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                            </div>
+                            <hr>
+                            <!--start div to display error-->
+                            <div *ngIf="inpatientList==null" class="row page-content min-height292px">
+                                <div class="row col-lg-12 text-center padding-right0px">
+                                    <div class="text-center not-found col-lg-12">
+                                        <h3>No Inpatient record(s) found.</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end of div to display error-->
+                            <!--start div for first table-->
+                            <div class="content table-responsive for-medium search-result not-for-mobile"
+                                *ngIf="isHidePrimaryTable">
+                                <p-table [value]="inpatientList" [paginator]="inpatientList.length > 10" [rows]=10
+                                    *ngIf="inpatientList!=null">
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th width="14%">Admission Date</th>
+                                            <!-- <th width="11%">Time</th> -->
+                                            <th width="20%">Hospital Name</th>
+                                            <th width="16%">Doctor</th>
+                                            <th width="8%" class="small-hide">Status</th>
+                                            <th width="22%" class="small-hide"></th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-q let-i="rowIndex">
+                                        <tr>
+                                            <td>{{q.admissionDateStr | date: 'dd-MM-yyyy'}} {{q.admissionDateStr | date: 'HH:mm'}}</td>
+                                            <td>{{q.hospitalName}}</td>
+                                            <td><div class="custom-br">{{q.admissionDoctorHistory}}</div>                                                
+                                            </td>
+
+                                            <td class="small-hide">{{q.admissionStatus}}</td>
+                                            <td class="small-hide in-patient-btn multi-btn-w-divider">
+                                                <button type="button" class="btn btn-secondary  cursor"
+                                                    (click)="openAdmissionDetailsSideBar(q)">Details</button>
+
+                                                <button type="button" class="btn btn-secondary cursor"
+                                                (click)="openInvoiceSideBar(q)">
+                                                <span *ngIf="q.admissionStatus=='ADMITTED'; else dischargedStatus">Current Bill</span>
+                                                    
+                                                    <ng-template #dischargedStatus>
+                                                      <span>Final Bill</span>
+                                                    </ng-template>
+                                              </button><!-- (click)="openInvoiceSideBar(q)"-->
+                                              <button type="button" class="btn btn-secondary mr-2 cursor"
+                              (click)="navigateToSummary(q)">Treatment History</button>
+                                            </td>
+                                        </tr>
+                                        <tr class="small-show-1024-768">
+                                            <td>
+                                                <div class="small-header">Status</div>
+                                                <div class="align-top">{{q.admissionStatus}}</div>
+                                            </td>
+                                            <td>
+                                                <div class="small-header"></div>
+                                                <div class="align-top">
+                                                    <button type="button" class="btn btn-secondary mr-2"
+                                                        (click)="editPatientDetails(q)">Details</button>
+
+                                                    <button type="button" class="btn btn-secondary mr-2"
+                                                    (click)="navigateToGenrateInvoice(q)">
+                                                    <span *ngIf="q.admissionStatus=='ADMITTED'; else dischargedStatus">Current Bill</span>
+                                                    
+                                                    <ng-template #dischargedStatus>
+                                                      <span>Final Bill</span>
+                                                    </ng-template>
+                                                  </button><!-- (click)="openInvoiceSideBar(q)"-->
+
+                                                  <button type="button" class="btn btn-secondary mr-2 cursor"
+                              (click)="navigateToSummary(q)">Treatment History</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="small-show">
+                                            <td>
+                                                <div class="small-header">Status</div>
+                                                <div class="align-top">{{q.admissionStatus}}</div>
+                                            </td>
+                                            <td>
+                                                <div class="small-header"></div>
+                                                <div class="align-top">
+                                                    <button type="button" class="btn btn-secondary mr-2"
+                                                        (click)="openAdmissionDetailsSideBar(q)">Details</button>
+                                                    <button type="button" class="btn btn-secondary mr-2"
+                                                    (click)="openInvoiceSideBar(q)">
+                                                    <span *ngIf="q.admissionStatus=='ADMITTED'; else dischargedStatus">Current Bill</span>
+                                                    
+                                                    <ng-template #dischargedStatus>
+                                                      <span>Final Bill</span>
+                                                    </ng-template>
+                                                  </button><!-- (click)="openInvoiceSideBar(q)"-->
+                                                  <button type="button" class="btn btn-secondary mr-2 cursor"
+                              (click)="navigateToSummary(q)">Treatment History</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="small-show-1024-768">
+                                            <td class="show-border" colspan="3"></td>
+                                        </tr>
+                                        <tr class="small-show-1024-768">
+                                            <td class="show-border" colspan="3"></td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                            <!--End Of First Table-->
+
+                            <!-- for mobile -->
+                            <div class="content table-responsive search-result for-very-small">
+                                <p-table [value]="inpatientList" [paginator]="inpatientList.length > 10" [rows]=10
+                                    *ngIf="inpatientList!=null">
+                                    <ng-template pTemplate="body" let-q let-i="rowIndex">
+                                        <tr>
+                                            <ng-container>
+                                                <td class="mobile-table">
+                                                    <table>
+                                                        <tr>
+                                                            <td class="small-header">Date of Admission</td>
+                                                            <td class="mb-0">{{q.admissionDateStr | date: 'dd-MM-yyyy'}}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                          <td class="small-header">Time</td>
+                                                          <td class="mb-0">{{q.admissionDateStr | date: 'HH:mm'}}
+                                                          </td>
+                                                      </tr>
+                                                        <tr *ngIf="hideForIndividual">
+                                                            <td class="small-header">Name</td>
+                                                            <td class="mb-0">{{q.patientName}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="small-header">Hospital Name</td>
+                                                            <td class="mb-0">{{q.hospitalName}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="small-header">Doctor</td>
+                                                            <td class="mb-0">
+                                                                <div class="custom-br">{{q.admissionDoctorHistory}}</div>                                                            
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="small-header">Status</td>
+                                                            <td class="mb-0">{{q.admissionStatus}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="small-header"></td>
+                                                            <td class="mb-0">
+                                                                <button type="button" class="btn btn-secondary mr-2"
+                                                                    (click)="openAdmissionDetailsSideBar(q)">Details</button>
+                                                                <!-- <button *ngIf="q.admissionStatus=='ADMITTED'"
+                                                                    type="button" class="btn btn-secondary mr-2"
+                                                                    (click)="openInvoiceSideBar(q)">Current
+                                                                    Bill</button> -->
+                                                                <button type="button" class="btn btn-secondary cursor" (click)="openInvoiceSideBar(q)">
+                                                                  <span *ngIf="q.admissionStatus=='ADMITTED'; else dischargedStatus">Current Bill</span>
+                                                                  <ng-template #dischargedStatus>
+                                                                    <span>Final Bill</span>
+                                                                  </ng-template>
+                                                                </button> 
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </ng-container>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                            <!-- end for mobile -->
+
+                        </div>
+                    </div>
+                    <!--en dof div to show data as table format-->
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Working on app/issue/2101 -->
+
+<p-sidebar [(visible)]="displayInvoiceSidebar" blockScroll="true" [dismissible]="false" styleClass="procedureSidebar"
+  [style]="{width:'65vw'}" appendTo="body" position="right">
+  <div (click)="closeInvoiceSideBar()" class="close-btn cursor"><i class="fas fa-times"></i></div>
+  <div class="row page-content"
+    style="margin-top:10px;overflow-y: hidden;height: calc(100vh - 33px);padding-bottom: 5px;">
+    <div class="col-12">
+      <div class="row container-fluid pr-0">
+        <div class="col-6">
+          <h1 class="font-size-for-room-sidebar-title">BILL SUMMARY</h1>
+        </div>
+      
+        <div class="col-6 text-right  pr-0"  *ngIf="currentUser.entityName=='INDIVIDUAL'"><!-- Individual Part Working on app/issue/1844 -->
+          <div *ngIf="currentAdmission.admissionStatus=='ADMITTED'">
+              <button class="btn btn-primary mr-2" (click)="showAdmissionTransaction()" >CURRENT STATUS</button>
+          </div>
+
+          <div  *ngIf="currentAdmission.admissionStatus=='DISCHARGED'">
+              <button class="btn btn-primary mr-2" (click)="showInvoice()" >VIEW INVOICE</button>             
+          </div>
+         
+          
+        </div>
+      </div>
+     
+      <div class="row container-fluid mb-3" id="admissionBasicInfoBlock">
+
+        <div class="col-xl-5 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+          <label class="d-inline">Patient</label>
+          <span>&nbsp;<b>{{admitedPatientDetails.patientName}}</b><span>({{admitedPatientDetails.age}}/{{admitedPatientDetails.gender}})</span></span>
+        </div>
+        <div class="col-xl-7 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+          <label class="d-inline">Room No. / Bed No.</label>
+          {{admitedPatientDetails.roomNo}}/{{admitedPatientDetails.bedNo}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="text-left">
+            <div class="top-card text-center">
+              <div class="total-bill-header">Total Bill</div>
+              <div class="total-bill">{{totalDue | number: '1.2-2'}}</div>
+            </div>
+            <div class="top-card text-center">
+              <div class="total-bill-header">&nbsp;</div>
+              <div class="total-bill-signs"></div>
+            </div>
+            <div class="top-card text-center">
+              <div class="total-payment-header">Total Payment</div>
+              <div class="total-payment">{{totalPayDone | number: '1.2-2'}}</div>
+            </div>
+            <div class="top-card text-center">
+              <div class="total-bill-header">&nbsp;</div>
+              <div class="total-bill-equal"></div>
+              <div class="total-bill-equal"></div>
+            </div>
+            <div class="top-card text-center">
+              <div *ngIf="outstandingAmount >= 0" class="total-due-header">Due</div>
+              <div *ngIf="outstandingAmount >= 0" class="total-due">{{outstandingAmount  | number: '1.2-2'}}</div>
+              <div *ngIf="outstandingAmount < 0" class="total-due-header-refund">Refund</div>
+              <div *ngIf="outstandingAmount < 0" class="total-refund">{{(outstandingAmount * -1)  | number: '1.2-2'}}
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+     
+
+      <div class="row" id="patientPaymentSection" *ngIf="currentAdmission.admissionStatus=='DISCHARGED'">
+          <div class="col-12">
+            <div class="card">
+              <div class="table-responsive small-tabl-padd no-btm-border">
+                <div class="card-header billing-sidebar payment">
+                  <h5>PAYMENT DETAILS</h5>
+                </div>
+                <div class="card-body">
+                  <p-table [value]="inPatientTransactionDetails.paymentList">
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th class="text-left" width="30%">Date</th>
+                        
+                        <th class="text-left" width="30%">Mode</th>
+                        <th class="text-right" width="30%">Amount</th>
+                        <th class="text-right" width="10%"></th>
+
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-payment let-i="rowIndex">
+
+
+                      <tr *ngIf="inPatientTransactionDetails.paymentList.length>0">
+                        <td width="30%" class="text-left">{{payment.paymentDateTime | date: 'dd-MM-yyyy'}}</td>
+                       
+                        <td width="30%" class="text-left">{{payment.paymentMode | uppercase }}</td>
+                        
+                        <td width="30%" class="text-right">{{payment.amount  | currency:'INR'}} </td>
+                        <td width="10%">
+                          <img src="../../../assets/image/print.svg" (click)="generatePaymentReport(payment.txnRefNo)"
+                            height="15" class="cursor" />
+                        </td>
+
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                  <div class="text-center" style="color:#ce8a35"
+                    *ngIf="inPatientTransactionDetails.paymentList.length==0">
+                    NO PAYMENT DETAILS
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+      <div class="row scrollArea" *ngIf="currentAdmission.admissionStatus=='ADMITTED'">
+        <div class="col-7">
+          <div class="row mb-2" id="patientBedChrageSection" >
+
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header billing-sidebar billing">
+                  <h5>BED CHARGE DETAILS</h5>
+                </div>
+                <div class="row card-body">
+                  <div class="table-responsive no-btm-border col-12">
+                    <p-table [value]="inPatientTransactionDetails.bedHistoryDetail" >
+                      <ng-template pTemplate="header">
+                        <tr>
+
+                          <th class="text-left">BED NO.</th>
+                          <th class="text-center">CHARGE</th>
+                          <th class="text-center">DAYS</th>
+                          <th class="text-right">AMOUNT</th>
+                          <th class="text-center"></th>
+
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-bedHistory let-i="rowIndex">
+                        <tr *ngIf="inPatientTransactionDetails.bedHistoryDetail.length>0">
+
+                          <td class="text-left">{{bedHistory.bedNo}}</td>
+                          <td class="text-center">{{bedHistory.bedChargeStandard}}</td>
+                          <td class="text-center">{{bedHistory.noOfDays}}</td>
+                          <td class="text-right">
+
+                            <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                              </strong></span>
+                            {{bedHistory.noOfDays * bedHistory.bedChargeStandard | number: '1.2-2'}}
+                          </td>
+                          <td *ngIf="i!=0 && i==(inPatientTransactionDetails.bedHistoryDetail.length-1)">
+                            <span ngbTooltip="Delete Bed" container="body" class="cursor"
+                              (click)="cancelBedHistoryByAdmissionRefNo(bedHistory)">
+                              <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                            </span>
+                          </td>
+
+                        </tr>
+                      </ng-template>
+                    </p-table>
+                    <div class="text-center" style="color:#146199"
+                      *ngIf="inPatientTransactionDetails.bedHistoryDetail.length ==0">
+                      NO BED CHARGE DETAILS
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" id="patientBillSection">
+            <div class="col-12">
+              <div class="card mb-2">
+                <div class="table-responsive no-btm-border">
+                  <div class="card-header billing-sidebar billing">
+                    <h5>BILL DETAILS</h5>
+                  </div>
+                  <div class="card-body">
+                    <p-table [value]="inPatientTransactionDetails.previousBills">
+                      <ng-template pTemplate="header">
+                        <tr>
+                          <th class="text-left" style="width: 40%;">Date</th>
+                          <th class="text-left" style="width: 40%;">Comments</th>
+                          <th class="text-right" style="width: 40%;">Amount</th>
+
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-bill let-i="rowIndex">
+                        <tr *ngIf="inPatientTransactionDetails.previousBills.length>0">
+                          <td class="text-left" (click)="getBillDetails(bill)"><a href="javascript:void(0)">{{bill.billDate | date: 'dd-MM-yyyy'}}</a></td>
+                          <td class="text-left" >{{bill.comments}}</td>
+                          <td class="text-right"><span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                              </strong> </span>{{bill.totalAmount  | number: '1.2-2'}}
+                          </td>
+                        </tr>
+                      </ng-template>
+                    </p-table>
+                    <div class="text-center" style="color:#146199"
+                      *ngIf="inPatientTransactionDetails.previousBills.length==0">
+                      NO BILL DETAILS
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="row" *ngIf="invoiceDetails!=null">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header billing-sidebar billing">
+                  <h5>DISCOUNT</h5>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive no-btm-border" *ngIf="invoiceDetails!=null">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th class="text-left">DISCOUNT DESCRIPTION</th>
+                          <th class="text-right">AMOUNT</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{{invoiceDetails.discountDescription}}</td>
+                          <td class="text-right">
+
+                            <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                              </strong></span>
+                            {{invoiceDetails.discountAmount*(-1)  | number: '1.2-2'}}
+
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col-5 pl-0">
+
+        
+
+          <div class="row" id="patientPaymentSection">
+            <div class="col-12">
+              <div class="card">
+                <div class="table-responsive small-tabl-padd no-btm-border">
+                  <div class="card-header billing-sidebar payment">
+                    <h5>PAYMENT DETAILS</h5>
+                  </div>
+                  <div class="card-body">
+                    <p-table [value]="inPatientTransactionDetails.paymentList">
+                      <ng-template pTemplate="header">
+                        <tr>
+                          <th class="text-left" width="30%">Date</th>
+                          <!--  <th class="text-left" width="35%">Description</th>  Working on app/issue/1642 -->
+                          <th class="text-left" width="30%">Mode</th>
+                          <th class="text-right" width="30%">Amount</th>
+                          <th class="text-right" width="10%"></th>
+
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-payment let-i="rowIndex">
+
+
+                        <tr *ngIf="inPatientTransactionDetails.paymentList.length>0">
+                          <td width="30%" class="text-left">{{payment.paymentDateTime | date: 'dd-MM-yyyy'}}</td>
+                          <!--<td width="40%" class="text-left">{{payment.paymentDescription }}</td>
+                     Working on app/issue/1642 -->
+                          <td width="30%" class="text-left">{{payment.paymentMode | uppercase }}</td>
+                          <!-- Working on app/issue/1655 -->
+                          <td width="30%" class="text-right">{{payment.amount  | currency:'INR'}} </td>
+                          <td width="10%">
+                            <img src="../../../assets/image/print.svg" (click)="generatePaymentReport(payment.txnRefNo)"
+                              height="15" class="cursor" />
+                          </td>
+
+                        </tr>
+                      </ng-template>
+                    </p-table>
+                    <div class="text-center" style="color:#ce8a35"
+                      *ngIf="inPatientTransactionDetails.paymentList.length==0">
+                      NO PAYMENT DETAILS
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</p-sidebar>
+<!-- End Working on app/issue/2101 -->
+
+<!-- Working on app/issue/1844 -->
+<p-sidebar [(visible)]="displayAdmissionDetailsSideBar" blockScroll="true" [dismissible]="false" styleClass="procedureSidebar receivePayment" [style]="{width:'50vw'}" appendTo="body" position="right">
+  <div (click)="closeAdmissionDetailsSideBar()" class="close-btn cursor close-btn"><i class="fas fa-times"></i></div>
+
+<section>        
+  <div class="row container-fluid pr-0">
+          <div class="col-6">
+            <h1 class="font-size-for-room-sidebar-title">ADMISSION DETAILS</h1>
+          </div>
+  </div>
+
+  <div class="row scrollArea page-content">
+    <div class="col-12">
+
+          <div class="row mb-2" ><!-- PATIENT BLOCK -->
+              <div class="col-12">
+                  <div class="card">
+                      <div class="card-header billing-sidebar payment  mb-2" style="border-bottom: 1px solid #c8c8c8 !important;">
+                          <h5>PATIENT DETAILS</h5>
+                      </div><!-- End of PATIENT CARD HEADER -->
+
+                      <div class="card-body">
+                        <div class="row mt-2">
+                          <div class="col-6" *ngIf="currentAdmission.patientName!=null">
+                              <label  class="sideBarLabel"> Name </label>
+                             {{currentAdmission.patientName}}({{currentAdmission.patientAge}}/{{currentAdmission.patientGender}}) <span> -  <img src="../../../../../assets/image/phone.svg" height="16">{{currentAdmission.patientMobile}}</span>
+                          </div>
+                          
+                          <div class="col-6" *ngIf="currentAdmission.patientDateOfBirth!=null">
+                            <label  class="sideBarLabel"> Date of Birth </label>
+                           {{currentAdmission.patientDateOfBirth | date:'dd-MM-yyyy'}}
+                        </div>
+                         <!-- <div class="col-6" *ngIf="currentAdmission.patientMobile!=null">
+                              <label  class="sideBarLabel"> Mobile </label>
+                              <img src="../../../../../assets/image/phone.svg" height="16">{{currentAdmission.patientMobile}}
+                               
+                            </div>
+                        
+                             <div class="col-6" *ngIf="currentAdmission.patientAgeInMonth!=null">
+                                <label  class="sideBarLabel"> Age </label>
+                               {{currentAdmission.patientAge}}
+                            </div>
+                            <div class="col-6" *ngIf="currentAdmission.patientDateOfBirth!=null">
+                                <label  class="sideBarLabel"> Date of Birth </label>
+                               {{currentAdmission.patientDateOfBirth | date:'dd-MM-yyyy'}}
+                            </div>
+                           
+                            <div class="col-6" *ngIf="currentAdmission.patientGender!=null">
+                                <label  class="sideBarLabel"> Gender </label>
+                                {{currentAdmission.patientGender==='M'?'Male':currentAdmission.patientGender==='F'?'Female':"Other"}}
+                                
+                            </div> -->
+                      
+                          <div class="col-6" *ngIf="currentAdmission.patientEmail!=null">
+                              <label  class="sideBarLabel"> Email </label>
+                              {{currentAdmission.patientEmail}}
+                          </div>
+                          
+                        
+                            <div class="col-6" *ngIf="currentAdmission.foodPreference!=null">
+                                <label  class="sideBarLabel"> Food Preference </label>
+                               <!-- {{currentAdmission.foodPreference}} -->
+                               {{currentAdmission.foodPreference=='V'?'Veg':'Non-Veg'}}
+                            </div>
+                       <!--      <div class="col-6" *ngIf="currentAdmission.patientType!=null">
+                                <label  class="sideBarLabel"> Category </label>
+                                {{currentAdmission.patientType}}
+                            </div> -->
+                       
+                            <div class="col-6" *ngIf="currentAdmission.patientAddress!=null">
+                                <label  class="sideBarLabel"> Address </label>
+                                <p>
+                                    {{currentAdmission.patientAddress.line1}} &nbsp;                                      
+                               
+                                <span>{{currentAdmission.patientAddress.city}}</span>&nbsp;
+                                <span>{{currentAdmission.patientAddress.state}}</span>&nbsp;
+                                <span>{{currentAdmission.patientAddress.pinCode}}</span>
+                                </p>
+                            </div>
+                            
+                          </div>
+
+                      </div><!-- End of PATIENT CARD BODY -->
+                      
+                  </div><!-- End of PATIENT CARD -->
+              </div>
+          </div><!-- End of PATIENT BLOCK -->
+
+          <div class="row mb-2"><!-- ADMISSION BLOCK -->
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header billing-sidebar payment  mb-2"  style="border-bottom: 1px solid #c8c8c8 !important;">
+                        <h5>ADMISSION DETAILS</h5>
+                    </div><!-- End of ADMISSION CARD HEADER -->
+
+                    <div class="card-body">
+
+                        <div class="row mt-2">
+                            <div class="col-6"  *ngIf="currentAdmission.admissionDate!=null">
+                                <label  class="sideBarLabel"> Admission Date </label>
+                               {{currentAdmission.admissionDate | date:'dd-MM-yyyy'}}
+                            </div>
+
+                            <div class="col-6"  *ngIf="currentAdmission.admissionTime==null">
+                              <label  class="sideBarLabel"> Admission Time </label>
+                             {{currentAdmission.admissionDate | date:'HH:mm' }}
+                            </div>
+
+                            <div class="col-6"  *ngIf="currentAdmission.doctorName!=null">
+                                <label  class="sideBarLabel"> Doctor Name </label>
+                               {{currentAdmission.doctorName}}
+                            </div>
+
+                            <div class="col-6">
+                                <label  class="sideBarLabel"> Bed Info </label>
+                               {{currentAdmission.roomCategoryName}}/{{currentAdmission.roomNo}}/{{currentAdmission.bedNo}}
+                            </div>
+
+                        
+                            <div class="col-6"  *ngIf="currentAdmission.admissionReason!=null">
+                                <label  class="sideBarLabel"> Admission Reason </label>
+                               {{currentAdmission.admissionReason}}
+                            </div>
+
+
+                           
+                            <div class="col-6" *ngIf="currentAdmission.admittedBy!=null">
+                                <label  class="sideBarLabel"> Admission By </label>
+                               {{currentAdmission.admittedBy}}
+                            </div>
+                      
+                              <div class="col-6"  *ngIf="currentAdmission.admittedByMobile!=null">
+                                  <label  class="sideBarLabel"> Mobile </label>
+                                 {{currentAdmission.admittedByMobile}}
+                              </div> 
+                         
+                        </div>
+
+                    </div><!-- End of ADMISSION CARD BODY -->
+                    
+                </div><!-- End of ADMISSION CARD -->
+            </div>
+          </div><!-- End of ADMISSION BLOCK -->
+       
+      <div class="row mb-2"  *ngIf="currentAdmission.insurer!=null || currentAdmission.policyNo!=null 
+      || currentAdmission.tpa!=null || currentAdmission.paymentMode!=null"><!-- INSURANCE BLOCK -->
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header billing-sidebar payment  mb-2" style="border-bottom: 1px solid #c8c8c8 !important;">
+                    <h5>INSURANCE DETAILS</h5>
+                </div><!-- End of INSURANCE CARD HEADER -->
+
+                <div class="card-body">
+                    <div class="row mt-2">
+                        <div class="col-6" *ngIf="currentAdmission.insurer!=null">
+                            <label  class="sideBarLabel"> Insurer </label>
+                           {{currentAdmission.insurer}}
+                        </div>
+                        <div class="col-6" *ngIf="currentAdmission.policyNo!=null">
+                            <label  class="sideBarLabel"> policy No </label>
+                            {{currentAdmission.policyNo}}
+                          </div>
+                     
+                          <div class="col-6" *ngIf="currentAdmission.tpa!=null">
+                              <label  class="sideBarLabel"> Tpa </label>
+                             {{currentAdmission.tpa}}
+                          </div>
+                          <div class="col-6" *ngIf="currentAdmission.paymentMode!=null">
+                              <label  class="sideBarLabel"> Payment Mode </label>
+                              {{currentAdmission.paymentMode}}
+                            </div>
+                    </div>
+
+                </div><!-- End of INSURANCE CARD BODY -->
+                
+            </div><!-- End of INSURANCE CARD -->
+        </div>
+      </div><!-- End of INSURANCE BLOCK -->
+
+
+
+    </div>
+  </div><!-- End of SCROL AREA -->
+
+  </section>
+</p-sidebar>
+<!-- End Working on app/issue/1844 -->
+
+
+<!-- Working on app/issue/1934 -->
+<p-sidebar [(visible)]="displayBillDetailsSidebar" blockScroll="true" [dismissible]="false"
+  styleClass="procedureSidebar receivePayment" [style]="{width:'45vw'}" appendTo="body" position="right">
+  <div (click)="closeBillDetailsSidebar()" class="close-btn cursor"><i class="fas fa-times"></i></div>
+  <div class="row page-content"> <div class="col-12">
+    <section>
+      <div class="row container-fluid">
+        <div class="col-12">
+          <h1 class="font-size-for-room-sidebar-title">BILL Details</h1>
+        </div>
+      </div>
+      <div class="card  mt-2">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-6" *ngIf="currentBillDetails.intBillNo!=null">
+                  <label  class="sideBarLabel"> Bill No. </label>
+                  {{currentBillDetails.intBillNo}}
+              </div>
+
+              <div class="col-6" *ngIf="currentBillDetails.billDate!=null">
+                  <label  class="sideBarLabel"> Bill Date </label>
+                  {{currentBillDetails.billDate | date: 'dd-MM-yyyy'}}
+              </div>
+              <div class="col-6" *ngIf="currentBillDetails.totalAmount!=null">
+                  <label  class="sideBarLabel"> Total Amount </label>
+                  {{currentBillDetails.totalAmount | currency:'INR'}}
+              </div>
+
+              <div class="col-6" *ngIf="currentBillDetails.billingStatus!=null">
+                  <label  class="sideBarLabel"> Billing Status </label>
+                  {{currentBillDetails.billingStatus}}
+              </div>
+              
+              </div>
+            </div>
+          </div>
+     
+
+
+      <div class="card  mt-2">
+          <div class="card-body">
+              <div class="table-responsive small-tabl-padd no-btm-border">
+                <p-table [value]="billDetailList">
+
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th class="text-center" width="20%">Service Name</th>
+                      <th class="text-center" width="30%">Service Type</th>
+                      <th class="text-center" width="25%">Usage</th>                  
+                      <th class="text-right" width="25%">Charge</th>
+                      
+
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-bill let-i="rowIndex">
+
+                    <tr *ngIf="inPatientTransactionDetails.paymentList.length>0">
+                      <td width="20%" class="text-center">{{bill.serviceName}}</td>
+                      <td width="30%" class="text-center">{{bill.category }}</td>
+
+                      <td width="20%" class="text-center">
+                        <span *ngIf="bill.unit!=null; else durationBlock"> {{bill.unit}} Units</span>
+                        <ng-template #durationBlock><span>{{usageCalculation(bill.usage)}}</span></ng-template>
+                      </td>
+                      <td width="25%" class="text-right">{{bill.amount  | currency:'INR'}} </td>
+                    
+                    </tr>
+
+                  </ng-template>
+                </p-table>
+                
+              </div>
+            </div>
+
+      </div>
+    </section>
+  </div> 
+  </div>
+
+
+
+</p-sidebar>
+
+

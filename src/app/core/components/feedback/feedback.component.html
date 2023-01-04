@@ -1,0 +1,71 @@
+<a class="dropdown-item cursor feedback-ico-spacer " (click)="addFeedback()">
+  <!-- <label><i class="fas fa-comment-alt cursor feedback-style" (click)="addFeedback()"></i></label> -->
+  <img src="../../../../assets/image/feedback-header.svg" height="25" title="Feedback" alt="Feedback" >
+</a>
+
+
+<ng-template #feedbackModal>
+    <div class="modal-header">
+      <h4 class="modal-title">FEEDBACK</h4>
+      <button type="button" class="close float-right" (click)="modalRef.hide();addNew=false;" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+       <div class="col-lg-5 border">
+          <div class="row padding10">
+            <div class="col-lg-10"><label>PREVIOUS FEEDBACK</label></div>
+          </div>
+          <hr>
+          <div class="feedback-scrollarea">
+              <div class="paddingForPeerCOnsultingCase" *ngFor="let feedback of feedbacks">
+                  <div class="row margin-bottom-12px">
+                    <div class="col-lg-5 text-left margin-left-14px">
+                      <div class="row text-left">
+                        <img height="15" class="margin-left17px" *ngIf="feedback.attachedFilePath" (click)="downloadFile(feedback)" src="../../../../assets/image/download.svg" alt="">
+                      </div>
+                    </div>
+                    <!-- <div class="col-lg-2"></div> -->
+                    <div class="col-lg-7 margin-left14px text-right">
+                      <p class="margin-left-13px">{{feedback.feedbackTime | dateFormat}}&nbsp;{{feedback.feedbackTime | date: 'hh:mm'}}</p>
+                    </div>
+                  </div>
+                  <div class="row border padding17">
+                    <label>{{feedback.feedback}}</label>
+                  </div>
+                </div>
+          </div>
+          
+       </div>
+      
+        <div class="col-lg-7 border">
+            <form [formGroup]=feedbackForm>
+          <div class="row padding10">
+            <div class="col-lg-10"><label>NEW FEEDBACK</label></div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <textarea rows="5" class="feedback-textarea" formControlName="myFeedback" (input)="feedbackTextField()"
+                placeholder="message..."></textarea>
+            </div>
+          </div>
+              <div class="row">
+                <div class="col-lg-4">
+                  <!-- <label for="file-upload" class="feedbackFileUpload">{{'PEER_CONSLT.UPLOAD_IMAGE' | translate}}</label>
+                  <input type="file" accept=".pdf,.png,.jpg" id="file-upload"
+                    (change)="feedbackFileSelected($event)"> -->
+                </div>
+                <div class="col-lg-3 text-left selectedImage">
+                  <!-- {{selectedFiles}} -->
+                </div>
+                <div class="col-lg-4 text-right margin-left31px">
+                  <button [disabled]="!feedbackButton || feedbackForm.get('myFeedback').value == ''" class="btn btn-sm btn-primary" (click)="setFeedback($event)">SUBMIT</button>
+                </div>
+              </div>
+            </form>
+          </div>
+          
+      </div>    
+    </div>
+  </ng-template>

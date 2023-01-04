@@ -1,0 +1,43 @@
+.inline-radio{
+    display: inline-block !important;
+}
+.inline-radio span{
+    line-height: 29px;
+    margin-left: 6px;
+    position: relative;
+    top: -3px;
+}
+.filterPanel .scrollarea {
+    max-height: calc(100vh - 114px);
+    overflow: auto;
+}
+
+.color-grey-custom {
+    color: grey !important;
+}
+
+/* file upload */
+.side-label {
+    color: #116d0d;
+    font-weight: 500;
+    font-size: unset;
+}
+
+.signature_design {
+    height: 41px;
+    /* width: 14em; */
+    width: 100%;
+    margin-bottom: -11px !important;
+}
+
+.signature_design_not_specified {
+    height: 41px;
+    width: 14em;
+    border: 1px solid #a7a7a7;
+}
+
+.content_position {
+     padding-left: 0px;
+    padding-right: 0px;
+    border: 1px solid #a7a7a7;
+}

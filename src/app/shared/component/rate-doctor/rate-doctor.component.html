@@ -1,0 +1,38 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{'RATE_DOCTOR.RATE_DOCTOR_REVIEW' | translate}}</h4>
+  <button type="button" class="close float-right" (click)="backClicked()" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body pb-1">
+    <div [ngClass]="islast ? 'row ui-rating-height lastHeight':'row ui-rating-height'"  *ngFor="let rating of ratingList; let i=index; let islast=last">
+      <div class="col-12">
+        <p><span class="rating-ui-headings">{{rating.ratingParameterDTO.ratingParameterName}} </span>:<span> <small>{{rating.ratingParameterDTO.ratingParameterDesc}}</small></span></p>
+      </div>
+      <div class="col-12">
+        <p-rating [(ngModel)]="rating.ratingParameterScore"></p-rating>
+      </div>
+      <!-- <hr *ngIf="ratingList.length-1 !=i"> -->
+    </div>
+  <div class="row pb-3">
+      <div class="col-12">
+          <p class="rating-ui-headings">{{'RATE_DOCTOR.REVIEW_TITLE' | translate}}</p>
+          <input type="text" placeholder="Give a title for review" [(ngModel)]="reviewTitle">
+        </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <p class="rating-ui-headings">{{'RATE_DOCTOR.REVIEW_WRITE' | translate}}</p>
+      <textarea cols="50" rows="4" placeholder="text review here..." [(ngModel)]="ratingReview"></textarea>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="backClicked()">{{ 'COMMON.CANCEL_BUTTON' | translate }}</button>
+  <ng-container *ngIf="appointment?.appointmentByRefNo; else appointmentComponent">
+      <button class="btn btn-sm btn-primary" (click)="saveRating();" [disabled]="!(appointment?.appointmentByRefNo == user_refNo)">{{ 'COMMON.SAVE_BUTTON' | translate }}</button>
+  </ng-container>
+  <ng-template #appointmentComponent>
+    <button class="btn btn-sm btn-primary" (click)="saveRating();">{{ 'COMMON.SAVE_BUTTON' | translate }}</button>
+  </ng-template>
+</div>

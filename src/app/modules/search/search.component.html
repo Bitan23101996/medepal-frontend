@@ -1,0 +1,846 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<div class="container-fluid">
+
+  <div *ngIf="loading" class="cover">
+    <div class="loader">
+      <div class="loading-img"><img width=250px src="../../../../../assets/image/logo.svg" /></div>
+      <div class="loading-txt">Loading<div class="dot-elastic"></div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- added for doctor search bar according to clinic name -->
+
+  <div class="row" *ngIf="pageHeaderObj" class="custom-pt-search-bar">
+    <div class="col-12 pr-0">
+      <div class="dashb-card client-list-card">
+        <div class="row">
+          <div class="col-lg-4 col-12 text-left center-image">
+            <img class="cursor" (click)="goToDocSearch()" src="./../../../../assets/image/{{pageHeaderObj.logoName}}-logo.png" />
+          </div>
+          <div class="col-lg-8 col-12 text-left center-image">
+            <div>
+              <div class="imp-message-pos pb-2 custom-search-font-style">{{pageHeaderObj.hospitalName}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end of added for doctor search bar according to clinic name -->
+
+
+
+  <section class="searchSection top doc-search-hide-for-very-small custom-pt-search-bar" *ngIf="!pageHeaderObj">
+    <div *ngIf="searchResult.length==0" class="text-center mb-4">
+      <div class="main-header font-style1">Search for doctors and book appointment</div>
+      <div class="style-margin font-style2">
+        <p>Search for doctors based on specialization and location or search for a specific </p>
+        <p>doctor or clinic and check the availability of a doctor in real time. Book an</p>
+        <div class="gap-search">
+          <p>appointment and get immediate confirmation.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid pl-sm-4">
+      <div class="row no-gutters center-pos">
+        <div class="col-2 pl-2">
+
+        </div>
+        <div class="col-2 pl-2">
+          <label class="label-tx">{{ 'SEARCH.SEARCH_LOCATION_PINCODE' | translate }}</label>
+        </div>
+        <div class="col-3">
+          <label class="label-tx">{{ 'SEARCH.SEARCH_LOCATION_NEAR' | translate }}</label>
+        </div>
+        <div class="col-3 pl-2">
+          <label class="label-tx textDot">{{ 'SEARCH.SEARCH_BY_NAME' | translate }}</label>
+        </div>
+        <div class="col-2 pl-2">
+          <label class="label-tx">{{ 'SEARCH.SEARCH_FIND_DOCTOR_BY_NAME_SPECIALITY' | translate }}</label>
+        </div>
+      </div>
+      <div class="row no-gutters main-search search-area-shadow center-pos">
+        <div class="col-2 pt-2 pl-2" style="background: #fff !important;">
+          <label class="textDot"><input type="checkbox" (click)="checkOnline($event)"> Online
+            Consultation</label>
+        </div>
+        <!--new add for city(location division)-->
+        <div class="col-2">
+          <div class="border-right-group">
+            <div class="spacer">
+              <p-dropdown (onChange)="onSelectCity()" [disabled]="isOnline" [options]="locationCityList"
+                [(ngModel)]="search.city" placeholder="Select city" [showClear]="true" class="border-none city">
+              </p-dropdown>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-3 p-dropdown-custom">
+          <div class="position-relative">
+            <div class="spacer">
+              <!-- <i class="fas fa-location-arrow display-inline-block padding-top7px p-dropdown-city"
+                style="padding-left:10px;"></i> -->
+              <input [disabled]="isOnline" [(ngModel)]="search.location" (click)="onClickSearchAddressInput()"
+                class="border-none search-near-input" autocomplete="none"
+                placeholder="{{'SEARCH.SEARCH_NAV_NEAR_INPUT_PLACEHOLDER' | translate}}"
+                (input)="onkeyPresslocationSearch()">
+              <div class="display-inline-block search-trigger-icon-style"><i class="fas fa-crosshairs font-size16px"
+                  (click)="getCurrentAddressBySpanClick()"></i></div>
+              <div *ngIf="myAddress && switchPop" class="search-address-div-custom-style">
+                <!-- <div *ngIf="noaddressFoundFlag" class="search-near-input-no-result-style">
+                  {{'SEARCH.NO_ADDRESS_FOUND' | translate }}</div> -->
+                <div *ngIf="userAddressesDisplayArr.length > 0" class="search-location-saved-searches">
+                  {{ 'SEARCH.SAVED_ADDRESSES' | translate}}</div>
+                <hr class="no-padding-margin" *ngIf="(userAddressesDisplayArr.length > 0) && user_id">
+                <div class="search-location-container">
+                  <ng-container *ngFor="let addressEl of userAddressesDisplayArr">
+                    <span (click)="onClickAddress(addressEl)" class="font-size15px cursor search-location-span">
+                      <span><b>{{addressEl.addressType}}</b> - {{addressEl.line1}},<span *ngIf="addressEl.line2">
+                          {{addressEl.line2}},</span> {{addressEl.city}}
+                        {{addressEl.pinCode}}</span>
+                    </span>
+                    <hr class="no-padding-margin">
+                  </ng-container>
+                </div>
+                <span class="current-location-color cursor search-detect-current-loc"
+                  (click)="getCurrentAddressBySpanClick()"><i class="fas fa-crosshairs"></i>
+                  {{'SEARCH.DETECT_CURRENT_LOCATION' | translate}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-3">
+          <div>
+            <div class="spacer">
+              <input class="form-control border-right-0 border" type="text" [(ngModel)]="search.name"
+                [disabled]="isOnline" placeholder="{{'SEARCH.SEARCH_BY_NAME_PLACEHOLDER' | translate }}" pInputText>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-2">
+          <div class="spacer patient-search">
+            <p-dropdown [options]="specialityList" [disabled]="isOnline" [(ngModel)]="search.speciality"
+              optionLabel="label" placeholder="{{'SEARCH.SEARCH_SELECT_SPECIALITY' | translate }}" class="border-none"
+              [showClear]="true">
+            </p-dropdown>
+          </div>
+        </div>
+
+        <a href="javascript:void(0)" class="btn btn-primary" (click)="onClickSearchResult()" role="button">{{'SEARCH.SEARCH_SEARCH'
+            | translate }}</a>
+      </div>
+    </div>
+    <div *ngIf="searchResult.length==0" class="text-center mt-4">
+      <!--<div class="main-header">What is group</div>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>-->
+    </div>
+  </section>
+  <section class="searchSection top doc-search-show-for-very-small mb-0 mt-5" *ngIf="!pageHeaderObj">
+    <div class="row pb-2 margin-left-search-panel-doctor">
+      <div class="col-md-6 col-sm-6 col-12">
+        <label class="label-tx">{{ 'SEARCH.SEARCH_LOCATION_PINCODE' | translate }}</label>
+        <p-dropdown styleClass="doc-search-advanced-search-dropdown" [options]="locationCityList"
+          [(ngModel)]="search.city" placeholder="Select city" [showClear]="true" class="border-none city">
+        </p-dropdown>
+      </div>
+      <div class="col-md-6 col-sm-6 col-12">
+        <label class="label-tx">{{ 'SEARCH.SEARCH_LOCATION_NEAR' | translate }}</label>
+        <input [(ngModel)]="search.location" (click)="onClickSearchAddressInput()" class="border-none width102"
+          style="width: calc(95% - 23px) !important;" autocomplete="off" (clickOutside)="onClickOutside()"
+          placeholder="{{'SEARCH.SEARCH_NAV_NEAR_INPUT_PLACEHOLDER' | translate}}" (input)="onkeyPresslocationSearch()">
+        <div class="display-inline-block search-trigger-icon-style-for-mobile">
+          <i class="fas fa-crosshairs font-size16px" (click)="getCurrentAddressBySpanClick()"></i>
+        </div>
+        <div *ngIf="myAddress" class="search-address-div-custom-style">
+          <div *ngIf="userAddressesDisplayArr.length > 0" class="search-location-saved-searches">
+            {{ 'SEARCH.SAVED_ADDRESSES' | translate}}</div>
+          <hr class="no-padding-margin" *ngIf="(userAddressesDisplayArr.length > 0) && user_id">
+          <div class="search-location-container">
+            <ng-container *ngFor="let addressEl of userAddressesDisplayArr">
+              <span (click)="onClickAddress(addressEl)" class="font-size15px cursor search-location-span">
+                <span><b>{{addressEl.addressType}}</b> - {{addressEl.line1}},<span *ngIf="addressEl.line2">
+                    {{addressEl.line2}},</span> {{addressEl.city}} {{addressEl.pinCode}}</span>
+              </span>
+              <hr class="no-padding-margin">
+            </ng-container>
+          </div>
+          <span class="current-location-color cursor search-detect-current-loc"
+            (click)="getCurrentAddressBySpanClick()"><i class="fas fa-crosshairs"></i>
+            {{'SEARCH.DETECT_CURRENT_LOCATION' | translate}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="row pb-2 margin-left-search-panel-doctor">
+      <div class="col-md-6 col-sm-6 col-12">
+        <label class="label-tx textDot">{{ 'SEARCH.SEARCH_BY_NAME' | translate }}</label>
+        <input class="form-control border-right-0 border" type="text" [(ngModel)]="search.name"
+          placeholder="{{'SEARCH.SEARCH_BY_NAME_PLACEHOLDER' | translate }}" pInputText>
+      </div>
+      <div class="col-md-6 col-sm-6 col-12">
+        <label class="label-tx">{{ 'SEARCH.SEARCH_FIND_DOCTOR_BY_NAME_SPECIALITY' | translate }}</label>
+        <p-dropdown styleClass="doc-search-advanced-search-dropdown" [options]="specialityList"
+          [(ngModel)]="search.speciality" optionLabel="label"
+          placeholder="{{'SEARCH.SEARCH_SELECT_SPECIALITY' | translate }}" class="border-none" [showClear]="true">
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="row margin-left-search-panel-doctor">
+      <div class="col-12 text-center pt-2 mb-2">
+        <label class="textDot"><input type="checkbox" (click)="checkOnline($event)"> Online Consultation</label>
+      </div>
+    </div>
+    <div class="row margin-left-search-panel-doctor">
+      <div class="col-12 text-center">
+        <a href="javascript:void(0)" class="btn btn-primary doctor-search" (click)="onClickSearchResult()"
+          role="button">{{'SEARCH.SEARCH_SEARCH'
+              | translate }}</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<section class="srcResult searchSection docSearch" *ngIf="allDataFetched">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-10">
+        <div class="row">
+          <div class="col-md-2"></div>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+
+    <div class="row">
+      <div (clickOutside)="outsideDivClick()" (click)="insideDivClick()"
+        class="pr-0 pl-3 ml-3 page-content filter-panel-width"
+        [ngClass]="[panelVisible ? 'panelVisible' : 'panelNotVisible', pageHeaderObj ? 'sml-for-doc-search-for-amri': 'sml-for-doc-search']"
+        *ngIf="refineSearchFlag">
+        <form [formGroup]="refineFormGroup">
+          <!--start form-->
+          <div class="card">
+            <div class="filterPanel">
+              <div class="row border-bottom">
+                <div class="col-8">
+                  <h4 class="search-result-left-pen-heading">{{'SEARCH.REFINE_BY' | translate }}</h4>
+                </div>
+                <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0)"
+                    (click)="onClickResetLink('all')">Reset
+                    All</a></div>
+              </div>
+              <div class="row overflow-auto scrollarea">
+                <div class="col-12 pt-2">
+                  <div class="form-group pb-2">
+                    <label class="page-header">{{'SEARCH.DOCTOR_NAME' | translate }}</label>
+                    <!-- <input type="text" class="form-control" placeholder="{{'SEARCH.ENTER_DOCTOR_NAME' | translate }}"
+                      formControlName="refineDoctorName"> -->
+                    <app-name preventType="all" formControlName="refineDoctorName"
+                      placeholder="{{'SEARCH.ENTER_DOCTOR_NAME' | translate }}"></app-name>
+                  </div>
+                  <div class="form-group">
+                    <div class="row pb-2">
+                      <div class="col-8"><label class="page-header">{{'SEARCH.GENDER' | translate }}</label></div>
+                      <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0)"
+                          (click)="onClickResetLink('gender')">{{'SEARCH.RESET' | translate }}</a>
+                      </div>
+                    </div>
+                    <div class="row pb-2 margin-left1px">
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" formControlName="refineByMale">
+                        <label class="form-check-label">{{'SEARCH.MALE' | translate }}</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" formControlName="refineByFemale">
+                        <label class="form-check-label">{{'SEARCH.FEMALE' | translate }}</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group pb-2">
+                    <label class="page-header">{{'SEARCH.SPECIALISATION' | translate }}</label>
+                    <input type="text" class="form-control" placeholder="{{'SEARCH.ENTER_SPECIALISATION' | translate }}"
+                      formControlName="refineSpecialisation">
+                  </div>
+
+                  <div class="form-group">
+                    <div class="row pb-2">
+                      <div class="col-8"><label class="page-header">{{'SEARCH.SCHEDULE' | translate }}</label></div>
+                      <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0)"
+                          (click)="onClickResetLink('scheduleDays')">{{'SEARCH.RESET' | translate }}</a>
+                      </div>
+                    </div>
+                    <div class="row pb-2">
+                      <div class="col-12">
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" formControlName="refineScheduleMonDay">
+                          <label class="form-check-label">{{'SEARCH.MON' | translate }}</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" formControlName="refineScheduleTueDay">
+                          <label class="form-check-label">{{'SEARCH.TUE' | translate }}</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" formControlName="refineScheduleWedDay">
+                          <label class="form-check-label">{{'SEARCH.WED' | translate }}</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" formControlName="refineScheduleThuDay">
+                          <label class="form-check-label">{{'SEARCH.THU' | translate }}</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" formControlName="refineScheduleFriDay">
+                          <label class="form-check-label">{{'SEARCH.FRI' | translate }}</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" formControlName="refineScheduleSatDay">
+                          <label class="form-check-label">{{'SEARCH.SAT' | translate }}</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="checkbox" formControlName="refineScheduleSunDay">
+                          <label class="form-check-label">{{'SEARCH.SUN' | translate }}</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="row pb-2">
+                      <div class="col-8"><label class="page-header">{{'SEARCH.TIMING' | translate }}</label></div>
+                      <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0)"
+                          (click)="onClickResetLink('timing')">{{'SEARCH.RESET' | translate }}</a>
+                      </div>
+                    </div>
+                    <div class="row pb-2 avail">
+                      <div class="col-12">
+                        <div class="form-check ">
+                          <div>
+                            <input class="form-check-input" type="checkbox" formControlName="refineAvailabilityMorning">
+                          </div>
+                          <label class="font-size11px form-check-label">{{'SEARCH.MORNING' | translate }}</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" formControlName="refineAvailabilityAfternoon">
+                          <label class="font-size11px form-check-label">{{'SEARCH.AFTERNOON' | translate }}</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" formControlName="refineAvailabilityEvening"
+                            value="option1">
+                          <label class="font-size11px form-check-label">{{'SEARCH.EVENING' | translate }}</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" formControlName="refineAvailabilityNight"
+                            value="option1">
+                          <label class="font-size11px form-check-label">{{'SEARCH.NIGHT' | translate }}</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="row pb-2">
+                      <div class="col-8"><label class="page-header">{{'SEARCH.SEARCH_FEESA' | translate }}</label>
+                      </div>
+                      <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0)"
+                          (click)="onClickResetLink('fees')">{{'SEARCH.RESET' | translate }}</a>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="d-flex justify-content-center">
+                          <input class="border-0 w-100" step="50" data-toggle="tooltip"
+                            title="{{refineFormGroup.get('refineFees').value}}" type="range" min="0" max="5000"
+                            formControlName="refineFees" />
+                        </div>
+                        <span class="justify-content-center-selected">{{refineFormGroup.get('refineFees').value}}</span>
+                      </div>
+                    </div>
+                    <div class="row pb-2">
+                      <div class="col-6"><label>{{'SEARCH.START_VALUE' | translate }}</label>
+                      </div>
+                      <div class="col-6 text-right">
+                        <label>{{'SEARCH.END_VALUE' | translate }}</label></div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="row pb-2">
+                      <div class="col-8"><label class="page-header">{{'SEARCH.AVAILABILITY' | translate }}</label>
+                      </div>
+                      <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0)"
+                          (click)="onClickResetLink('availability')">{{'SEARCH.RESET' | translate }}</a>
+                      </div>
+                    </div>
+                    <div class="row pb-2 avail">
+                      <div class="col-12">
+                        <div class="form-check ">
+                          <div>
+                            <input class="form-check-input" type="checkbox" formControlName="refineAvailabilityToday">
+                          </div>
+                          <label class="font-size11px form-check-label">{{'SEARCH.TODAY' | translate }}</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" formControlName="refineAvailabilityTomorrow">
+                          <label class="font-size11px form-check-label">{{'SEARCH.TOMORROW' | translate }}</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox"
+                            formControlName="refineAvailabilityDayAfterTomorrow" value="option1">
+                          <label
+                            class="font-size11px form-check-label">{{'SEARCH.DAY_AFTER_TOMORROW' | translate }}</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Working on app/issues/595 -->
+                  <div class="form-group">
+                    <div class="row pb-2">
+                      <div class="col-8"><label class="page-header">{{'SEARCH.HOME_VISIT' | translate }}</label>
+                      </div>
+                      <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0)"
+                          (click)="onClickResetLink('homeVisitFlag')">{{'SEARCH.RESET' | translate }}</a>
+                      </div>
+                    </div>
+                    <div class="row pb-2 avail">
+                      <div class="col-12">
+                        <div class="form-check ">
+                          <div>
+                            <input class="form-check-input" type="checkbox" formControlName="refineHomeVisitYes">
+                          </div>
+                          <label class="font-size11px form-check-label">{{'SEARCH.HOME_VISIT_YES' | translate }}</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" formControlName="refineHomeVisitNo">
+                          <label class="font-size11px form-check-label">{{'SEARCH.HOME_VISIT_NO' | translate }}</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--End Working on app/issues/595 -->
+                </div>
+
+              </div>
+              <div class="form-group text-right border-top pt-2">
+                <button type="submit" class="btn btn-primary btn-sm"
+                  (click)="refineSearchResult()">{{'SEARCH.SEARCH' | translate }}</button>
+              </div>
+            </div>
+          </div>
+        </form>
+        <!--end of form-->
+      </div>
+      <div class="row doctor-msg-not-found" *ngIf="searchResult.length==0 && errorMsgShowFlag">
+        <p class="blue !important">
+          {{'SEARCH.NOT_FOUND_TEXT' | translate }}
+        </p>
+      </div>
+      <div *ngIf="searchResult.length>0" class="col">
+        <div class="row doc-search-filter-popup-link">
+          <div class="col-12 text-right pb-5">
+            <span *ngIf="!panelVisible" class="cursor mr-4 filterBtn-for-doc-search" (click)="refinePanelDisplay()">
+              Filters
+            </span>
+            <span *ngIf="panelVisible" class="cursor mr-4 filterBtn-for-doc-search" (click)="refinePanelDisplay()">
+              Remove Filter
+            </span>
+          </div>
+        </div>
+        <div class="row search-body overflow-auto scrollarea">
+          <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 padding-left49"
+            *ngFor="let doctor of searchResult | slice:pagination.first:pagination.last;let i=index;">
+            <div class="card">
+              <div *ngIf="doctor.inoperative == 'Y'" class="cover-for-card">
+                <div class="loader-for-card">
+                  <div class="loading-txt-for-doc-card">Currently not accepting appointments</div>
+                </div>
+              </div>
+              <div class="card-body a-custom-style">
+                <div class="row">
+                  <div class="col-lg-3 text-center">
+                    <p class="profileRoundPic">
+                      <img *ngIf="!doctor.gender && doctor.profileImageSrc ==''"
+                        src="../../../../../assets/image/doctor-pic.svg">
+                      <img *ngIf="doctor.profileImageSrc =='' && doctor.gender == 'M'"
+                        src="../../../../../assets/image/doctor-pic.svg">
+                      <img *ngIf="doctor.profileImageSrc =='' && doctor.gender == 'F'"
+                        src="../../../../../assets/image/doctor-female.svg">
+                      <img *ngIf="doctor.profileImageSrc !=''"
+                        [src]="domSanitizer.bypassSecurityTrustUrl(doctor.profileImageSrc)">
+
+                      <i class="fa fa-heart cursor positionhear" ngbTooltip="Remove Favourite"
+                        *ngIf="isAuthorize && doctor.isFvorite" (click)="saveFavDoctor(doctor,false)"
+                        [ngClass]="{'Favourite-yes': doctor.isFavourite, 'Favourite-no': !doctor.isFavourite}"
+                        aria-hidden="true"></i>
+                      <i class="fas fa-heart cursor positionhear grey doctor-fevorite-heart" ngbTooltip="Make-Favourite"
+                        *ngIf="isAuthorize && !doctor.isFvorite" (click)="saveFavDoctor(doctor,true)"
+                        [ngClass]="{'Favourite-yes': doctor.isFavourite, 'Favourite-no': !doctor.isFavourite}"
+                        aria-hidden="true"></i>
+
+                    </p>
+                  </div>
+                  <div class="col-lg-9">
+                    <div class="row">
+                      <div class="col-7">
+                        <div class="doctor-details-view">
+                          <h4 class="textDot" data-toggle="tooltip" title="{{doctor?.name}}">
+                            {{doctor?.doctorName}}
+                          </h4>
+
+                          <ul class="doctorSpcDetails">
+                            <li *ngIf="doctor?.doctorQualifications" class="textDot">
+                              <span class="card-subtitle">{{doctor.doctorQualifications}}</span>
+                            </li>
+                            <li *ngIf="doctor?.doctorSpecializations" class="textDot">
+                              <span class="card-subtitle">{{doctor.doctorSpecializations}}</span>
+                            </li>
+                            <li>
+                              <p class="card-subtitle" *ngIf="doctor?.yearsOfExperience">
+                                {{doctor?.yearsOfExperience}}
+                                {{'SEARCH.SEARCH_YEARS_EXPERIENCE_PARAGRAPH' | translate }}
+                              </p>
+                            </li>
+                            <li (mouseenter)="getAboutDoctor(doctor.doctorRefNo)">
+                              <p style="width: calc(82px - 11px);" class="card-subtitle cursor" [openDelay]="300"
+                                triggers="mouseenter:mouseleave" container="body" placement="{{popoverPosition}}"
+                                (mouseover)="popupSetup($event)" ngbPopover="{{docResume}}">About Doctor</p>
+                              <!-- <p class="card-subtitle cursor" triggers="mouseenter:mouseleave" [popover]="popAboutDoctor">About Doctor</p> -->
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div class="col-5">
+                        <div class="row">
+                          <div class="col-lg-6 col-md-6 col-sm-6 col-12 pl-0">
+                            <div class="row margin-bottom0">
+                              <app-rating [rating]=doctor?.rating></app-rating>
+                            </div>
+                            <div class="row margin-bottom0">
+                              <div class="col-12 doc-rating">
+                                <ng-container *ngIf="!doctor.numRatings">0
+                                </ng-container>{{doctor?.numRatings}}
+                                {{'SEARCH.RATINGS' | translate }}
+                              </div>
+                            </div>
+                            <div class="row margin-bottom0">
+                              <div class="col-12 doc-review pr-0 font-size-for-review">
+                                <ng-container *ngIf="!doctor.numReviews">0
+                                  {{'SEARCH.REVIEW' | translate }}s
+                                </ng-container>
+                                <a href="javascript:void(0)" *ngIf="doctor?.numReviews > 0"
+                                  (click)="userReviews(doctor)">{{doctor?.numReviews}}
+                                  {{'SEARCH.REVIEW' | translate }}<ng-container *ngIf="doctor?.numReviews > 1">s
+                                  </ng-container></a>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-lg-6 col-md-6 col-sm-6 col-12 text-right">
+                            <div class="row">
+                              <div class="pl-0 col-12">
+                                <img data-toggle="tooltip" title="Home Visit" *ngIf="doctor.homeVisitFlag == 'Y'"
+                                  src="../../../../../assets/image/house.svg" style="height: 22px;">&nbsp;&nbsp;
+                                <img data-toggle="tooltip" title="Online Consultancy"
+                                  *ngIf="doctor.onlineConsultation == 'Y'"
+                                  src="../../../../../assets/image/e-consult.svg" style="height: 22px;">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-12 doc-review pl-0">
+                            <!-- <a href="javascript:void(0)"
+                              (click)="op.toggle($event); giveRating(doctor)">{{'SEARCH.RATE_DOCTOR' | translate }}</a> -->
+                          </div>
+                        </div>
+                        <div class="row" *ngIf="doctor.onlineConsultation == 'Y'">
+                          <div class="col-12 doc-review pl-0">
+                            <a href="javascript:void(0)" (click)="getAdditionalDoctorChamberList(doctor, i)">Doctor
+                              Chambers</a>
+                          </div>
+                        </div>
+                        <div class="row" *ngIf="doctor?.additionalChamberCount > 0 && doctor.onlineConsultation == 'N' && !pageHeaderObj">
+                          <div class="col-12 doc-review pl-0">
+                            <a href="javascript:void(0)"
+                              (click)="getAdditionalDoctorChamberList(doctor, i)">{{doctor?.additionalChamberCount}}
+                              {{'SEARCH.OTHER_CHAMBER' | translate }}<ng-container
+                                *ngIf="doctor?.additionalChamberCount > 1">s
+                              </ng-container></a>
+                          </div>
+                        </div>
+                        <p-overlayPanel class="overlay" [appendTo]="'body'" #op>
+                          <app-rate-doctor [id]="op" (onClose)="onCloseOverlay(id, $event)" [appointment]="appointment"
+                            [editRating]="editRating" [ratingList]="ratingList"></app-rate-doctor>
+                        </p-overlayPanel>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div *ngIf="doctor.onlineConsultation == 'Y'" class="row">
+                  <div class="col-12 " *ngFor="let clinicData of doctor?.doctorChamberList">
+                    <!--*ngFor="let clinicData of doctor?.doctorChamberList"-->
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="row text-center">
+                          <div class="col-5">
+                            <div class="row">
+                              <div class="col-12 clinic-title textDot">
+                                <h5 class="p-card">
+                                  <span><img data-toggle="tooltip" title="Online Consultancy"
+                                      *ngIf="clinicData.acceptonline =='Y'"
+                                      src="../../../../../assets/image/consult-chat.svg" class="online-consult"
+                                      style="height: 15px;"></span>
+                                  Online Consultation:
+                                </h5>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-7">
+                            <div *ngIf="doctor.totalChamberCount != 0" class="table-responsive">
+                              <table class="table table-striped doc-search">
+                                <thead>
+                                  <tr>
+                                    <ng-template #popAvalaibleDaysTemplate>
+                                      <div [innerHtml]="popAvalaibleDaysTemplateHtml"></div>
+                                    </ng-template>
+                                    <th *ngFor="let dayNumber of [1,2,3,4,5,6,7]" placement="left"
+                                      (mouseenter)="getAvalableDayDetails(clinicData.chamberTimingList, dayNumber)"
+                                      triggers="mouseenter mouseleave" [ngbPopover]="popAvalaibleDaysTemplate"
+                                      [autoClose]="'outside'" container="body" placement="left"
+                                      [ngClass]="{'doc-avaiable': getAvalableDayStatus(clinicData.chamberTimingList, dayNumber)}">
+                                      {{getAvalableDay(dayNumber)}}
+                                    </th>
+                                  </tr>
+                                </thead>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div *ngIf="doctor.onlineConsultation == 'N'" class="row max-overflow-scorll">
+                  <div class="col-12 " *ngFor="let clinicData of doctor?.doctorChamberList">
+                    <div class="row">
+                      <div class="col-7">
+                        <div class="row">
+                          <div class="col-12 clinic-title textDot">
+                            <h5 class="p-card" *ngIf="clinicData.chamberName !=''">
+                              <span><img data-toggle="tooltip" *ngIf="clinicData.acceptonline =='Y'"
+                                  title="Online Consultancy" src="../../../../../assets/image/consult-chat.svg"
+                                  class="online-consult" style="height: 15px;"></span>
+                              {{clinicData.chamberName }}&nbsp;<span class="fees small">({{'SEARCH.SEARCH_INR_SIGN' | translate
+                        }}{{clinicData.fees}}&nbsp;)</span>
+                            </h5>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-5">
+                        <div *ngIf="doctor.totalChamberCount != 0" class="table-responsive">
+                          <table class="table table-striped doc-search">
+                            <thead>
+                              <tr>
+                                <ng-template #popAvalaibleDaysTemplate>
+                                  <div [innerHtml]="popAvalaibleDaysTemplateHtml">
+                                  </div>
+                                </ng-template>
+                                <!-- Working on frontend/issues/186 -->
+                                <!-- <th *ngFor="let dayNumber of [1,2,3,4,5,6,7]" placement="left"
+                                    (mouseenter)="getAvalableDayDetails(clinicData.chamberTimingList, dayNumber)"
+                                    triggers="mouseenter:mouseleave" [popover]="popAvalaibleDaysTemplate"
+                                    [outsideClick]="true"
+                                    [ngClass]="{'doc-avaiable': getAvalableDayStatus(clinicData.chamberTimingList, dayNumber)}">
+                                    {{getAvalableDay(dayNumber)}}
+                                  </th> -->
+                                <th *ngFor="let dayNumber of [1,2,3,4,5,6,7]" placement="left"
+                                  (mouseenter)="getAvalableDayDetails(clinicData.chamberTimingList, dayNumber)"
+                                  triggers="mouseenter mouseleave" [ngbPopover]="popAvalaibleDaysTemplate"
+                                  [autoClose]="'outside'" container="body" placement="left"
+                                  [ngClass]="{'doc-avaiable': getAvalableDayStatus(clinicData.chamberTimingList, dayNumber)}">
+                                  {{getAvalableDay(dayNumber)}}
+                                </th>
+                                <!-- Work on frontend/issues/186 -->
+                              </tr>
+                            </thead>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-12 small pt-1">
+                        <ng-container *ngIf="clinicData.latitude && clinicData.longitude"><img class="mb-0 cursor"
+                            height="12px" (click)="openDoctorChamberLocation(clinicData)"
+                            *ngIf="clinicData.displayAddress" src="../../../../../assets/image/pin.svg"></ng-container>
+                        &nbsp;{{clinicData.displayAddress}}
+                        <ng-container *ngIf="search.isAddress">
+                          ({{clinicData.distance | number:'1.2-2'}}km)</ng-container>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-12 text-center">
+                    <button [ngClass]="doctor.totalChamberCount == 0 ? 'btn-primary-disabled' : ''"
+                      class="btn btn-primary app-btn-positon card-button"
+                      [disabled]="doctor?.doctorChamberList.length==0 || doctor.totalChamberCount == 0 || doctor.inoperative == 'Y'"
+                      (click)="openBookAppoinment('book-appoinment-popup', doctor)">{{'SEARCH.SEARCH_BOOK_APPOINMENT_BUTTON'
+                  | translate }}</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <p-paginator [alwaysShow]="true" *ngIf="searchResult.length>10" [rows]="pagination.rows"
+              [totalRecords]="pagination.totalRecords" (onPageChange)="searchPaginate($event)">
+            </p-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<ng-template #bookAppoinmentModal>
+  <div *ngIf="appoinment" id="book-appoinment-popup">
+    <div class="book-app-close-btn">
+      <button type="button" class="close" id="pop-close" aria-label="close" (click)="backClicked()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <app-book-appoinment [modalRef]="modalRef" (onClose)="onClosePopUp($event)" [timeSlotDisabled]="timeSlotDisabled"
+      [dateTimeDisabled]="dateTimeDisabled" [data]="appoinment" [id]="'book-appoinment-popup'">
+    </app-book-appoinment>
+  </div>
+</ng-template>
+
+<jw-modal id="paytm-popup">
+  <div class="method-container">
+    <h1 style="text-align: center">{{'SEARCH.SEARCH_PLEASE_DO_NOT_REFRESH_THIS_PAGE' | translate }}</h1>
+  </div>
+  <form #someVar method="post" action="{{ paytmRespObj.redirectUrl }}" name="f1">
+    <input type="hidden" name="MID" value="{{ paytmRespObj.MID }}">
+    <input type="hidden" name="WEBSITE" value="{{ paytmRespObj.website }}">
+    <input type="hidden" name="CHANNEL_ID" value="{{ paytmRespObj.channelid }}">
+    <input type="hidden" name="INDUSTRY_TYPE_ID" value="{{ paytmRespObj.industrytypeid }}">
+    <input type="hidden" name="ORDER_ID" value="{{ paytmRespObj.orderid }}">
+    <input type="hidden" name="CUST_ID" value="{{ paytmRespObj.custid }}">
+    <input type="hidden" name="TXN_AMOUNT" value="{{ paytmRespObj.txnamount }}">
+    <input type="hidden" name="CALLBACK_URL" value="{{ paytmRespObj.callbackurl }}">
+    <input type="hidden" name="CHECKSUMHASH" value="{{ paytmRespObj.checksumhash }}">
+  </form>
+</jw-modal>
+
+<ng-template #userReviewsModal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{'SEARCH.REVIEWS' | translate }}</h4>
+
+    <button type="button" class="close" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" id="user-review">
+    <div class="row">
+      <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12 review-docdetail">
+        <span class="review-docname">{{reviews?.doctorName}}</span><span *ngIf="reviews.doctorQualifications">
+          (<span>
+            {{reviews?.doctorQualifications}}
+          </span>)
+        </span>
+        <span *ngIf="reviews.doctorSpecializations">
+          (<span>
+            {{reviews?.doctorSpecializations}}
+          </span>)</span>,<span>&nbsp;{{reviews.yearsOfExperience}}
+          {{'SEARCH.YEAR_EXPERIENCE' | translate }}</span>
+      </div>
+      <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 text-right"><small>Showing
+          {{reviews.userReviewsList.length}} of {{reviews.reviewNum}}
+          {{'SEARCH.REVIEWS' | translate }}</small></div>
+    </div>
+
+    <div class="row pt-2">
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12" *ngFor="let review of reviews.userReviewsList">
+        <div class="doctor-details-view">
+          <div class="row">
+            <div class="col-12"><span class="review-heading">{{review.reviewTitle}}</span></div>
+          </div>
+          <div class="row doc-spl-spacer review-ratingnum">
+            <div class="float-left">
+              <app-rating [rating]=review.score></app-rating>
+            </div>
+            <div class="float-left ml-1">
+              <div class="textDot review-username"><small>{{review.ratingUserName}},
+                  {{review.date}}</small></div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <p>{{review.ratingReviewText}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" *ngIf="reviews.userReviewsList.length < reviews.reviewNum">
+      <div class="col-lg-5"></div>
+      <div class="col-lg-2">
+        <a href="javascript:void(0)" (click)="moreReviews()">{{'SEARCH.VIEW_MORE' | translate }}</a>
+      </div>
+      <div class="col-lg-5"></div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #googleMapLocation>
+  <div class="modal-header">
+    <pre class="overflow-hidden google-map-pre-style">
+      <h5 class="modal-title">{{doctorClinicDataObj.chamberName}}</h5>
+      <p class="google-map-p-modal-style modal-title">{{doctorClinicDataObj.displayAddress}}</p>
+    </pre>
+    <button type="button" class="close" aria-label="close" (click)="modalRef.hide('cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body overflow-hidden" id="user-review">
+    <agm-map [latitude]="doctorChamberLocationlat" [longitude]="doctorChamberLocationlng" [zoom]="locationZoomConst">
+      <agm-marker [latitude]="doctorChamberLocationlat" [longitude]="doctorChamberLocationlng"></agm-marker>
+    </agm-map>
+    <!-- <google-map-modal [lat]="doctorChamberLocationlat" [long]="doctorChamberLocationlng"></google-map-modal> -->
+  </div>
+  <div class="modal-footer">
+    <!-- <div class="text-right">
+      <button class="btn-sm btn-secondary cursor med-det-closebtn-custom-style" (click)="modalRef.hide();">{{
+            'USER_PROFILE.USER_PROFILE_POPUP_CLOSE' | translate }}</button>
+    </div> -->
+  </div>
+</ng-template>
+
+<ng-template class="popup-about-doc" #popAboutDoctor>
+  <div class="row">
+    <div class="col-lg-12" *ngIf="docResume">{{docResume}}</div>
+    <div class="col-lg-12" *ngIf="!docResume">Not Specified</div>
+  </div>
+</ng-template>

@@ -1,0 +1,41 @@
+.service-provider-tbl-borderTop{
+    border-top: 1px solid lightgrey !important;
+}
+.p-8{
+    padding: 8px !important;
+}
+.scrollareaForOpdCalenderDocList{
+    max-height: calc(100vh - 200px);
+    font-size: 11px;
+    text-align: left;
+    background: #f5f8f9;
+    border: 1px solid #dee2e6;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.selected-refine-by-div {
+    background:#ced6d8;
+	
+}
+.refine-panel-border-bottom {
+    border-bottom: 1px solid #aba3ab!important;
+}
+.holiday-calendar .add-row,.doctorHolidayLists .add-row  {
+    color: #648986 !important;
+    font-weight: 500 !important;
+}
+.holiday-calendar .btn-sm, .doctorHolidayLists .btn-sm{
+   font-size: 10px !important;
+}
+.ipdServiceCategory {
+    text-decoration: none !important;
+    color: #fff;
+    font-weight: 400;
+    display: inline-block;
+    border-radius: 50px;
+    padding: 0 10px;
+    margin-bottom: 0 !important;
+    margin-left: 10px;
+    background: #1b78bb;
+    box-shadow: 1px 2px 2px rgba(0,0,0,.3);
+}

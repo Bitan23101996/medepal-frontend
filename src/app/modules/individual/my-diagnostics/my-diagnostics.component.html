@@ -1,0 +1,385 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<div class="row">
+  <div class="w-10 pr-0 pl-3 sml-for-my-diagnostics page-content filter-panel-width"
+    [ngClass]="panelVisible ? 'panelVisible' : 'panelNotVisible'">
+    <div class="card prescription-panel-shadow">
+      <div class="filterPanel">
+        <div class="row border-bottom">
+          <div class="col-8">
+            <h4 class="search-result-left-pen-heading">{{ 'ORDER_DELIVERY.REFINE_BY' | translate }}</h4>
+          </div>
+          <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0);" (click)="resetAll()">{{
+              'COMMON.RESET_ALL_BUTTON' | translate }}</a></div>
+        </div>
+        <div class="row overflow-auto scrollarea">
+          <div class="col-12">
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group">
+                  <label>{{ 'ORDER_DELIVERY.FROM' | translate }}</label>
+                  <app-datepicker [maxDate]="maxDate" [(ngModel)]="fromDate" position="right"></app-datepicker>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label>{{ 'ORDER_DELIVERY.TO' | translate }}</label>
+                  <app-datepicker [maxDate]="maxDate" [(ngModel)]="toDate" position="right"></app-datepicker>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="row pb-2">
+                <div class="col-8"><label class="page-header">{{ 'ORDER_DELIVERY.ORDER_STATUS' | translate }}</label>
+                </div>
+                <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0);" (click)="resetOrderStatus()">{{
+                      'COMMON.RESET_BUTTON' | translate }}</a></div>
+              </div>
+              <div *ngFor="let s of statusList" class="form-check">
+                <label class="form-check-label">
+                  <input type="checkbox" class="form-check-input" value="{{s.attributeValue}}"
+                    [checked]="stat.indexOf(s.attributeValue) > -1? true : false"
+                    (change)="statusChange($event, s)"><span>{{s.displayValue}}</span>
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="row pb-2">
+                <div class="col-8"><label class="page-header">{{ 'ORDER_DELIVERY.DELIVERY_MODE' | translate
+                    }}</label></div>
+                <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0);" (click)="resetMode()">{{
+                    'COMMON.RESET_BUTTON' | translate }}</a></div>
+              </div>
+              <div *ngFor="let m of modeList" class="form-check">
+                <label class="form-check-label">
+                  <input type="checkbox" class="form-check-input" value="{{m.attributeValue}}"
+                    [checked]="modeArr.indexOf(m.attributeValue) > -1? true: false"
+                    (change)="modeChange($event, m)"><span>{{m.displayValue}}</span>
+                </label>
+              </div>
+              <div class="row">
+                <div class="col-lg-9">
+                  <label class="page-header">{{'MY_ORDER.PATIENT_NAME_LEBEL_NAME' | translate}}</label>
+                </div><br>
+              </div>
+              <div>
+                <input type="text" [(ngModel)]="patientName" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group text-right border-top pt-2">
+        <button type="button" (click)="submit()"
+          class="btn btn-primary btn-sm">{{ 'COMMON.SEARCH_BUTTON' | translate }}</button>
+      </div>
+    </div>
+  </div>
+  <div class="col page-content">
+    <div class="card">
+      <div class="row">
+        <div class="col-md-6 col-12">
+          <h1 class="top-label">My Diagnostics</h1>
+        </div>
+        <div class="col-md-6 col-12 text-right pb-3">
+          <span class="cursor mr-4 filterBtn" (click)="refinePanelDisplay()">Filters</span>
+        </div>
+      </div>
+      <hr>
+      <div *ngIf="orderedDiagnosticsListArr.length==0 && isResp" class="row page-content">
+        <div class="row col-lg-12 text-center padding-right0px">
+          <div class="text-center not-found col-lg-12">
+            <h3>
+              {{'MY_ORDER.NO_ORDERS' | translate}}</h3>
+          </div>
+        </div>
+      </div>
+      <div class="content table-responsive for-medium search-result not-for-mobile">
+        <p-table [value]="orderedDiagnosticsListArr" [paginator]="orderedDiagnosticsListArr.length>5" [rows]=5
+          *ngIf="orderedDiagnosticsListArr.length>0">
+          <ng-template pTemplate="header">
+            <tr>
+              <!-- <th width="15%" nowrap>{{'MY_ORDER.LEBEL_NAME' | translate}}</th> -->
+              <th width="16%">{{'MY_ORDER.ORDER_ID_LEBEL_NAME' | translate}}</th>
+              <th width="15%" class="text-left">{{'MY_ORDER.ORDER_DATE_LEBEL_NAME' | translate}}</th>
+              <th width="15%" nowrap>{{'MY_ORDER.ORDER_STATE' | translate}}</th>
+              <th width="15%" nowrap class="text-right">
+                {{'MY_ORDER.TOTAL_AMOUNT_LEBEL_NAME' | translate}}</th>
+              <th width="13%" nowrap class="text-right small-hide">
+                {{'MY_ORDER.DUE' | translate}}
+              </th>
+              <th width="14%" class="text-center small-hide" scope="col"></th>
+              <th width="11%" class="text-center small-hide" scope="col"></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-orderMedListEl>
+            <tr>
+              <!-- <td>{{orderMedListEl.orderByUserName}}</td> -->
+              <td>{{orderMedListEl.orderRefNo}}</td>
+              <td class="text-left">{{orderMedListEl.orderDate | dateFormat}}</td>
+              <td class="textDot-myOrders" title="{{orderMedListEl.orderState}}">{{orderMedListEl.orderState}}</td>
+              <!-- <td class="text-center" (click)="giveRating(orderMedListEl)"><button
+                      [disabled]="orderMedListEl.orderState !='Paid'" class="btn btn-secondary-narrow"
+                      (click)="op.toggle($event)">Rate</button>
+                  </td> -->
+              <td class="text-right">{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                {{orderMedListEl.totalAmount | number : '2.2-2'}}</td>
+              <td class="text-right small-hide"><span
+                  *ngIf="orderMedListEl.outstandingAmount > 0">{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                  {{orderMedListEl.outstandingAmount | number : '2.2-2'}}</span></td>
+              <td class="cursor text-center small-hide">
+                <a *ngIf="orderMedListEl.orderState == 'Completed' || orderMedListEl.orderState == 'Delivered'"
+                  href="javascript:void(0)" (click)="op.toggle($event); giveRating(orderMedListEl)">Rate</a>
+                <!-- <ng-container *ngIf="!doctor.numReviews && orderMedListEl.orderState == 'Completed' || orderMedListEl.orderState == 'Delivered'">0 {{'SEARCH.REVIEW' | translate }}</ng-container> -->
+                &nbsp;&nbsp;<a href="javascript:void(0)"
+                  *ngIf="orderMedListEl.orderState == 'Completed' || orderMedListEl.orderState == 'Delivered'"
+                  (click)="userReviews(orderMedListEl)">{{'SEARCH.REVIEW' | translate }}</a>
+                &nbsp;&nbsp;<span ngbTooltip="Cancel Diagnostics"
+                  class="table-action-btn delete cursor grey margin-bottom0 cursor"
+                  (click)="cancelOrder(orderMedListEl)"
+                  *ngIf="(!orderState[orderMedListEl.orderState]) && (orderMedListEl.orderState!= orderStateOutForDelivery.OUT_FOR_DELIVERY)">
+                  <img src="assets/image/delete.svg" class="margin-top0" height="20" alt=""></span>
+              </td>
+              <td class="cursor text-center small-hide">
+                <button *ngIf="orderMedListEl.outstandingAmount > 0 && orderMedListEl.orderState != 'Canceled'"
+                  class="btn btn-sm btn-primary"
+                  (click)="payDiagnostics(orderMedListEl)">{{'ORDER_MEDICINE.PAY_NOW' | translate}}</button>
+              </td>
+            </tr>
+            <tr class="small-show">
+              <td>
+                <div class="small-header">{{'MY_ORDER.DUE' | translate}}</div>
+                <div class="align-top">
+                  <span *ngIf="orderMedListEl.outstandingAmount > 0">
+                    {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{orderMedListEl.outstandingAmount | number : '2.2-2'}}
+                  </span>
+                </div>
+              </td>
+              <td>
+                <div class="small-header min-height15px"></div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <span *ngIf="orderMedListEl.orderState == 'Completed' || orderMedListEl.orderState == 'Delivered'">
+                      <a href="javascript:void(0)" (click)="op.toggle($event); giveRating(orderMedListEl)">Rate</a>
+                    </span>
+                  </div>
+                  <div class="col-md-6">
+                    <span *ngIf="orderMedListEl.orderState == 'Completed' || orderMedListEl.orderState == 'Delivered'">
+                      <a href="javascript:void(0)"
+                        (click)="userReviews(orderMedListEl)">{{'SEARCH.REVIEW' | translate }}</a>
+                    </span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="small-header min-height15px"></div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <span *ngIf="orderMedListEl.outstandingAmount > 0 && orderMedListEl.orderState != 'Canceled'">
+                      <button class="btn btn-sm btn-primary"
+                        (click)="payDiagnostics(orderMedListEl)">{{'ORDER_MEDICINE.PAY_NOW' | translate}}</button>
+                    </span>
+                  </div>
+                  <div class="col-md-6 text-right">
+                    <span
+                      *ngIf="(!orderState[orderMedListEl.orderState]) && (orderMedListEl.orderState!= orderStateOutForDelivery.OUT_FOR_DELIVERY)">
+                      <img src="assets/image/delete.svg" (click)="cancelOrder(orderMedListEl)" height="20" alt="">
+                    </span>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr class="small-show-1024-768">
+              <td>
+                <div class="small-header">{{'MY_ORDER.DUE' | translate}}</div>
+                <div class="align-top">
+                  <span *ngIf="orderMedListEl.outstandingAmount > 0">
+                    {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{orderMedListEl.outstandingAmount | number : '2.2-2'}}
+                  </span>
+                </div>
+              </td>
+              <td>
+                <div class="small-header min-height15px"></div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <span *ngIf="orderMedListEl.orderState == 'Completed' || orderMedListEl.orderState == 'Delivered'">
+                      <a href="javascript:void(0)" (click)="op.toggle($event); giveRating(orderMedListEl)">Rate</a>
+                    </span>
+                  </div>
+                  <div class="col-md-6">
+                    <span *ngIf="orderMedListEl.orderState == 'Completed' || orderMedListEl.orderState == 'Delivered'">
+                      <a href="javascript:void(0)"
+                        (click)="userReviews(orderMedListEl)">{{'SEARCH.REVIEW' | translate }}</a>
+                    </span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="small-header min-height15px"></div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <span *ngIf="orderMedListEl.outstandingAmount > 0 && orderMedListEl.orderState != 'Canceled'">
+                      <button class="btn btn-sm btn-primary"
+                        (click)="payDiagnostics(orderMedListEl)">{{'ORDER_MEDICINE.PAY_NOW' | translate}}</button>
+                    </span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="small-header min-height15px"></div>
+                <div class="row">
+                  <div class="col-md-12 text-right">
+                    <span
+                      *ngIf="(!orderState[orderMedListEl.orderState]) && (orderMedListEl.orderState!= orderStateOutForDelivery.OUT_FOR_DELIVERY)">
+                      <img class="mr-2" src="assets/image/delete.svg" (click)="cancelOrder(orderMedListEl)" height="20" alt="">
+                    </span>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr class="small-show">
+              <td class="show-border" colspan="4"></td>
+            </tr>
+            <tr class="small-show-1024-768">
+              <td class="show-border" colspan="4"></td>
+            </tr>
+            <p-overlayPanel class="overlay" [appendTo]="'body'" #op>
+              <app-rate-doctor [id]="op" (onClose)="onCloseOverlay(id, $event)" [appointment]="orderMedListEl"
+                [editRating]="editRating" [ratingList]="ratingList"></app-rate-doctor>
+            </p-overlayPanel>
+          </ng-template>
+        </p-table>
+      </div>
+      <div class="content table-responsive search-result for-very-small">
+        <p-table [value]="orderedDiagnosticsListArr" [paginator]="orderedDiagnosticsListArr.length>5" [rows]=5
+          *ngIf="orderedDiagnosticsListArr.length>0">
+          <ng-template pTemplate="body" let-orderMedListEl>
+            <tr>
+              <ng-container>
+                <td class="mobile-table">
+                  <table>
+                    <tr>
+                      <td class="small-header">{{'MY_ORDER.ORDER_ID_LEBEL_NAME' | translate}}</td>
+                      <td class="mb-0">
+                        {{orderMedListEl.orderRefNo}}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="small-header">{{'MY_ORDER.ORDER_DATE_LEBEL_NAME' | translate}}</td>
+                      <td class="mb-0">
+                        {{orderMedListEl.orderDate | dateFormat}}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="small-header">{{'MY_ORDER.ORDER_STATE' | translate}}</td>
+                      <td class="mb-0" title="{{orderMedListEl.orderState}}">
+                        {{orderMedListEl.orderState}}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="small-header">{{'MY_ORDER.TOTAL_AMOUNT_LEBEL_NAME' | translate}}</td>
+                      <td class="mb-0">
+                        {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{orderMedListEl.totalAmount | number : '2.2-2'}}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="small-header">{{'MY_ORDER.DUE' | translate}}</td>
+                      <td class="mb-0">
+                        <span *ngIf="orderMedListEl.outstandingAmount > 0">{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                          {{orderMedListEl.outstandingAmount | number : '2.2-2'}}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="align-left">
+                        <div class="row">
+                          <div class="col-4"
+                            *ngIf="orderMedListEl.outstandingAmount > 0 && orderMedListEl.orderState != 'Canceled'">
+                            <button class="btn btn-sm btn-primary"
+                              (click)="payDiagnostics(orderMedListEl)">{{'ORDER_MEDICINE.PAY_NOW' | translate}}</button>
+                          </div>
+                          <div class="col-4"
+                            *ngIf="orderMedListEl.orderState == 'Completed' || orderMedListEl.orderState == 'Delivered'">
+                            <a href="javascript:void(0)"
+                              (click)="op.toggle($event); giveRating(orderMedListEl)">Rate</a>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="align-right">
+                        <div class="row">
+                          <div class="col-6">
+                            <a href="javascript:void(0)"
+                              *ngIf="orderMedListEl.orderState == 'Completed' || orderMedListEl.orderState == 'Delivered'"
+                              (click)="userReviews(orderMedListEl)">{{'SEARCH.REVIEW' | translate }}</a>
+                          </div>
+                          <div class="col-6 text-right"
+                            *ngIf="(!orderState[orderMedListEl.orderState]) && (orderMedListEl.orderState!= orderStateOutForDelivery.OUT_FOR_DELIVERY)">
+                            <img src="assets/image/delete.svg" (click)="cancelOrder(orderMedListEl)" height="17" alt="">
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </ng-container>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #userReviewsModal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{'SEARCH.REVIEWS' | translate }}</h4>
+
+    <button type="button" class="close" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" id="user-review">
+    <div class="row pt-2">
+      <div class="col-6" *ngFor="let review of reviews.userReviewsList">
+        <div class="doctor-details-view">
+          <div class="row">
+            <div class="col-12"><span class="review-heading">{{review.reviewTitle}}</span></div>
+          </div>
+          <div class="row doc-spl-spacer review-ratingnum">
+            <div class="float-left">
+              <app-rating [rating]=review.score></app-rating>
+            </div>
+            <div class="float-left ml-1">
+              <div class="textDot review-username"><small>{{review.ratingUserName}}, {{review.date}}</small></div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <p>{{review.ratingReviewText}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="row" *ngIf="reviews.userReviewsList.length < reviews.reviewNum">
+      <div class="col-lg-5"></div>
+      <div class="col-lg-2">
+        <a href="javascript:void(0)" (click)="moreReviews(review)">{{'SEARCH.VIEW_MORE' | translate }}</a>
+      </div>
+      <div class="col-lg-5"></div>
+    </div> -->
+  </div>
+</ng-template>

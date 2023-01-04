@@ -1,0 +1,129 @@
+<!-- /*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */ -->
+<div class="prescription-widgets vital">
+  <div class="card">
+      <div class="card-header display-header">
+          <h5 class="float-left">{{'PRESCRIPTION.VITALS'| translate}}</h5>
+          <!-- <button type="button" class="btn btn-primary btn-sm float-right" (click)="openModal('vital-modal')">Edit Vitals</button> -->
+          <!-- <div ngbTooltip="Edit Vitals" container="body" (click)="openModal()" class="float-left  cursor">
+            <img src="../../../../../assets/image/edit-button.svg" width="15">
+          </div> -->
+      </div>
+      <!-- <div class="card-body display-box" *ngFor="let v1 of vitalName; let j = index"> -->
+          <div class="card-body display-box">
+            <!-- <div class="row">
+              <div class="col-lg-2 col-md-3 vital" *ngFor="let val of vitalDataForm.value.vitalList">
+                  <div *ngIf="val.systemCode!=='L833' && val.systemCode!=='L722'">
+                      <p class="text-left vital-label">{{val.longName}}</p>
+                      <p class="vital-value">{{val.result}}</p>
+                  </div>
+                  <div *ngIf="val.systemCode=='L722'">
+                      <p class="text-left vital-label">Blood Pressure</p>
+                      <p class="vital-value">{{val.result}}</p>
+                  </div>
+                  <div *ngIf="val.systemCode=='L833' && val.result!=null">
+                      <p class="diastolic-label vital-value">{{val.result}}</p>
+                  </div>
+              </div>
+            </div> -->
+
+            <form [formGroup]="vitalDataForm" (ngSubmit)="savePrescription()">
+
+                <div class="row"  formArrayName="vitalList">
+                    <ng-container *ngFor="let a of vitalList.controls; let i = index" [formGroup]="a">
+                      <div class="col-lg-2 col-md-3 col-sm-4 col-6" *ngIf="a.value.systemCode!=='L833' && a.value.systemCode!=='L722'">
+                        <div class="form-group">
+                          <label>{{a.value.longName}} ({{a.value.unit}})</label>
+                          <input type="text" class="form-control" formControlName ="result" twoDigitDecimaNumber>
+                          <input type="hidden" formControlName ="medicalAttributePk">
+                        </div>
+                      </div>
+                      <div class="ml-3 mt-2 mt-sm-0" *ngIf="a.value.systemCode=='L833' || a.value.systemCode=='L722'">
+                        <div class="sys" *ngIf="a.value.systemCode=='L833'">
+                          <label>{{'PRESCRIPTION.BLOOD_PRESSURE'| translate}} ({{a.value.unit}})</label>
+                          <input type="text" maxlength="3" placeholder="Systolic" class="small-textbox-width form-control" formControlName ="result" twoDigitDecimaNumber>
+                        </div>
+                        <div class="dias"  *ngIf="a.value.systemCode=='L722'">
+                            <label>&nbsp;</label>
+                            <span class="separator"> / </span>
+                            <input type="text" maxlength="3" placeholder="Diastolic" class="diastolic small-textbox-width form-control" formControlName ="result" twoDigitDecimaNumber>
+                        </div>
+                      </div>
+                      
+                  </ng-container>
+                </div>
+            </form>
+
+      </div>
+
+    </div>
+</div>
+<!-- <jw-modal id="vital-modal">
+      <div>
+          <h4>Add/Edit Vitals</h4>
+          <form [formGroup]="vitalForm" (ngSubmit)="savePrescription('vital-modal')">
+              <div class="row"  formArrayName="vitalList">
+                    <div class="col-md-6" *ngFor="let a of vitalForm.get('vitalList').controls; let i = index" [formGroup]="a">
+                      <div class="form-group">
+                        <label>{{a.value.longName}}</label>
+                        <input type="text" class="form-control" formControlName ="result">
+                        <input type="hidden" formControlName ="medicalAttributePk">
+                        <input type="hidden" formControlName ="userPk" value="7">
+                      </div>
+                  </div>
+                </div>
+              <button type="submit" class="btn btn-primary btn-sm">Save</button>
+            </form>
+        </div>
+</jw-modal> -->
+
+<!-- <ng-template #vitalModal>
+    <form [formGroup]="vitalDataForm" (ngSubmit)="savePrescription()">
+        <div class="modal-header">
+          <h4 class="modal-title">Vitals</h4>
+          <button type="button" class="close" (click)="modalRef.hide()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body pb-0">
+           <div class="row"  formArrayName="vitalList">
+                 <ng-container *ngFor="let a of vitalDataForm.get('vitalList').controls; let i = index" [formGroup]="a">
+                   <div class="col-lg-3 col-md-4" *ngIf="a.value.systemCode!=='L833' && a.value.systemCode!=='L722'">
+                     <div class="form-group">
+                       <label>{{a.value.longName}}</label>
+                       <input type="text" class="form-control" formControlName ="result" twoDigitDecimaNumber>
+                       <input type="hidden" formControlName ="medicalAttributePk">
+                     </div>
+                   </div>
+                   <div class="col-lg-3 col-md-4" *ngIf="a.value.systemCode=='L722'">
+                       <div class="form-group">
+                       <label>Blood Pressure</label>
+                       <input type="text" placeholder="Systolic" class="small-textbox-width form-control" formControlName ="result" twoDigitDecimaNumber>
+                     </div>
+                   </div>
+                   <div *ngIf="a.value.systemCode=='L833'">
+                       <span class="separator"> / </span>
+                       <input type="text" placeholder="Diastolic" class="diastolic small-textbox-width form-control" formControlName ="result" twoDigitDecimaNumber>
+                   </div>
+               </ng-container>
+             </div>
+        </div>
+        <div class="modal-footer pt-0">
+           <button type="submit" class="btn btn-primary btn-sm">Save and Close</button>
+        </div>
+        </form>
+   </ng-template> -->
+  

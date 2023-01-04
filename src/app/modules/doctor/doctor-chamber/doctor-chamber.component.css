@@ -1,0 +1,53 @@
+.defaultLabelStyle{
+    margin-right: 6px !important;
+    color: #ad4274;
+    font-weight: 300;
+    font-size: 16px;
+}
+
+ /* Working on app/issues/1349 */
+ .chamberVistMaxHeight{
+     min-height: 350px;
+    }
+ /* End Working on app/issues/1349 */
+
+
+.border-btm-none{
+  border-bottom:none;
+}
+
+.page-content .card-header.chamber-info{
+  margin-bottom: 0 !important;
+}
+.ddToTB{
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border: none !important;
+  pointer-events: none;
+  font-size: 13px !important;
+}
+select.dropdown-for-add-edit-chambers {
+  box-shadow: none;
+  font-size: 13px !important;
+  font-weight: 300 !important;
+}
+.small-txt{
+  display: block;
+  font-size: 70%;
+  position: relative;
+  top: -2px;
+}
+.addchamber h2 
+{
+    
+        font-size:18px;
+ 
+       font-weight:400;
+        padding-top: 20px;
+        padding-bottom: 5px;
+        color:#5f5f5f;
+    }
+    .ptleft1
+    {
+        padding-left: 15px;
+    }

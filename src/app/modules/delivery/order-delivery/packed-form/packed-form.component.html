@@ -1,0 +1,38 @@
+<form [formGroup]="packedForm">
+<div class="form-group">
+    <label class="userKey control-label">
+      Expected Delivery Date
+      <span class="validation-error">*</span>
+    </label>
+    <input type="text" placeholder="DD-MM-YYYY" bsDatepicker
+      [bsConfig]="{ dateInputFormat: dateFormat, showWeekNumbers: false  }" class="form-control date-pick"
+      [minDate]="minDate" #dp="bsDatepicker" formControlName="expectedDelivery" required>
+    <span><i (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt date-picker-calendarIco"></i></span>
+    <div *ngIf="submitted && packedForm.controls.expectedDelivery.errors">
+        <div class="validation-error" *ngIf="packedForm.controls.expectedDelivery.errors.required">This field is required</div>
+      </div>
+  </div>
+  <div class="form-group">
+    <label class="userKey control-label">
+      Delivery Agent Name
+      <span class="validation-error">*</span>
+    </label>
+    <input type="text" class="form-control" formControlName="agentName" required>
+    <div *ngIf="submitted && packedForm.controls.agentName.errors">
+        <div class="validation-error" *ngIf="packedForm.controls.agentName.errors.required">This field is required</div>
+      </div>
+  </div>
+  <div class="form-group">
+    <label class="userKey control-label">
+      Delivery Agent Contact
+      <span class="validation-error">*</span>
+    </label>
+    <int-phone-prefix [locale]="'IN'" [defaultCountry]="'in'" autofocus=""
+    formControlName="agentContact" required></int-phone-prefix>
+       <!-- <input type="text" class="form-control" placeholder="Enter phone number with country code" #agentContact> -->
+       <div *ngIf="submitted && packedForm.controls.agentContact.errors">
+          <div class="validation-error" *ngIf="packedForm.controls.agentContact.errors.required">This field is required</div>
+        </div>
+  </div>
+  <button type="button" class="btn btn-primary mt-1" (click)="savePackedToOutForDelivery()">Out for Delivery</button>
+</form>

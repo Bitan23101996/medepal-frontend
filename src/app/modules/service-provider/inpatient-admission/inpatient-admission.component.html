@@ -1,0 +1,1175 @@
+<div class="row" >
+  <div class="col-lg-12">
+    <form [formGroup]="admissionForm">
+     <div *ngIf="!isPreviewScreenVisible">
+      <div class="row top-btn-area-for-inpatient-admission">
+        <div class="col-md-12 text-right">
+          
+         <!-- <button   *ngIf="isEdit && (isAdmin || isDoctor) " type="button" class="btn btn-primary btn-sm float-right"
+            (click)="editAdmission()">{{'COMMON.EDIT_BUTTON' | translate}}</button> -->
+          <!-- <button *ngIf="!isEdit" type="button" class="btn btn-primary btn-sm float-right"
+            (click)="saveInpatientAdmission()">{{'COMMON.SAVE_BUTTON' | translate}}</button> -->
+          <!-- <button type="button" class="btn btn-secondary btn-sm mr-2"
+            (click)="backToAdmissionSummary()">{{'COMMON.CANCEL_BUTTON' | translate}}</button> -->
+            <!-- Working on app/issue/1844 -->
+            <button   *ngIf="isEdit && (isAdmin || isDoctor) " type="button" class="btn btn-primary btn-sm float-right"
+            (click)="editAdmission()">{{'COMMON.EDIT_BUTTON' | translate}}</button>
+            <button *ngIf="!isEdit && !isPreviewScreenVisible" type="button" class="btn btn-primary btn-sm float-right"
+            (click)="previewPatientAdmissionDetails()">Save</button>
+
+            <button *ngIf="!isEdit && isPreviewScreenVisible" type="button" class="btn btn-primary btn-sm float-right"
+            (click)="saveInpatientAdmission()">Submit</button>
+
+            <button type="button" class="btn btn-secondary btn-sm mr-2" (click)="backToAdmissionSummary()">CLOSE</button>
+        </div>
+      </div>
+
+      <div class="row page-content content-padding-for-inpatient-admission">
+        <div class="col-12">
+          <div class="card">
+            <div class="row card-body">
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                    <div class="form-group">
+                      <label class="userKey control-label">Patient Mobile No
+                        <!-- <span class="validation-error"> *</span> -->
+                      </label>
+                      <p *ngIf="admissionRefNo!=null">
+                        {{admissionForm.controls.patientMobile.value}}
+                      </p>
+                      <div *ngIf="admissionRefNo==null">
+                        <int-phone-prefix [locale]="'IN'" [defaultCountry]="'in'" formControlName="patientMobile"
+                          #mobile (keyup)="populatePatientDetailsByPhone(mobile.value)"></int-phone-prefix>
+                      </div>
+                      <div *ngIf="submitted && admissionForm.controls.patientMobile.errors">
+                        <div class="validation-error" *ngIf="admissionForm.controls.patientMobile.errors.required">This
+                          field is required</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                    <div class="form-group">
+                      <label class="userKey control-label">Patient Email
+                        <span *ngIf="(isEdit && isDoctor) ||(!isEdit && isAdmin)" class="optional-label"> (Optional)</span><!-- Working on app/issue/1844 -->
+                      </label>
+                      <p *ngIf="admissionRefNo!=null">
+                        {{admissionForm.controls.patientEmail.value==null?'Not Specified':admissionForm.controls.patientEmail.value}}
+                      </p>
+                      <div *ngIf="admissionRefNo==null">
+                        <input type="text" class="form-control" formControlName="patientEmail"
+                          [readonly]="isExistMultiRole">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-4 col-12">
+                    <div class="form-group">
+                      <label class="userKey control-label">Patient Name
+                        <!-- <span class="validation-error"> *</span> -->
+                      </label>
+                      <p *ngIf="admissionRefNo!=null">
+                          {{admissionForm.controls.patientName.value}}
+                      </p>
+                      <div *ngIf="admissionRefNo==null">
+                        <input type="text" class="form-control" formControlName="patientName"
+                          [readonly]="isExistMultiRole">
+                      </div>
+                      <div *ngIf="submitted && admissionForm.controls.patientName.errors">
+                        <div class="validation-error" *ngIf="admissionForm.controls.patientName.errors.required">This
+                          field is required</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12">
+                    <div class="form-group">
+                      <label class="userKey control-label">Gender</label>
+                      <p *ngIf="admissionRefNo!=null">
+                        {{admissionForm.controls.patientGender.value==='M'?'Male':admissionForm.controls.patientGender.value==='F'?'Female':"Other"}}
+                      </p>
+                      <div *ngIf="admissionRefNo==null">
+                        <select formControlName="patientGender" [attr.disabled]="isExistMultiRole?'':null">
+                          <option disabled selected>Select Gender</option>
+                          <option *ngFor="let gender of masterGender" value="{{gender.attributeValue}}">
+                            {{gender.displayValue}}
+                          </option>
+                        </select>
+                      </div>
+                      <div *ngIf="submitted && admissionForm.controls.patientGender.errors">
+                        <div class="validation-error" *ngIf="admissionForm.controls.patientGender.errors.required">This
+                          field is required</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12">
+                    <div class="form-group">
+                      <label class="userKey control-label">Nationality
+                        <span *ngIf="(isEdit && isDoctor) ||(!isEdit && isAdmin)" class="optional-label"> (Optional)</span><!-- Working on app/issue/1844 -->
+                      </label>
+                      <p *ngIf="admissionRefNo!=null">
+                        {{admissionForm.controls.nationality.value==null?'Not Specified':admissionForm.controls.nationality.value}}
+                      </p>
+                      <div *ngIf="admissionRefNo==null">
+                        <input type="text" class="form-control" formControlName="nationality"
+                          [readonly]="isExistMultiRole">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-6">
+                    <div class="form-group">
+                      <label class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_AGE' | translate}}
+                      </label>
+                      <p *ngIf="admissionRefNo!=null">
+                        {{admissionForm.controls.patientAgeInMonth.value}}
+                      </p>
+                      <div *ngIf="admissionRefNo==null">
+                        <input type="text" [formControl]="admissionForm.controls['patientAgeInMonth']"
+                          [attr.disabled]="isExistMultiRole?'':null" #age class="form-control age-value" maxlength="3"
+                          numbersOnly />
+                      </div>
+                      <span class="or-position">OR </span>
+                      <!-- <ng-container *ngIf="isDob">
+                              <p>
+                                {{appointmentForm.value.patientAgeInMonth}}
+                              </p>
+                            </ng-container>
+                            <ng-container *ngIf="!isDob">
+                              <ng-container *ngIf="appointmentForm.controls.appointmentRefNo.value!==null">
+                                <p>
+                                  {{appointmentForm.value.patientAgeInMonth}}
+                                </p>
+                              </ng-container>
+                              <ng-container *ngIf="appointmentForm.controls.appointmentRefNo.value==null">
+                                <input type="text" [attr.disabled]="isAgeInMonthDisabled?'':null" #age (blur)="changeAge(age.value)"
+                                  formControlName="patientAgeInMonth" class="form-control age-value" maxlength="3" numbersOnly />
+                            <span class="or-position">OR </span>
+                              </ng-container>
+                    
+                    
+                            </ng-container> -->
+
+                    </div>
+
+                  </div>
+                  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-6">
+                    <div class="form-group">
+                      <label class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_DOB' | translate}}
+                      </label>
+                      <p *ngIf="admissionRefNo!=null">
+                        {{admissionForm.controls.patientDateOfBirth.value | date:'dd-MM-yyyy'}}
+                      </p>
+
+                      <app-datepicker [maxDate]="maxDate" [formControl]="admissionForm.controls['patientDateOfBirth']"
+                        [readonly]="true" position="right" *ngIf="!isExistMultiRole"></app-datepicker>
+                      <p *ngIf="isExistMultiRole && admissionRefNo==null">
+                        {{admissionForm.value.patientDateOfBirth | date:'dd-MM-yyyy'}}</p>
+                      <!-- <ng-container *ngIf="isDob">
+                              <p>
+                                {{appointmentForm.value.patientDateOfBirth | date:'dd-MM-yyyy'}}
+                              </p>
+                            </ng-container>
+                            <ng-container *ngIf="!isDob">
+                              <ng-container *ngIf="appointmentForm.controls.appointmentRefNo.value!==null">
+                                <p>
+                                  {{appointmentForm.value.patientDateOfBirth | date:'dd-MM-yyyy'}}
+                                </p>
+                              </ng-container>
+                              <ng-container *ngIf="appointmentForm.controls.appointmentRefNo.value==null">
+                                <app-datepicker [maxDate]="minDate" [readonly]="true" [disabled]="isDobDisabled" [minDate]="minorDateRange"
+                                  formControlName="patientDateOfBirth" position="right" (valueChange)="changeDate($event)"></app-datepicker>
+                    
+                              </ng-container>
+                            </ng-container> -->
+
+                    </div>
+                  </div>
+                  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-12">
+                    <div class="form-group">
+                      <label class="userKey control-label">Occupation
+                        <span *ngIf="(isEdit && isDoctor) ||(!isEdit && isAdmin)" class="optional-label"> (Optional)</span><!-- Working on app/issue/1844 -->
+                      </label>
+                      <p *ngIf="admissionRefNo!=null">
+                          {{admissionForm.controls.occupation.value==null?'Not Specified':admissionForm.controls.occupation.value}}                        
+                      </p>
+                      <div *ngIf="admissionRefNo==null">
+                        <input type="text" class="form-control" formControlName="occupation"
+                          [disabled]="isExistMultiRole">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-12">
+                    <div class="form-group">
+                      <label class="userKey control-label">Food Preference
+                        <span *ngIf="(isEdit && isDoctor) ||(!isEdit && isAdmin)" class="optional-label"> (Optional)</span><!-- Working on app/issue/1844 -->
+                      </label>
+                      <p *ngIf="admissionRefNo!=null">
+                        {{admissionForm.controls.foodPreference.value==null?'Not Specified':admissionForm.controls.foodPreference.value=='V'?'Veg':'Non-Veg'}}
+                      </p>
+                      <div *ngIf="admissionRefNo==null">
+                        <select formControlName="foodPreference">
+                          <option disabled selected>Select </option>
+                          <option value="V">Veg</option>
+                          <option value="N">Non-Veg</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row page-content mt-2">
+        <div class="col-6">
+          <div class="card">
+            <div class="row card-body">
+              <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
+                <!-- <div class="form-group">
+                  <label class="userKey control-label">Admission Date
+                  </label>
+                  <app-datepicker formControlName="admissionDate" [readonly]="true"
+                    position="right"></app-datepicker>
+                    <div *ngIf="submitted && admissionForm.controls.admissionDate.errors">
+                        <div class="validation-error" *ngIf="admissionForm.controls.admissionDate.errors.required">This field is required</div>
+                      </div>
+                </div> -->
+
+                <div class="form-group">
+                  <label class="userKey control-label">Admission Date
+                  </label>
+                  <p *ngIf="admissionRefNo!=null">
+                    {{admissionForm.controls.admissionDate.value | date:'dd-MM-yyyy'}}
+                  </p>
+                  <div *ngIf="admissionRefNo==null">
+                    <app-datepicker [formControl]="admissionForm.controls['admissionDate']" [readonly]="true"
+                      position="right"></app-datepicker>
+                  </div>
+                  <div *ngIf="submitted && admissionForm.controls.admissionDate.errors">
+                    <div class="validation-error" *ngIf="admissionForm.controls.admissionDate.errors.required">This
+                      field is required</div>
+                  </div>
+                </div>
+
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-12" *ngIf="admissionRefNo!=null">
+                <div class="form-group">
+                  <label class="userKey control-label"> Time
+                  </label>
+                  {{admissionForm.controls.admissionDate.value | date:'HH:mm'}}
+                </div>
+                
+              </div>
+              <div class="col-xl-5 col-lg-5 col-md-5 col-sm-6 col-12">
+                <div class="form-group">
+                  <label class="userKey control-label">Admitted Under Doctor
+                  </label>
+
+                  <p-autoComplete formControlName="doctorName" [suggestions]="doctorDetails" 
+                    (completeMethod)="filteredReferralSingle($event)" [size]="100"
+                    (onSelect)="referredNameSelect($event)" [dropdown]="true" [style]="{'margin-top':'-6px'}"
+                    [minLength]="1">
+
+                    <ng-template let-doctor pTemplate="item">
+                      <span style="font-size:11px;font-weight: 500;">{{doctor.name}}</span>
+                    </ng-template>
+
+                  </p-autoComplete>
+
+
+                  <div *ngIf="submitted && admissionForm.controls.doctorRefNo.errors">
+                    <div class="validation-error" *ngIf="admissionForm.controls.doctorRefNo.errors.required">This field
+                      is required</div>
+                  </div>
+                </div>
+              </div>
+              
+            
+              <div class="col-xl-7 col-lg-7 col-md-7 col-sm-12 col-12">
+                <div class="form-group">
+                  <label class="userKey control-label">Admission Reason
+                  </label>
+                  <p *ngIf="admissionRefNo!=null">
+                      {{admissionForm.controls.admissionReason.value==null?'Not Specified':admissionForm.controls.admissionReason.value}}
+                  </p>
+                  <div *ngIf="admissionRefNo==null">
+                    <input type="text" class="form-control" formControlName="admissionReason" required>
+                  </div>
+                </div>
+                <div *ngIf="submitted && admissionForm.controls.admissionReason.errors">
+                  <div class="validation-error" *ngIf="admissionForm.controls.admissionReason.errors.required">This
+                    field is required</div>
+                </div>
+              </div>
+              <div class="col-xl-5 col-lg-5 col-md-5 col-sm-6 col-12">
+                  <div class="form-group">
+                    <label class="userKey control-label">Referred By Doctor
+                      <span  *ngIf="(isEdit && isDoctor) ||(!isEdit && isAdmin)" class="optional-label"> (Optional)</span><!-- Working on app/issue/1844 -->
+                    </label>
+                    <input type="text" class="form-control" formControlName="referredBy" [readOnly] = "isdiabled">
+                    <div *ngIf="submitted && admissionForm.controls.referredBy.errors">
+                      <div class="validation-error" *ngIf="admissionForm.controls.referredBy.errors.required">This field
+                        is required</div>
+                    </div>
+                  </div>
+                </div>
+              
+            </div>
+            <!-- Working on app/issue/1844 -->
+           <!--  <div class="row card-body " style="display:none;">
+              <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
+                <div class="form-group">
+                  <label class="userKey control-label">Department <span *ngIf="(isEdit && isDoctor) ||(!isEdit && isAdmin)" class="optional-label"> (Optional)</span>
+                  </label>
+                  <p *ngIf="admissionRefNo!=null">
+                      {{admissionForm.controls.departmentRefNo.value==null?'Not Specified':admissionForm.controls.departmentRefNo.value}}
+                  </p>
+
+                 
+                  <p-dropdown [options]="departmentList" formControlName="department" #dept
+                    (onChange)="fetchRoomList(dept.value,roomcat.value)" placeholder="Select department"
+                    [showClear]="true" class="border-none custom-w-100" (onClear)="clearDepartment()"></p-dropdown>
+                </div>
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
+                <div class="form-group">
+                  <label class="userKey control-label">Room Category
+                  </label>
+                 
+
+                  <p-dropdown [options]="categoryList" formControlName="roomCategory" #roomcat
+                    (onChange)="fetchRoomList(dept.value,roomcat.value)" placeholder="Select Room Category"
+                    [showClear]="true" class="border-none custom-w-100" (onClear)="clearCategory()" [required]="true">
+                  </p-dropdown>
+                  <div *ngIf="submitted && admissionForm.controls.roomCategory.errors">
+                    <div class="validation-error" *ngIf="admissionForm.controls.roomCategory.errors.required">This field
+                      is required</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
+                <div class="form-group">
+                  <label class="userKey control-label">Room No
+                  </label>
+                  
+                  <select [formControl]="admissionForm.controls['roomNo']" #room (change)="fetchBedList(room.value)"
+                    required>
+                    <option disabled selected>Select Room No</option>
+                    <option *ngFor="let r of roomList" [value]="r.refNo">
+                      {{r.roomNo}}
+                    </option>
+                  </select>
+                  <div *ngIf="submitted && admissionForm.controls.roomNo.errors">
+                    <div class="validation-error" *ngIf="admissionForm.controls.roomNo.errors.required">This field is
+                      required</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
+                <div class="form-group">
+                  <label class="userKey control-label">Bed No
+                  </label>
+                
+                  <select formControlName="bedRefNo" #bed (change)="checkBedOccupancy(bed.value)">
+                    <option disabled selected>Select Bed No</option>
+                    <option *ngFor="let b of bedList" [value]="b.refNo">
+                      {{b.bedNo}}
+                    </option>
+                  </select>
+                  <div *ngIf="submitted && admissionForm.controls.bedRefNo.errors">
+                    <div class="validation-error" *ngIf="admissionForm.controls.bedRefNo.errors.required">This field is
+                      required</div>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+            <!-- <div class="col-4">
+                  <div class="form-group">
+                    <label class="userKey control-label">Admission Reason
+                    </label>
+                    <textarea class="form-control" formControlName="admissionReason"></textarea>
+                  </div>
+                </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label class="userKey control-label">Referred By Doctor
+                  </label>
+                  <input type="text" class="form-control" formControlName="referredBy">
+                </div>
+              </div> -->
+          </div>
+        </div>
+
+        <div class="col-6">
+            <div class="card">
+                <div class="row card-body">
+                  <div class="col-md-6 col-sm-6 col-12">
+                  <div class="form-group">
+                    <label class="userKey control-label">Department <span *ngIf="(isEdit && isDoctor) ||(!isEdit && isAdmin)" class="optional-label"> (Optional)</span><!-- Working on app/issue/1844 -->
+                    </label>
+  
+                    <!-- <select class="" [formControl]="admissionForm.controls['department']" #dept (change)="fetchRoomList(dept.value,roomcat.value)">
+                      <option disabled selected>Select Department</option>
+                      <option *ngFor="let d of departmentList" [value]="d.deptRefNo">
+                        {{d.department}}
+                      </option>
+                    </select> -->
+                    <p-dropdown [options]="departmentList" formControlName="department" #dept
+                      (onChange)="fetchRoomList(dept.value)" placeholder="Select department"
+                      [showClear]="true" class="border-none custom-w-100" (onClear)="clearDepartment()" *ngIf="(!isEdit && isAdmin) || admissionRefNo==null"></p-dropdown>
+                  </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-12">
+                    <div class="form-group">
+                      <label class="userKey control-label">Room Category
+                      </label>
+                     
+    
+                      <p-dropdown [options]="categoryList" formControlName="roomCategory" #roomcat
+                        (onChange)="setRoomCategory(roomcat.value)" placeholder="Select Room Category"
+                        [showClear]="true" class="border-none custom-w-100" (onClear)="clearCategory()" [required]="true">
+                      </p-dropdown>
+                      <div *ngIf="submitted && admissionForm.controls.roomCategory.errors">
+                        <div class="validation-error" *ngIf="admissionForm.controls.roomCategory.errors.required">This field
+                          is required</div>
+                      </div>
+                    </div>
+                  </div>
+
+                <div class="col-4" *ngIf="(!isEdit && isAdmin) || admissionRefNo==null">
+                    <!-- <div class="top-card text-center" *ngIf="roomName!=null">
+                        <div class="total-payment-header">Room No./Name</div>
+                        <div class="total-payment">{{roomName}}</div>
+                      </div>
+                      <div class="top-card text-center" *ngIf="bedNo!=null">
+                        <div class="total-bill-header">Bed No.</div>
+                        <div class="total-bill">{{bedNo}}</div>
+                      </div> -->
+                      <div *ngIf="roomName!=null">
+                          <label>Room No./Name</label>
+                          <input type="text" [value]="roomName" readonly>
+                        </div>
+                </div>
+                <div class="col-2" *ngIf="(!isEdit && isAdmin) || admissionRefNo==null">
+                        <div *ngIf="bedNo!=null">
+                            <label>Bed No.</label>
+                            <input type="text" [value]="bedNo" readonly>  
+                        </div>
+                </div>
+                <div class="col-6" *ngIf="(!isEdit && isAdmin) || admissionRefNo==null">
+                    <button class="btn btn-fixed" (click)="openRoomInfoSideBar()">Check Room Availablity</button>
+                </div>
+                </div>
+          </div>
+        </div>
+
+        <!-- <div class="col-6">
+          <div class="card">
+            <div class="row card-body">
+              <div class="col-6">
+                <div class="form-group">
+                  <label class="userKey control-label">Department
+                  </label>
+                  <select class="form-control" [formControl]="admissionForm.controls['department']" #dept (change)="fetchRoomList(dept.value)">
+                    <option *ngFor="let d of departmentList" [value]="d.deptRefNo">
+                      {{d.department}}
+                    </option>
+                  </select>
+                </div>
+              </div>              
+              <div class="col-6">
+                <div class="form-group">
+                  <label class="userKey control-label">Room No
+                  </label>
+                
+                 
+                  <select class="form-control" [formControl]="admissionForm.controls['roomNo']" #room (change)="fetchBedList(room.value)" required>
+                    <option *ngFor="let r of roomList" [value]="r.refNo">
+                      {{r.roomNo}}
+                    </option>
+                  </select>
+                  <div *ngIf="submitted && admissionForm.controls.roomNo.errors">
+                      <div class="validation-error" *ngIf="admissionForm.controls.roomNo.errors.required">This field is required</div>
+                    </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label class="userKey control-label">Bed No
+                  </label>
+                 
+                  <select class="form-control" formControlName="bedRefNo">
+                    <option *ngFor="let b of bedList" [value]="b.refNo">
+                      {{b.bedNo}}
+                    </option>
+                  </select>
+                  <div *ngIf="submitted && admissionForm.controls.bedRefNo.errors">
+                      <div class="validation-error" *ngIf="admissionForm.controls.bedRefNo.errors.required">This field is required</div>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+      </div>
+
+      <div class="row page-content mt-2">
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 pb-2">
+          <div class="card" style="z-index: inherit !important;">
+            <div class="card-header">
+              <h6> Address</h6>
+            </div>
+            <div *ngIf="admissionRefNo!=null">
+              <div class="row">
+                <div class="col-12">
+                  <p>
+                    {{admissionForm.controls.patientAddress.value.line1}} &nbsp;
+                    {{admissionForm.controls.patientAddress.value.line2}}
+                  </p>
+                  <p>
+                    <span>{{admissionForm.controls.patientAddress.value.city}}</span>&nbsp;<span>{{admissionForm.controls.patientAddress.value.state}}</span>&nbsp;<span>{{admissionForm.controls.patientAddress.value.pinCode}}</span>
+                  </p>
+                  <p>{{admissionForm.controls.patientAddress.value.countr}}</p>
+                </div>
+              </div>
+            </div>
+            <div class="row card-body" formGroupName="patientAddress" *ngIf="admissionRefNo==null">
+              <div class="col-12">
+                <div class="form-group">
+                  <label class="control-label bt-style">
+                    {{'USER_PROFILE.USER_PROFILE_COUNTRY_LABEL' | translate}} </label>
+                  <div>
+                    <select formControlName="country">
+                      <option disabled selected>Select Country</option>
+                      <option *ngFor="let country of masterCOUNTRY" value="{{country.countryName}}" class="cursor">
+                        {{country.countryName}}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label class="control-label bt-style">
+                    {{'USER_PROFILE.USER_PROFILE_PINCODE_LABEL' | translate}} </label>
+                  <div>
+                    <input type="text" maxlength="6" class="form-control" min="0" formControlName="pinCode" #pin
+                      (keyup)="fetchCountryStateCityByPin(pin.value, $event)" numbersOnly required />
+                    <div *ngIf="submitted && admissionForm.get('patientAddress')['controls'].pinCode.errors">
+                      <div class="validation-error"
+                        *ngIf="admissionForm.get('patientAddress').controls.pinCode.errors.required">This field is
+                        required</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-8">
+                <div class="form-group">
+                  <label class="control-label bt-style">{{
+                            'USER_PROFILE.USER_PROFILE_STATE_LABEL' | translate }}
+                  </label>
+                  <div>
+                    <!-- Changed for issue app#597 -->
+                    <input type="text" class="form-control" #state id="state" formControlName="state" [readonly]="true">
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-12">
+                <div class="form-group">
+                  <label class="control-label bt-style">{{
+                                'USER_PROFILE.USER_PROFILE_CITY_LABEL' | translate }}
+                  </label>
+                  <div>
+                    <input type="text" class="form-control" formControlName="city" required />
+                    <div *ngIf="submitted && admissionForm.get('patientAddress')['controls'].city.errors">
+                      <div class="validation-error"
+                        *ngIf="admissionForm.get('patientAddress').controls.city.errors.required">This field is required
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-12">
+                <div class="form-group">
+                  <label class="control-label">{{
+                                'USER_PROFILE.USER_PROFILE_ADDRESS_LINE1_LABEL' |
+                                translate
+                                }}
+                  </label>
+                  <div>
+                    <input type="text" class="form-control" formControlName="line1" required />
+                    <div *ngIf="submitted && admissionForm.get('patientAddress')['controls'].line1.errors">
+                      <div class="validation-error"
+                        *ngIf="admissionForm.get('patientAddress').controls.line1.errors.required">This field is
+                        required</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-group">
+                  <label class="control-label">{{
+                                'USER_PROFILE.USER_PROFILE_ADDRESS_LINE2_LABEL' |
+                                translate
+                                }}
+                    <span *ngIf="!isEdit" class="optional-label"> (Optional)</span><!-- Working on app/issue/1844 -->
+                  </label>
+                  <div>
+                    <input type="text" class="form-control" formControlName="line2" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+          <div class="card" style="z-index: inherit !important;">
+            <div class="card-header">
+              <h6>Admitted By</h6>
+            </div>
+            <div class="row card-body">
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                <div class="form-group">
+                  <label class="userKey control-label">Admission By
+                  </label>
+                  <p *ngIf="admissionRefNo!=null && (isEdit ||isDoctor)" >
+                      {{admissionForm.controls.admittedBy.value==null?'Not Specified':admissionForm.controls.admittedBy.value}}                      
+                  </p>
+                 
+                    <input *ngIf="(!isEdit && isAdmin) || admissionRefNo==null" type="text" class="form-control" [formControl]="admissionForm.controls['admittedBy']">
+                  
+                  
+                  <div *ngIf="submitted && admissionForm.controls.admittedBy.errors">
+                    <div class="validation-error" *ngIf="admissionForm.controls.admittedBy.errors.required">This field
+                      is required</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                <div class="form-group">
+                  <label class="userKey control-label">Relationship</label>
+                  <p *ngIf="admissionRefNo!=null && (isEdit ||isDoctor)" >
+                      {{admissionForm.controls.admittedByRelation.value==null?'Not Specified':admissionForm.controls.admittedByRelation.value}}                      
+                  </p>
+                  <input *ngIf="(!isEdit && isAdmin) || admissionRefNo==null" type="text" class="form-control" [formControl]="admissionForm.controls['admittedByRelation']">
+                  <div *ngIf="submitted && admissionForm.controls.admittedByRelation.errors">
+                    <div class="validation-error" *ngIf="admissionForm.controls.admittedByRelation.errors.required">This
+                      field is required</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                <div class="form-group">
+                  <label class="userKey control-label">Contact No</label>
+                  <p *ngIf="admissionRefNo!=null && (isEdit ||isDoctor)" >
+                      {{admissionForm.controls.admittedByMobile.value==null?'Not Specified':admissionForm.controls.admittedByMobile.value}}
+                      
+                  </p>
+                  <int-phone-prefix *ngIf="(!isEdit && isAdmin) || admissionRefNo==null" [formControl]="admissionForm.controls['admittedByMobile']" [locale]="'IN'"
+                    [defaultCountry]="'in'"></int-phone-prefix>
+                  <div *ngIf="submitted && admissionForm.controls.admittedByMobile.errors">
+                    <div class="validation-error" *ngIf="admissionForm.controls.admittedByMobile.errors.required">This
+                      field is required</div>
+                  </div>
+
+                </div>
+              </div>
+              <!-- <div class="col-6">
+                <div class="form-group">
+                  <label class="userKey control-label">Contact No 
+                  </label>
+                  <int-phone-prefix formControlName="admittedByContact2" [locale]="'IN'" [defaultCountry]="'in'"></int-phone-prefix>
+                </div>
+              </div> -->
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                <div class="form-group">
+                  <label class="userKey control-label">Email
+                    <span *ngIf="(isEdit && isDoctor) ||(!isEdit && isAdmin)" class="optional-label"> (Optional)</span><!-- Working on app/issue/1844 -->
+                  </label>
+                  <p *ngIf="admissionRefNo!=null && (isEdit ||isDoctor)" >
+                      {{admissionForm.controls.admittedByEmail.value==null?'Not Specified':admissionForm.controls.admittedByEmail.value}}                      
+                  </p>
+                  <input *ngIf="(!isEdit && isAdmin) || admissionRefNo==null" type="text" class="form-control" formControlName="admittedByEmail">
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-group">
+                  <label class="userKey control-label">Address
+                    <span *ngIf="(isEdit && isDoctor) ||(!isEdit && isAdmin)" class="optional-label"> (Optional)</span><!-- Working on app/issue/1844 -->
+                  </label>
+                  <p *ngIf="admissionRefNo!=null && (isEdit ||isDoctor)" >
+                      {{admissionForm.controls.admittedByAddress.value==null?'Not Specified':admissionForm.controls.admittedByAddress.value}}                      
+                  </p>
+                  <input *ngIf="(!isEdit && isAdmin) || admissionRefNo==null" type="text" class="form-control" formControlName="admittedByAddress">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row page-content mt-2">
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 pb-2">
+          <div class="card">
+            <div class="card-header">
+              <h6>Insurance
+                <span *ngIf="(isEdit && isDoctor) ||(!isEdit && isAdmin)" class="optional-label optional-header"> (Optional)</span><!-- Working on app/issue/1844 -->
+                <span *ngIf="showMsgInsurer" class="mnd validation-error"> Must enter full insurance information or
+                  none</span>
+              </h6>
+            </div>
+            <div class="row card-body">
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                <div class="form-group">
+                  <label class="userKey control-label">Insurer
+                  </label>
+                  <p *ngIf="admissionRefNo!=null && (isEdit ||isDoctor)" >
+                      {{admissionForm.controls.insurer.value==null?'Not Specified':admissionForm.controls.insurer.value}}                      
+                  </p>
+                  <input  *ngIf="(!isEdit && isAdmin) || admissionRefNo==null" type="text" class="form-control" (input)="processInsuranceData($event)"
+                    formControlName="insurer">
+                  <div *ngIf="showMsg && admissionForm.controls.insurer.errors">
+                    <div class="validation-error" *ngIf="admissionForm.controls.insurer.errors.required">This field is
+                      required</div>
+                  </div>
+
+                </div>
+              </div>
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                <div class="form-group">
+                  <label class="userKey control-label">Policy No
+                  </label>
+                  <p *ngIf="admissionRefNo!=null && (isEdit ||isDoctor)" >
+                      {{admissionForm.controls.policyNo.value==null?'Not Specified':admissionForm.controls.policyNo.value}}
+                      
+                  </p>
+                  <input *ngIf="(!isEdit && isAdmin) || admissionRefNo==null" type="text" class="form-control" (input)="processInsuranceData($event)"
+                    formControlName="policyNo">
+                  <div *ngIf="showMsg && admissionForm.controls.policyNo.errors">
+                    <div class="validation-error" *ngIf="admissionForm.controls.policyNo.errors.required">This field is
+                      required</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                <div class="form-group">
+                  <label class="userKey control-label">TPA
+                  </label>
+                  <p *ngIf="admissionRefNo!=null && (isEdit ||isDoctor)" >
+                      {{admissionForm.controls.tpa.value==null?'Not Specified':admissionForm.controls.tpa.value}}                      
+                  </p>
+                  <input *ngIf="(!isEdit && isAdmin) || admissionRefNo==null" type="text" class="form-control" (input)="processInsuranceData($event)" formControlName="tpa">
+                  <div *ngIf="showMsg && admissionForm.controls.tpa.errors">
+                    <div class="validation-error" *ngIf="admissionForm.controls.tpa.errors.required">This field is
+                      required</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                <div class="form-group">
+                  <label class="userKey control-label">Payment Mode</label>
+                  <p *ngIf="admissionRefNo!=null && (isEdit ||isDoctor)" >
+                      {{admissionForm.controls.paymentMode.value==null?'Not Specified':admissionForm.controls.paymentMode.value}}                     
+                  </p>
+                  <input *ngIf="(!isEdit && isAdmin) || admissionRefNo==null" type="text" class="form-control" (input)="processInsuranceData($event)"
+                    formControlName="paymentMode">
+                  <div *ngIf="showMsg && admissionForm.controls.paymentMode.errors">
+                    <div class="validation-error" *ngIf="admissionForm.controls.paymentMode.errors.required">This field
+                      is required</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+          <div class="card">
+            <div class="row card-body">
+              <div class="col-12">
+
+                <div class="card-header">
+                    <h6>Patient type</h6>                    
+                </div>
+
+                <p *ngIf="admissionRefNo!=null && (isEdit ||isDoctor)" >
+                    {{admissionForm.controls.patientType.value==null?'Not Specified':admissionForm.controls.patientType.value}}                    
+                </p>
+                <div *ngIf="submitted && admissionForm.controls.patientType.errors">
+                  <div class="validation-error" *ngIf="admissionForm.controls.patientType.errors.required">This field is
+                    required</div>
+                </div>
+
+                <div class="form-check" *ngIf="(!isEdit && isAdmin) || admissionRefNo==null">
+                  <label class="form-check-label">
+                    <input type="radio" formControlName="patientType" class="form-check-input" value="Corporate"
+                      required>Corporate
+                  </label>
+                </div>
+                <div class="form-check" *ngIf="(!isEdit && isAdmin) || admissionRefNo==null">
+                  <label class="form-check-label">
+                    <input type="radio" formControlName="patientType" class="form-check-input" value="Referred"
+                      required>Referred
+                  </label>
+                </div>
+                <div class="form-check" *ngIf="(!isEdit && isAdmin) || admissionRefNo==null">
+                  <label class="form-check-label">
+                    <input type="radio" formControlName="patientType" class="form-check-input" value="Direct" required
+                      checked>Direct
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+<!-------------------------------------------preview inpatinet admission form----------------------------------------------------------->
+<div class="row page-content" *ngIf="isPreviewScreenVisible">
+  <div class="col-lg-12">
+    <div class="row mb-2">
+      <!-- PATIENT BLOCK -->
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header payment mb-2" style="border-bottom: 1px solid #c8c8c8 !important;">
+            <h5>PATIENT DETAILS</h5>
+          </div><!-- End of PATIENT CARD HEADER -->
+
+          <div class="card-body">
+<div class="row">
+  <div class="col-7">
+    <div class="row mt-2">
+      <div class="col-6">
+        <label class="card-custom-label"> Name </label>
+        {{admissionForm.controls.patientName.value==null?'N/A': admissionForm.controls.patientName.value}}
+        <span> - <img src="../../../../../assets/image/phone.svg"
+            height="16">{{admissionForm.controls.patientMobile.value==null?'N/A':admissionForm.controls.patientMobile.value}}</span>
+      </div>
+      <div class="col-6">
+        <label class="card-custom-label"> Email </label>
+        {{admissionForm.controls.patientEmail.value==null?'N/A': admissionForm.controls.patientEmail.value}}
+      </div>
+
+    </div>
+    <div class="row mt-2">
+      <div class="col-6">
+       <label class="card-custom-label"> Type </label>
+         {{admissionForm.controls.patientType.value==null?'N/A':admissionForm.controls.patientType.value}}
+      </div>
+
+
+      <div class="col-6">
+        <label class="card-custom-label"> Nationality </label>
+        {{admissionForm.controls.nationality.value==null?'N/A':admissionForm.controls.nationality.value=='M'?'Male':admissionForm.controls.nationality.value=='F'?'Female':'Others'}}
+      </div>
+    </div>
+
+    <div class="row mt-2">
+      <div class="col-6">
+        <label class="card-custom-label"> Gender </label>
+        {{previewPatientGender}}        
+      </div>
+
+
+      <div class="col-6">
+        <label class="card-custom-label"> Age </label>
+        <!-- {{admissionForm.controls.patientDateOfBirth.value}} -->
+        {{patientAgePreview}} Year(s)
+      </div>
+    </div>
+
+    <div class="row mt-2">
+      <div class="col-6">
+        <label class="card-custom-label"> Occupation </label>
+       {{admissionForm.controls.occupation.value==null?'N/A':admissionForm.controls.occupation.value}}
+      </div>
+
+
+      <div class="col-6">
+        <label class="card-custom-label"> Food Preference </label>
+        {{previewFoodPreference}}
+      </div>
+    </div>
+  </div>
+<!--Address View-->
+  <div class="col-5">
+  
+    <div class="row mt-2">
+      <div class="col-6">
+        <label class="card-custom-label"> City </label>
+        {{admissionForm.controls.patientAddress.get('city').value==null?'N/A':admissionForm.controls.patientAddress.get('city').value}}
+      </div>
+      <div class="col-6">
+        <label class="card-custom-label"> Country</label>
+        {{admissionForm.controls.patientAddress.get('country').value==null?'N/A':admissionForm.controls.patientAddress.get('country').value}}
+      </div>
+    </div>
+
+    <div class="row mt-2">
+      <div class="col-6">
+        <label class="card-custom-label"> Pin Code </label>
+        {{admissionForm.controls.patientAddress.get('pinCode').value==null?'N/A':admissionForm.controls.patientAddress.get('pinCode').value}}
+      </div>
+      <div class="col-6">
+        <label class="card-custom-label"> State</label>
+        {{admissionForm.controls.patientAddress.get('state').value==null?'N/A':admissionForm.controls.patientAddress.get('state').value}}
+      </div>
+    </div>
+
+    <div class="row mt-2">
+      <div class="col-6">
+        <label class="card-custom-label"> Address Line 1 </label>
+        {{admissionForm.controls.patientAddress.get('line1').value==null?'N/A':admissionForm.controls.patientAddress.get('line1').value}}
+      </div>
+      <div class="col-6">
+        <label class="card-custom-label"> Address Line 2</label>
+        {{admissionForm.controls.patientAddress.get('line2').value==null?'N/A':admissionForm.controls.patientAddress.get('line2').value}}
+      </div>
+    </div>
+  </div>
+  <!--END Address View-->
+</div>
+
+
+           
+
+       
+            
+          </div><!-- End of PATIENT CARD BODY -->
+
+        </div><!-- End of PATIENT CARD -->
+      </div>
+    </div><!-- End of PATIENT BLOCK -->
+
+    <div class="row mb-2">
+      <!-- ADMISSION BLOCK -->
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header billing-sidebar payment  mb-2" style="border-bottom: 1px solid #c8c8c8 !important;">
+            <h5>ADMISSION DETAILS</h5>
+          </div><!-- End of ADMISSION CARD HEADER -->
+
+          <div class="card-body">
+
+            <div class="row mt-2">
+              <div class="col-6">
+                <label class="card-custom-label"> Admission Date </label>
+                {{admissionForm.controls.admissionDate.value==null?'N/A' : admissionForm.controls.admissionDate.value | date:'dd-MM-yyyy'}}
+              </div>
+
+              <div class="col-6">
+                <label class="card-custom-label"> Doctor Name </label>
+                {{admissionForm.controls.doctorName.value==null?'N/A':admissionForm.controls.doctorName.value}}
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-6">
+                <label class="card-custom-label"> Department </label>
+                {{admissionForm.controls.department.value==null?'N/A':bedInfo.departmentName}}
+              </div>
+              <div class="col-6">
+                <label class="card-custom-label"> Referred Doctor </label>
+                {{admissionForm.controls.referredBy.value==null?'N/A':admissionForm.controls.referredBy.value}} 
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-6">
+                <label class="card-custom-label"> Bed Info </label>
+                <span *ngIf="this.admissionForm.value.bedRefNo!=null; else bedNoSelected">
+                  {{bedInfo.roomCategoryName}}/{{bedInfo.roomNo}}/{{bedInfo.bedNo}}
+                </span>
+                <ng-template #bedNoSelected>
+                  <span>N/A</span>
+                </ng-template>
+                
+              </div>
+
+
+              <div class="col-6">
+                <label class="card-custom-label"> Admission Reason </label>
+                {{admissionForm.controls.admissionReason.value==null?'N/A':admissionForm.controls.admissionReason.value}}  
+              </div>
+
+            </div>
+          
+
+            <div class="row mt-2">
+              <div class="col-6">
+                <label class="card-custom-label"> Admission By </label>
+                {{admissionForm.controls.admittedBy.value==null?'N/A':admissionForm.controls.admittedBy.value}}   
+              </div>
+              <div class="col-6">
+                <label class="card-custom-label"> Relation </label>
+                {{admissionForm.controls.admittedByRelation.value==null?'N/A':admissionForm.controls.admittedByRelation.value}} 
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-6">
+                <label class="card-custom-label"> Mobile </label>
+                {{admissionForm.controls.admittedByMobile.value==null?'N/A':admissionForm.controls.admittedByMobile.value}}   
+              </div>
+
+              <div class="col-6">
+                <label class="card-custom-label"> Email </label>
+                {{admissionForm.controls.admittedByEmail.value==null?'N/A':admissionForm.controls.admittedByEmail.value}}    
+              </div>
+
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-6">
+                <label class="card-custom-label"> Address </label>
+                {{admissionForm.controls.admittedByAddress.value==null?'N/A':admissionForm.controls.admittedByAddress.value}} 
+              </div>
+
+              <div class="col-6">
+                <label class="card-custom-label">  </label>
+                
+              </div>
+
+            </div>
+
+          </div><!-- End of ADMISSION CARD BODY -->
+
+        </div><!-- End of ADMISSION CARD -->
+      </div>
+    </div><!-- End of ADMISSION BLOCK -->
+
+    <div class="row mb-2">
+      <!-- INSURANCE  BLOCK -->
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header billing-sidebar payment  mb-2" style="border-bottom: 1px solid #c8c8c8 !important;">
+            <h5>INSURANCE DETAILS</h5>
+          </div><!-- End of INSURANCE  CARD HEADER -->
+
+          <div class="card-body">
+
+            <div class="row mt-2">
+              <div class="col-6">
+                <label class="card-custom-label"> Insurer </label>
+                {{admissionForm.controls.insurer.value==null? 'N/A':admissionForm.controls.insurer.value}}    
+              </div>
+
+              <div class="col-6">
+                <label class="card-custom-label"> Policy No </label>
+                {{admissionForm.controls.policyNo.value==null?'N/A':admissionForm.controls.policyNo.value}}   
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-6">
+                <label class="card-custom-label"> TPA </label>
+                {{admissionForm.controls.tpa.value==null?'N/A':admissionForm.controls.tpa.value}}  
+              </div>
+              <div class="col-6">
+                <label class="card-custom-label"> Payment Mode </label>
+                {{admissionForm.controls.paymentMode.value==null?'N/A':admissionForm.controls.paymentMode.value}}  
+              </div>
+            </div>
+          </div><!-- End of INSURANCE  CARD BODY -->
+
+        </div><!-- End of INSURANCE  CARD -->
+      </div>
+    </div><!-- End of INSURANCE  BLOCK -->
+
+  </div>
+</div>
+<!-------------------------------------------END preview inpatinet admission form----------------------------------------------------------->
+      <div class="row pt-3">
+        <div class="col-md-12 text-right">
+           <button *ngIf="isEdit && (isAdmin || isDoctor) " type="button" class="btn btn-primary btn-sm float-right"
+            (click)="editAdmission()">Edit</button>
+         <!-- <button type="button" class="btn btn-primary btn-sm float-right" *ngIf="!isEdit"
+            (click)="saveInpatientAdmission()">Save</button> -->
+         
+            <button type="button" class="btn btn-primary btn-sm float-right" *ngIf="!isEdit && !isPreviewScreenVisible"
+            (click)="previewPatientAdmissionDetails()">Save</button>
+            <button type="button" class="btn btn-primary btn-sm float-right" *ngIf="!isEdit && isPreviewScreenVisible"
+            (click)="saveInpatientAdmission()">Submit</button>
+            <button type="button" class="btn btn-secondary btn-sm mr-2"
+            (click)="backToAdmissionSummary()">{{'COMMON.CANCEL_BUTTON'|translate}}</button>
+
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<p-sidebar [(visible)]="displaySidebar" appendTo="body" position="left"
+    [style]="{width:'20%', height:'500px', overflow: 'hidden', background: '#f7fffe', position:'absolute'}" [baseZIndex]="99999">
+    <p><strong>{{'MY_PRESCRIPTION.SELECT_PATIENT' | translate}}</strong></p>
+    <hr>
+    <div class="substituteMedicineList custom-x-scroll-for-modal">
+      <ul class="mt-2">
+        <li *ngFor="let associatedUser of associatedUserDetailsList;let i = index">
+          <a href="javascript:void(0);" (click)="setPatientIfMinorHave(associatedUser)">
+            {{associatedUser.name}} <span class="minor" *ngIf="associatedUser.isMinor">(Minor)</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </p-sidebar>
+
+  <p-sidebar [(visible)]="showRoomDetail" [dismissible]="false" [showCloseIcon]="false" appendTo="body"
+  position="right" styleClass="signup" [style]="{width:'35vw'}">
+  <div class="close-btn cursor" (click)="closeRoomSidebar()"><i class="fas fa-times"></i></div>  
+
+  <div class="row container-fluid">
+      <div class="col-12">
+        <h1 class="font-size-for-room-sidebar-title">BED AVAILABILITY</h1>
+      </div>
+    </div> 
+
+  <div *ngIf="bedCnt == 0" class="text-center not-found">
+    <h3>No beds available for the selected category</h3>
+  </div>
+  <div class="sidebarList " *ngIf="allRoomRelatedInfoList">
+  <ng-container *ngFor="let rc of allRoomRelatedInfoList">
+  <div *ngIf="rc.bedCount>0">
+      <h5> {{rc.roomCatagory}} </h5>
+      <div class="room-category" *ngIf="rc.roomDto.length > 0">
+          <ng-container *ngFor="let rm of rc.roomDto">
+          <div class="room" *ngIf="rm.bedList.length > 0">
+              <h6>{{rm.roomNo}}</h6>
+              <hr>
+              <label *ngIf="rm.department!=null">Department</label>
+              <p>{{rm.departmentName}}</p>
+              
+              <div class="text-center">
+                <div class="badge-text badge-primary-txt">Total Beds:</div>
+                <div class="badge-text badge-primary-txt">{{rm.noBeds}}</div>
+              </div>
+              <div class="text-center">
+                <div class="badge-text badge-success-txt">Available:</div>
+                <div class="badge-text badge-success-txt">{{rm.noOfAvailableBeds}}</div>
+              </div>
+              <!-- <hr> -->
+              <p class="p-info"><b>Displaying available beds</b></p>
+              <div class="row no-gutters">
+              <div class="col-4" *ngFor="let bd of rm.bedList">
+                <span [ngClass]="this.admissionForm.value.bedRefNo==bd.refNo?'selectedBed':'bed'" class="bed" (click)="getBedAvailablity(bd,rm,rc.refNo)">{{bd.resourceName}}</span>
+              </div>
+            </div>
+            </div>
+          </ng-container>
+      </div>
+  </div>  
+  
+</ng-container>
+</div>
+
+
+
+
+  </p-sidebar>

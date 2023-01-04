@@ -1,0 +1,813 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+<div class="row top-btn-area">
+</div>
+<div class="row page-content">
+  <!-- new add to search medicine by medicine name-->
+  <div class="col-md-12">
+    <div class="order-midicine">
+      <p-autoComplete styleClass="order-medicine-autocomplete" [style]="{'width':'80%'}" [suggestions]="results"
+        (completeMethod)="search($event)" field=" " [(ngModel)]="medBrand"
+        placeholder="Search for medicines and add to cart">
+        <ng-template let-resultEl pTemplate="item">
+          <span class="display-inline-block width85" (click)="onClickMedAddByMedSearchDrpDwn(resultEl)">
+            <span class="font-size11px font-weight500">{{resultEl.brandName}}</span><br>
+            <span class="textDot font9px">Composition: {{resultEl.product_composition}}</span>
+          </span>
+          <span class="float-right display-inline-block">
+            <button class="float-right btn btn-primary"
+              (click)="onClickMedAddByMedSearchDrpDwn(resultEl)">{{'COMMON.ADD_BUTTON' | translate}}</button>
+          </span>
+          <!-- <i class="fas fa-plus-circle" (click)="onClickAddIconOnAddNewMedicineModal(results)"></i> -->
+        </ng-template>
+      </p-autoComplete>
+      <div class="d-inline-block">
+        <i class="fas fa-search text-body order-medicine-search">&nbsp;</i>
+      </div>
+    </div>
+    <!-- <input class="form-control" placeholder="{{'HEADER.HEADER_SEARCH_FOR_DOCTORS_SPECIALITY_OR_CONDITION' | translate }}" type="search"> -->
+
+
+  </div>
+  <!-- end of new add to search medicine by medicine name -->
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-12">
+        <div class="row card mr-1 ml-1 mb-3">
+          <div class="col-lg-12 small-size-hide med-list">
+            <div class="card-header" style="border-bottom:none">
+              <h5 class="float-left">Medicines</h5>
+              <div class="float-right">
+              <button class="btn btn-primary" *ngIf="displaySaveBtn"
+                (click)="placeOrder()">{{'ORDER_MEDICINE.ORDER_MEDICINE' | translate}}</button>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="text-center not-found" *ngIf="prescribedMedicineList.length == 0"><h3>Please add medicines to continue</h3></div>
+            <div *ngIf="prescribedMedicineList.length >0" class="col-md-12 padding10 med-list-header">
+              <div class="row">
+                <div class="col-xl-8 col-lg-5 col-md-5">
+                  <h6>{{'ORDER_MEDICINE.GRID_HEADER_MEDICINE_LEBEL_NAME' | translate}}</h6>
+                </div>
+                <div class="col-xl-1 col-lg-2 col-md-2 text-right pl-0">
+                  <h6>{{'ORDER_MEDICINE.GRID_HEADER_UNIT_PRICE_LEBEL_NAME' | translate}}</h6>
+                </div>
+                <div class="col-xl-1 col-lg-2 col-md-2">
+                  <h6 class="margin-left-12px">{{'ORDER_MEDICINE.GRID_HEADER_QUANTITY_LEBEL_NAME' | translate}}</h6>
+                </div>
+                <div class="col-xl-1 col-lg-2 col-md-2 text-right">
+                  <h6>{{'ORDER_MEDICINE.GRID_HEADER_TOTAL_PRICE_LEBEL_NAME' | translate}}</h6>
+                </div>
+                <!-- <div class="col-md-3">
+                      <h6>Prescription</h6>
+                    </div> -->
+                <div class="col-1"></div>
+              </div>
+            </div>
+            <!--Data-->
+            <div class="table" *ngIf="(!reOrderableMedicine)&& (prescribedMedicineList.length >0)">
+              <div class="col-md-12 margin-bottom-31" *ngFor="let medicine of prescribedMedicineList ; let i = index"
+                [attr.data-index]="i">
+                <div class="row margin-bottom-17px">
+                  <div class="col-xl-8 col-lg-5 col-md-5">
+                    <div class="row padding-left14px">
+                      <span class="order-med-name textDot-for-medicine-name-order" title="{{medicine.medicineName}}">{{medicine.medicineName}}</span>
+                      &nbsp;&nbsp;<label class="margin-bottom-0" *ngIf="medicine.prescriptionRequired"
+                        title="prescription required"><i class="fas fa-file-medical"></i></label>
+                      &nbsp;&nbsp;<label *ngIf="medicine.prescriptionRefNo" title="prescription selected"><i
+                          class="fas fa-clipboard-check"></i></label>
+                    </div>
+                    <div class="row padding-left14px">
+                      <span>by {{medicine.company}}</span>,   {{medicine.product_package}}
+                    </div>
+                  </div>
+                  <div class="col-xl-1 col-lg-2 col-md-2 text-right">
+                    <p class="padding-top24px">{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                      {{medicine.unitPrice | number:'2.2-2'}}</p>
+                  </div>
+                  <div class="col-xl-1 col-lg-2 col-md-2 padding-left32px">
+                    <input class="padding-top24px width-40px text-center" type="number"
+                      (input)="updatePrice($event,medicine,i)" min="1" max="10" name="medicineQuantity"
+                      [(ngModel)]="medicine.medicineQuantity" (keyUp)="updatePrice($event,medicine,i)" />
+                  </div>
+                  <div class="col-xl-1 col-lg-2 col-md-2 text-right">
+                    <p class="padding-top24px price-style">{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                      {{medicine.overallPricePerMedicine | number:'2.2-2'}}</p>
+                  </div>
+                  <!-- <div class="col-md-3">
+                      <select class="width164 margin-top23px" [(ngModel)]="medicine.selectedPrescription" (change)="selectPrescription(medicine.selectedPrescription)">
+                        <option *ngFor="let prescription of prescriptionsForMe" value="{{prescription.prescriptionRefNo}}">
+                          <span class="textDot">{{prescription.doctorName}}</span>({{prescription.prescriptionDate | dateFormat}})
+                        </option>
+                      </select>
+                    </div> -->
+                  <div class="col-1">
+                    <label class="padding-top24px" ngbTooltip="Delete Medicine" (click)="deleteMedicine(medicine, i)"><i
+                        class="fas fa-trash-alt cursor"></i></label>
+                  </div>&nbsp;&nbsp;
+                </div>
+              </div>
+            </div>
+            <div *ngIf="reOrderableMedicine && (prescribedMedicineList.length >0)">
+              <div class="col-md-12 border" *ngFor="let orders of resMedDetEl?.orderDetails; let i = index">
+                <div class="margin-bottom-18px" *ngFor="let orderList of orders.cartItems; let j = index">
+                  <div class="row padding8">
+                    <div class="col-md-4">
+                      <div class="row padding-left14px">
+                        <span class="order-med-name textDot-for-medicine-name width85" title="{{orderList.medicineName}}">{{orderList.medicineName}}</span>
+                        &nbsp;&nbsp;&nbsp;<label *ngIf="orderList.prescriptionRequired" title="prescription required"><i
+                            class="fas fa-file-medical"></i></label>
+                      </div>
+                      <div class="row padding-left14px">
+                        <span title="by {{orderList.brandName}}">by {{orderList.brandName}}</span>
+                      </div>
+                      <span>{{orderList.product_package}}</span>
+                    </div>
+                    <div class="col-md-3 text-center">
+                      <p class="padding-top24px padding-left10px">{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                        {{orderList.unitPrice | number:'2.2-2'}}</p>
+                    </div>
+                    <div class="col-md-2">
+                      <input class="padding-top24px width-40px text-center" type="number"
+                        (input)="updatePrice($event,orderList,i)" min="1" max="10" name="medicineQuantity"
+                        [(ngModel)]="orderList.medicineQuantity" (click)="updatePrice($event,orderList,i)"
+                        (keyUp)="updatePrice($event,orderList,i)" />
+                    </div>
+                    <div class="col-md-2 text-right">
+                      <p class="padding-top24px">{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                        {{orderList.overallPricePerMedicine | number:'2.2-2'}}</p>
+                    </div>
+                    <div class="col-md-1">
+                      <label class="padding-top24px" ngbTooltip="Delete Medicine"
+                        (click)="removeMedicine($event,orders.cartItems,j)"><i
+                          class="fas fa-trash-alt cursor"></i></label>
+                    </div>&nbsp;&nbsp;
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+
+            <div *ngIf="prescribedMedicineList.length >0" class="row sub-total  mb-2 pb-0">
+              <div class="col-lg-8 col-md-6"></div>
+              <div class="col-lg-4 col-md-6">
+                <table class="table mb-0">
+                  <tr>
+                    <td class="text-left total-heading">Total</td>
+                    <td class="text-right pr-0"><div class="sub-total-heading">{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{cartPrice | number:'2.2-2'}}</div></td>
+                  </tr>
+                </table>
+              </div>
+
+
+            </div>
+          </div>
+
+          <div class="col-12 small-size-show">
+            <div class="border" *ngIf="(!reOrderableMedicine)&& (prescribedMedicineList.length >0)">
+              <div class="col-12 margin-bottom-31" *ngFor="let medicine of prescribedMedicineList ; let i = index"
+                [attr.data-index]="i">
+                <div class="row pb-2">
+                  <div class="col-6">
+                    <h6 class="small-header mt-1">{{'ORDER_MEDICINE.GRID_HEADER_MEDICINE_LEBEL_NAME' | translate}} :
+                    </h6>
+                  </div>
+                  <div class="col-6">
+                    <div class="row padding-left14px">
+                      <span class="order-med-name width80">{{medicine.medicineName}}</span>
+                      &nbsp;&nbsp;<label class="margin-bottom-0" *ngIf="medicine.prescriptionRequired"
+                        title="prescription required"><i class="fas fa-file-medical"></i></label>
+                      &nbsp;&nbsp;<label *ngIf="medicine.prescriptionRefNo" title="prescription selected"><i
+                          class="fas fa-clipboard-check"></i></label>
+                    </div>
+                    <div class="row padding-left14px">
+                      <span>by {{medicine.company}}</span>
+                    </div>
+                    <span>
+                      {{medicine.product_package}}
+                    </span>
+                  </div>
+                </div>
+                <div class="row pb-2">
+                  <div class="col-5">
+                    <h6 class="small-header">{{'ORDER_MEDICINE.GRID_HEADER_UNIT_PRICE_LEBEL_NAME' | translate}} : </h6>
+                  </div>
+                  <div class="col-7 text-right">
+                    <p>{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{medicine.unitPrice | number:'2.2-2'}}</p>
+                  </div>
+                </div>
+                <div class="row pb-2">
+                  <div class="col-5">
+                    <h6 class="small-header">{{'ORDER_MEDICINE.GRID_HEADER_QUANTITY_LEBEL_NAME' | translate}} : </h6>
+                  </div>
+                  <div class="col-7 text-right">
+                    <input class="width-40px text-center" type="number" (input)="updatePrice($event,medicine,i)" min="1"
+                      max="10" name="medicineQuantity" [(ngModel)]="medicine.medicineQuantity"
+                      (keyUp)="updatePrice($event,medicine,i)" />
+                  </div>
+                </div>
+                <div class="row pb-2">
+                  <div class="col-5">
+                    <h6 class="small-header">{{'ORDER_MEDICINE.GRID_HEADER_TOTAL_PRICE_LEBEL_NAME' | translate}} : </h6>
+                  </div>
+                  <div class="col-7 text-right">
+                    <p>{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{medicine.overallPricePerMedicine | number:'2.2-2'}}
+                    </p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12 text-right">
+                    <label class="mr-3" ngbTooltip="Delete Medicine" (click)="deleteMedicine(medicine, i)"><i
+                        class="fas fa-trash-alt cursor"></i></label>
+                  </div>
+                </div>
+                <hr class="mt-0 mb-0">
+              </div>
+            </div>
+            <div *ngIf="reOrderableMedicine && (prescribedMedicineList.length >0)">
+              <div class="border col-12" *ngFor="let orders of resMedDetEl?.orderDetails; let i = index">
+                <div class="margin-bottom-18px" *ngFor="let orderList of orders.cartItems; let j = index">
+                  <div class="row pb-2">
+                    <div class="col-5">
+                      <h6 class="small-header mt-1">{{'ORDER_MEDICINE.GRID_HEADER_MEDICINE_LEBEL_NAME' | translate}} :
+                      </h6>
+                    </div>
+                    <div class="col-7">
+                      <div class="row padding-left14px">
+                        <span class="order-med-name width85">{{orderList.medicineName}}</span>
+                        &nbsp;&nbsp;&nbsp;<label *ngIf="orderList.prescriptionRequired" title="prescription required"><i
+                            class="fas fa-file-medical"></i></label>
+                      </div>
+                      <div class="row padding-left14px">
+                        <span title="by {{orderList.brandName}}">by {{orderList.brandName}}</span>
+                      </div>
+                      <span>{{orderList.product_package}}</span>
+                    </div>
+                  </div>
+                  <div class="row pb-2">
+                    <div class="col-5">
+                      <h6 class="small-header">{{'ORDER_MEDICINE.GRID_HEADER_UNIT_PRICE_LEBEL_NAME' | translate}} :
+                      </h6>
+                    </div>
+                    <div class="col-7 text-right">
+                      <p>{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{orderList.unitPrice | number:'2.2-2'}}</p>
+                    </div>
+                  </div>
+                  <div class="row pb-2">
+                    <div class="col-5">
+                      <h6 class="small-header">{{'ORDER_MEDICINE.GRID_HEADER_QUANTITY_LEBEL_NAME' | translate}} : </h6>
+                    </div>
+                    <div class="col-7 text-right">
+                      <input class="width-40px text-center" type="number" (input)="updatePrice($event,orderList,i)"
+                        min="1" max="10" name="medicineQuantity" [(ngModel)]="orderList.medicineQuantity"
+                        (click)="updatePrice($event,orderList,i)" (keyUp)="updatePrice($event,orderList,i)" />
+                    </div>
+                  </div>
+                  <div class="row pb-2">
+                    <div class="col-5">
+                      <h6 class="small-header">{{'ORDER_MEDICINE.GRID_HEADER_TOTAL_PRICE_LEBEL_NAME' | translate}} :
+                      </h6>
+                    </div>
+                    <div class="col-7 text-right">
+                      <p>{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{orderList.overallPricePerMedicine | number:'2.2-2'}}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12 text-right">
+                      <label class="mr-3" ngbTooltip="Delete Medicine"
+                        (click)="removeMedicine($event,orders.cartItems,j)"><i
+                          class="fas fa-trash-alt cursor"></i></label>
+                    </div>
+                  </div>
+                  <hr class="mt-0 mb-0">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 min-height161px small-size-price-show">
+            <div class="col-12 border min-height100percent">
+              <div class="row padding20">
+                <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">
+                  <p class="font-size-large"><b>{{'ORDER_MEDICINE.SUBTOTAL_LEBEL_NAME' | translate}} ({{cardItemCount }}
+                      {{'ORDER_MEDICINE.ITEM_LEBEL_NAME' | translate}}<ng-container *ngIf="cartItem>1">s</ng-container>
+                      ):
+                    </b></p>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 padding-top4px pl-0 text-right">
+                  <p class="price-font-size">{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{cartPrice | number:'2.2-2'}}</p>
+                </div>
+              </div>
+              <div class="padding-top29px text-center">
+                <button class="btn btn-primary" [disabled]="orderMedDisableMethod()"
+                  (click)="placeOrder()">{{'ORDER_MEDICINE.ORDER_MEDICINE' | translate}}</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div *ngIf="prescribedMedicineList.length >0" class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h5>Prescription</h5>
+              </div>
+              <div class="card-body">
+                <div class="row mr-3 ml-3 mb-3">
+                  <div class="col-lg-5 btn-box">
+                    <div class="text-center"><img src="../../../../assets/image/upload-file-bg.svg"
+                        height="50" /></div>
+                    <h6>Upload prescription to order the medicines</h6>
+                    <button type="button" class="btn btn-primary align-right"
+                      (click)="uploadModal()">{{'MY_PRESCRIPTION.UPLOAD_PRESCRIPTION' | translate}}</button>
+                  </div>
+                  <div class="col-lg-2 text-center or">OR</div>
+                  <div class="col-lg-5 btn-box">
+                    <div class="text-center"><img src="../../../../assets/image/saved-pres.svg"
+                        height="50" /></div>
+                        <h6>Select from already uploaded prescriptions to order the medicines</h6>
+                    <button class="btn btn-primary btn-sm" (click)="getUploadedPrescriptions()">Saved Prescriptions</button>
+                  </div>
+                </div>
+
+
+
+                <div class="show-pres">
+                  <div *ngIf="prescriptionsForMe.length > 0" class="row prescription-card-list-scroll-area">
+                    <div class="upload-block"
+                      *ngFor="let prescription of prescriptionsForMe">
+                      <div *ngIf="prescription.source == 'SBIS'" class="">
+                      <!--  <div class="card-header">
+                          <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-4"><label class="font-size14px">DOC: </label>
+                            </div>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-8"><span
+                                class="textDot font-size14px">{{prescription.doctor.doctorName}}</span></div>
+                          </div>
+                          <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-4 padding-right0"><label
+                                class="font-size14px">Patient: </label></div>
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-8"><span
+                                class="textDot font-size14px">{{prescription.individualUserEntity.name}}</span></div>
+                          </div>
+                        </div> -->
+                        <div class="card-body padding10">
+                          <div class="doc-name">Doctor - {{prescription.doctor.doctorName}}</div>
+                          <div class="patient-name">For - {{prescription.individualUserEntity.name}}</div>
+                          <ol class="margin-left-31px prescription-medicine-list-scroll-area">
+                            <li class="font-size10px" *ngFor="let pm of prescription.medicationDTOList">
+                              <span>
+                                <!-- *ngIf="pm.status=='NRM'" -->
+                                {{pm.medicineName}} {{pm.sosFlag == 'Y'?' (SoS) ':''}} =>
+                                <span *ngIf="pm.sosFlag == 'N'">
+                                  {{pm.dosageFrequency}} time/times
+                                  {{pm.dosageInterval == 'D' ? 'Daily' : (pm.dosageInterval == 'W' ? 'Weekly' : 'Monthly')}}
+                                </span>
+                                {{pm.sosFlag == 'Y' || pm.sosFlag == null ?'':' - '}}
+                                For {{pm.duration}}
+                                {{pm.durationUnit == 'D' ? 'Days' : (pm.durationUnit == 'W' ? 'Weeks' : 'Months')}}
+                                {{pm.beforeAfterMealFlag != null ? (pm.beforeAfterMealFlag == 'A' ? ' - After meal': ' - Before meal') : ''}}
+                                <span *ngIf="pm.comments !== ''">
+                                  - {{pm.comments}}
+                                </span>
+
+                              </span>
+                            </li>
+                          </ol>
+                        <!--  <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-12 text-right">
+                              <div class="row">
+                                <div class="col-8 text-right">
+                                  <label class="cursor" title="add" (click)="selectPrescription(prescription)"><i
+                                      class="fas fa-plus-circle"></i></label>
+                                </div>
+                                <div class="col-4 text-right">
+                                  <label class="cursor" title="view" (click)="openPrescription(prescription)"><i
+                                      class="fas fa-eye"></i></label>
+                                </div>
+                              </div>
+                            </div>
+                          </div> -->
+                        </div>
+
+                        <div class="card-footer">
+                          <div class="row mt-2">
+                            <div class="col-5 text-left pres-date">
+                              {{prescription.presDate}}
+                            </div>
+                            <div class="col-7 text-right">
+                              <div class="cursor d-inline-block add-pres-btn mr-1" title="add" (click)="selectPrescription(prescription)">ADD</div>
+                              <div class="cursor d-inline-block view-pres-btn" title="view" (click)="openPrescription(prescription)">VIEW</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div *ngIf="prescription.source == 'UPLOAD'" class="upload-pres">
+
+                        <div class="card-body uploaded-prescription-card-size">
+                          <!--{{prescription}}-->
+                          <div class="row">
+                            <div class="col-12 doc-name">
+                              <b>Doctor - {{prescription.docName}}</b>
+                            </div>
+                          </div>
+                          <div class="row mt-2">
+                            <div class="col-12 patient-name">
+                              For {{prescription.patientName}}
+                            </div>
+
+                          </div>
+
+                          <img *ngIf="prescription.contentType !='application/pdf'" class="order-medicine-img-size"
+                            [src]="domSanitizer.bypassSecurityTrustUrl(prescription.downloadImageSrc)"
+                             alt="">
+                          <iframe width="100%" height="500" scrolling="no" frameborder="0"
+                            id="prescriptionIframeForOrderMedicine"
+                            *ngIf="prescription.contentType =='application/pdf'"
+                            [src]="domSanitizer.bypassSecurityTrustResourceUrl(prescription.downloadImageSrc)"></iframe>
+
+                          <!--<div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-12 text-right">
+                              <div class="row">
+                                <div class="col-6 text-right aaa">
+                                  <label class="cursor" title="add" (click)="selectPrescription(prescription)"><i
+                                      class="fas fa-plus-circle"></i></label>
+                                </div>
+                                <div class="col-6 text-left">
+                                  <label class="cursor" title="view" (click)="openPrescription(prescription)"><i
+                                      class="fas fa-eye"></i></label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>-->
+                        </div>
+                        <div class="card-footer">
+                          <div class="row mt-2">
+                            <div class="col-5 text-left pres-date">
+                              {{prescription.presDate}}
+                            </div>
+                            <div class="col-7 text-right">
+                              <div class="cursor d-inline-block add-pres-btn mr-1" title="add" (click)="selectPrescription(prescription)">ADD</div>
+                              <div class="cursor d-inline-block view-pres-btn" title="view" (click)="openPrescription(prescription)">VIEW</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <div  class="selected-presc-bg">
+                      <div class="row" id="sel-pres" *ngIf="selectedPrescription.length > 0 && prescribedMedicineList.length > 0">
+                        <div class="col-12">
+                        <h6 class="sel-heading">SELECTED PRESCRIPTION<ng-container
+                            *ngIf="selectedPrescription.length > 1">S
+                          </ng-container></h6>
+                        </div>
+                        <div class="col-12">
+                          <div>
+                            <div class="row padding10  ml-0 mr-0">
+                              <div class="col-md-4 col-12"
+                                *ngFor="let prescription of selectedPrescription; let i = index">
+                                <div *ngIf="prescription.source == 'SBIS'" class="selected-presc"> <!--*ngIf="prescription.source == 'SBIS'"-->
+                                  <div class="card-header">
+                                    <div class="row">
+                                      <div class="col-12">
+                                        <div class="row">
+                                          <div class="col-11"><span
+                                              class="textDot">{{prescription.doctor.doctorName}}</span></div>
+                                        </div>
+
+                                      </div>
+                                      <!--<div class="col-2 pl-1 text-right"><i class="fas fa-times cursor"
+                                          (click)="cancelPrescription(i, prescription)"></i>
+                                      </div>-->
+                                    </div>
+                                  </div>
+                                  <div class="card-body padding10">
+                                    <div class="patient-name">For {{prescription.individualUserEntity.name}}</div>
+                                    <ol class="margin-left-31px prescription-medicine-list-scroll-area">
+                                      <li class="font-size10px" *ngFor="let pm of prescription.medicationDTOList">
+                                        <span>
+                                          <!-- *ngIf="pm.status=='NRM'" -->
+                                          {{pm.medicineName}} {{pm.sosFlag == 'Y'?' (SoS) ':''}} =>
+                                          <span *ngIf="pm.sosFlag == 'N'">
+                                            {{pm.dosageFrequency}} time/times
+                                            {{pm.dosageInterval == 'D' ? 'Daily' : (pm.dosageInterval == 'W' ? 'Weekly' : 'Monthly')}}
+                                          </span>
+                                          {{pm.sosFlag == 'Y' || pm.sosFlag == null ?'':' - '}}
+                                          For {{pm.duration}}
+                                          {{pm.durationUnit == 'D' ? 'Days' : (pm.durationUnit == 'W' ? 'Weeks' : 'Months')}}
+                                          {{pm.beforeAfterMealFlag != null ? (pm.beforeAfterMealFlag == 'A' ? ' - After meal': ' - Before meal') : ''}}
+                                          <span *ngIf="pm.comments !== ''">
+                                            - {{pm.comments}}
+                                          </span>
+
+                                        </span>
+                                      </li>
+                                    </ol>
+                                  </div>
+                                  <div class="card-footer text-right">
+                                    <div class="cursor d-inline-block cancel-pres-btn" title="add" (click)="cancelPrescription(i, prescription)">Cancel</div>
+                                  </div>
+                                </div>
+                                <div *ngIf="prescription.source == 'UPLOAD'" class="selected-presc">
+                                  <div class="card-header">
+                                    <!--<div class="row">
+                                      <div class="col-lg-10"></div>
+                                      <div class="col-lg-2 text-right">
+                                        <i class="fas fa-times cursor" (click)="cancelPrescription(i, prescription)"></i>
+                                      </div>
+                                    </div>-->
+                                    <div class="row">
+                                      <div class="col-12 doc-name">
+                                        <b>Doctor - {{prescription.docName}}</b>
+                                      </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                      <div class="col-12 patient-name">
+                                        For {{prescription.patientName}}
+                                      </div>
+
+                                    </div>
+                                  </div>
+                                  <div class="card-body p-2 prescription-medicine-list-scroll-area">
+                                    <img *ngIf="prescription.contentType !='application/pdf'"
+                                      class="order-medicine-selected-prescription-img-size"
+                                      [src]="domSanitizer.bypassSecurityTrustUrl(prescription.downloadImageSrc)" id="image-corner"
+                                      alt="">
+                                    <iframe width="100%" height="500" scrolling="no" frameborder="0"
+                                      id="prescriptionIframeForOrderMedicineSelectedPrescriptionPdf"
+                                      *ngIf="prescription.contentType =='application/pdf'"
+                                      [src]="domSanitizer.bypassSecurityTrustResourceUrl(prescription.downloadImageSrc)"></iframe>
+
+                                  </div>
+                                  <div class="card-footer text-right">
+                                    <div class="cursor d-inline-block cancel-pres-btn" title="add" (click)="cancelPrescription(i, prescription)">Cancel</div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                        <!-- <div class="col-lg-2"></div> -->
+                      </div>
+
+
+
+
+
+
+                  <!--  <div class="row padding20">
+                      <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8">
+                        <p class="font-size-large"><b>:
+                          </b></p>
+                      </div>
+                      <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 padding-top4px pl-0 text-right">
+                        <p class="price-font-size">{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{cartPrice | number:'2.2-2'}}</p>
+                      </div>
+                    </div> -->
+
+                  </div>
+                </div>
+
+
+              </div>
+
+
+
+
+            </div>
+
+          </div>
+        </div>
+        <!--<div class="text-center mt-2">
+        <button class="btn btn-primary" [disabled]="orderMedDisableMethod()"
+          (click)="placeOrder()">{{'ORDER_MEDICINE.ORDER_MEDICINE' | translate}}</button>
+          </div>-->
+          <div class="text-center mt-2">
+          <button class="btn btn-primary" *ngIf="displaySaveBtn"
+            (click)="placeOrder()">{{'ORDER_MEDICINE.ORDER_MEDICINE' | translate}}</button>
+            </div>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+
+        <!--<div class="row" *ngIf="prescribedMedicineList.length > 0">
+          <div class="col-lg-12">
+            <p-accordion *ngIf="user_refNo">
+              <p-accordionTab styleClass="primeng-accordion" [selected]="true">
+                <p-header>
+                  My Prescriptions
+                </p-header>
+
+                <div *ngIf="prescriptionsForMe.length == 0 && isPrescription" class="row">
+                  <div class="col-lg-12 text-center">
+                    <label>You Don't Have Any Prescription</label>
+                  </div>
+                </div>
+                <div *ngIf="!isUplPrescriptionLoaded && prescriptionsForMe.length == 0" class="row text-center">
+                  <div class="col-8 mt-1 text-right">
+                    <label>Do you want to load all your uploaded prescriptions?</label>
+                  </div>
+                  <div class="col-4 text-left">
+                    <button class="btn btn-primary btn-sm" (click)="getUploadedPrescriptions()">Load</button>
+                  </div>
+                </div>
+                <div *ngIf="prescriptionsForMe.length > 0" class="row prescription-card-list-scroll-area">
+                  <div class="col-md-3 col-12"
+                    *ngFor="let prescription of prescriptionsForMe">
+                    <div *ngIf="prescription.source == 'SBIS'" class="card cursor">
+                      <div class="card-header">
+                        <div class="row">
+                          <div class="col-lg-4 col-md-4 col-sm-4 col-4"><label class="font-size14px">DOC: </label>
+                          </div>
+                          <div class="col-lg-8 col-md-8 col-sm-8 col-8"><span
+                              class="textDot font-size14px">aaa{{prescription.doctor.doctorName}}</span></div>
+                        </div>
+                        <div class="row">
+                          <div class="col-lg-4 col-md-4 col-sm-4 col-4 padding-right0"><label
+                              class="font-size14px">Patient: </label></div>
+                          <div class="col-lg-8 col-md-8 col-sm-8 col-8"><span
+                              class="textDot font-size14px">bbb{{prescription.individualUserEntity.name}}</span></div>
+                        </div>
+                      </div>
+                      <div class="card-body padding10">
+                        <ol class="margin-left-31px prescription-medicine-list-scroll-area">
+                          <li class="font-size10px" *ngFor="let pm of prescription.medicationDTOList">
+                            <span>
+
+                              {{pm.medicineName}} {{pm.sosFlag == 'Y'?' (SoS) ':''}} =>
+                              <span *ngIf="pm.sosFlag == 'N'">
+                                {{pm.dosageFrequency}} time/times
+                                {{pm.dosageInterval == 'D' ? 'Daily' : (pm.dosageInterval == 'W' ? 'Weekly' : 'Monthly')}}
+                              </span>
+                              {{pm.sosFlag == 'Y' || pm.sosFlag == null ?'':' - '}}
+                              For {{pm.duration}}
+                              {{pm.durationUnit == 'D' ? 'Days' : (pm.durationUnit == 'W' ? 'Weeks' : 'Months')}}
+                              {{pm.beforeAfterMealFlag != null ? (pm.beforeAfterMealFlag == 'A' ? ' - After meal': ' - Before meal') : ''}}
+                              <span *ngIf="pm.comments !== ''">
+                                - {{pm.comments}}
+                              </span>
+
+                            </span>
+                          </li>
+                        </ol>
+                        <div class="row">
+                          <div class="col-lg-12 col-md-12 col-sm-12 col-12 text-right">
+                            <div class="row">
+                              <div class="col-9 text-right">
+                                <label class="cursor" title="add" (click)="selectPrescription(prescription)"><i
+                                    class="fas fa-plus-circle"></i></label>
+                              </div>
+                              <div class="col-3 text-right">
+                                <label class="cursor" title="view" (click)="openPrescription(prescription)"><i
+                                    class="fas fa-eye"></i></label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="prescription.source == 'UPLOAD'" class="card cursor selected-presc">
+                      <div class="card-body uploaded-prescription-card-size">
+                        <img *ngIf="prescription.contentType !='application/pdf'" class="order-medicine-img-size"
+                          [src]="domSanitizer.bypassSecurityTrustUrl(prescription.downloadImageSrc)"
+                          id="image-corner" alt="">
+                        <iframe width="100%" height="500" scrolling="no" frameborder="0"
+                          id="prescriptionIframeForOrderMedicine"
+                          *ngIf="prescription.contentType =='application/pdf'"
+                          [src]="domSanitizer.bypassSecurityTrustResourceUrl(prescription.downloadImageSrc)"></iframe>
+
+                        <div class="row">
+                          <div class="col-lg-12 col-md-12 col-sm-12 col-12 text-right">
+                            <div class="row">
+                              <div class="col-9 text-right">
+                                <label class="cursor" title="add" (click)="selectPrescription(prescription)"><i
+                                    class="fas fa-plus-circle"></i></label>
+                              </div>
+                              <div class="col-3 text-right">
+                                <label class="cursor" title="view" (click)="openPrescription(prescription)"><i
+                                    class="fas fa-eye"></i></label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </p-accordionTab>
+            </p-accordion>
+          </div>
+
+        </div> -->
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<ng-template #prescriptionPreviewModal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{'MY_PRESCRIPTION.PRESCRIPTION' | translate}}</h4>
+
+    <button type="button" class="close float-right" (click)="modalRef.hide()" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="row" *ngIf="!prescriptionSBIS">
+    <div class="col-md-12">
+      <div class="float-right mb-2">
+        <span class="ml-2" id="download-ico"><img src="../../../../assets/image/download.svg" (click)="downloadFile()"
+            height="15" class="cursor" /></span>
+        <span class="ml-2" id="print-ico"><img src="../../../../assets/image/print.svg" height="15"
+            class="cursor" /></span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="prescriptionSBIS">
+    <app-prescription-preview [modalRef]="modalRef" [appRefNo]="appRefNo"></app-prescription-preview>
+  </div>
+  <div *ngIf="!prescriptionSBIS">
+    <img *ngIf="download.contentType !='application/pdf'" class="prescription-img-size"
+      [src]="domSanitizer.bypassSecurityTrustUrl(download.downloadImageSrc)" id="image-corner" alt="">
+    <iframe width="100%" height="500" scrolling="no" frameborder="0" id="prescriptionIframe"
+      *ngIf="download.contentType =='application/pdf'"
+      [src]="domSanitizer.bypassSecurityTrustResourceUrl(download.downloadImageSrc)"></iframe>
+  </div>
+
+</ng-template>
+
+<!-- Modal -->
+<ng-template #prescriptionUpload>
+  <!-- Modal content-->
+  <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
+    <div class="modal-header">
+      <h4 class="modal-title">{{'MY_PRESCRIPTION.PRESCRIPTION_UPLOAD' | translate}}</h4>
+      <button type="button" class="close" data-dismiss="modal" (click)="modalRef.hide()">&times;</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="row">
+        <div class="col-md-4 padding20">
+          <label>{{'MY_PRESCRIPTION.PATIENT_NAME' | translate}}</label>
+          <select class="width167px" formControlName="forUserPk">
+            <option *ngFor="let ptnNameObj of patientNamelist" value="{{ptnNameObj.userRefNo}}">
+              {{ptnNameObj.forUserName}}
+            </option>
+          </select><br>
+          <span *ngIf="uploadForm.get('isSubmit').value || uploadForm.controls.forUserPk.dirty">
+            <span *ngIf="uploadForm.hasError('required', 'forUserPk')" class="validation-error">{{
+                      'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+          </span>
+        </div>
+        <div class="col-md-4 padding20">
+          <label>{{'MY_PRESCRIPTION.DOCTOR_NAME' | translate}}</label>
+          <input type="text" formControlName="doctorName" placeholder="Doctor Name">
+          <span *ngIf="uploadForm.get('isSubmit').value || uploadForm.controls.doctorName.dirty">
+            <span *ngIf="uploadForm.hasError('required', 'doctorName')" class="validation-error">{{
+                        'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+          </span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4 padding20">
+          <label>{{'COMMON.DATE' | translate}}</label>
+          <app-datepicker [maxDate]="maxDate" formControlName="date" position="right"></app-datepicker>
+        </div>
+        <div class="col-md-4 padding20">
+          <input type="file" (change)="prescriptionFileSelected($event)" formControlName="documents"
+            class="padding-top28px" />
+          <span *ngIf="uploadForm.get('isSubmit').value || uploadForm.controls.file.dirty">
+            <span *ngIf="uploadForm.hasError('required', 'file')" class="validation-error">{{
+                      'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+          </span>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" type="submit" class="btn btn-primary">{{'MY_PRESCRIPTION.UPLOAD' | translate}}</button>
+    </div>
+  </form>
+</ng-template>

@@ -1,0 +1,403 @@
+/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+.patient-card p{
+    font-size: 12px;
+}
+/* p.spec{
+    margin-bottom: 0;
+    font-size: 12px;
+    font-weight: 400;
+    color: #9350a3; 
+} */
+.reportList, .reportList .col-md-4{
+    padding-left: 1px;
+    padding-right: 1px;
+}
+.reportList{
+    margin-bottom: 20px;
+}
+.reportList hr {
+    margin-top: 1px;
+    margin-bottom: 1px;
+    border: 0;
+    border-top: 1px solid rgba(0,0,0,.3);
+}
+.display-box{
+    border-bottom: none;
+    padding:0 ;
+    border-radius: 0;
+}
+.prescription-widgets .card{
+    box-shadow: none;
+    margin-bottom:0
+}
+.prescription-widgets .card-header{
+    background-color:transparent;
+    border-bottom: none;
+    padding-left:0 !important;
+}
+.prescription-widgets .card-header h5, .prescription-widgets h5{
+    font-size: 13px;
+    font-weight: 500;
+    color: #662d91;
+    text-transform:uppercase;
+    margin-right:10px;
+    padding-top:3px;
+}
+.display-box p{
+    font-size: 14px;
+}
+.narration .display-box, .vital .display-box{
+    min-height: 20px;
+    /*max-height: 120px;
+    overflow-y: auto;*/
+}
+.observation .display-box, .diagnosis .display-box, .medicines .display-box, .labTest .display-box, .advice .display-box {
+    min-height: 20px;
+    border:1px solid #ddd;
+  /*  max-height: 120px;
+    overflow-y: auto;*/
+}
+.previewContainer .card{
+    box-shadow: none !important;
+    margin-bottom: 0px !important;
+}
+.previewContainer .card-body{
+    padding:5px !important;
+}
+.previewContainer .card-body h5{
+    text-transform: uppercase;
+    
+}
+.spec{
+    font-weight: 400;
+}
+
+.reportValue{
+    font-weight: bold;
+    margin-top: 10px;
+}
+.reportValue:before{
+    content:'\21D3';
+    position: absolute;
+    left: 50%;
+    top: 14px;
+    font-weight: 400;
+    color: #662d91;
+}
+.reportList .card{
+    margin-bottom:0px;
+    box-shadow: 1px 0px 0px rgba(204, 197, 185, 0.5);
+}
+.reportList .col-md-4:last-child .card{
+    box-shadow: none;
+}
+.reportList ol{
+    margin-left: -21px;
+    margin-top: 10px;
+}
+.reportList ol ul{
+    margin-left: -57px;
+    margin-top: 10px;
+    margin-bottom: 39px;
+    list-style-type: none;;
+}
+/* .btn-sm.btn-primary {
+    font-size: 14px !important;
+    padding: 5px 10px !important;
+}
+.form-control{
+    font-size: 14px !important;
+} */
+.modal.show{
+    display: block !important;
+}
+.modal-lg{
+    width: 802px !important;
+}
+.modal-header{
+    border-bottom: 1px solid #e9ecef !important;
+    padding:5px !important;
+}
+.modal-content {
+    padding: 5px 10px;
+}
+/* .table tr:nth-child(even){
+    background: #fff !important;
+}
+.table > thead > tr > th{
+    
+    background:#eed7ff;
+}
+.btn-secondary{
+    font-size: 14px !important;
+    padding: 5px 10px !important;
+    border: 1px solid #662d91;
+    color: #662d91;
+    background: transparent;
+} */
+
+select.form-control{
+    font-size: 12px !important;
+    
+}
+
+.box-with-border{
+    border: 1px solid #999;
+    padding: 10px;
+    min-height: 100px;
+    margin-bottom: 10px;
+}
+.box-without-border{
+    border: none;
+    padding: 10px;
+    min-height: 100px;
+
+}
+
+.display-box p{
+  margin-bottom:0;
+  font-size:14px;
+  line-height:1.5;
+}
+
+.vital-label{
+  color:#662d91;
+  font-size:14px !important;
+  font-weight:400;
+}
+.autosaveMsg{
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    background: #51A351;
+    color: #fff;
+    padding: 4px;
+    font-size: 11px;
+    letter-spacing: 1px;
+}
+
+.filterPanel label.page-header {
+    font-size: 12px !important;
+}
+.overview{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: -38px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ffffff;
+    z-index: 9999;
+    opacity: 1;
+    transition: 300ms;
+    padding: 73px 16px 2px 96px;
+    overflow-y: auto;
+}
+/* .diastolic-preview-label{
+    position: relative;
+    left: -65%;
+    top: 14px;
+}
+.diastolic-preview-label:before{
+    content: "/";
+    font-size: 20px;
+    font-weight: 500;
+    color: #ad4274;
+    margin-right: 15px;
+ } */
+ .sys-label{
+    float: left;
+ }
+
+ .diastolic-label:before{
+    content: "/";
+    font-size: 20px;
+    font-weight: 500;
+    color: #ad4274;
+    margin-right: 7px;
+ }
+
+ .sys-label.ng-star-inserted{
+    margin-bottom:0 !important;
+ }
+
+ .dias-label.ng-star-inserted{
+    margin-bottom:0 !important;
+ }
+ 
+ .dias-label{
+    /* float: right; */
+    right: -29px;
+    position: relative;
+    top: -32px;
+ }
+ .diastolic-label{
+    float: left;
+ }
+ .separator-label{
+    float: left;
+    margin-right: 6px;
+    font-size: 20px;
+    font-weight: 300;
+    color: #211d1d;
+    margin-top: -4px;
+ }
+
+ .prescription-left-panel-link{
+   color:#000;
+   font-weight:bold;
+ }
+.prescription-sections .col-12:last-child .button-holder{
+  border-bottom:none;
+}
+
+.prescription-widgets label{
+  font-size:12px;
+  font-weight:500;
+}
+
+.prescription-widgets  .card-header{
+  padding-top:15px !important;
+  padding-bottom:0 !important;
+}
+
+.prescription-widgets .form-control{
+  height:20px !important;
+}
+
+.prescription-widgets .form-group{
+  margin-bottom:0 !important;
+}
+
+.prescription-widgets .ng-star-inserted{
+  margin-bottom:0 !important;
+}
+
+label.referBy{
+  color:#4d4d4d !important;
+  font-size:11px !important;
+  padding-top:10px;
+}
+
+.refer-by-width{
+  width:300px;
+}
+
+.prescription-widgets {
+  /*box-shadow: 0 0 2px rgba(0,0,0,.5);
+  padding: 0 10px;
+  margin:5px 0;
+  border-radius:3px;*/
+}
+
+.prescription-widgets .card{
+  z-index:auto;
+}
+
+.prescription-widgets .table-responsive{
+  overflow:visible;
+}
+
+.row.no-margin-bottom{
+  margin-bottom:0 !important;
+}
+
+.opened{
+  /*background:#c3e0de;*/
+  background: rgba(245,248,249,1);
+  background: -moz-linear-gradient(left, rgba(245,248,249,1) 0%, rgba(195,224,222,1) 100%);
+  background: -webkit-gradient(left top, right top, color-stop(0%, rgba(245,248,249,1)), color-stop(100%, rgba(195,224,222,1)));
+  background: -webkit-linear-gradient(left, rgba(245,248,249,1) 0%, rgba(195,224,222,1) 100%);
+  background: -o-linear-gradient(left, rgba(245,248,249,1) 0%, rgba(195,224,222,1) 100%);
+  background: -ms-linear-gradient(left, rgba(245,248,249,1) 0%, rgba(195,224,222,1) 100%);
+  background: linear-gradient(to right, rgba(245,248,249,1) 0%, rgba(195,224,222,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f5f8f9', endColorstr='#c3e0de', GradientType=1 );
+}
+
+.prescription-widgets textarea.form-control{
+	border-radius:0;
+	border:1px solid #ddd;
+	padding:10px !important;
+	font-size:14px;
+	font-weight:300;
+	height:75px !important;
+}
+
+
+.show-icons-for-mobile{
+	display:none;   
+}
+
+.prescription-sections.prescription-sections-for-mobile{
+		display:none;
+	}
+
+@media (max-width: 576px) {
+ .card-header.height-for-mobile{
+	 height:140px;
+	 padding-left:0 !important;
+	 padding-right:0 !important;
+ }
+ 
+	.prescription-sections{
+		display:none;
+	}
+	
+	.show-icons-for-mobile{
+	   display:block;
+	}
+	
+	.prescription-sections.prescription-sections-for-mobile{
+		display:flex;
+		overflow-x:scroll;
+		overflow-y:hidden;
+		flex-wrap:nowrap;
+		overflow:auto;
+		margin-top:60px;
+		width:auto;
+		height:59px
+	}
+	
+	.prescription-sections.prescription-sections-for-mobile .prescription-items{
+			flex: 0 0 auto;
+			width:100px;
+	}
+	
+	.prescription-sections .button-holder{
+		border-bottom:none;
+		border-right:1px solid #ccc;
+	}
+	
+
+}
+
+.chat-box{
+    position: fixed;
+    bottom: -10px;
+    right: 18px;
+    width: 30vw;
+    height: 50vh;
+    background: #fff;
+    border: 1px solid #dedede;
+    padding: 10px;
+}
+
+.generic{
+    font-style: italic;
+    font-size: smaller;
+}

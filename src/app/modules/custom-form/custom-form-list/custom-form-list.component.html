@@ -1,0 +1,61 @@
+<!-- /*
+*  * |///////////////////////////////////////////////////////////////////////|
+*  * |                                                                       |
+*  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+*  * | All Rights Reserved                                                   |
+*  * |                                                                       |
+*  * | This document is the sole property of StellaBlue Interactive          |
+*  * | Services Pvt. Ltd.                                                    |
+*  * | No part of this document may be reproduced in any form or             |
+*  * | by any means - electronic, mechanical, photocopying, recording        |
+*  * | or otherwise - without the prior written permission of                |
+*  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+*  * |                                                                       |
+*  * |///////////////////////////////////////////////////////////////////////|
+*  */ -->
+<div class="row">
+  <div class="col-lg-12">
+    <div class="row top-btn-area">
+      <div class="col-lg-12 text-right">
+        <button type="button" class="btn btn-primary btn-sm float-right" (click)="backToForm()">{{'COMMON.ADD_BUTTON'|translate}}</button>
+      </div>
+    </div>
+    <div class="row page-content">
+      <div class="col-md-6">
+        <div class="content table-responsive" *ngIf="formList.length>0">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Form Name</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let f of formList">
+                <td>
+                  {{f.formName}}
+                </td>
+                <td>
+                    <span ngbTooltip="Edit Form" (click)="editForm(f)" class="cursor mr-2">
+                        <img class="grey" src="../../../../../assets/image/edit.svg" height="15" alt="">
+                      </span>
+                      <span ngbTooltip="Delete Form" (click)="deleteForm(f)" class="cursor">
+                          <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                        </span>
+                  <!-- <button type="button" class="btn btn-secondary btn-sm float-right mr-2">{{'COMMON.EDIT_BUTTON'|translate}}</button>
+                  <button type="button" class="btn btn-secondary btn-sm float-right mr-2">{{'USER_PROFILE.USER_PROFILE_DELETE'|translate}}</button> -->
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+      </div>
+      <div class="col-md-12">
+          <div *ngIf="formList==null || formList.length==0" class="text-center not-found">
+              <h3>No Form Added</h3>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,64 @@
+<br>
+<div class="row">
+  <div class="col-lg-1"></div>
+  <div class="col-lg-9 referral-doctor-background">
+    <p>Thank you for using MEDePAL. We are continuously adding new features to MEDePAL to make it more beneficial for your regular use.</p>
+    <p>Refer MEDePAL to your peers and help in building a collaborate healthcare community.
+      Please specify the name, mobile number / email of the doctor you are referring and we will send a mail to them requesting them to use MEDePAL..</p>
+  </div>
+  <div class="col-lg-2"></div>
+</div>
+<br>
+<div class="row">
+  <div class="col-lg-8">
+    <div class="row">
+      <div class="col-lg-1"></div>
+      <div class="col-lg-3"><label>NAME</label></div>
+      <div class="col-lg-3"><label>MOBILE</label></div>
+      <div class="col-lg-3"><label>EMAIL</label></div>
+      <div class="col-lg-2">
+        <button class="btn btn-sm btn-primary" (click)="createReferalDocField()">ADD</button>
+      </div>
+    </div><br>
+    <form [formGroup]="referralDoctorForm">
+    <div formArrayName="referralDoctor">
+    <div class="row" *ngFor="let refDoc of referralDoctorForm['controls'].referralDoctor['controls']; let i = index;" [formGroupName]="i">
+      <div class="col-lg-1"></div>
+      <div class="col-lg-3">
+        <input type="text" placeholder="name" formControlName="name" (focusout)="checkNameValidation(refDoc)">
+      </div>
+      <div class="col-lg-3">
+        <!-- <app-telephone
+          (change)="checkContactNumber($event, referralDoctorForm.value.mobileNo)"  formControlName="mobileNo" >
+        </app-telephone> -->
+        <int-phone-prefix [locale]="'IN'" [defaultCountry]="'in'" formControlName="mobileNo" (focusout)="checkContactNumber(refDoc)"></int-phone-prefix>
+      </div>
+      <div class="col-lg-3">
+        <input type="text" placeholder="ex: abc@abc.com" formControlName="emailId" (focusout)="checkMobileEmailValidation(refDoc)">
+      </div>
+      <div class="col-lg-2">
+        <label><i class="fa fa-trash cursor"
+            (click)="deleteReferalDocField(i, refDoc)"></i></label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <button [disabled]='!isSendMail' type="button" class="btn btn-sm btn-primary" (click)="sendMail()">SEND MAIL</button>
+      </div>
+    </div>
+    </div>
+    </form>
+  </div>
+  <div class="col-lg-3">
+    <div class="row">WE WILL SEND THIS MAIL</div>
+    <div class="row">
+      <div class="col-lg-8 border padding10">
+        <p>Dear < referred doctor > </p>
+        <p>You have been referred by {{user_name}} to evaluate and use MEDePAL. {{user_name}} is using MEDePAL and would like you to get started with MEDePAL.</p>
+        <p>Regards</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br>

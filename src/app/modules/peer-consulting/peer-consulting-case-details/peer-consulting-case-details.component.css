@@ -1,0 +1,27 @@
+input[type="file"] {
+    display: none;
+}
+.peerConsultingFileUpload {
+    background: linear-gradient(to right, #a25ca8 0%,#582491 100%);
+    color: #fff;
+    border-radius: 3px;
+    padding: 5px 0;
+    cursor: pointer;
+    font-weight: 400;
+    font-size: 12px;
+    margin-right: 10px;
+	letter-spacing:1px;
+	text-align:center;
+}
+.selectedImage {
+    font-size: 11px;
+    margin-top: 5px;
+}
+
+.peer-consulting-textarea{
+	background:#fff;
+	border:1px solid #d38deb !important;
+}
+.padding-top3px {
+    padding-top: 3px;
+}

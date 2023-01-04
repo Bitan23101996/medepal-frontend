@@ -1,0 +1,228 @@
+<!-- /*******************************************************************************
+ * * |///////////////////////////////////////////////////////////////////////|
+ * * |                                                                       |
+ * * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ * * | All Rights Reserved                                                   |
+ * * |                                                                       |
+ * * | This document is the sole property of StellaBlue Interactive          |
+ * * | Services Pvt. Ltd.                                                    |
+ * * | No part of this document may be reproduced in any form or             |
+ * * | by any means - electronic, mechanical, photocopying, recording        |
+ * * | or otherwise - without the prior written permission of                |
+ * * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ * * |                                                                       |
+ * * |///////////////////////////////////////////////////////////////////////|
+ ******************************************************************************/ -->
+<!-- sbis-poc/app/issues/603-->
+<section class="pageMainContin">
+  <div *ngIf="loading" class="cover">
+    <div class="loader">
+        <div class="loading-img"><img width=250px src="../../../../../assets/image/logo.svg"/></div>
+        <div class="loading-txt">Loading<div class="dot-elastic"></div></div>
+    </div>
+  </div>
+  <div class="content">
+    <div class="row page-content">
+      <div class="col-lg-12">
+        <div class="row">
+
+          <div class="w-10 pr-0 pl-3 sml filter-panel-width"
+            [ngClass]="panelVisible ? 'panelVisible' : 'panelNotVisible'">
+            <form [formGroup]="queryFrameWork">
+              <div class="card">
+                <div class="filterPanel">
+                  <div class="row border-bottom">
+                    <div class="col-8">
+                      <h4 class="search-result-left-pen-heading">{{ 'FETCH_PATIENT.REFINE_BY' | translate }}</h4>
+                    </div>
+                    <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0);"
+                        (click)="resetAll()">{{ 'FETCH_PATIENT.RESET_ALL' | translate }}</a></div>
+                    <div>
+
+                    </div>
+                  </div>
+                  <!-- sbis-poc/app/issues/1301 START-->
+                  <div class="row overflow-auto">
+                    <div class="col-12">
+                      <div class="row" *ngFor="let refinecolumn of refineByColumnList; index as i">
+                        <div class="col-12"
+                          *ngIf="refinecolumn.displayType==='Datetime' || refinecolumn.displayType==='Date'"><label
+                            class="page-header">{{refinecolumn.columnHeading}}</label></div>
+                        <div class="col-12">
+                          <div class="row"
+                            *ngIf="refinecolumn.displayType==='Datetime' || refinecolumn.displayType==='Date'">
+                            <div class="col-12">
+                              <div class="form-group">
+                                <p-dropdown [options]="refinecolumn.refineByValues"
+                                  (onChange)="isCustomDatePeriod($event, refinecolumn.formControlName)"
+                                  optionLabel="attrDisplayValue" [style]="{'width':'250px'}"
+                                  placeholder="--  Select {{refinecolumn.formControlName}}  --"
+                                  formControlName="{{refinecolumn.formControlName}}" [showClear]="true"></p-dropdown>
+                              </div>
+                            </div>
+                          </div>
+                          <ng-container *ngIf="isCustomeSelected == true">
+                            <div class="row mt-3 mb-3"
+                              *ngIf="refinecolumn.displayType==='Datetime' || refinecolumn.displayType==='Date'">
+                              <div class="col-8">
+                                <button
+                                  [className]="onDaySelection[i]">{{ 'FETCH_PATIENT.ONE_DAY' | translate }}</button>
+                                <button
+                                  [className]="durationSelection[i]">{{ 'FETCH_PATIENT.DURATION' | translate }}</button>
+                              </div>
+                              <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0);"
+                                  (click)="resetSearchDate(i)">{{ 'FETCH_PATIENT.RESET' | translate }}</a></div>
+                            </div>
+
+                            <div class="row"
+                              *ngIf="refinecolumn.displayType==='Datetime' || refinecolumn.displayType==='Date'">
+                              <div class="col-6">
+                                <div class="form-group">
+                                  <label>{{ 'QUERY_FRAMEWORK.FROM' | translate }}</label>
+                                  <span class="float-left"><input type="text" placeholder="DD-MM-YYYY"
+                                      (ngModelChange)="filterData()" bsDatepicker
+                                      [bsConfig]="{ dateInputFormat: dateFormat,showWeekNumbers:false }"
+                                      class="form-control date"
+                                      formControlName="{{refinecolumn.formControlName+'From'}}" #dp="bsDatepicker"
+                                      [readonly]="true"></span>
+                                  <span class="pt-2"><i (ngModelChange)="filterData()" (click)="dp.toggle()"
+                                      [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt"></i></span>
+
+                                </div>
+                              </div>
+                              <div class="col-6">
+                                <div class="form-group">
+                                  <label>{{ 'QUERY_FRAMEWORK.TO' | translate }}</label>
+                                  <span class="float-left"><input type="text" placeholder="DD-MM-YYYY"
+                                      (ngModelChange)="filterData()" bsDatepicker
+                                      [bsConfig]="{ dateInputFormat: dateFormat,showWeekNumbers:false }"
+                                      class="form-control date" formControlName="{{refinecolumn.formControlName+'To'}}"
+                                      #dp1="bsDatepicker" [readonly]="true" [minDate]="minDate[i]"></span>
+                                  <span><i (ngModelChange)="filterData()" (click)="dp1.toggle()"
+                                      [attr.aria-expanded]="dp1.isOpen" class="far fa-calendar-alt"></i></span>
+                                </div>
+                              </div>
+                            </div>
+                          </ng-container>
+                          <!-- sbis-poc/app/issues/1301 END-->
+                          <div class="form-group" *ngIf="refinecolumn.displayType==='Checkbox'"
+                            style="margin-bottom:25px !important;">
+                            <div class="row pb-2">
+                              <div class="col-8"><label class="page-header">{{refinecolumn.columnHeading}}</label></div>
+                              <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0);"
+                                  (click)="resetCheckBox(i)">{{ 'FETCH_PATIENT.RESET' | translate }}</a></div>
+                            </div>
+                            <div *ngFor="let a of refinecolumn.refineByValues" class="form-check">
+                              <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input"
+                                  formControlName="{{refinecolumn.formControlName}}" value="{{a}}"
+                                  (click)="setCheckBoxArr($event, refinecolumn.columnHeading)"
+                                  (change)="filterData()">{{a}}
+                              </label>
+                            </div>
+                          </div>
+
+                          <div class="form-group" *ngIf="refinecolumn.displayType==='String'"
+                            style="margin-bottom:25px !important;">
+                            <div class="row pb-2">
+                              <div class="col-8"><label class="page-header">{{refinecolumn.columnHeading}}</label></div>
+                              <!-- <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0);">{{ 'FETCH_PATIENT.RESET' | translate }}</a></div> -->
+                            </div>
+                            <input type="text" (input)="filterData()" class="form-control"
+                              formControlName="{{refinecolumn.formControlName}}">
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+
+
+
+                  </div>
+                </div>
+
+              </div>
+            </form>
+          </div>
+
+          <div class="col">
+            <div class="card">
+              <div class="row header cardHeader  pl-0 pr-0 pt-0">
+                <div class="col-6">
+                  <div>
+                    <h1>{{title}}</h1>
+                  </div>
+                </div>
+
+                <div class="col-2 text-right">
+                  <div class="filterBtn mr-4 cursor" style="position: unset;" (click)="refinePanelDisplay()">Filters
+                  </div>
+                </div>
+                <!-- <div class="col-2 text-right"><a href="javascript:void(0)"  (click)="backToPrevious()">Back</a></div> -->
+                <div class="col-4 ">
+                    <!-- sbis-poc/app/issues/1362 START-->
+                  <div class="row"> 
+                    <div class="col-md-9 text-right"> 
+                      <app-report-download [exportDataSet]=exportDataSet [title]=title></app-report-download>
+                    </div>
+                    <div class="col-md-3 text-right"> 
+                        <button class="btn btn-primary"  (click)="backToPrevious()">Back</button>
+                      </div>
+                  </div>
+                   <!-- sbis-poc/app/issues/1362 END-->
+                  
+                </div>
+              </div>
+              <div class="content table-responsive search-result">
+                <p-table #myTableElementId [value]="recordSet" [paginator]=isPaginator [rows]=15>
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th *ngFor="let column of tableColumns" [hidden]="column.isVisible=='N'">{{column.columnHeading}}
+                      </th>
+                      <th *ngIf="actionList!=null && actionList.length > 0">Action</th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-i="rowIndex" let-r>
+                    <tr>
+                      <ng-container *ngFor="let x of r.singleRecordValue; index as di">
+                        <td *ngIf="tableColumns[di].isVisible=='Y'">
+                          <div class="textDot" *ngIf="tableColumns[di].displayType=='Datetime'">
+                            {{x.value | date: 'dd/MM/yyyy HH:mm'}}</div>
+                          <div class="textDot" *ngIf="tableColumns[di].displayType=='Date'">
+                            {{x.value | date: 'dd/MM/yyyy'}}</div>
+                          <div class="textDot" *ngIf="tableColumns[di].displayType=='Time'">
+                            {{fetchDateFromTime(x.value) | date: 'HH:mm'}}</div>
+                          <div class="textDot" *ngIf="tableColumns[di].displayType.indexOf('Decimal')==0">
+                            {{fetchDecimalPoint(x.value, tableColumns[di].displayType)}}</div>
+                          <div class="textDot"
+                            *ngIf="tableColumns[di].displayType=='String' || tableColumns[di].displayType=='Checkbox'">
+                            {{x.value}}</div>
+                        </td>
+                      </ng-container>
+
+                      <td *ngIf="actionList!=null && actionList.length > 0" class="no-padding-left-small">
+                        <span *ngFor="let a of actionList; index as j">
+                          <span *ngIf="a.displayText == 'NOTIFY'">
+                            <button type="button" class="btn btn-secondary"
+                              (click)="handleNotification(i,j)">{{a.displayText}}</button>
+                          </span>
+                          <span *ngIf="a.displayText != 'NOTIFY'">
+                            <button type="button" class="btn btn-secondary"
+                              (click)="handleAction(i,j)">{{a.displayText}}</button>
+                          </span>
+                        </span>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+                <div *ngIf="recordSet!=null && recordSet.length==0" class="text-center not-found">
+                  <h3>{{ 'QUERY_FRAMEWORK.NO_RESULT' | translate }}</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,119 @@
+.or-position{
+	position:absolute;
+	top:20px;
+	left:62%;
+	font-weight:bold;
+}
+.age-value{
+	width:30% !important;
+}
+.mnd{
+	text-transform: initial;
+	font-size: 14px !important;
+    font-weight: 300 !important;
+}
+
+.sidebarList{
+	height: calc(100vh - 14px);
+    overflow-y: auto;
+	overflow-x: hidden;
+	margin-left: 15px;
+}
+.close-btn {
+    position: absolute;
+    left: -30px;
+    top: 0;
+    height: 30px;
+    width: 30px;
+    background: #f5f8f9;
+    text-align: center;
+    line-height: 30px;
+}
+.room-category{
+	
+	border: 1px solid #ccc;
+	/* height: calc(100vh - 138px); */
+	width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+.room{
+	/* background: #edd7fb;
+	width: 150px;
+    padding: 10px;
+    display: inline-block;
+	margin: 5px;
+    text-align: center; */
+    border-radius: 10px;
+    /* background: #eef4bb; */
+    background: #edd7fb;
+    width: 150px;
+    padding: 10px;
+    display: inline-block;
+    margin: 5px;
+    text-align: center;
+    box-shadow: -3px 3px 4px #baabab inset, 4px -4px 4px #baabab inset;
+}
+.bed{
+	cursor: pointer;
+    border: 1px solid #af4dc8;
+    padding: 1px 6px;
+    /* margin: 0 10px; */
+    background: #af4dc8;
+    color: #fff;
+    font-weight: 600;
+}
+
+.selectedBed{
+	cursor: pointer;
+    border: 1px solid #5d5959;
+    padding: 1px 6px;
+    /* margin: 0 10px; */
+    background:#5d5959;
+    color: #fff;
+    font-weight: 600;
+}
+.btn-fixed{
+    background: #ce8a35;
+    color: #fff;
+}
+.top-card .badge{
+    font-size: 14px;
+}
+.badge-text{
+    font-weight: 400;
+    font-size: 12px;
+    display: inline-block;
+    margin-right: 10px;
+    margin-top: 2px;
+}
+.badge-success-txt{
+    color:#28a745;
+}
+.badge-secondary-txt{
+    color:#6c757d;
+}
+.badge-primary-txt{
+    color:#007bff;
+}
+.badge-danger-txt{
+    color:#dc3545;
+}
+.p-info{
+    white-space: normal;
+    font-size: 11px;
+    margin-bottom: 10px;
+    color: #611e72;
+    border-bottom: 1px solid #611e72;
+    margin-top: 10px;
+}
+/* Working on app/issue/2232*/
+.card-custom-label{
+    color: #662d91 !important;
+    font-size: 12px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    font-weight: 500 !important;
+    font-weight: 500 !important;
+/* End Working on app/issue/2232*/
+}

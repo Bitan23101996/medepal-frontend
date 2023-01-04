@@ -1,0 +1,87 @@
+.custom-toast{
+  position: fixed;
+  top:20px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius:10px;
+  box-shadow: 0 0 10px rgba(0,0,0,.5);
+  z-index:20;
+}
+
+.custom-toast-header{
+  height: 50px;
+  border-top-left-radius:10px;
+  border-top-right-radius:10px;
+}
+
+.offline .custom-toast-header{
+  background:#c03356;
+}
+
+.offline .custom-toast-body{
+  padding:10px;
+  text-align:center;
+  background: #fff5f7;
+  border-bottom-right-radius:10px;
+  border-bottom-left-radius:10px;
+}
+
+.offline h1{
+  font-size:18px !important;
+  font-weight:400 !important;
+  color:#fff !important;
+  margin-bottom:10px !important;
+  text-align: center;
+  line-height: 50px;
+  vertical-align: middle;
+}
+
+.custom-toast-body h2{
+  font-size:14px;
+  font-weight:500;
+}
+
+
+.online .custom-toast-header{
+  background:#28882e;
+}
+
+.online .custom-toast-body{
+  padding:10px;
+  text-align:center;
+  background: #ebffec;
+  border-bottom-right-radius:10px;
+  border-bottom-left-radius:10px;
+}
+
+.online h1{
+  font-size:18px !important;
+  font-weight:400 !important;
+  color:#fff !important;
+  margin-bottom:10px !important;
+  text-align: center;
+  line-height: 50px;
+  vertical-align: middle;
+}
+
+.slow .custom-toast-header{
+  background:#575757;
+}
+
+.slow .custom-toast-body{
+  padding:10px;
+  text-align:center;
+  background: #f2f2f2;
+  border-bottom-right-radius:10px;
+  border-bottom-left-radius:10px;
+}
+
+.slow h1{
+  font-size:18px !important;
+  font-weight:400 !important;
+  color:#fff !important;
+  margin-bottom:10px !important;
+  text-align: center;
+  line-height: 50px;
+  vertical-align: middle;
+}

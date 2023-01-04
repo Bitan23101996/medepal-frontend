@@ -1,0 +1,23 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+ <p-chart type="bar" *ngIf="chartType == 'bar'" [data]="data" [options]="barOptions"></p-chart>
+ <p-chart type="horizontalBar" *ngIf="chartType == 'horizontalBar'" [data]="data"></p-chart>
+ <p-chart type="pie" *ngIf="chartType == 'pie'" [data]="data"></p-chart>
+ <p-chart type="line" *ngIf="chartType == 'line'" [data]="data" [options]="lineOptions"></p-chart>
+ <p-chart type="radar" *ngIf="chartType == 'radar'" [data]="data"></p-chart>
+ <p-chart type="polarArea" *ngIf="chartType == 'polarArea'" [data]="data"></p-chart>
+ <p-chart type="doughnut" *ngIf="chartType == 'doughnut'" [data]="data"></p-chart>

@@ -1,0 +1,1074 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+ <ng-template #prescriptionPreviewModal>
+
+  <div class="modal-header">
+    <h4 class="modal-title">{{'PRESCRIPTION.PRESCRIPTION'|translate}}</h4>
+    <!-- <span class="ml-2" id="download-ico">
+      <app-report [fileName]="fileName" [reportType]="reportType" [pk]="pk"></app-report>
+    </span>
+    <span class="ml-2" id="print-ico">
+      <img src="../../../../assets/image/print.svg" height="15" class="cursor" />
+    </span> -->
+    <button type="button" class="close float-right" (click)="modalRef.hide()" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <app-prescription-preview [appRefNo]="this.appRefNo"></app-prescription-preview>
+</ng-template>
+
+
+<ng-template #noteListModal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{'PRESCRIPTION.PAST_NOTE_DETAILS'|translate}}</h4>
+    <button type="button" class="close float-right" (click)="modalRef.hide()" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="mt-2">
+    <div *ngFor="let q of doctorNoteList; let i = index">
+      <h6><span class="badge badge-pill badge-secondary">{{q.createdDate | date:'dd-MM-yyyy'}}</span></h6>
+      <!-- <h5 class="card-title">{{q.createdDate | date:'dd-MM-yyyy'}}</h5> -->
+      <p class="card-text">{{q.note}}</p>
+
+      <!-- <div class="row mt-2">
+          <div class="col-3">{{q.createdDate | date:'dd-MM-yyyy'}}:</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-12">{{q.note}}</div>
+        </div> -->
+    </div>
+  </div>
+</ng-template>
+
+
+
+
+<div class="container-fluid prescription" [hidden]="previewScreen">
+  <!-- <h3 class="doctorName" *ngIf="doctorDtl!=null">{{doctorDtl.name}} <small class="ml-5">Registration no - {{doctorDtl.regNo}}</small></h3>
+  <div *ngIf="doctorQualifications.length!=0">
+      <p class="spec">{{qualifications}}</p>
+  </div>
+  <div *ngIf="doctorSpecializations.length!=0">
+      <p class="spec">{{specializations}}</p>
+  </div> -->
+
+  <div class="row  mr-0 prescription-sml-area">
+    <!-- Working on app/issues/731 -->
+    <div style="min-width: 372px !important;" class="col-xl-3  filterPanel sml page-content"
+      [ngClass]="panelVisible ? 'panelVisible prescription-panel-width' : 'panelNotVisible'">
+     <!--End Working on app/issues/731 --> 
+
+       <!-- Working on app/issues/731 -->
+      <!-- /************************************************************
+      * This left screen  is modified to a vommon commonent <app-patient-details>.
+      * All the related functions are moved to those components.
+      * ********************************************************* */ -->
+     <ng-container *ngIf="admissionRefNo==null">
+        <app-patient-details [userRefNo]="userRefNo" [doctorRefNo]="loggedInUser.refNo" [screenFlag]="screenFlag" (getFormData)="getPatientInfo($event)"></app-patient-details>
+     </ng-container>
+     <ng-container *ngIf="admissionRefNo!=null">
+        <app-patient-details [userRefNo]="userRefNo" [admissionRefNo]="admissionRefNo" [screenFlag]="screenFlag" (getFormData)="getPatientInfo($event)"></app-patient-details>
+      </ng-container>
+      
+
+    </div>
+
+    <!-- Working on app/issues/731 -->
+    <!-- <div class="col-xl-9 col-lg-12 card prescription-area" [hidden]="showPatientDetails"> -->
+    <div class="col card prescription-area" [hidden]="showPatientDetails">
+    <!--End Working on app/issues/731 -->
+      <div class="row">
+        <div class="p-0 prescription-sections">
+          <div class="row ">
+            <div [ngClass]="show_area || observationForm.length!=0 ? 'col-12 opened':'col-12'" id="observationArea">
+              <div class="button-holder pt-2 pb-2">
+                <a href="javascript:void(0)" (click)="observationArea()">
+                  <div class="pb-1"><img src="assets/image/observations.svg" aria-hidden="false" height="25px" class="cursor"
+                    alt="Finding" ngbTooltip="Finding" container="body" ></div>
+                  <div class="prescription-left-panel-link">{{'PRESCRIPTION.FINDING'|translate}}</div>
+                </a>
+              </div>
+            </div>
+            <div [ngClass]="show_diagarea || diagnosisForm.length!=0 ? 'col-12 opened':'col-12'" id="diagnosisArea">
+              <div class="button-holder pt-2 pb-1">
+                <a href="javascript:void(0)" (click)="diagnosisArea()">
+                  <div class="pb-1"><img src="assets/image/diagnosis.svg" aria-hidden="false" height="25px" class="cursor" alt="Diagnosis"
+                    ngbTooltip="Diagnosis" container="body" ></div>
+                    <div class="prescription-left-panel-link">{{'PRESCRIPTION.DIAGNOSIS'|translate}}</div>
+                </a>
+              </div>
+            </div>
+
+            <!-- /sbis-poc/app/issues/658  start-->
+            <div *ngIf="spFlag" [ngClass]="show_medic || medicationForm.length!=0 ? 'col-12 opened':'col-12'" id="medicationArea">
+              <div class="button-holder pt-2 pb-1 ">
+                <a href="javascript:void(0)" (click)="medication()">
+                  <div class="pb-1"><img src="assets/image/medicine.svg" aria-hidden="false" height="25px" class="cursor" alt="Medication"
+                    ngbTooltip="Medications" container="body" ></div>
+                    <div class="prescription-left-panel-link">{{'PRESCRIPTION.MEDICATIONS'|translate}}</div>
+                </a>
+              </div>
+            </div>
+            <!-- /sbis-poc/app/issues/658  end-->
+            <!-- /sbis-poc/app/issues/658  start-->
+            <div [ngClass]="show_test || labTestForm.length!=0 ? 'col-12 opened':'col-12'" id="testArea">
+              <div class="button-holder pt-2 pb-1">
+                <a href="javascript:void(0)" (click)="test()">
+                  <div class="pb-1"><img src="assets/image/test.svg" aria-hidden="false" height="25px" class="cursor" alt="Lab Test"
+                    ngbTooltip="Investigations" container="body" ></div>
+                    <div class="prescription-left-panel-link">{{'PRESCRIPTION.INVESTIGATIONS'|translate}}</div>
+                </a>
+              </div>
+            </div>
+            <!-- /sbis-poc/app/issues/658  end-->
+            <!-- /sbis-poc/app/issues/658  start-->
+            <div [ngClass]="show_advice || adviceForm.length!=0  ? 'col-12 opened':'col-12'" id="adviceArea">
+              <div class="button-holder pt-2 pb-1 ">
+                <a href="javascript:void(0)" (click)="advice()">
+                  <div class="pb-1"><img src="assets/image/advice.svg" aria-hidden="false" height="25px" class="cursor" alt="Advice"
+                    ngbTooltip="Advice" container="body" ></div>
+                    <div class="prescription-left-panel-link">{{'PRESCRIPTION.ADVICE'|translate}}</div>
+                </a>
+              </div>
+            </div>
+            <!-- /sbis-poc/app/issues/658  end-->
+            <div [ngClass]="show_note || noteForm != null  ? 'col-12 opened':'col-12'" id="noteArea">
+              <div class="button-holder pt-2 pb-1 ">
+                <a href="javascript:void(0)" (click)="noteArea()">
+                  <div class="pb-1"><img src="assets/image/notes.svg" aria-hidden="false" height="25px" class="cursor" alt="Note"
+                    ngbTooltip="Note" container="body" ></div>
+                    <div class="prescription-left-panel-link">{{'PRESCRIPTION.NOTE'|translate}}</div>
+                </a>
+              </div>
+            </div>
+
+            <!-- Working on app/issues/937 -->
+            <!-- <div [ngClass]="vaccineList.length > 0 ? 'col-12':'col-12 d-none'"> -->
+            <div  [ngClass]="show_vaccination  || vaccinationForm.length!=0  ? 'col-12 opened':'col-12'" id="vaccineArea">
+                <div class="button-holder pt-2 pb-1 ">
+                  <a href="javascript:void(0)" (click)="vaccinationDetails()">
+                    <div class="pb-1"><img src="assets/image/injection.svg" aria-hidden="false" height="25px" class="cursor"
+                      alt="Immunization Details" ngbTooltip="Immunization" container="body" ></div>
+                      <div class="prescription-left-panel-link">{{'PRESCRIPTION.IMMUNIZATION'|translate}}</div>
+                  </a>
+                </div>
+              </div>
+            <!-- </div> -->
+            <!-- End Working on app/issues/937 -->
+
+            <!-- /sbis-poc/app/issues/658  start-->
+            <div [ngClass]="show_canvas_paint ? 'col-12 opened':'col-12'" id="canvasArea">
+              <div class="button-holder pt-2 pb-1 ">
+                <a href="javascript:void(0)" (click)="drawPrescription()"><!--#draw-image-->
+                  <div class="pb-1"><img src="assets/image/draw-image.svg" aria-hidden="false" height="25px" id="paint" class="cursor" alt="cursor"
+                    ngbTooltip="Draw Image" container="body" ></div>
+                    <div class="prescription-left-panel-link">{{'PRESCRIPTION.DRAW_IMAGE'|translate}}</div>
+                </a>
+              </div>
+            </div>
+            <!-- /sbis-poc/app/issues/658  end-->
+
+
+            <!-- /sbis-poc/app/issues/658  start-->
+            <div [ngClass]="show_referral || referralForm != null  ? 'col-12 opened':'col-12'" id="referArea">
+              <div class="button-holder pt-2 pb-1 ">
+                <a href="javascript:void(0)" (click)="referralArea()">
+                  <div class="pb-1"><img src="assets/image/refer.svg" aria-hidden="false" height="25px" class="cursor" alt="Referral"
+                    ngbTooltip="Referral" container="body" ></div>
+                    <div class="prescription-left-panel-link">{{'PRESCRIPTION.REFERRAL'|translate}}</div>
+                </a>
+              </div>
+            </div>
+            <!-- /sbis-poc/app/issues/658  end-->
+
+            <div [ngClass]="show_date || prescriptionForm.get('nextCheckUpDate').value!=null  ? 'col-12 opened':'col-12'" id="followUpArea">
+              <div class="button-holder pt-2 pb-1 ">
+                <a href="javascript:void(0)" (click)="nextcheckDate()">
+                  <div class="pb-1"><img src="assets/image/next-checkup.svg" aria-hidden="false" height="25px" class="cursor"
+                    alt="Next Checkup Date" ngbTooltip="Next Checkup Date" container="body" ></div>
+                    <div class="prescription-left-panel-link">{{'PRESCRIPTION.FOLLOW_UP'|translate}}</div>
+                </a>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+        <div class="col pl-sm-0">
+          <form [formGroup]="prescriptionForm">
+            <!-- <input type="hidden" formControlName="prescriptionPk"> -->
+            <input type="hidden" formControlName="prescriptionDate">
+            <!-- <input type="hidden" formControlName="visitPk"> -->
+            <input type="hidden" formControlName="status">
+            <div class="card mb-0">
+              <div class="card-header height-for-mobile">
+                <div class="float-left pt-1">
+                    {{'PRESCRIPTION.PRESCRIPTION'|translate}}
+                </div>
+                <div class="prescription-patinent-detail mr-sm-4 cursor" style="right: 190px;" (click)="refinePanelDisplay()">{{'SEARCH.PATIENT_DETAILS'| translate}}
+                </div>
+                <div class="float-right">
+                  <!-- <button type="button" class="btn btn-primary btn-sm">Close Appointment</button> -->
+                  <button type="button" class="btn btn-secondary btn-sm ml-5 mr-2" (click)="backToPrevious()">{{'COMMON.BACK_BUTTON'|translate}}</button>
+                  <button type="button" class="btn btn-primary btn-sm" (click)="previewPrescription()">{{'PRESCRIPTION.PREVIEW_BTN'| translate}}</button>
+
+                </div>
+				
+				
+				<!-- icons for mobile-->
+				
+				<div class="p-0 prescription-sections prescription-sections-for-mobile">
+          
+            <div [ngClass]="show_area || observationForm.length!=0 ? 'prescription-items opened':'prescription-items'" id="observationArea">
+              <div class="button-holder pt-2 pb-1">
+                <a href="javascript:void(0)" (click)="observationArea()">
+                  <div class="pb-1"><img src="assets/image/observations.svg" aria-hidden="false" height="25px" class="cursor"
+                    alt="Finding" ngbTooltip="Finding" container="body" ></div>
+                  <div class="prescription-left-panel-link">{{'PRESCRIPTION.FINDING'|translate}}</div>
+                </a>
+              </div>
+            </div>
+            <div [ngClass]="show_diagarea || diagnosisForm.length!=0 ? 'prescription-items opened':'prescription-items'" id="diagnosisArea">
+              <div class="button-holder pt-2 pb-1">
+                <a href="javascript:void(0)" (click)="diagnosisArea()">
+                  <div class="pb-1"><img src="assets/image/diagnosis.svg" aria-hidden="false" height="25px" class="cursor" alt="Diagnosis"
+                    ngbTooltip="Diagnosis" container="body" ></div>
+                    <div class="prescription-left-panel-link">{{'PRESCRIPTION.DIAGNOSIS'|translate}}</div>
+                </a>
+              </div>
+            </div>
+
+            <!-- /sbis-poc/app/issues/658  start-->
+            <div *ngIf="spFlag" [ngClass]="show_medic || medicationForm.length!=0 ? 'prescription-items opened':'prescription-items'" id="medicationArea">
+              <div class="button-holder pt-2 pb-1">
+                <a href="javascript:void(0)" (click)="medication()">
+                  <div class="pb-1"><img src="assets/image/medicine.svg" aria-hidden="false" height="25px" class="cursor" alt="Medication"
+                    ngbTooltip="Medications" container="body" ></div>
+                    <div class="prescription-left-panel-link">{{'PRESCRIPTION.MEDICATIONS'|translate}}</div>
+                </a>
+              </div>
+            </div>
+            <!-- /sbis-poc/app/issues/658  end-->
+            <!-- /sbis-poc/app/issues/658  start-->
+            <div [ngClass]="show_test || labTestForm.length!=0 ? 'prescription-items opened':'prescription-items'" id="testArea">
+              <div class="button-holder pt-2 pb-1">
+                <a href="javascript:void(0)" (click)="test()">
+                  <div class="pb-1"><img src="assets/image/test.svg" aria-hidden="false" height="25px" class="cursor" alt="Lab Test"
+                    ngbTooltip="Investigations" container="body" ></div>
+                    <div class="prescription-left-panel-link">{{'PRESCRIPTION.INVESTIGATIONS'|translate}}</div>
+                </a>
+              </div>
+            </div>
+            <!-- /sbis-poc/app/issues/658  end-->
+            <!-- /sbis-poc/app/issues/658  start-->
+            <div [ngClass]="show_advice || adviceForm.length!=0  ? 'prescription-items opened':'prescription-items'" id="adviceArea">
+              <div class="button-holder pt-2 pb-1 ">
+                <a href="javascript:void(0)" (click)="advice()">
+                  <div class="pb-1"><img src="assets/image/advice.svg" aria-hidden="false" height="25px" class="cursor" alt="Advice"
+                    ngbTooltip="Advice" container="body" ></div>
+                    <div class="prescription-left-panel-link">{{'PRESCRIPTION.ADVICE'|translate}}</div>
+                </a>
+              </div>
+            </div>
+            <!-- /sbis-poc/app/issues/658  end-->
+            <div [ngClass]="show_note || noteForm != null  ? 'prescription-items opened':'prescription-items'" id="noteArea">
+              <div class="button-holder pt-2 pb-1 ">
+                <a href="javascript:void(0)" (click)="noteArea()">
+                  <div class="pb-1"><img src="assets/image/notes.svg" aria-hidden="false" height="25px" class="cursor" alt="Note"
+                    ngbTooltip="Note" container="body" ></div>
+                    <div class="prescription-left-panel-link">{{'PRESCRIPTION.NOTE'|translate}}</div>
+                </a>
+              </div>
+            </div>
+
+            <!-- Working on app/issues/937 -->
+            <!-- <div [ngClass]="vaccineList.length > 0 ? 'col-12':'col-12 d-none'"> -->
+            <div  [ngClass]="show_vaccination  || vaccinationForm.length!=0  ? 'prescription-items opened':'prescription-items'" id="vaccineArea">
+                <div class="button-holder pt-2 pb-1 ">
+                  <a href="javascript:void(0)" (click)="vaccinationDetails()">
+                    <div class="pb-1"><img src="assets/image/injection.svg" aria-hidden="false" height="25px" class="cursor"
+                      alt="Immunization Details" ngbTooltip="Immunization" container="body" ></div>
+                      <div class="prescription-left-panel-link">{{'PRESCRIPTION.IMMUNIZATION'|translate}}</div>
+                  </a>
+                </div>
+              </div>
+            <!-- </div> -->
+            <!-- End Working on app/issues/937 -->
+
+            <!-- /sbis-poc/app/issues/658  start-->
+            <div [ngClass]="show_canvas_paint ? 'prescription-items opened':'prescription-items'" id="canvasArea">
+              <div class="button-holder pt-2 pb-1 ">
+                <a href="javascript:void(0)" (click)="drawPrescription()"><!--#draw-image-->
+                  <div class="pb-1"><img src="assets/image/draw-image.svg" aria-hidden="false" height="25px" id="paint" class="cursor" alt="cursor"
+                    ngbTooltip="Draw Image" container="body" ></div>
+                    <div class="prescription-left-panel-link">{{'PRESCRIPTION.DRAW_IMAGE'|translate}}</div>
+                </a>
+              </div>
+            </div>
+            <!-- /sbis-poc/app/issues/658  end-->
+
+
+            <!-- /sbis-poc/app/issues/658  start-->
+            <div [ngClass]="show_referral || referralForm != null  ? 'prescription-items opened':'prescription-items'" id="referArea">
+              <div class="button-holder pt-2 pb-1 ">
+                <a href="javascript:void(0)" (click)="referralArea()">
+                  <div class="pb-1"><img src="assets/image/refer.svg" aria-hidden="false" height="25px" class="cursor" alt="Referral"
+                    ngbTooltip="Referral" container="body" ></div>
+                    <div class="prescription-left-panel-link">{{'PRESCRIPTION.REFERRAL'|translate}}</div>
+                </a>
+              </div>
+            </div>
+            <!-- /sbis-poc/app/issues/658  end-->
+
+            <div [ngClass]="show_date || prescriptionForm.get('nextCheckUpDate').value!=null  ? 'prescription-items opened':'prescription-items'" id="followUpArea">
+              <div class="button-holder pt-2 pb-1 ">
+                <a href="javascript:void(0)" (click)="nextcheckDate()">
+                  <div class="pb-1"><img src="assets/image/next-checkup.svg" aria-hidden="false" height="25px" class="cursor"
+                    alt="Next Checkup Date" ngbTooltip="Next Checkup Date" container="body" ></div>
+                    <div class="prescription-left-panel-link">{{'PRESCRIPTION.FOLLOW_UP'|translate}}</div>
+                </a>
+              </div>
+            </div>
+
+
+         
+        </div>
+				
+				
+              </div>
+              <div class="card-body pt-0 scrollarea" id="scroll">
+                <!-- Working on app/issues/937 -->
+                <div class="row">
+                    <div class="col-md-6">
+                      <div class="prescription-widgets">
+                        <div class="form-group">
+                          <div class="float-left display-header">
+                            <label class="referBy">{{'PRESCRIPTION.REFERRED_BY_DOCTOR'| translate}}</label>
+                          </div>
+                          <div class="float-left ml-2 refer-by-width">
+                              <p-autoComplete formControlName="referredBy" [suggestions]="referralNameList" (completeMethod)="filteredReferralSingle($event)"
+                              [size]="20" (onSelect)="referredNameSelect($event)" [minLength]="1"  [maxlength]="255" required></p-autoComplete>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6 text-right" *ngIf="admissionRefNo!=null">
+                        <div class="prescription-widgets mt-2">
+                          <label>
+                            <input type="checkbox" (click)="setShareWithPatient($event)"> 
+                            Share with Patient
+                          </label>
+                        </div>
+                      </div>
+
+                    </div>
+                <!--End Working on app/issues/937 -->
+                <div class="row">
+                  <div class="col-12">
+                    <app-vital [vitalForm]="vitalForm" (getFormData)="getVitalData($event)"></app-vital>
+                    <!-- <app-vital></app-vital> -->
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12">
+                    <app-patient-problem-narration [narrationForm]="narrationForm" [appointmentRefNo]="appointmentRefNo"
+                      (getFormData)="getNarrationData($event)"></app-patient-problem-narration>
+                  </div>
+                </div>
+
+                <!--  <div id="observation-area" class="row">
+
+
+                  </div>-->
+
+                <div class="row" [ngClass]="show_area || observationForm.length!=0 ? 'row':'row d-none'">
+                  <div class="col-12" id="doc-observation">
+                    <app-doctor-observation [observationForm]="observationForm"
+                      (getFormData)="getObservationData($event)"></app-doctor-observation>
+                  </div>
+                </div>
+
+                <div  [ngClass]="show_diagarea || diagnosisForm.length!=0 ? 'row':'row d-none'">
+                  <div class="col-12" id="doc-diagnosis">
+                    <app-doctor-diagnosis [diagnosisForm]="diagnosisForm" (getFormData)="getDiagnosisData($event)">
+                    </app-doctor-diagnosis>
+
+                  </div>
+                </div>
+                <div *ngIf="spFlag" [ngClass]="show_medic || medicationForm.length!=0 ? 'row':'row d-none'">
+                  <div class="col-12" id="medicine">
+                    <app-prescribed-medication [genericFlag]="genericFlag" [medicationForm]="medicationForm" [userRefNo]="userRefNo" [doctorRefNo]="doctorRefNo"
+                      (getFormData)="getMedicationData($event)"></app-prescribed-medication>
+                  </div>
+                </div>
+
+                <div [ngClass]="show_test || labTestForm.length!=0 ? 'row':'row d-none'">
+                  <div class="col-12" id="test">
+                    <app-prescribed-lab-test [testForm]="labTestForm" (getFormData)="getTestData($event)">
+                    </app-prescribed-lab-test>
+                  </div>
+
+                </div>
+
+                <div [ngClass]="show_advice || adviceForm.length!=0 ? 'row':'row d-none'">
+                  <div class="col-12" id="advice">
+                    <app-advice [adviceForm]="adviceForm" (getFormData)="getAdviceData($event)"></app-advice>
+                  </div>
+                </div>
+
+                <div [ngClass]="show_note || noteForm != null ? 'row':'row d-none'" >
+                  <div class="col-12" id="doc-note">
+                    <app-doctor-note [noteForm]="noteForm" (getFormData)="getNoteData($event)"></app-doctor-note>
+                  </div>
+                </div>
+
+
+
+
+              <!-- Working on app/issues/937 -->
+              <div [ngClass]="show_vaccination || vaccinationForm.length!=0 ? 'row':'row d-none'">
+                  <div class="col-12">
+                      <app-immunization [vaccinationInput]="vaccinationForm" [vaccineList]="vaccineList" [prescriptionDetail]="prescriptionForm" (getFormData)="getVaccinationData($event)"></app-immunization>
+                    </div>
+                </div>
+
+                <!--End Working on app/issues/937 -->
+
+
+
+              <!-- /sbis-poc/app/issues/658  start-->
+              <!-- new add for canvas-painting -->
+
+              <div class="row no-margin-bottom" *ngIf="show_canvas_paint">
+                <div class="col-12">
+                  <canvas-paint [prescriptionDetail]="prescriptionForm" [previousDrewImage]="previousDrewImage" (getCanvasData)="getCanvasData($event)"></canvas-paint>
+                </div>
+              </div>
+              <a style="pointer-events:none;" id="canvFocus" href="javascript:void(0)">&nbsp;</a>
+              <div *ngIf="(!show_canvas_paint) && download.downloadImageSrc">
+                <img *ngIf="download.contentType !='application/pdf'" class="prescription-img-size"
+                  [src]="domSanitizer.bypassSecurityTrustUrl(download.downloadImageSrc)" id="image-corner" alt="">
+                <iframe width="100%" height="500" scrolling="no" frameborder="0" id="prescriptionIframe"
+                  *ngIf="download.contentType =='application/pdf'"
+                  [src]="domSanitizer.bypassSecurityTrustResourceUrl(download.downloadImageSrc)"></iframe>
+                  <span (click)="editImage()"><img src="../../../../../assets/image/edit.svg" width="15"></span>
+                  <span (click)="deleteImage()" class="pl-3"><img src="../../../../../assets/image/delete.svg" width="15"></span>
+              </div>
+
+              <!-- end of new add for canvas-painting -->
+              <!-- /sbis-poc/app/issues/658  end-->
+
+
+                <div [ngClass]="show_referral || referralForm != null ? 'row':'row d-none'">
+                  <div class="col-12" id="doc-referral">
+                    <app-doctor-referral [referralForm]="referralForm" (getFormData)="getReferralData($event)">
+                    </app-doctor-referral>
+                  </div>
+                </div>
+
+                <div [ngClass]="show_date || prescriptionForm.get('nextCheckUpDate').value!=null ? 'row' : 'row d-none'">
+                  <div class="col-md-12 pt-2" id="next-date">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="prescription-widgets">
+                          <div class="form-group">
+                            <div class="float-left display-header pr-2">
+                              <label class="mb-0 pt-1">{{'PRESCRIPTION.NEXT_CHECK_UP_DATE'| translate}}</label>
+                            </div>
+                            <div class="float-left">
+                              <input type="text"  #dp="bsDatepicker" placement="top" [minDate]="minDate"
+                                placeholder="DD-MM-YYYY" bsDatepicker
+                                [bsConfig]="{ dateInputFormat: dtFormat, showWeekNumbers: false  }"
+                                class="form-control float-left w-75 follow" formControlName="nextCheckUpDate">
+                              <div class="float-left mt-1" (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen">
+                                <i class="far fa-calendar-alt"></i>
+                              </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <!-- <input type="date" class="form-control" formControlName ="nextCheckUpDate"> -->
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="prescription-widgets">
+                          <div class="form-group">
+                            <div class="float-left display-header pr-2">
+                              <label class="mb-0 pt-1">{{'PRESCRIPTION.REPORT_REVIEW_DATE'| translate}}</label>
+                            </div>
+                            <div class="float-left">
+                              <input type="text" #dpr="bsDatepicker" placement="top" [minDate]="minDate"
+                                placeholder="DD-MM-YYYY" bsDatepicker
+                                [bsConfig]="{ dateInputFormat: dtFormat, showWeekNumbers: false  }"
+                                class="form-control float-left w-75" formControlName="reportReviewDate">
+                              <div class="float-left mt-1" (click)="dpr.toggle()" [attr.aria-expanded]="dpr.isOpen">
+                                <i class="far fa-calendar-alt"></i>
+                              </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <!-- <input type="date" class="form-control" formControlName ="nextCheckUpDate"> -->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                
+
+             </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Working on app/issues/731 -->
+    <div class="col card" style="padding-top: 10px;" *ngIf="showPatientDetails">
+        <ng-container *ngIf="admissionRefNo==null">
+            <app-treatment-history [userRefNo]="userRefNo" [doctorRefNo]="doctorRefNo" [screenFlag]="screenFlag"  (treatmentFormData)="closePatientInfo($event)"></app-treatment-history>
+         </ng-container>
+         <ng-container *ngIf="admissionRefNo!=null">
+            <app-inpatient-treatment-history [userRefNo]="userRefNo" [admissionRefNo]="admissionRefNo" [screenFlag]="screenFlag"  (treatmentFormData)="closePatientInfo($event)"></app-inpatient-treatment-history>
+          </ng-container>
+        
+    </div>
+    <!--End Working on app/issues/731 -->
+  </div>
+</div>
+<div class="autosaveMsg" *ngIf="showAutosaveMsg">
+  {{'PRESCRIPTION.AUTOSAVE_MSG'| translate}}
+</div>
+<!--  -->
+
+<div class="container-fluid prescription-preview" [hidden]="!previewScreen">
+  <div *ngIf="printOrViewFlag" class="row">
+    <div class="col-12 text-center preview-header-success">
+      <!--<button type="button" class="btn btn-primary btn-sm" (click)="printPrescription">Print</button>-->
+      <h2 id="prescription-success">{{'PRESCRIPTION.SAVE_MSG'| translate}}</h2>
+    </div>
+    <div class="col-12 pres-success-ico text-right">
+        <span class="mr-2"><input type="checkbox" (change)="handelPrePrinted($event)" /> {{'PRESCRIPTION.PRE_PRINTED'| translate}}</span>
+        <app-report [fileName]="fileName" [reportType]="reportType" [isPrint]="'N'" [preprinted]="preprinted" [pk]="prescriptionRefNo"></app-report>
+        <!-- <app-report [fileName]="fileName" [reportType]="reportType" [isPrint]="'Y'" [pk]="pk"></app-report> -->
+        
+      <span class="ml-2" id="print-ico" (click)="printPrescription">
+         <!-- Working on app/issues/700 -->
+        <!-- <img src="../../../../assets/image/print.svg" height="15" class="cursor" /> -->
+        <!-- <app-print [documentFor]="prescription" [refNo]="prescriptionRefNo"></app-print> -->
+        <!-- <button [useExistingCss]="true" [printSectionId]="printSectionId" ngxPrint>print</button>  -->
+        <!-- <app-print [printSectionId]="printSectionId"></app-print> -->
+        <app-report [fileName]="fileName" [reportType]="reportType" [isPrint]="'Y'" [preprinted]="preprinted" [pk]="prescriptionRefNo"></app-report>
+
+      </span>
+    </div>
+  </div>
+
+  <div *ngIf="!printOrViewFlag" class="row">
+    <div class="col-12 text-center preview-header">
+      <!--<button type="button" class="btn btn-primary btn-sm" (click)="printPrescription">Print</button>-->
+      <h2 id="prescription-preview-header">{{'PRESCRIPTION.PRESCRIPTION_PREVIEW'| translate}}</h2>
+    </div>
+  </div>
+  <div class="pres-preview-scroll" id="print-section">
+  <div class="print-area">
+    <div class="row border-bottom" *ngIf="headerImage==''">
+      <div class="col-8" *ngIf="doctorDetails">
+        <div class="row">
+          <div class="col-12">
+            <div class="name-header float-left mb-0">
+              <h1 class="doctorName mb-0">{{doctorDetails.doctorName}}&nbsp;</h1>
+            </div>
+            <div class="name-header float-left  mb-0" *ngIf="doctorDetails.qualification!=''">
+              <h1 class="mb-0">({{doctorDetails.qualification}})</h1>
+            </div>
+          </div>
+          <div class="col-12" *ngIf="doctorDetails.specialization!=''">
+            <div class="small-text">{{doctorDetails.specialization}}</div>
+          </div>
+          <div class="col-12 small-text">{{'PRESCRIPTION.DOCTOR_REGISTRATION'| translate}} {{doctorDetails.registrationNo}}</div>
+        </div>
+
+
+
+      </div>
+      <div class="col-4" *ngIf="doctorChamberDetails">
+        <div class="header mb-0">
+          <h1>{{doctorChamberDetails.hospitalName}}</h1>
+        </div>
+        <div class="small-text" *ngIf="doctorChamberDetails.addressType!=''">{{doctorChamberDetails.addressType}}</div>
+        <div class="small-text text-capitalize">{{doctorChamberDetails.line1}} {{doctorChamberDetails.line2}}</div>
+        <div class="small-text text-capitalize"> {{doctorChamberDetails.city}}
+          {{doctorChamberDetails.state == "" || doctorChamberDetails.state == null ? '':'Pin'}}
+          - {{doctorChamberDetails.pinCode}}</div>
+        <div class="small-text text-capitalize"> {{doctorChamberDetails.country}}</div>
+        <div class="small-text">Phone:-
+          {{doctorChamberDetails.phoneNo1==""?'Not Specified':doctorChamberDetails.phoneNo1}}</div>
+      </div>
+    </div>
+    <div class="row border-bottom" *ngIf="headerImage!=''">
+        <img [src]="domSanitizer.bypassSecurityTrustUrl(headerImage)" width="100%" height="150" alt="...">
+    </div>
+
+    <div class="row mt-2" *ngIf="individualUserData">
+      <div class="col-lg-6 col-md-12">
+        <div class="header float-left">
+          <h1>{{'PRESCRIPTION.PATIENT'| translate}}
+            <span style="font-weight:300">{{individualUserData.name}}</span>
+            <!-- Working on app/issues/570 -->
+            <span> (
+                <span class="notSpecified" *ngIf="individualUserData.age==null">{{'COMMON.NA'| translate}}</span> <!-- Working on app/issues/570 -->
+                <span *ngIf="individualUserData.age!=null">{{individualUserData.age}}</span>/ <!-- Working on app/issues/570 -->
+                <span class="notSpecified" *ngIf="individualUserData.gender=='Not Specified'">{{individualUserData.gender}} </span>
+                <span *ngIf="individualUserData.gender!='Not Specified'">{{individualUserData.gender=='M'?'M':individualUserData.gender=='F'?'F':'O'}} </span>)
+              </span>
+              <!--End Working on app/issues/570 -->
+          </h1>
+        </div>
+
+      </div>
+      <!-- <div class="col-lg-4 col-md-6 text-lg-center text-md-left"><ng-container *ngIf="age != 'Not Specified'">Age - {{individualUserData.age}}<ng-container *ngIf="individualUserData.gender != null">,</ng-container></ng-container><ng-container *ngIf="individualUserData.gender != null">&nbsp;Gender - {{individualUserData.gender=='M' ? 'Male' : individualUserData.gender=='F' ? 'Female'
+        : 'Not Specified'}}</ng-container></div> -->
+      <div class="col-lg-6 col-md-6 text-right header pr-4">
+        <h1>{{'PRESCRIPTION.DATE_OF_VISIT'| translate}} - {{prescriptionDate | date:'dd-MM-yyyy'}}</h1>
+      </div>
+
+      <!-- <div *ngIf="individualUserData.addressSet.length > 0" class="col-12">
+        <p>Address:</p>
+        
+        <div>
+          <div> {{individualUserData.addressSet[0].line1}}, {{individualUserData.addressSet[0].line2}}</div>
+          <div> {{individualUserData.addressSet[0].city}},{{individualUserData.addressSet[0].state}} -
+            {{individualUserData.addressSet[0].pinCode}}</div>
+          <div> {{individualUserData.addressSet[0].country}}</div>
+        </div>
+      </div> -->
+ 
+    </div>
+
+
+
+
+
+    <div class="previewContainer">
+      <div class="row">
+        <div class="col-xl-3 col-lg-4 col-md-5"
+          *ngIf="vitalForm.length > 0  || prescriptionVitalForm.length > 0 || prescriptionForm.controls.nextCheckUpDate.value!==null">
+          <div *ngIf="(vitalForm.length > 0 || prescriptionVitalForm.length > 0) && isVitalShow" class="border p-3 mb-2">
+            <div class="card">
+              <div class="card-body header">
+                <h1 class="pb-2">{{'PRESCRIPTION.VITALS'| translate}}</h1>
+                <!-- <div class="float-left w-50" *ngFor="let val of prescriptionForm.controls.medicalFindingsList.value">
+                  <div *ngIf="val.systemCode!=='L833' && val.systemCode!=='L722'">
+                      <div *ngIf="val.result!=null" class="vital-value-heading">
+                        <b>{{val.medicalAttributeName}}</b>
+                      </div>
+                      <div *ngIf="val.result!=null" class="vital-value">{{val.result}} {{val.unit}}</div>
+                    </div>
+                    <div *ngIf="val.systemCode=='L722' && val.result!=null">
+                        <b>Blood Pressure</b>
+                        <div *ngIf="val.result!=null" class="vital-value">{{val.result}}</div>
+                    </div>
+                    <div *ngIf="val.systemCode=='L833' && val.result!=null">
+                        <div *ngIf="val.result!=null" class="diastolic-preview-label vital-value">{{val.result}} {{val.unit}}</div>
+                    </div>
+                </div> -->
+                <ng-container *ngFor="let val of prescriptionForm.controls.medicalFindingsList.value">
+                    <!-- Working on app/issues/731 -->
+                    <!-- <div *ngIf="val.result!=null" class="vital-value-heading">
+                      <b>{{val.medicalAttributeName}}</b>
+                    </div>
+                    <div *ngIf="val.result!=null" class="vital-value">{{val.result}} {{val.unit}}</div> -->
+                    <ng-container *ngIf="val.result!=null">
+                    <div class="float-left w-50" *ngIf="val.systemCode!=='L833' && val.systemCode!=='L722'">
+                        <div class="vital-value-heading">
+                          <b>{{val.medicalAttributeName}}</b>
+                        </div>
+                        <div *ngIf="val.result!=null" class="vital-value">{{val.result}} {{val.unit}}</div>
+                      </div>
+                    </ng-container>
+                      <ng-container *ngIf="val.systemCode=='L833' || val.systemCode=='L722'">
+                          <div class="w-50">
+                            <div class="float-left sys-label" *ngIf="val.systemCode=='L833' && val.result!=null">
+                                <div class="vital-value-heading">
+                                    <b>{{'PRESCRIPTION.BLOOD_PRESSURE'| translate}}</b>
+                                </div>  
+                              
+                                <div *ngIf="val.result!=null" class="vital-value">{{val.result}}</div>
+                            </div>
+                            <div class="dias-label" *ngIf="val.systemCode=='L722' && val.result!=null">
+                                <div class="vital-value-heading">
+                                    <b>&nbsp;</b>
+                                </div>  
+                                  <!-- <span class="separator-label"> / </span> -->
+                                <div class="diastolic-label vital-value">{{val.result}} {{val.unit}}</div>
+                            </div>
+                          </div>
+                    </ng-container>
+                    <!--End Working on app/issues/731 -->
+                  </ng-container>
+
+              </div>
+
+            </div>
+          </div>
+          <div class="border p-3" *ngIf="prescriptionForm.controls.nextCheckUpDate.value!==null">
+            <div class="card">
+              <div class="header">
+                <h1 class="pb-2">{{'PRESCRIPTION.NEXT_CHECK_UP_DATE'| translate}}</h1>
+                <p>
+                  {{prescriptionForm.controls.nextCheckUpDate.value | date:'dd-MM-yyyy'}}
+                </p>
+              </div>
+
+              <div class="header mt-4" *ngIf="prescriptionForm.controls.reportReviewDate.value!==null">
+                <h1 class="pb-2">{{'PRESCRIPTION.REPORT_REVIEW_DATE'| translate}}</h1>
+                <p>
+                  {{prescriptionForm.controls.reportReviewDate.value | date:'dd-MM-yyyy'}}
+                </p>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div
+          [ngClass]="prescriptionForm.controls.medicalFindingsList.value===null && prescriptionForm.controls.nextCheckUpDate.value===null ?'col-12':'col-xl-9 col-lg-8 col-md-7'">
+          <!-- Working on app/issues/937 -->
+          <div *ngIf="prescriptionForm.controls.referredBy.value !== null" class="row mr-2">
+              <div class="col-12" *ngIf="prescriptionForm.controls.referredBy.value !== ''">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="header pb-1">
+                      <h1>{{'PRESCRIPTION.REFERRED_BY_DOCTOR'| translate}}</h1>
+                    </div>
+                    <pre>{{prescriptionForm.controls.referredBy.value}}</pre>
+                  </div>
+  
+                </div>
+              </div>
+            </div>
+            <!--End Working on app/issues/937 -->
+          <!-- <div *ngIf="prescriptionForm.controls.patientProblemNarration.value !== null" class="row mr-2">
+            <div class="col-12" *ngIf="prescriptionForm.controls.patientProblemNarration.value !== ''">
+              <div class="card">
+                <div class="card-body">
+                  <div class="header pb-1">
+                    <h1>{{'COMMON.SYMPTOMS'| translate }}</h1>
+                  </div>
+                  <pre>{{prescriptionForm.controls.patientProblemNarration.value}}</pre>
+                </div>
+
+              </div>
+            </div>
+          </div> -->
+          <div *ngIf="narrationForm.length > 0 || prescriptionNarrationForm.length > 0" class="row mr-2">
+            <div class="col-12">
+              <div class="card">
+
+                <div class="card-body">
+                  <div class="header pb-1">
+                    <h1>{{'COMMON.SYMPTOMS'| translate}}</h1>
+                  </div>
+                  <ol>
+                    <ng-container *ngFor="let s of prescriptionForm.controls.symptomList.value">
+                        <ng-container *ngIf="s.status=='NRM' && s.symptom!=null">
+                        <li *ngIf="s.symptom!=''">
+                            {{s.symptom}}
+                          </li>
+                        </ng-container>
+                    </ng-container>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="observationForm.length > 0 || prescriptionObservationForm.length > 0" class="row mr-2">
+
+            <div class="col-12">
+              <div class="card">
+
+                <div class="card-body">
+                  <div class="header pb-1">
+                    <h1>{{'PRESCRIPTION.FINDING'| translate}}</h1>
+                  </div>
+                  <ol>
+                    <ng-container *ngFor="let o of prescriptionForm.controls.observationList.value">
+                        <ng-container *ngIf="o.observationStatus=='NRM' && o.observation!=null">
+                        <li *ngIf="o.observation!=''">
+                            {{o.observation}}
+                          </li>
+                        </ng-container>
+                    </ng-container>
+                    <!-- <li *ngFor="let o of prescriptionForm.controls.observationList.value">
+                      <span *ngIf="o.observationStatus=='NRM'">
+                        {{o.observation}}
+                      </span>  
+                    </li> -->
+                  </ol>
+
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+          <div *ngIf="diagnosisForm.length > 0 || prescriptionDiagnosisForm.length > 0" class="row mr-2">
+            <div class="col-12">
+              <div class="card">
+
+                <div class="card-body">
+                  <div class="header pb-1">
+                    <h1>{{'PRESCRIPTION.DIAGNOSIS'| translate}}</h1>
+                  </div>
+                  <ol>
+                    <ng-container *ngFor="let d of prescriptionForm.controls.diagnosisList.value">
+                        <ng-container *ngIf="d.status=='NRM' && d.diagnosis!=null">  
+                          <li *ngIf="d.diagnosis!=''">
+                            {{d.diagnosis}}
+                          </li>
+                        </ng-container>
+                    </ng-container>
+                    <!-- <li *ngFor="let d of prescriptionForm.controls.diagnosisList.value">
+                      <span *ngIf="d.status=='NRM'">
+                      {{d.diagnosis}}
+                      </span>
+                    </li> -->
+                  </ol>
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="row mr-2" *ngIf="medicationForm.length > 0 || prescriptionMedicationForm.length > 0">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="header pb-1">
+                    <h1>{{'PRESCRIPTION.MEDICATIONS'| translate}}</h1>
+                  </div>
+                  <!-- <ol>
+                      <li *ngFor="let pm of prescriptionForm.controls.medicationDTOList.value">
+                          <span *ngIf="pm.status=='NRM'">
+                        {{pm.medicineName}} => {{pm.dosageFrequency}} time/times {{pm.dosageInterval == 'D' ? 'Daily' : (pm.dosageInterval == 'W'
+                        ? 'Weekly' : 'Monthly')}} - For {{pm.duration}} {{pm.durationUnit == 'D' ? 'Days' : (pm.durationUnit
+                        == 'W' ? 'Weeks' : 'Months')}} - {{pm.timing}}
+                        </span>
+                      </li>
+                    </ol> -->
+                  <ol>
+                    <ng-container *ngFor="let pm of prescriptionForm.controls.medicationDTOList.value; let i = index">
+                        <ng-container *ngIf="pm.status=='NRM' && pm.medicineName!=null">    
+                      <li *ngIf="pm.medicineName!=''">
+                        <span>
+                          {{pm.medicineName}} 
+                          <span class="generic" *ngIf="pm.genericName!=null">(Generic Name-{{pm.genericName}})</span>
+                          {{pm.sosFlag == 'Y'?' (SoS) ':''}}: 
+                          <span *ngIf="pm.unitType !== ''">
+                                <!-- sbis-poc/app/issues/803-->
+                                {{pm.noOfUnit}} {{pm.unitType | prescribeMedicine:pm.noOfUnit}} {{pm.sosFlag == 'Y'?'':'x '}}
+                          </span>
+                          <span *ngIf="pm.sosFlag == 'N' || pm.sosFlag == null">
+                            <!-- sbis-poc/app/issues/803-->
+                            {{pm.dosageFrequency}} <ng-container *ngIf="pm.dosageFrequency > 1">times</ng-container> <ng-container *ngIf="pm.dosageFrequency <= 1">time</ng-container>
+                            {{pm.dosageInterval == 'D' ? 'daily' : (pm.dosageInterval == 'W' ? 'weekly' : 'monthly')}}
+
+                            for {{pm.duration}}
+                            <!-- sbis-poc/app/issues/803-->
+                            <ng-container *ngIf="pm.duration > 1">
+                                {{pm.durationUnit == 'D' ? 'days' : (pm.durationUnit == 'W' ? 'weeks' : 'months')}}
+                            </ng-container>
+                            <ng-container *ngIf="pm.duration <= 1">
+                                {{pm.durationUnit == 'D' ? 'day' : (pm.durationUnit == 'W' ? 'week' : 'month')}}
+                            </ng-container>
+                          </span>
+                          <!-- {{pm.sosFlag == 'Y'?'':' - '}} -->
+                          
+                          {{pm.beforeAfterMealFlag != null ? (pm.beforeAfterMealFlag == 'A' ? ' - after meal': ' - before meal') : ''}}
+                          <span *ngIf="pm.comments !== ''">
+                            - {{pm.comments}}
+                          </span>
+
+                        </span>
+                        <!-- Working On app/issues/591 -->
+                        <div *ngIf="pm.substituteMedicineList != null && pm.substituteMedicineList.length > 0">
+                            <p><u>{{'PRESCRIPTION.SUBSTITUTE_MEDICINE'| translate}}</u></p>
+                            <ul>
+                              <li *ngFor="let sm of pm.substituteMedicineList">
+                                {{sm.medicineName}}
+                              </li>
+                            </ul>
+                          </div>
+                          <!--End Working On app/issues/591 -->
+                    </li>
+                  </ng-container>
+                </ng-container>
+                  </ol>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="row mr-2" *ngIf="labTestForm.length > 0 || prescriptionTestForm.length > 0">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="header pb-1">
+                    <h1>{{'PRESCRIPTION.INVESTIGATIONS'| translate}}</h1>
+                  </div>
+                  <ol>
+                    <ng-container *ngFor="let t of prescriptionForm.controls.doctorRecommendedTestList.value">
+                        <ng-container *ngIf="t.status=='NRM' && t.medicalAttributeName!=null">   
+                          <li *ngIf="t.medicalAttributeName!=''">
+                            {{t.medicalAttributeName}}
+                            <span *ngIf="t.comments !== ''">
+                              - {{t.comments}}
+                            </span>
+                          </li>
+                        </ng-container>
+                    </ng-container>
+                    <!-- <li *ngFor="let t of prescriptionForm.controls.doctorRecommendedTestList.value">
+                      <span *ngIf="t.status=='NRM'">
+                        {{t.medicalAttributeName}}
+                        <span *ngIf="t.comments !== ''">
+                          - {{t.comments}}
+                        </span>
+                      </span>
+                    </li> -->
+                  </ol>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="row mr-2"  *ngIf="download.downloadImageSrc">
+              <div class="col-12">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="header pb-1">
+                        <h1>{{'PRESCRIPTION.DIAGRAM'| translate}}</h1>
+                      </div>
+                      <img *ngIf="download.contentType !='application/pdf'" class="prescription-img-size"
+                      [src]="domSanitizer.bypassSecurityTrustUrl(download.downloadImageSrc)" id="image-corner" alt="">
+                      <iframe width="100%" height="500" scrolling="no" frameborder="0" id="prescriptionIframe"
+                      *ngIf="download.contentType =='application/pdf'"
+                      [src]="domSanitizer.bypassSecurityTrustResourceUrl(download.downloadImageSrc)"></iframe>
+                    </div> 
+                  </div>
+                </div>      
+              
+            </div>
+            
+          <div *ngIf="adviceForm.length > 0 || prescriptionAdviceForm.length > 0" class="row mr-2">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="header pb-1">
+                    <h1>{{'PRESCRIPTION.ADVICE'| translate}}</h1>
+                  </div>
+                  <ol>
+                    <ng-container *ngFor="let a of prescriptionForm.controls.adviceList.value">
+                        <ng-container *ngIf="a.status=='NRM' && a.advice!=null">  
+                          <li *ngIf="a.advice!=''">
+                            {{a.advice}}
+                         </li>
+                      </ng-container>
+                    </ng-container>
+                  </ol>
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="refferedName !== null" class="row mr-2">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="header pb-1">
+                    <h1>{{'COMMON.REFERRAL'| translate }}</h1>
+                  </div>
+                  <pre>{{refferedName}}</pre>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          
+          <!-- Working on app/issues/937 -->
+          <div class="row mr-2" *ngIf="vaccinationForm.length > 0 || prescriptionVaccinationForm.length > 0">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="header pb-1">
+                      <h1>{{'PRESCRIPTION.IMMUNIZATION'| translate}}</h1>
+                    </div>
+                    <ol>
+                        <ng-container *ngFor="let v of prescriptionForm.controls.vaccinationList.value">
+                            <ng-container *ngIf="v.vaccineName!=null"> 
+                            <li *ngIf="v.vaccineName!=''">
+                              {{v.vaccineName}} {{v.vaccineCode != null && v.vaccineCode != ''? ('(' + v.vaccineCode + ')'): ''}}
+                               <span *ngIf="v.doesNo != null">
+                                 <span *ngIf="v.doesNo != ''">
+                                - {{v.doesNo}} dose
+                                </span>
+                            </span>
+                          </li>
+                        </ng-container>
+                      </ng-container>  
+                    </ol>
+                  </div>
+  
+                </div>
+              </div>
+            </div>
+            <!-- Working on app/issues/937 -->
+
+        </div>
+      </div>
+    </div>
+    <div class="row border-bottom" *ngIf="footerImage!=''">
+        <img [src]="domSanitizer.bypassSecurityTrustUrl(footerImage)" width="100%" height="150" alt="...">
+    </div>
+</div>
+  </div>
+  <div *ngIf="!printOrViewFlag" class="text-right pt-4">
+    <button class="float-right" type="button" class="btn btn-secondary btn-sm"
+      (click)="backToPrescription()">{{'COMMON.BACK_BUTTON'|translate}}</button>
+    <button class="float-right" type="button" class="btn btn-primary btn-sm ml-5"
+      (click)="savePrescription()">{{'PRESCRIPTION.SAVE_BTN'| translate}}</button>
+  </div>
+  <div *ngIf="printOrViewFlag" class="text-right pt-4">
+    <button type="button" *ngIf="admissionRefNo==null" class="btn btn-primary btn-sm ml-5" (click)="backToAppointment()">{{'PRESCRIPTION.CLOSE_BTN'| translate}}</button>
+    <button type="button" *ngIf="admissionRefNo!=null" class="btn btn-primary btn-sm ml-5" (click)="backToInpatientSummary()">{{'PRESCRIPTION.CLOSE_BTN'| translate}}</button>
+  </div>
+
+  <!-- <jw-modal id="showChart">
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="closeNewModal('showChart')">{{
+            'USER_GROUPS.USER_GROUPS_POPUP_CLOSE' | translate }}</button>
+    </div>
+    <div class="modal-body">
+      <chart-component [chartType]="'line'" [data]="chartData"></chart-component>
+    </div>
+
+  </jw-modal> -->

@@ -1,0 +1,186 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<div class="row" *ngIf="allDataFetched">
+    <div class="col-lg-12 ">
+        <div class="row top-btn-area">
+            <div class="col-lg-12">
+                <button class="btn btn-secondary float-left"
+                    routerLink="/individual/group-details">{{'USER_GROUPS.USER_GROUPS_BACK_BUTTON' | translate}}</button>
+                <button class="btn btn-primary float-left ml-2"
+                    (click)="submitPermission();">{{'USER_GROUPS.USER_GROUPS_SAVE_BUTTON' | translate}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="not-for-mobile page-heading-info Group1 ">
+   <h2> Members belonging to this group & permission granted to them are listed below </h2>
+    <div class="row ">
+    <div class="col-9 table-responsive ">
+        <table class="table">
+        
+        <thead scope="row" class="group-permission-heading">
+            <tr class="d-flex">
+                <th scope="col" class="col-xl-4 col-lg-3 col-md-2">{{'USER_GROUPS.USER_GROUPS_MEMBERS' | translate}}
+                </th>
+                <th scope="col" class="col-xl-2 col-lg-2 col-md-2">{{'USER_GROUPS.USER_GROUPS_ROLE' | translate}}</th>
+                <th scope="col" class="col-xl-3 col-lg-4 col-md-5">
+                    {{'USER_GROUPS.USER_GROUPS_MY_PERMISSION' | translate}}</th>
+                <th scope="col" class="col-xl-1 col-lg-1 col-md-1 text-center"><span *ngIf="!leaveGroupButton"></span>
+                </th>
+                <th scope="col" class="col-xl-2 col-lg-2 col-md-2"></th>
+            </tr>
+        </thead>
+        <tbody class="group-permission-body">
+            <tr class="d-flex" [hidden]="userMembers.id == user_id" *ngFor="let userMembers of userFamilyMembers ">
+
+                <td class="col-xl-4 col-lg-3 col-md-2 text-center">
+                    <p [ngClass]="userMembers.invitationAccepted == inviteSent ? 'group-invitation-sent' : ''">
+                        {{userMembers.name}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="groupInvitedText"
+                            *ngIf="userMembers.invitationAccepted == inviteSent">INVITED</span></p>
+                </td>
+                <td class="col-xl-2 col-lg-2 col-md-2 text-center">{{userMembers.groupRole}}</td>
+                <td class="col-xl-3 col-lg-4 col-md-5 text-center">
+                    <ng-container *ngIf="userMembers.invitationAccepted != inviteSent">
+                        <div class="form-check form-check-inline">
+                            <input type="checkbox" name="edit" [disabled]="userMembers.groupRole== 'OWNER'"
+                                (click)="multipleClick($event,userMembers.groupPermission)"
+                                [(ngModel)]="userMembers.groupPermission.editPermissionFlag" class="form-check-input"
+                                [checked]="userMembers.groupPermission.editPermissionFlag" />
+                            <label class="form-check-label">{{'USER_GROUPS.USER_GROUPS_EDIT' | translate}}</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input type="checkbox"
+                                [disabled]="userMembers.groupRole== 'OWNER' || userMembers.groupPermission.editPermissionFlag"
+                                [(ngModel)]="userMembers.groupPermission.viewPermissionFlag" class="form-check-input"
+                                [checked]="userMembers.viewPermissionFlag">
+                            <label
+                                class="form-check-label">{{'USER_GROUPS.USER_GROUPS_VIEW_PERMISSION' | translate}}</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input type="checkbox" [disabled]="userMembers.groupRole== 'OWNER'" class="form-check-input"
+                                [(ngModel)]="userMembers.groupPermission.notifyPermissionFlag"
+                                [checked]="userMembers.notifyPermissionFlag">
+                            <label class="form-check-label">{{'USER_GROUPS.USER_GROUPS_NOTIFY' | translate}}</label>
+                        </div>
+                    </ng-container>
+                </td>
+                <td class="col-xl-1 col-lg-1 col-md-1 text-center">
+                    <label class="mb-0  text-center" *ngIf="userMembers.makeAdmin == 'make Admin'"><i
+                            (click)="deleteMember(userMembers)" class="fas fa-trash-alt cursor"></i></label>
+                </td>
+                <td class="col-xl-2 col-lg-2 col-md-2 text-center">
+                    <button *ngIf="userMembers.invitationAccepted != inviteSent" class="btn btn-primary mb-0"
+                        (click)="makeOrRevokeAdmin(userMembers);">{{userMembers.makeAdmin}}</button>
+                </td>
+                
+            </tr>
+        </tbody>
+        
+        </table>
+    
+    </div>
+    
+    <div class="col-3 right-panel-border">
+        <div class="desc-box1">
+          <div class="main-header">What do the Access Permissions mean?</div>
+          <div class=Group4>
+          <p><b>EDIT</b> - Enabling Edit permission allows your group member to view and edit all your medical data</p>
+          <p><b>VIEW</b> - Enabling View persmission allows your group member to view all your medical data. Disable view permission for no access. View permission is automatically enabled if Edit is enabled.</p> 
+          <p><b>NOTIFY</b> - Enabling Notify permission allows your group member to receive all notifications sent to you by MEDePAL </p>
+          <p>You can define separate access permissions for each group member</p>
+          </div>
+        </div>
+    
+</div>
+
+</div>
+</div>
+
+   
+        
+
+
+<!--mobile-->
+<div class="table-responsive for-very-small">
+    <div *ngFor="let userMembers of userFamilyMembers ">
+        <table class="group-permission-mobile w-100">
+            <tr class="text-left">
+                <td class="mobile-table">
+                    <table class="w-100">
+                        <tr>
+                            <td class="small-header">{{'USER_GROUPS.USER_GROUPS_MEMBERS' | translate}}</td>
+                            <td class="mb-0">
+                                <p
+                                [ngClass]="userMembers.invitationAccepted == inviteSent ? 'group-invitation-sent mb-0' : 'mb-0'">
+                                {{userMembers.name}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+                                    class="groupInvitedText mb-0"
+                                    *ngIf="userMembers.invitationAccepted == inviteSent">INVITED</span></p>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td class="small-header">{{'USER_GROUPS.USER_GROUPS_ROLE' | translate}}</td>
+                            <td class="mb-0">{{userMembers.groupRole}}</td>
+                        </tr>
+
+                        <tr>
+                            <td class="small-header">{{'USER_GROUPS.USER_GROUPS_MY_PERMISSION' | translate}}</td>
+                            <td>
+                                <ng-container *ngIf="userMembers.invitationAccepted != inviteSent">
+                                    <div class="form-check form-check-inline mb-0 ml-0 mr-0">
+                                        <input type="checkbox" name="edit" [disabled]="userMembers.groupRole== 'OWNER'"
+                                            (click)="multipleClick($event,userMembers.groupPermission)"
+                                            [(ngModel)]="userMembers.groupPermission.editPermissionFlag" class="form-check-input"
+                                            [checked]="userMembers.groupPermission.editPermissionFlag" />
+                                        <label class="form-check-label">{{'USER_GROUPS.USER_GROUPS_EDIT' | translate}}</label>
+                                    </div>
+                                    <div class="form-check form-check-inline mb-0 ml-0 mr-0">
+                                        <input type="checkbox"
+                                            [disabled]="userMembers.groupRole== 'OWNER' || userMembers.groupPermission.editPermissionFlag"
+                                            [(ngModel)]="userMembers.groupPermission.viewPermissionFlag" class="form-check-input"
+                                            [checked]="userMembers.viewPermissionFlag">
+                                        <label
+                                            class="form-check-label">{{'USER_GROUPS.USER_GROUPS_VIEW_PERMISSION' | translate}}</label>
+                                    </div>
+                                    <div class="form-check form-check-inline mb-0 ml-0 mr-0">
+                                        <input type="checkbox" [disabled]="userMembers.groupRole== 'OWNER'" class="form-check-input"
+                                            [(ngModel)]="userMembers.groupPermission.notifyPermissionFlag"
+                                            [checked]="userMembers.notifyPermissionFlag">
+                                        <label class="form-check-label">{{'USER_GROUPS.USER_GROUPS_NOTIFY' | translate}}</label>
+                                    </div>
+                                </ng-container>
+                            </td>
+                        </tr>                   
+
+                        <tr>
+                            <td></td>
+                            <td class="mb-0">
+                                <label class="mb-0" *ngIf="userMembers.makeAdmin == 'make Admin'"><i
+                                        (click)="deleteMember(userMembers)" class="fas fa-trash-alt cursor"></i></label>
+
+                                <button *ngIf="userMembers.invitationAccepted != inviteSent"
+                                class="btn btn-primary mb-0 float-right"
+                                (click)="makeOrRevokeAdmin(userMembers);">{{userMembers.makeAdmin}}</button>
+                            </td>
+                        </tr>
+
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

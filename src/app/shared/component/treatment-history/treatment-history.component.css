@@ -1,0 +1,60 @@
+/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+
+.scrollarea {
+    min-height: calc(100vh - 600px);
+    max-height: calc(100vh - 600px);
+    overflow: auto;
+}
+.w-350{
+    width:350px;
+}
+.card-title{
+    font-size: .825rem;
+    font-weight: 500;
+    color: #662d91;
+    text-transform: uppercase;
+}
+.patientDetails {
+    margin-bottom: 10px;
+}
+.patientDetails .row{
+    margin-top: 12px;
+}
+.pastPrescriptionList .page-header{
+    text-transform: uppercase;
+    margin-top: 15px;
+    font-weight: 400;
+	font-size:14px;
+}
+.pastPrescriptionList ol{
+    padding-left: 16px;
+}
+
+.history-dates{
+	font-size:13px;
+	color:#000;
+}
+/*.patientDetails .row div:nth-child(2){
+    font-size: 1rem;
+    font-weight: 300;
+    color: #662d91;
+    text-transform: uppercase;
+    }*/
+
+    .bold-text{
+        font-weight: 500;
+    }

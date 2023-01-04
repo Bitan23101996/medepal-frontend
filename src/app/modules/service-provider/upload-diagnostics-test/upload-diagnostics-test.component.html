@@ -1,0 +1,184 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+ <div class="row">
+    <div class="col-md-12">
+        <div class="row top-btn-area">
+            <div class="col-lg-12 text-right">
+                <button  class="btn btn-sm btn-primary float-right" (click)="generateExcel()" >DOWNLOAD TEMPLATE</button>
+              <button type="button" class="btn btn-secondary btn-sm cursor float-right mr-2" (click)="backToPrev()">{{'COMMON.CANCEL_BUTTON'|translate}}</button>
+    
+            </div>
+          </div>
+        
+
+  <div class="col-lg-12">
+        <div class="col">
+                <input type="file" accept=".xlsx" #fileInput (click)="fileInput.value = null" value="" (change)="selectFile($event)" />
+        </div>
+      
+        <div class="row">
+            <div class="col-md-12">
+    <div class="content show-for-large table-responsive search-result">
+
+        <p-table [value]="sheetData" [paginator]="isPaginator" [rows]=10 [totalRecords]="sheetData.length">
+            <ng-template pTemplate="header">
+
+                <tr>
+                    <th>Sr No.</th>
+                    <th>TEST CODE</th>
+                    <th>TEST NAME</th>
+                    <th>TEST NAME USED BY LAB</th>
+                    <th>TEST CODE USED BY LAB</th>
+                    <th>HOME COLLECTION</th>
+                    <th>PRICE</th>
+                    <th>EFFECTIVE DATE</th>
+
+                  </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+            <tr>
+              <td>{{rowIndex+1}}</td>
+              <td>{{rowData[0]}}</td>
+              <td>{{rowData[1]}}</td>
+              <td>{{rowData[2]}}</td>
+              <td>{{rowData[3]}}</td>
+              <td>{{rowData[4]}}</td>
+              <td>{{rowData[5]}}</td>
+              <td>{{rowData[6]}}</td>
+            </tr>
+
+      </ng-template>
+  </p-table>
+    </div>
+
+    <div class="content show-for-ipad table-responsive for-medium search-result">
+
+        <p-table [value]="sheetData" [paginator]="isPaginator" [rows]=10 [totalRecords]="sheetData.length">
+            <ng-template pTemplate="header">
+
+                <tr>
+                    <th>Sr No.</th>
+                    <th>TEST CODE</th>
+                    <th>TEST NAME</th>
+                    <th>TEST NAME USED BY LAB</th>
+                    <th>TEST CODE USED BY LAB</th>
+                    <!---<th>HOME COLLECTION</th>
+                    <th>PRICE</th>
+                    <th>EFFECTIVE DATE</th>--->
+
+                  </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+            <tr>
+              <td>{{rowIndex+1}}</td>
+              <td>{{rowData[0]}}</td>
+              <td>{{rowData[1]}}</td>
+              <td>{{rowData[2]}}</td>
+              <td>{{rowData[3]}}</td>
+              <!--<td>{{rowData[4]}}</td>
+              <td>{{rowData[5]}}</td>
+              <td>{{rowData[6]}}</td>-->
+            </tr>
+            <tr>
+              <td>
+                <div class="small-header">HOME COLLECTION</div>
+                <div>{{rowData[4]}}</div>
+              </td>
+              <td>
+                <div class="small-header">PRICE</div>
+                <div>{{rowData[5]}}</div>
+              </td>
+              <td colspan = 2>
+                <div class="small-header">EFFECTIVE DATE</div>
+                <div>{{rowData[6]}}</div>
+              </td>
+            </tr>
+            <tr>
+              <td class="show-border" colspan=5></td>
+            </tr>
+      </ng-template>
+  </p-table>
+    <div class="text-center show-for-ipad" *ngIf="sheetData.length==0">No Record Found</div>
+    </div>
+
+    <div class="content show-for-very-small-both-side table-responsive search-result">
+
+            <p-table [value]="sheetData" [paginator]="isPaginator" [rows]=10 [totalRecords]="sheetData.length">
+
+              <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+                <table>
+                  <tr>
+                    <td class="mobile-table">
+                      <table class="w-100">
+                    <tr>
+                      <td class="small-header">Sr No.</td>
+                      <td>{{rowIndex+1}}</td>
+                    </tr>
+                    <tr>
+                      <td class="small-header">TEST CODE</td>
+                      <td>{{rowData[0]}}</td>
+                    </tr>
+                    <tr>
+                      <td class="small-header">TEST NAME</td>
+                      <td>{{rowData[1]}}</td>
+                    </tr>
+                    <tr>
+                      <td class="small-header">TEST NAME USED BY LAB</td>
+                      <td>{{rowData[2]}}</td>
+                    </tr>
+                    <tr>
+                      <td class="small-header">TEST CODE USED BY LAB</td>
+                      <td>{{rowData[3]}}</td>
+                    </tr>
+                    <tr>
+                      <td class="small-header">HOME COLLECTION</td>
+                      <td>{{rowData[4]}}</td>
+                    </tr>
+                    <tr>
+                      <td class="small-header">PRICE</td>
+                      <td>{{rowData[5]}}</td>
+                    </tr>
+                    <tr>
+                      <td class="small-header">EFFECTIVE DATE</td>
+                      <td>{{rowData[6]}}</td>
+                    </tr>
+                    </table>
+                  </td>
+
+                </tr>
+
+
+              </table>
+
+                    </ng-template>
+
+
+
+          </p-table>
+
+    <div class="text-center" *ngIf="sheetData.length==0">No Record Found</div>
+    </div>
+
+        </div>
+        </div>
+
+
+        <button type="button" class="btn btn-primary float-right mb-2" (click)="submit()" >SUBMIT</button>
+
+      </div>
+      </div>
+    </div>

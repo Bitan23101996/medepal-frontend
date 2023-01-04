@@ -1,0 +1,45 @@
+<!-- /*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */ -->
+<div class="prescription-widgets">
+  <div class="card">
+    <div class="card-header display-header refer">
+        <h5 class="float-left">{{'PRESCRIPTION.REFERRAL'| translate}}</h5>
+        <!-- <button type="button" class="btn btn-primary btn-sm float-right" (click)="openModal()">Edit Narration</button> -->
+    </div>
+    <div class="card-body display-box">
+      <form [formGroup]="doctorReferralForm" (ngSubmit)="saveReferral()">
+
+        <div class="pb-0">
+          <div class="form-group">
+            <div class="row">
+              <div class="col-md-12">
+                <input type="radio" name="select-type" [checked]="isDoctor?'checked':''" (click)="setReferralType('D')"> {{'PRESCRIPTION.DOCTOR'| translate}} &nbsp;&nbsp;
+                <input type="radio" name="select-type" [checked]="isHospital?'checked':''" (click)="setReferralType('H')"> {{'PRESCRIPTION.HOSPITAL'| translate}}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 pt-2">
+                <p-autoComplete formControlName="referredName" inputStyleClass="referalStyle" [suggestions]="referralNameList" (completeMethod)="filteredReferralSingle($event)"
+                              [size]="20" (onSelect)="referredNameSelect($event)" [minLength]="1" [maxlength]="255" required></p-autoComplete>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,131 @@
+<section class="pageMainContin">
+  <div class="card">
+    <div class="header cardHeader ">
+      <div class="row">
+        <div class="col-sm-6">
+          <h1>Config Payee Account</h1>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <form [formGroup]="payeeDetailForm">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="row top-btn-area mr-1">
+              <button type="button" class="btn btn-sm btn-primary" *ngIf="payeeAccountDetailsArr.length == 0"
+                [disabled]="isAddPayee" (click)="addPayeeAccountDetails()">Add Details</button>
+              <button *ngIf="isAddPayee" type="submit" class="btn btn-sm btn-primary"
+                (click)="saveAccountDetails()">Save</button>
+            </div>
+            <div *ngIf="payeeAccountDetailsArr.length == 0" class="row page-content min-height292px">
+              <div class="row col-lg-12 text-center padding-right0px">
+                <div class="text-center not-found col-lg-12">
+                  <h3>No account added</h3>
+                </div>
+              </div>
+            </div>
+            <div *ngFor="let payeeAcnDetail of payeeAccountDetailsArr; let i =index;">
+              <div class="row">
+                <div class="col-lg-5 col-sm-7 col-12">
+                  <label>Beneficiary Name</label>
+                  <div class="details-view" *ngIf="!payeeAcnDetail.isEdit">
+                    <p>{{payeeAcnDetail.name}}</p>
+                  </div>
+                  <div *ngIf="payeeAcnDetail.isEdit">
+                    <!-- <input type="text" formControlName="name"> -->
+                    <textarea [rows]="2" [cols]="50" maxlength="14" pInputTextarea formControlName="name"
+                      autoResize="autoResize"></textarea>
+                    <div *ngIf="payeeDetailForm.get('isSubmit').value">
+                      <span *ngIf="payeeDetailForm.hasError('required', 'name')"
+                        class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-5 col-sm-7 col-12">
+                  <label>Account Number</label>
+                  <div class="details-view" *ngIf="!payeeAcnDetail.isEdit">
+                    <p>{{payeeAcnDetail.acnNo}}</p>
+                  </div>
+                  <div *ngIf="payeeAcnDetail.isEdit">
+                    <!-- <input type="text" maxlength="15" formControlName="acnNo"> -->
+                    <textarea [rows]="2" [cols]="50" maxlength="14" pInputTextarea formControlName="acnNo"
+                      autoResize="autoResize"></textarea>
+                    <div *ngIf="payeeDetailForm.get('isSubmit').value">
+                      <span *ngIf="payeeDetailForm.hasError('required', 'acnNo')"
+                        class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="payeeAcnDetail.isEdit" class="row">
+                <div class="col-lg-5 col-sm-7 col-12">
+                  <label>Confirm Account Number</label>
+                  <div class="details-view" *ngIf="!payeeAcnDetail.isEdit">
+                    <p>{{payeeAcnDetail.acnNo}}</p>
+                  </div>
+                  <div *ngIf="payeeAcnDetail.isEdit">
+                    <!-- <input type="text" maxlength="15" formControlName="confirmAcnNo"> -->
+                    <textarea [rows]="2" [cols]="50" maxlength="14" pInputTextarea formControlName="confirmAcnNo"
+                      autoResize="autoResize"></textarea>
+                    <div *ngIf="payeeDetailForm.get('isSubmit').value">
+                      <span *ngIf="payeeDetailForm.hasError('required', 'confirmAcnNo')"
+                        class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                      <span
+                        *ngIf="!payeeDetailForm.hasError('required', 'confirmAcnNo') && payeeDetailForm.hasError('notEquivalent', 'confirmAcnNo')"
+                        class="validation-error">Confirm account no is not equivalent</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-5 col-sm-7 col-12">
+                  <label>IFCE Code</label>
+                  <div class="details-view" *ngIf="!payeeAcnDetail.isEdit">
+                    <p>{{payeeAcnDetail.ifscCode}}</p>
+                  </div>
+                  <div *ngIf="payeeAcnDetail.isEdit">
+                    <!-- <input type="text" maxlength="15" formControlName="ifscCode"> -->
+                    <textarea [rows]="2" [cols]="50" maxlength="14" pInputTextarea formControlName="ifscCode"
+                      autoResize="autoResize"></textarea>
+                    <div *ngIf="payeeDetailForm.get('isSubmit').value">
+                      <span *ngIf="payeeDetailForm.hasError('required', 'ifscCode')"
+                        class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="payeeAcnDetail.fileExist" class="row">
+                <div class="col-lg-5 col-sm-7 col-12">
+                  <div style="border: 1px solid lightgray;">
+                    <img *ngIf="download.downloadImageSrc !=''" [src]="domSanitizer.bypassSecurityTrustUrl(download.downloadImageSrc)"
+                      class="d-block signature_design" alt="...">
+                  </div>
+                  <!-- <button (click)="downloadFile()" class="btn btn-sm btn-primary">Download</button> -->
+                </div>
+              </div>
+              <div *ngIf="payeeAcnDetail.refNo" class="row">
+                <div class="col-lg-5 col-sm-7 col-12">
+                  <input type="file" accept="image/*" [hidden]="true" #file (change)="selectFile($event)">
+                  <button (click)="file.click()" class="btn btn-sm btn-primary">Upload</button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 text-right">
+                  <button *ngIf="payeeAcnDetail.isEdit" type="button" class="btn btn-sm btn-primary"
+                    (click)="cancelAccountDetails(payeeAcnDetail, i)">Cancel</button>
+                  <button *ngIf="!payeeAcnDetail.isEdit && !payeeAcnDetail.disabled" type="button"
+                    class="btn btn-sm btn-primary" (click)="editAccountDetails(payeeAcnDetail, i)">Edit</button>
+                  &nbsp;&nbsp; <button *ngIf="!payeeAcnDetail.isEdit && !payeeAcnDetail.disabled" type="button"
+                    class="btn btn-sm btn-primary" (click)="deleteAccountDetails(payeeAcnDetail)">Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

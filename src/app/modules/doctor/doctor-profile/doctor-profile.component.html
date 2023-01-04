@@ -1,0 +1,700 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+ <div *ngIf="!redirectFlag">
+    <app-success-card [successMsgEl]="redirectFlag" [successMsgFor]="successMsgFor"></app-success-card>
+</div>
+
+<div class="row" *ngIf="redirectFlag">
+  <div class="col-lg-12">
+    <form [formGroup]="doctorForm" (ngSubmit)="saveDoctor()" *ngIf="doctor">
+      <div class="row top-btn-area">
+        <div class="col-lg-12 text-right">
+
+          <button type="button" class="btn btn-sm btn-primary float-right" (click)="editDoctor()"
+            *ngIf="!isEdit">{{'COMMON.EDIT_BUTTON' | translate }}</button>
+          <button type="submit" id="save" class="btn btn-primary btn-sm float-right"
+            *ngIf="isEdit">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_SAVE_PROFILE' | translate}}</button>
+          <button type="button" class="btn btn-sm btn-secondary float-right" (click)="viewDoctor()"
+            *ngIf="isEdit && isRegistrationWorkflowCompleted">{{'COMMON.CANCEL_BUTTON' | translate }}</button>
+        </div>
+      </div>
+
+      <!-- Working on app/issues/782 -->
+      <app-registration-workflow [workflow]="workflow"
+        [isRegistrationWorkflowCompleted]="isRegistrationWorkflowCompleted"></app-registration-workflow>
+      <!-- End Working on app/issues/782 -->
+
+      <div class="row mobileview">
+        <div class="col-sm-2 col-12">
+          <div class="text-center" (mouseover)="progress.isShowUploadBtn=true"
+            (mouseout)="progress.isShowUploadBtn=false">
+            <div *ngIf="progress.percentage>0" class="progress-bar progress-bar-info progress-bar-striped"
+              role="progressbar" attr.aria-valuenow="{{progress.percentage}}" aria-valuemin="0" aria-valuemax="100"
+              [ngStyle]="{width:progress.percentage+'%'}">
+              {{progress.percentage}}%</div>
+            <img *ngIf="profileImageSrc ==''" src="../../../../../assets/image/doctor-pic.svg"
+              class="image cursor image-centre-mobile" id="image-corner" alt="...">
+            <img *ngIf="profileImageSrc !=''" [src]="domSanitizer.bypassSecurityTrustUrl(profileImageSrc)"
+              class="image image-centre-mobile" id="image-corner" alt="...">
+            <div class="middle">
+              <div class="profileBtnHolder">
+                <input type="file" accept="image/*" [hidden]="true" id="profilePhoto" (change)="selectFile($event)">
+                <label *ngIf="progress.percentage>0"><i class="fas fa-camera"></i></label>
+                <label *ngIf="!progress.percentage>0 && isEdit" for="profilePhoto"><i class="fas fa-camera"></i></label>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-sm-10 col-12 pl-5 nopadding-for-mobile">
+          <div class="row">
+
+            <div class="col-lg-6 col-md-12">
+              <div class="form-group">
+                <label class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_NAME' | translate}}
+                  <span class="validation-error" *ngIf="isEdit"></span>
+                </label>
+                <app-name *ngIf="isEdit" formControlName="doctorName" preventType="all" required="required" autofocus="autofocus">
+                </app-name>
+                <!-- <input *ngIf="isEdit" type="text" class="form-control" formControlName="doctorName" required="required"
+                  autofocus="autofocus"> -->
+                <p *ngIf="!isEdit">{{doctorForm.value.doctorName==null ? "Not Specified":doctorForm.value.doctorName}}
+                </p>
+                <span *ngIf="submitted && lControls.doctorName.errors">
+                  <span *ngIf="lControls.doctorName.errors.required" class="validation-error">* Name is required</span>
+                </span>
+                <input type="hidden" formControlName="refNo">
+                <!-- <div class="form-check-inline">
+              <div class="form-group">
+
+
+                   </div>
+                 </div> -->
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xl-3 col-lg-3 col-md-6">
+              <div class="form-group" *ngIf='isEdit'>
+                <label class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_DOB' | translate}}
+                    <span class="validation-error" *ngIf="isEdit"></span>
+                </label>
+                <input type="text" [maxDate]="maxDate" placeholder="DD-MM-YYYY" bsDatepicker
+                  [bsConfig]="{ dateInputFormat: dtFormat, showWeekNumbers: false  }" class="form-control date-pick"
+                  formControlName="dateOfBirth" [readonly]="true" [maxDate]="maxDate" #dp="bsDatepicker"
+                  (bsValueChange)="onChangeDob($event)">
+                <span><i (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen"
+                    class="far fa-calendar-alt date-picker-calendarIco"></i></span>
+                <span *ngIf="submitted && lControls.dateOfBirth.errors">
+                  <span *ngIf="lControls.dateOfBirth.errors.required" class="validation-error">* DOB is required</span>
+                </span>
+              </div>
+              <div class="form-group" *ngIf='!isEdit'>
+                <label class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_DOB' | translate}}</label>
+                <!--<p>{{doctorForm.value.dateOfBirth==null ? "Not Specified":doctorForm.value.dateOfBirth  | date : 'dd-MM-yyyy'}}</p>-->
+
+                <p *ngIf="doctorForm.value.dateOfBirth ==''|| doctorForm.value.dateOfBirth == null"
+                  class="notSpecified">Not Specified</p>
+                <p *ngIf="doctorForm.value.dateOfBirth !=''||null">
+                  {{doctorForm.value.dateOfBirth  | date : 'dd-MM-yyyy'}}</p>
+
+              </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 pl-1 col-md-6 nopadding-for-mobile nopadding-for-mobile-portrait">
+              <div class="form-group" *ngIf="isEdit">
+                <label
+                  class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_REGISTRATION_NUMBER_LABEL' | translate}}
+                  <span class="validation-error">
+                    </span>
+                </label>
+                <div class="form-group" *ngIf="doctorForm.get('registrationStatus').value =='Y'">
+                  <p>
+                    {{(doctorForm.value.registrationNo==null || doctorForm.value.registrationNo=='')? "Not Specified":doctorForm.value.registrationNo}}
+                    <span *ngIf="doctorForm.get('registrationStatus').value =='Y'" data-toggle="tooltip"
+                      title="Verified"><img src="../../../../../assets/image/verified.svg" height="18px;"></span>
+                  </p>
+                </div>
+                <div class="form-group" *ngIf="doctorForm.get('registrationStatus').value =='N'">
+                  <input type="text" class="form-control registration-field-width" formControlName="registrationNo"
+                    (blur)="isregVerified($event.target.value)">
+                  <span *ngIf="submitted && lControls.registrationNo.errors">
+                    <span *ngIf="lControls.registrationNo.errors.required" class="validation-error">* Registration No.
+                      is required</span>
+                  </span>
+                  <span class="validation-error notSpecified"
+                    *ngIf="doctorForm.value.registrationNo !=' '">{{'COMMON.NOT_VERIFIED' | translate}}</span>
+                </div>
+                <!-- Issue app#754 -->
+
+                <!-- <span style="right: 46px;top: 29px;position: absolute;" *ngIf="doctorForm.get('registrationStatus').value =='Y'" data-toggle="tooltip" title="Verified"><img src="../../../../../assets/image/verified.svg" height="18px;"></span> -->
+              </div>
+              <div class="form-group" *ngIf="!isEdit">
+                <label
+                  class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_REGISTRATION_NUMBER_LABEL' | translate}}</label>
+                <p *ngIf="doctorForm.value.registrationNo == null || doctorForm.value.registrationNo == ''"
+                  class="float-left notSpecified">Not Specified</p>
+
+                <p *ngIf="doctorForm.value.registrationNo != null || doctorForm.value.registrationNo != ''"
+                  class="float-left">{{doctorForm.value.registrationNo}}</p>
+                <div class="float-left ml-2 doc-profile-verified-ico"
+                  *ngIf="doctorForm.get('registrationStatus').value =='Y'" data-toggle="tooltip" title="Verified"><img
+                    src="../../../../../assets/image/verified.svg" height="18px;">&nbsp;&nbsp;</div>
+                <!-- Issue app#754 -->
+
+                <span class="validation-error notSpecified"
+                  *ngIf="doctorForm.get('registrationStatus').value =='N' && doctorForm.get('registrationNo').value !==''">{{'COMMON.NOT_VERIFIED' | translate}}</span>
+              </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 pl-1 col-md-6 nopadding-for-mobile nopadding-for-mobile-portrait">
+              <div class="form-group" *ngIf="isEdit">
+                <label
+                  class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_YEAR_OF_REGISTRATION' | translate}}
+                  <span class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span>
+                </label>
+
+                <!-- <div class="form-group" >
+                    <p *ngIf="doctorForm.value.yearOfRegistration == null || doctorForm.value.yearOfRegistration == ''" class="float-left notSpecified">Not Specified</p>
+
+                  </div> -->
+                <div class="form-group col-6 pl-0 zeropadding-for-mobile">
+                  <!-- <input type="text" class="form-control " formControlName="yearOfRegistration" rupeeFormat> -->
+                  <!-- app#816 -->
+                  <select id="Id" class="form-control" formControlName="yearOfRegistration" name="Id"
+                    (change)="validateDOBYearOfRegistrationYearOfExperience()">
+                    <option [ngValue]="year" *ngFor="let year of years">
+                      {{year}}
+                    </option>
+                  </select>
+                </div>
+
+                <!-- <span style="right: 46px;top: 29px;position: absolute;" *ngIf="doctorForm.get('registrationStatus').value =='Y'" data-toggle="tooltip" title="Verified"><img src="../../../../../assets/image/verified.svg" height="18px;"></span> -->
+              </div>
+
+              <div class="form-group" *ngIf="!isEdit">
+                <label
+                  class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_YEAR_OF_REGISTRATION' | translate}}</label>
+                <p *ngIf="doctorForm.value.yearOfRegistration == null || doctorForm.value.yearOfRegistration == ''"
+                  class="float-left notSpecified">Not Specified</p>
+
+                <p *ngIf="doctorForm.value.yearOfRegistration != null || doctorForm.value.yearOfRegistration != ''"
+                  class="float-left">{{doctorForm.value.yearOfRegistration}}</p>
+
+
+              </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-6 col-6">
+              <div class="form-group" *ngIf="isEdit">
+                <label class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_EXPERIENCE' | translate}}<span class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span></label>
+
+                <!-- app#816 -->
+                <input type="text" class="form-control expYear"
+                  (keyup)="validateDOBYearOfRegistrationYearOfExperience()" formControlName="yearsOfExperience"
+                  (keypress)="checkPattern($event)" rupeeFormat>
+                <span *ngIf="expMsg!=''" class="validation-error">{{expMsg}}</span>
+              </div>
+              <div class="form-group" *ngIf="!isEdit">
+                <label class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_EXPERIENCE' | translate}}</label>
+                <p>{{doctorForm.value.yearsOfExperience==null ? "Not Specified":doctorForm.value.yearsOfExperience}}</p>
+              </div>
+            </div>
+            <div class="col-xl-2 col-lg-2 col-md-6 col-6">
+              <div class="form-group" *ngIf="isEdit">
+                <label class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_GENDER' | translate}}
+                  <span class="validation-error"></span>
+                </label>
+                <select id="gender" name="gender" class="form-control" formControlName="gender">
+                  <option *ngFor="let gender of masterGender" value="{{gender.attributeValue}}">{{gender.displayValue}}
+                  </option>
+                </select>
+                <span *ngIf="submitted && lControls.gender.errors">
+                  <span *ngIf="lControls.gender.errors.required"
+                    class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                </span>
+              </div>
+              <div class="form-group" *ngIf="!isEdit">
+                <label class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_GENDER' | translate}}</label>
+                <p class="notSpecified" *ngIf="doctorForm.value.gender == '' || doctorForm.value.gender == null">Not
+                  Specified</p>
+                <p>{{doctorForm.value.gender==='M'?'Male':(doctorForm.value.gender==='F'?'Female':
+                    (doctorForm.value.gender==='O'?"Other":doctorForm.value.gender))}}</p>
+              </div>
+            </div>
+            <!-- Working on app/issues/688 Commented temporarily app#942 -->
+            <!-- <div class="col-xl-2 col-lg-2 col-md-6 col-6">
+                <div class="form-group" *ngIf="isEdit">
+                    <label class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_ONLINE_REVIEW' | translate}}</label>
+                        <label>
+                            <input type="checkbox" (change)="toggleOnlineReview($event)" formControlName="onlineReview">
+                          </label>
+                </div>
+                <div class="form-group" *ngIf="!isEdit">
+                    <label class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_ONLINE_REVIEW' | translate}}</label>
+                    <p>{{doctorForm.value.onlineReview?'Yes':'No'}}</p>
+                </div>
+
+              </div> -->
+            <!--End Working on app/issues/688 -->
+
+          </div>
+        </div>
+      </div>
+      <div class="row page-content">
+        <div class="col-xl-7">
+          <div class="card">
+            <div class="row card-body">
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-sm-8 col-12">
+                    <div class="form-group" *ngIf="isEdit">
+                      <label
+                        class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_EMAIL_LABEL' | translate}}</label>
+                      <div class="form-group float-left" *ngIf="isReadOnlyEmail">
+                        <p class="notSpecified"
+                          *ngIf="doctorForm.get('emailId').value == '' || doctorForm.get('emailId').value == null">Not
+                          Specified</p>
+                        <p *ngIf="doctorForm.get('emailId').value!=null && doctorForm.get('emailId').value!=''">
+                          {{doctorForm.get('emailId').value}}</p>
+                      </div>
+                      <div class="form-group" *ngIf="!isReadOnlyEmail">
+                        <input type="text" class="form-control doc-profile-mail" formControlName="emailId"
+                          (blur)="isEmailExist($event)">
+                      </div>
+                      <div *ngIf="doctorForm.get('email_verification_status').value == 'Y'" data-toggle="tooltip"
+                        title="Verified" class="float-left pl-2 doc-profile-verified-ico">
+                        <img src="../../../../../assets/image/verified.svg" height="18px;">
+                      </div>
+                      <div class="float-left pl-2 verify-txt"
+                        *ngIf="doctorForm.get('email_verification_status').value == 'N' "><a (click)="emailVerify()"
+                          href="javascript:void(0)">Verify Email</a></div>
+                      <span *ngIf="isValidEmail==='false'" class="validation-error">
+                        *This Email already exists
+                      </span>
+                      <p data-toggle="tooltip" title="{{doctorForm.get('emailId').value}}">
+                        <!-- <span *ngIf="addUserForm.email_verification_status!= null && addUserForm.email_verification_status!='' "> -->
+
+
+
+
+                        <!-- </span> -->
+                      </p>
+                    </div>
+                    <div class="form-group" *ngIf="!isEdit">
+                      <label
+                        class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_EMAIL_LABEL' | translate}}</label>
+                      <p class="notSpecified"
+                        *ngIf="doctorForm.get('emailId').value == '' || doctorForm.get('emailId').value == null">Not
+                        Specified</p>
+                      <p class="float-left"
+                        *ngIf="doctorForm.get('emailId').value!=null && doctorForm.get('emailId').value!=''">
+                        {{doctorForm.get('emailId').value}}</p>
+
+                      <div class="float-left pl-2 verify-txt"
+                        *ngIf="doctorForm.get('email_verification_status').value == 'N' "><a (click)="emailVerify()"
+                          href="javascript:void(0)">Verify Email</a></div>
+                      <div *ngIf="doctorForm.get('email_verification_status').value == 'Y'" data-toggle="tooltip"
+                        title="Verified" class="float-left doc-profile-verified-ico pl-2">
+                        <img src="../../../../../assets/image/verified.svg" height="18px;">
+                      </div>
+                      <p data-toggle="tooltip" title="{{doctorForm.get('emailId').value}}"></p>
+                    </div>
+                  </div>
+                  <div class="col-sm-4 col-12">
+                    <div class="form-group" *ngIf="isEdit">
+                      <label class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_MOBILE_LABEL' | translate}}
+                        
+                        <!-- <span class="validation-error"> *</span> -->
+                      </label>
+                      <div class="form-group" *ngIf="isReadOnlyPhNo">
+                        <p class="float-left">{{doctorForm.get('mobileNo1').value}}</p>
+                        <div class="float-left ml-2 doc-profile-verified-ico"
+                          *ngIf="doctorForm.get('contact_verification_status').value == 'Y'" data-toggle="tooltip"
+                          title="Verified">
+                          <img src="../../../../../assets/image/verified.svg" height="18px;">
+                        </div>
+                        <div class="float-left ml-2 verify-txt"
+                          *ngIf="doctorForm.get('contact_verification_status').value == 'N'"><a (click)="mobileVerify()"
+                            href="javascript:void(0)">Verify Mobile</a></div>
+                        <p data-toggle="tooltip" title="{{doctorForm.get('mobileNo1').value}}">
+                          <!-- <span *ngIf="addUserForm.email_verification_status!= null && addUserForm.email_verification_status!='' "> -->
+
+                          <!-- <span *ngIf="addUserForm.mobileNo1!= null && addUserForm.mobileNo1!='' "> -->
+
+                          <!-- </span> -->
+                          <!-- </span> -->
+                        </p>
+                        <div *ngIf="!otpVerifySuccess" class="col-md-12">
+                          <div class="row">
+                            <div class="col-md-6">
+                              <input *ngIf="otpVerify" type="text" formControlName="otp"
+                                class="form-control user-verify-otp">
+                            </div>
+                            <div class="col-md-6">
+                              <button type="button" *ngIf="otpVerify" class="btn btn-primary btn-sm"
+                                (click)="otpSubmit()">Verify</button>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-12">
+                              <a *ngIf="otpVerify" href="javascript:void(0)" (click)="cancelSection()">Cancel</a>
+                              <a *ngIf="otpVerify" class="ml-2" href="javascript:void(0)" (click)="resendOtp()">Resend
+                                OTP</a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group" *ngIf="!isReadOnlyPhNo">
+                        <int-phone-prefix [locale]="'IN'" [defaultCountry]="'in'" formControlName="mobileNo1"
+                          autofocus="" (keypress)="keyPress($event)" (keyup)="duplicacyCheck()"></int-phone-prefix>
+                      </div>
+                      <span *ngIf="isValidMobileNo==='false'" class="validation-error">
+                        *This number already exists
+                      </span>
+                      <span *ngIf="lControls.mobileNo1.value != '' && lControls.mobileNo1.value != null">
+                        <span *ngIf="isMobile1Duplicate" class="validation-error">
+                          *Duplicate
+                        </span>
+                      </span>
+                    </div>
+                    <div class="form-group" *ngIf="!isEdit">
+                      <label
+                        class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_MOBILE_LABEL' | translate}}</label>
+                      <p class="float-left">
+                        {{doctorForm.get('mobileNo1').value==''||null  ? "Not Specified":doctorForm.get('mobileNo1').value}}
+                      </p>
+                      <div class="float-left ml-2 doc-profile-verified-ico"
+                        *ngIf="doctorForm.get('contact_verification_status').value == 'Y'" data-toggle="tooltip"
+                        title="Verified">
+                        <img src="../../../../../assets/image/verified.svg" height="18px;">
+                      </div>
+                      <div class="float-left ml-2 verify-txt"
+                        *ngIf="doctorForm.get('contact_verification_status').value == 'N'"><a (click)="mobileVerify()"
+                          href="javascript:void(0)">Verify Mobile</a></div>
+                      <p data-toggle="tooltip" title="{{doctorForm.get('mobileNo1').value}}">
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4 col-12">
+                    <div class="form-group" *ngIf="isEdit">
+                      <label
+                        class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_ALTERNATE_NO_1' | translate}}
+                        <span class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span></label> <!--app#1391-->
+                      <int-phone-prefix [locale]="'IN'" [defaultCountry]="'in'" formControlName="mobileNo2"
+                        (keypress)="keyPress($event)" (keyup)="duplicacyCheck()"></int-phone-prefix>
+                      <span *ngIf="lControls.mobileNo2.value != '' && lControls.mobileNo2.value != null">
+                        <span *ngIf="isMobile2Duplicate" class="validation-error">
+                          *Duplicate
+                        </span>
+                      </span>
+                    </div>
+                    <div class="form-group" *ngIf="!isEdit">
+                      <label
+                        class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_ALTERNATE_NO_1' | translate}}</label>
+                      <p *ngIf="doctorForm.get('mobileNo2').value==''||null" class="notSpecified">Not Specified</p>
+                      <p *ngIf="doctorForm.get('mobileNo2').value!=''||null">{{doctorForm.get('mobileNo2').value}}</p>
+
+                    </div>
+                  </div>
+                  <div class="col-sm-4 col-12">
+                    <div class="form-group" *ngIf="isEdit">
+                      <label
+                        class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_ALTERNATE_NO_2' | translate}}
+                        <span class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span> <!--app#1391-->
+                      </label>
+                      <int-phone-prefix [locale]="'IN'" [defaultCountry]="'in'" formControlName="mobileNo3"
+                        (keypress)="keyPress($event)" (keyup)="duplicacyCheck()"></int-phone-prefix>
+                      <span *ngIf="lControls.mobileNo3.value != '' && lControls.mobileNo3.value != null">
+                        <span *ngIf="isMobile3Duplicate" class="validation-error">
+                          *Duplicate
+                        </span>
+                      </span>
+                    </div>
+                    <div class="form-group" *ngIf="!isEdit">
+                      <label
+                        class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_ALTERNATE_NO_2' | translate}}</label>
+                      <p *ngIf="doctorForm.get('mobileNo3').value==''||null" class="notSpecified">Not Specified</p>
+                      <p *ngIf="doctorForm.get('mobileNo3').value!=''||null">{{doctorForm.get('mobileNo3').value}}</p>
+
+                    </div>
+                  </div>
+                  <div class="col-sm-4 col-12">
+                    <div class="form-group" *ngIf="isEdit">
+                      <label
+                        class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_LANDLINE' | translate}}
+                        <span class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span> <!--app#1391-->
+                      </label>
+                      <input type="text" class="form-control" formControlName="landlineNo"
+                        (blur)="landLineCheck($event.target.value)">
+                    </div>
+                    <div class="form-group" *ngIf="!isEdit">
+                      <label
+                        class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_LANDLINE' | translate}}</label>
+                      <p *ngIf="doctorForm.get('landlineNo').value==''||null" class="notSpecified">Not Specified</p>
+                      <p *ngIf="doctorForm.get('landlineNo').value!=''||null">{{doctorForm.get('landlineNo').value}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="row card-body">
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-12">
+                    <!-- <label>{{'DOCTOR_PROFILE.DOCTOR_PROFILE_BRIEF_RESUME' | translate}}</label> -->
+                    <div *ngIf="isEdit">
+                        <label>{{'DOCTOR_PROFILE.DOCTOR_PROFILE_BRIEF_RESUME' | translate}}
+                           <span class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span> <!--app#1391-->
+                          </label>
+                        <app-textarea placeholder="Short profile which will be visible to patients" formControlName="briefresume" (valueChange)="encodeVal($event)"></app-textarea>
+                    </div>
+                    <div *ngIf="!isEdit">
+                        <label>{{'DOCTOR_PROFILE.DOCTOR_PROFILE_BRIEF_RESUME' | translate}} </label> <!--app#1391-->
+                      <span
+                        *ngIf="doctorForm.get('briefresume').value=='' || doctorForm.get('briefresume').value == null">
+                        <pre class="notSpecified">Not Specified</pre></span>
+                      <pre id="non-editable-value" [innerHTML]="doctorForm.get('briefresume').value"
+                        *ngIf="doctorForm.get('briefresume').value!='' && doctorForm.get('briefresume').value != null"></pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="col-xl-5">
+          <div class="card">
+            <div class="row card-body">
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-7 mb-0"><label>{{'DOCTOR_PROFILE.DOCTOR_SPECIALIZATION' | translate}}
+                      <span *ngIf="isEdit" class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span><!--app#1391-->
+                     </label></div>
+                  <div class="col-5 mb-0" *ngIf="isEdit"><button type="button" class="btn btn-primary float-right mb-2"
+                      (click)="addSpecialization()">Add</button></div>
+                </div>
+                <div class="notSpecified" *ngIf="doctorForm.value.doctorSpecializationList.length == 0 && !isEdit">
+                  {{'COMMON.NA' | translate}}
+                </div>
+                <div class="row">
+                  <div class="col-12">
+                    <div class="table-responsive">
+                      <table class="table profile-readonly">
+                        <thead *ngIf="doctorForm.value.doctorSpecializationList.length > 0 && !isEdit">
+                          <tr>
+                            <th>Specialization</th>
+                            <th>SubSpecialization</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <thead *ngIf="isEdit">
+                          <tr>
+                            <th>Specialization</th>
+                            <th>SubSpecialization</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody *ngIf="doctorForm.value.doctorSpecializationList.length > 0 && !isEdit">
+                          <tr *ngFor="let s of doctorForm.value.doctorSpecializationList; let i = index">
+                            <td>{{s.specialization==null ? "":s.specialization}}</td>
+                            <td>{{s.subSpecialization==null ? "":s.subSpecialization}}</td>
+                            <td></td>
+                          </tr>
+                        </tbody>
+                        <tbody formArrayName="doctorSpecializationList"
+                          *ngIf="specializationArray.length > 0 && isEdit">
+                          <tr *ngFor="let s of doctorForm.get('doctorSpecializationList').controls; let i = index"
+                            [formGroup]="s" [attr.id]="'tr'+i">
+                            <td>
+                              <!-- <input type="text" class="form-control" formControlName="specializationPk" [value]="doctor.specializationPk"> -->
+                              <select id="Id" class="form-control" formControlName="specializationPk" name="Id"
+                                (change)="onSelect($event.target.value,i)">
+                                <option [ngValue]="specialization.specializationPk"
+                                  *ngFor="let specialization of specializationList"
+                                  [selected]="specialization.specializationPk == s.value.specializationPk">
+                                  {{specialization.specialization}}
+                                </option>
+                              </select>
+                              <!-- <span *ngFor="let s of doctorForm.get('specializationArray').controls; let i = index" > -->
+                              <span *ngIf="isDuplicateSpecialization[i]" class="validation-error">
+                                <!-- <span *ngIf="lControls.mobileNo3.value === lControls.mobileNo1.value || lControls.mobileNo3.value === lControls.mobileNo2.value" class="validation-error">
+                                   *Duplicate
+                               </span> -->*Duplicate
+                                <!-- </span> -->
+                              </span>
+                            </td>
+                            <td>
+                              <select id="Id" class="form-control" formControlName="subSpecializationPk" name="Id"
+                                *ngIf="subSpecializationListArr[i] ">
+                                <!-- <option [ngValue]="subSpecialization.subSpecializationPk" *ngFor="let subSpecialization of subSpecializationListArr[i]"> -->
+                                <option [ngValue]="subSpecialization.subSpecializationPk"
+                                  *ngFor="let subSpecialization of subSpecializationListArr[i]"
+                                  [selected]="subSpecialization.subSpecializationPk == s.value.subSpecializationPk">
+                                  {{subSpecialization.subSpecialization}}
+                                </option>
+                              </select>
+                            </td>
+                            <td>
+                              <!-- <button type="button" class="btn btn-danger btn-xs" (click)="deleteSpecialization(i)">
+                                <i class="fas fa-trash-alt"></i> Remove </button>
+                            <i ngbTooltip="Delete Doctor Specialization" container="body" class="fas fa-times" (click)="deleteSpecialization(i)"></i>-->
+                              <span ngbTooltip="Delete Doctor Specialization" container="body"
+                                (click)="deleteSpecialization(i)" class="cursor"><img class="grey"
+                                  src="../../../../../assets/image/delete.svg" width="15"></span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+          <div class="card">
+            <div class="row card-body">
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-7 mb-0"><label>{{'DOCTOR_PROFILE.DOCTOR_QUALIFICATION' | translate}}
+                      <span *ngIf="isEdit" class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span><!--app#1391-->
+                  </label></div>
+                  <div class="col-5 mb-0" *ngIf="isEdit">
+                     <button type="button" class="btn btn-primary float-right mb-2"
+                      (click)="addQualification()">Add</button>
+                  </div>
+                </div>
+                <div class="notSpecified" *ngIf="doctorForm.value.doctorQualificationList.length == 0 && !isEdit">
+                  {{'COMMON.NA' | translate}}
+                </div>
+                <div class="row">
+                  <div class="col-12">
+                    <div class="table-responsive table-respons-override">
+                      <table class="table profile-readonly">
+                        <thead *ngIf="doctorForm.value.doctorQualificationList.length > 0 && !isEdit">
+                          <tr class="d-flex">
+                            <th class="col-sm-4 col-7">Qualification</th>
+                            <th class="col-sm-4 col-4">Year</th>
+                            <th class="col-sm-3 hide-col-for-mobile">Institute</th>
+                            <th class="col-1"></th>
+                          </tr>
+                        </thead>
+                        <thead *ngIf="isEdit">
+                          <tr class="d-flex">
+                            <th class="col-sm-4 col-7">Qualification</th>
+                            <th class="col-sm-4 col-4">Year</th>
+                            <th class="col-sm-3 hide-col-for-mobile">Institute</th>
+                            <th class="col-1"></th>
+                          </tr>
+                        </thead>
+                        <tbody *ngIf="doctorForm.value.doctorQualificationList.length > 0 && !isEdit">
+                          <tr class="d-flex" *ngFor="let q of doctorForm.value.doctorQualificationList; let i = index">
+                            <td class="col-sm-4 col-7">{{q.shortCode==null ? "Not Specified":q.shortCode}}</td>
+                            <td class="col-sm-4 col-4">{{q.yearProcured==null ? "Not Specified":q.yearProcured}}</td>
+                            <td class="col-3 hide-col-for-mobile">{{q.institute==null ? "Not Specified":q.institute}}
+                            </td>
+                            <td class="col-1"></td>
+                          </tr>
+                        </tbody>
+                        <tbody formArrayName="doctorQualificationList" *ngIf="qualificationArray.length > 0 && isEdit">
+                          <tr class="d-flex"
+                            *ngFor="let q of doctorForm.get('doctorQualificationList').controls; let i = index"
+                            [formGroup]="q" [attr.id]="'tr'+i">
+                            <td class="col-sm-4 col-7">
+                              <select class="form-control" formControlName="qualificationPk" name="Id"
+                                (change)="onSelectQualification($event.target.value,i)">
+                                <option [ngValue]="qualification.qualificationPk"
+                                  *ngFor="let qualification of qualificationList"
+                                  [selected]="qualification.qualificationPk == q.value.qualificationPk.value">
+                                  {{qualification.qualificationCode}}
+                                </option>
+                              </select>
+
+                              <span *ngIf="isDuplicateQualification[i]" class="validation-error">
+                                *Duplicate
+
+                              </span>
+                            </td>
+                            <td class="col-sm-4 col-4">
+                              <!-- <input type="text" formControlName="year_procured" name="Id" (blur)= "onSelectYear($event.target.value,i)"/> -->
+                              <select id="Id" class="form-control" formControlName="yearProcured" name="Id">
+                                <option [ngValue]="year" *ngFor="let year of years">
+                                  {{year}}
+                                </option>
+                              </select>
+                              <!-- <span *ngIf="isDuplicateYear[i]" class="validation-error">
+                                 *Duplicate
+                             </span> -->
+                            </td>
+                            <td class="col-3 hide-col-for-mobile">
+                              <input type="text" class="form-control" formControlName="institute" />
+                            </td>
+                            <td class="col-1 no-space-mobile">
+                              <!-- <button type="button" class="btn btn-danger btn-xs" (click)="deleteQualification(i)">
+                                <i class="fas fa-trash-alt"></i> Remove </button> -->
+                              <span ngbTooltip="Delete Doctor Specialization" container="body"
+                                (click)="deleteQualification(i)" class="cursor no-margin-mobile"><img
+                                  src="../../../../../assets/image/delete.svg" width="15"></span>
+                              <!--<i ngbTooltip="Delete Doctor Qualification" container="body" class="fas fa-times" (click)="deleteQualification(i)"></i>-->
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="row">
+        <div class="col-6"></div>
+			  <div class="col-6 text-center">
+            <label>{{'DOCTOR_PROFILE.DOCTOR_PROFILE_SIGNATURE_IMAGE' | translate}} </label>
+            <img *ngIf="signatureSrc !=''" [src]="domSanitizer.bypassSecurityTrustUrl(signatureSrc)" width="100" height="50" alt="...">
+            <p *ngIf="!isEdit && (signatureSrc =='' || signatureSrc ==null)" class="float-left notSpecified">Not Specified</p>
+            <div class="middle" style="top: 110%;">
+              <div class="profileBtnHolder">
+                <input type="file" *ngIf="isEdit" accept="image/*" [hidden]="true" id="signaturePhoto" (change)="selectSignatureFile($event)">
+                <label *ngIf="isEdit" for="signaturePhoto"><i class="fas fa-camera"></i></label>
+              </div>
+            </div>
+          </div>
+          </div> -->
+
+        </div>
+
+
+
+      </div>
+      <br />
+      <div class="col-lg-12 text-right">
+        <button type="submit" id="save" class="btn btn-primary btn-sm float-right"
+          *ngIf="isEdit">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_SAVE_PROFILE' | translate}}</button>
+        <button type="button" class="btn btn-sm btn-secondary float-right" (click)="viewDoctor()"
+          *ngIf="isEdit && isRegistrationWorkflowCompleted">{{'COMMON.CANCEL_BUTTON' | translate }}</button>
+      </div>
+
+    </form>
+  </div>
+</div>

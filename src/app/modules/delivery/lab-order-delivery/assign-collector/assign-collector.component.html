@@ -1,0 +1,26 @@
+<form [formGroup]="labDeliveryForm">
+      <div class="form-group">
+        <label class="userKey control-label">
+          Sample Collector Name
+          <span class="validation-error">*</span>
+        </label>
+        <input type="text" class="form-control" formControlName="agentName" required>
+        <div *ngIf="submitted && labDeliveryForm.controls.agentName.errors">
+            <div class="validation-error" *ngIf="labDeliveryForm.controls.agentName.errors.required">This field is required</div>
+          </div>
+      </div>
+      <div class="form-group">
+        <label class="userKey control-label">
+            Sample Collector Contact
+            <span>(Optional)</span>
+          <!-- <span class="validation-error">*</span> -->
+        </label>
+        <int-phone-prefix [locale]="'IN'" [defaultCountry]="'in'" autofocus=""
+        formControlName="agentContact"></int-phone-prefix>
+           <!-- <input type="text" class="form-control" placeholder="Enter phone number with country code" #agentContact> -->
+           <!-- <div *ngIf="submitted && labDeliveryForm.controls.agentContact.errors">
+              <div class="validation-error" *ngIf="labDeliveryForm.controls.agentContact.errors.required">This field is required</div>
+            </div> -->
+      </div>
+      <button type="button" class="btn btn-primary mt-1" (click)="saveDeliveryStep()">Assign Collector</button>
+    </form>

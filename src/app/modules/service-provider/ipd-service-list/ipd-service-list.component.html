@@ -1,0 +1,552 @@
+<!-- 
+/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+ -->
+
+
+<div class="row">
+  <div *ngIf="loading" class="cover">
+    <div class="loader">
+        <div class="loading-img"><img width=250px src="../../../../../assets/image/logo.svg"/></div>
+        <div class="loading-txt">Loading<div class="dot-elastic"></div></div>
+    </div>
+  </div>
+  <div class="col-lg-12">
+    <div class="row top-btn-area-for-ipd-service-list">
+      <div class="col-12 text-right" *ngIf="htmlElements.showIpdServiceDetailsSection">
+        <a href="javascript:void(0)" *ngFor="let categoryObj of ipdServiceCategoriesList"
+          (click)="showCurrentServiceList(categoryObj.category)">
+          <span class="ipdServiceCategory" *ngIf="categoryObj.displayStatus">{{categoryObj.category}}</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="htmlElements.showIpdServiceDetailsSection">
+      <div class="col-12">
+        <div class="row">
+          <!-- <div class="col-md-2"></div> -->
+          <div class="col-8" *ngIf="ipdServiceList.length> 0; else noDataFoundBlock"> <!--Working on app/issue/1511-->
+            <div class="content table-responsive search-result not-for-mobile">
+              <p-table [value]="ipdServiceList" [paginator]="ipdServiceList.length>10" [rows]="10">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th width="26%" scope="col">{{currentTab}}</th>
+                    <th class="text-right" width="18%" scope="col">Rate</th>
+                    <th width="5%" scope="col"></th> <!--Working on app/issue/1511-->
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-ipdService let-i="rowIndex">
+                  <tr>
+                    <td>
+                      {{ipdService.name}}
+                    </td>
+                    <td class="text-right">
+                      <div *ngIf="ipdService.rateType=='FIX' || currentTab=='REGISTRATION FEES'; else slabBlock">
+                        {{ipdService.totalCharge==null?'N/A':ipdService.totalCharge | currency:'INR'}}
+                        <span *ngIf="ipdService.chargeUnitValue!=null"> per {{ipdService.chargeUnitValue}}
+                          {{ipdService.chargeUnit}} </span>
+                      </div>
+                      <ng-template #slabBlock>
+                        <div *ngIf="ipdService.variableRateList.length>0 && currentTab!='REGISTRATION FEES'">
+                          <p *ngFor="let varRate of ipdService.variableRateList">
+
+                            <span *ngIf="varRate.slidingRateFlag=='Y' && varRate.endRange!=null"> Next
+                              <span>{{nextHourCalculation(varRate)}}</span>
+                              <span> {{varRate.rangeUnit | lowercase }} - </span>
+                              <span>
+                                {{varRate.rate | currency:'INR' }}
+                              </span>
+                              <span>per {{varRate.chargeUnitValue}} {{varRate.chargeUnit | lowercase}} </span>
+                            </span>
+                            <span *ngIf="varRate.slidingRateFlag=='N' && varRate.endRange!=null"> Upto
+                              <span>{{varRate.endRange}}</span>
+                              <span> {{varRate.rangeUnit | lowercase}} - </span>
+                              <span>
+                                {{varRate.rate | currency:'INR'}}
+                              </span>
+                            </span>
+                            <span *ngIf="varRate.endRange==null && varRate.chargeUnit!=null">More than
+                              {{varRate.startRange}}
+                              <span> {{varRate.rangeUnit | lowercase}} - </span>
+                              <span>
+                                {{varRate.rate | currency:'INR' }}
+                              </span>
+                              <span>per {{varRate.chargeUnitValue}} {{varRate.chargeUnit | lowercase}} </span>
+                            </span>
+                            <span *ngIf="varRate.endRange==null && varRate.chargeUnit==null">More than
+                              {{varRate.startRange}}
+                              <span> {{varRate.rangeUnit | lowercase}} - </span>
+                              <span>
+                                {{varRate.rate | currency:'INR' }}
+                              </span>
+                            </span>
+                          </p>
+                        </div>
+                      </ng-template>
+                    </td>
+                    <td class="text-right">
+                      <span ngbTooltip="Edit Ipd Service" container="body" class="cursor"
+                        (click)="editIpdService(ipdService)">
+                        <img class="grey" src="../../../../../assets/image/edit.svg" height="15" alt="">
+                      </span> &nbsp;&nbsp;&nbsp;&nbsp;
+                      <span *ngIf="currentTab !='REGISTRATION FEES'" ngbTooltip="Delete Ipd Service" container="body"
+                        class="cursor" (click)="deleteIpdService(ipdService)">
+                        <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                      </span>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+            <div class="content table-responsive search-result for-very-small pt-3">
+              <p-table [value]="ipdServiceList" [paginator]="ipdServiceList.length>10" [rows]="10">
+                <ng-template pTemplate="body" let-ipdService let-i="rowIndex">
+                  <tr>
+                    <ng-container>
+                      <td class="mobile-table">
+                        <table>
+                          <tr>
+                            <td class="small-header">{{currentTab}}</td>
+                            <td class="mb-0">{{ipdService.name}}</td>
+                          </tr>
+                          <tr>
+                            <td class="small-header">Rate</td>
+                            <td class="mb-0">
+                              <div
+                                *ngIf="ipdService.rateType=='FIX' || currentTab=='REGISTRATION FEES'; else slabBlock">
+                                {{ipdService.totalCharge==null?'N/A':ipdService.totalCharge | currency:'INR'}}
+                              </div>
+                              <ng-template #slabBlock>
+                                <div *ngIf="ipdService.variableRateList.length>0 && currentTab!='REGISTRATION FEES'">
+                                  <p *ngFor="let varRate of ipdService.variableRateList">
+
+                                    <span *ngIf="varRate.slidingRateFlag=='Y' && varRate.endRange!=null"> Next
+                                      <span>{{nextHourCalculation(varRate)}}</span>
+                                      <span> {{varRate.rangeUnit | lowercase }} - </span>
+                                      <span>
+                                        <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+
+                                          </strong> </span>{{varRate.rate | number: '1.2-2'}}
+                                      </span>
+                                      <span>per {{varRate.chargeUnitValue}} {{varRate.chargeUnit | lowercase}} </span>
+                                    </span>
+                                    <span *ngIf="varRate.slidingRateFlag=='N' && varRate.endRange!=null"> Upto
+                                      <span>{{varRate.endRange}}</span>
+                                      <span> {{varRate.rangeUnit | lowercase}} - </span>
+                                      <span>
+                                        <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+
+                                          </strong> </span>{{varRate.rate | number: '1.2-2'}}
+                                      </span>
+                                    </span>
+                                    <span *ngIf="varRate.endRange==null && varRate.chargeUnit!=null">More than
+                                      {{varRate.startRange}}
+                                      <span> {{varRate.rangeUnit | lowercase}} - </span>
+                                      <span>
+                                        <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+
+                                          </strong> </span>{{varRate.rate | number: '1.2-2'}}
+                                      </span>
+                                      <span>per {{varRate.chargeUnitValue}} {{varRate.chargeUnit | lowercase}} </span>
+                                    </span>
+                                    <span *ngIf="varRate.endRange==null && varRate.chargeUnit==null">More than
+                                      {{varRate.startRange}}
+                                      <span> {{varRate.rangeUnit | lowercase}} - </span>
+                                      <span>
+                                        <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+
+                                          </strong> </span>{{varRate.rate | number: '1.2-2'}}
+                                      </span>
+                                    </span>
+                                  </p>
+                                </div>
+                              </ng-template>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="small-header"></td>
+                            <td class="mb-0">
+                              <div class="row">
+                                <div class="col-6 text-right">
+                                  <span ngbTooltip="Edit Ipd Service" container="body" class="cursor"
+                                    (click)="editIpdService(ipdService)">
+                                    <img class="grey" src="../../../../../assets/image/edit.svg" height="15" alt="">
+                                  </span>
+                                </div>
+                                <div class="col-6 text-right">
+                                  <span *ngIf="currentTab !='REGISTRATION FEES'" ngbTooltip="Delete Ipd Service"
+                                    container="body" class="cursor" (click)="deleteIpdService(ipdService)">
+                                    <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                                  </span>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </ng-container>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </div>
+          <ng-template #noDataFoundBlock>
+            <div class="col-12 text-center" style="margin-top:20px;">
+              <h1>{{currentTab}} not configured</h1>
+            </div>
+          </ng-template>
+        </div>
+        <div [ngClass]="ipdServiceList.length>10?'row addNewPosition':'row'">
+          <div class="col-8 text-right" *ngIf="currentTab !='REGISTRATION FEES'">
+            <button *ngIf="htmlElements.showIpdServiceDetailsSection" type="button" class="btn btn-secondary btn-sm "
+              id="addIpdService" (click)="showAddEditIpdServiceSection()">
+              <i class="fas fa-plus-square"></i>&nbsp;Add Record</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row addEditIpdService " *ngIf="htmlElements.showAddEditIpdServiceSection">
+      <!-- Working on app/issue/1595 -->
+      <div class="col-12">
+        <form [formGroup]="ipdServiceForm">
+          <div class="row">
+            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-8 col-12">
+              <div class="form-group">
+                <label>{{currentTab}} NAME</label>
+
+                <!-- <p-autoComplete styleClass="medicineListAutoComplete" inputStyleClass="medicationStyle" #med placeholder="Specify {{currentTab}}" [suggestions]="ipdServiceNameList" [minLength]="3"
+                (onSelect)="setIpdServiceToForm($event)" (completeMethod)="getIpdServiceList($event)" autoHighlight="false" formControlName="name"
+                (onKeyUp)="managIpdServiceRefNo()"  required>
+                <ng-template let-ipdService pTemplate="item">
+                  <span style="font-size:11px;font-weight: 500;">{{ipdService.name}}</span>                  
+                </ng-template>
+              </p-autoComplete> -->
+              <p-autoComplete styleClass="medicineListAutoComplete" inputStyleClass="medicationStyle" #med placeholder="Specify {{currentTab}}" [suggestions]="ipdServices" [minLength]="3"
+                (onSelect)="setIpdService($event)" (completeMethod)="getIpdServiceListTypeAhead($event)" autoHighlight="false" formControlName="name" *ngIf="currentTab != SBISConstantsRef.IPD_SERVICE_TAB.DIAGNOSTICS"
+                required>
+                 <ng-template let-ipdService pTemplate="item">
+                    <span style="font-size:11px;font-weight: 500;">{{ipdService.serviceName}}</span>
+                 </ng-template>
+              </p-autoComplete>
+
+                <!-- <input type="text" class="form-control" formControlName="name" required *ngIf="currentTab != SBISConstantsRef.IPD_SERVICE_TAB.DIAGNOSTICS"
+                  (blur)="checkDuplicateServiceName($event)" [readonly]="currentTab == SBISConstantsRef.IPD_SERVICE_TAB.REGISTRATION_FEES"> -->
+
+                <!-- start autocomplete for diagnostics  -->
+                <p-autoComplete [style]="{'width':'100%'}" [suggestions]="addMedicalReportResults" 
+                *ngIf="currentTab == SBISConstantsRef.IPD_SERVICE_TAB.DIAGNOSTICS"
+                  (completeMethod)="search($event)" [field]="longName" formControlName="name" 
+                  placeholder="Specify {{currentTab}}"
+                  (onSelect)="onSelectMedicalAttributes($event,addMedicalReportResults)">
+                  <ng-template let-addMedicalReportResults pTemplate="item">
+                    <span style="font-size:11px;font-weight: 500;">{{addMedicalReportResults.longName}}</span>
+                  </ng-template>
+                </p-autoComplete>
+
+                <!-- end of div for diagnostics -->
+                <div *ngIf="isSubmitted && ipdServiceForm.controls.name.errors">
+                  <div class="validation-error" *ngIf="ipdServiceForm.controls.name.errors.required">This field
+                    is
+                    required</div>
+                </div>
+              </div>
+            </div>
+            <!--  <div class="col-4">
+              <div class="form-group">
+                <label>Service Name <span class="optional-label"> (Optional)</span></label>
+                <input type="text" class="form-control" formControlName="serviceName" required>
+
+              </div>
+            </div>-->
+            <!-- Working on app/issue/2401 -->
+            <div class=" col-xl-4 col-lg-4 col-md-6 col-sm-4 col-12">
+              <div class="form-group">
+                <label>Code <span class="optional-label"> (Optional)</span></label>
+                <input type="text" class="form-control" formControlName="code" required>
+
+              </div>
+            </div> 
+            <!-- End Working on app/issue/2401 -->
+          </div>
+
+          <div class="row">
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-12" *ngIf="currentTab =='REGISTRATION FEES'">
+              <div class="form-group">
+                <label>Validity <small>(in days)</small></label>
+                <input type="text" class="form-control" formControlName="validity" numbersOnly>
+              </div>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-12" *ngIf="currentTab !='REGISTRATION FEES'">
+              <div class="form-group">
+                <label>Rate Type</label>
+                <span class="radio-inline">
+                  <input type="radio" name="rateType"
+                    [checked]="ipdServiceForm.get('rateType').value==SBISConstantsRef.IPD_SERVICE_RATE_TYPE.FIX"
+                    (change)="onRateTypeChange(SBISConstantsRef.IPD_SERVICE_RATE_TYPE.FIX)"> &nbsp;&nbsp; Flat Rate
+                </span>
+                &nbsp;&nbsp;
+                <span class="radio-inline"><input type="radio" name="rateType"
+                    [checked]="ipdServiceForm.get('rateType').value==SBISConstantsRef.IPD_SERVICE_RATE_TYPE.SLAB"
+                    (change)="onRateTypeChange(SBISConstantsRef.IPD_SERVICE_RATE_TYPE.SLAB)"> &nbsp;&nbsp; Variable Rate
+                </span>
+                <div *ngIf="isSubmitted && ipdServiceForm.controls.rateType.errors">
+                  <div class="validation-error" *ngIf="ipdServiceForm.controls.rateType.errors.required">This field
+                    is
+                    required</div>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-xl-4 col-lg-4 col-md-5 col-sm-6 col-12">
+              <div class="form-group">
+                <label>Effective From</label>
+                <span class="float-left"><input type="text" placeholder="DD-MM-YYYY" bsDatepicker [minDate]="minDate"
+                    [bsConfig]="{ dateInputFormat: dateFormat, showWeekNumbers: false }" class="form-control date"
+                    formControlName="fromDate" #dp="bsDatepicker" [readonly]="true"></span>
+                <span class="pt-1 float-left"><i (bsValueChange)="onValueChange(event)" (click)="dp.toggle()"
+                    [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt"></i></span>
+                <div *ngIf="isSubmitted && ipdServiceForm.controls.fromDate.errors">
+                  <div class="validation-error" *ngIf="ipdServiceForm.controls.fromDate.errors.required">This field
+                    is
+                    required</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row pt-2" id="fixedRateSection"
+            *ngIf="ipdServiceForm.get('rateType').value==SBISConstantsRef.IPD_SERVICE_RATE_TYPE.FIX">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12" *ngIf="currentTab =='PROCEDURE'">
+              <div class="form-group">
+                <label>Charged By</label>
+                <span class="radio-inline">
+                  <input type="radio" name="chargedBy"
+                    [checked]="ipdServiceForm.get('chargedBy').value==SBISConstantsRef.IPD_SERVICE_CHARGED_BY.BOTH"
+                    (change)="onChargedByChange(SBISConstantsRef.IPD_SERVICE_CHARGED_BY.BOTH)"> &nbsp;&nbsp; Both
+                </span>
+                &nbsp;&nbsp;
+                <span class="radio-inline"><input type="radio" name="chargedBy"
+                    [checked]="ipdServiceForm.get('chargedBy').value==SBISConstantsRef.IPD_SERVICE_CHARGED_BY.CLINIC"
+                    (change)="onChargedByChange(SBISConstantsRef.IPD_SERVICE_CHARGED_BY.CLINIC)"> &nbsp;&nbsp; Clinic
+                </span>
+                <div *ngIf="isSubmitted && ipdServiceForm.controls.chargedBy.errors">
+                  <div class="validation-error" *ngIf="ipdServiceForm.controls.chargedBy.errors.required">This field
+                    is
+                    required</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-4 col-12" *ngIf="currentTab =='PROCEDURE'">
+              <div class="form-group">
+                <label>Doctor Charge</label>
+                <span style="display:inline-flex;">
+                  <span style="margin-top:6px"><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                    </strong>
+                  </span>
+                  <input style="padding:6px !important" type="text" class="form-control"
+                    formControlName="providerCharge"
+                    [readonly]="ipdServiceForm.get('chargedBy').value==SBISConstantsRef.IPD_SERVICE_CHARGED_BY.CLINIC"
+                    (blur)="calculateIpdServiceCharge()">
+                </span>
+                <div *ngIf="isSubmitted && showChargeByError.providerChargeError">
+                  <div class="validation-error" *ngIf="showChargeByError.providerChargeError">This field
+                    is
+                    required</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-4 col-12">
+              <div class="form-group">
+                <label *ngIf="currentTab =='PROCEDURE'; else otherTabLabel">Clinic Charge </label>
+                <ng-template #otherTabLabel>
+                  <label>Charge </label>
+                </ng-template>
+                <span style="display:inline-flex;">
+                  <span style="margin-top:6px"><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                    </strong>
+                  </span>
+                  <input style="padding:6px !important" type="text" class="form-control " formControlName="clinicCharge"
+                    (blur)="calculateIpdServiceCharge()">
+                </span>
+                <div *ngIf="isSubmitted && showChargeByError.clinicChargeError">
+                  <div class="validation-error" *ngIf="showChargeByError.clinicChargeError">This field
+                    is
+                    required</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-4 col-12">
+              <div class="form-group">
+                <label>Total Charge </label>
+                <label *ngIf="totalCharge>0">
+                  <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}} </strong>
+                  </span>{{totalCharge}}
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" id="variableRateSection"
+            *ngIf="ipdServiceForm.get('rateType').value==SBISConstantsRef.IPD_SERVICE_RATE_TYPE.SLAB">
+            <div class="col-10">
+              <div class="row">
+                <div class="col-12"><label>CHARGE DETAILS</label></div>
+              </div>
+              <div style="border-top:1px solid #662d91" class="content table-responsive no-btm-border"
+                *ngIf="variableRateList.length > 0">
+                <table class="table" id="serviceListTable">
+                  <!-- <thead>
+                      <tr>
+                        <th style="width: 1%;">No.</th>
+                        <th style="width: 10%;">Charge Pattern</th>
+                        <th class="text-center" style="width: 30%;">End Range/Pattern Unit</th>
+                        <th class="text-center" style="width: 15%;">Rate</th>
+                        <th class="text-center" style="width: 30%;">Amount/Unit</th>
+                        <th class="text-center" style="width: 4%;"></th>
+
+                      </tr>
+                    </thead> -->
+                  <tbody formArrayName="variableRateList" *ngIf="variableRateList">
+                    <tr *ngFor="let variableRate of ipdServiceForm.get('variableRateList').controls; let i = index"
+                      [formGroup]="variableRate" [attr.id]="'tr'+i">
+                      <td>{{i+1}}.</td>
+                      <td>
+                        <!-- <label class="form-control" *ngIf="i==0">Upto</label> -->
+                        <select class="form-control" formControlName="chargePattern" (change)="onPatternChange($event)"
+                          required>
+                          <option [value]="SBISConstantsRef.IPD_SERVICE_CHARGE_PATTERN.UPTO">
+                            {{SBISConstantsRef.IPD_SERVICE_CHARGE_PATTERN.UPTO}}</option>
+                          <option [value]="SBISConstantsRef.IPD_SERVICE_CHARGE_PATTERN.NEXT" *ngIf="i>0">
+                            {{SBISConstantsRef.IPD_SERVICE_CHARGE_PATTERN.NEXT}}</option>
+                          <option [value]="SBISConstantsRef.IPD_SERVICE_CHARGE_PATTERN.MORE_THAN" *ngIf="i>0">
+                            {{SBISConstantsRef.IPD_SERVICE_CHARGE_PATTERN.MORE_THAN}}</option>
+
+                          <option [value]="SBISConstantsRef.IPD_SERVICE_CHARGE_PATTERN.FLAT" *ngIf="i==0">
+                            {{SBISConstantsRef.IPD_SERVICE_CHARGE_PATTERN.FLAT}}</option>
+                        </select>
+                        <span
+                          *ngIf="showVariableRateValidationError && ipdServiceForm.get('variableRateList').controls[i].get('chargePattern').errors">
+                          <span
+                            *ngIf="ipdServiceForm.get('variableRateList').controls[i].get('chargePattern').errors.required"
+                            class="validation-error"> {{'VALIDATION.VALIDATION_REQUIRED' | translate}} </span>
+                        </span>
+                      </td>
+                      <td
+                        *ngIf="ipdServiceForm.get('variableRateList').controls[i].get('chargePattern').value!=SBISConstantsRef.IPD_SERVICE_CHARGE_PATTERN.FLAT">
+                        <span style="display: inline-flex;">
+                          <span style="display: inline-flex;">
+                            <span>
+                              <input type="text" class="form-control serviceListTableInput" formControlName="inputValue"
+                                numberOnly (blur)="checkInputValueForCurrentVarRate($event,i)">
+                              <span
+                                *ngIf="showVariableRateValidationError && ipdServiceForm.get('variableRateList').controls[i].get('rangeUnit').errors">
+                                <span
+                                  *ngIf="ipdServiceForm.get('variableRateList').controls[i].get('rangeUnit').errors.required"
+                                  class="validation-error"> {{'VALIDATION.VALIDATION_REQUIRED' | translate}} </span>
+                              </span>
+                            </span>
+                          </span>
+                          <span>&nbsp;&nbsp; &nbsp;&nbsp;</span>
+                          <span>
+                            <select class="form-control" formControlName="rangeUnit">
+                              <option value="HOUR">HOUR</option>
+                              <option value="MINUTES">MINUTES</option>
+                            </select>
+                          </span>
+                        </span>
+                      </td>
+                      <td>
+                        <span style="display: inline-flex;">
+                          <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                            </strong>
+                          </span>
+                          <span>
+                            <input type="text" class="form-control serviceListTableInput" formControlName="rate"
+                              numberOnly>
+                            <span
+                              *ngIf="showVariableRateValidationError && ipdServiceForm.get('variableRateList').controls[i].get('rate').errors">
+                              <span
+                                *ngIf="ipdServiceForm.get('variableRateList').controls[i].get('rate').errors.required"
+                                class="validation-error"> {{'VALIDATION.VALIDATION_REQUIRED' | translate}} </span>
+                            </span>
+                          </span>
+                        </span>
+                      </td>
+                      <td>
+                        <span style="display: inline-flex;">
+                          <span style="margin-top:5px;">Per&nbsp;&nbsp;</span>
+                          <span>
+                            <input type="text" formControlName="chargeUnitValue"
+                              class="form-control serviceListTableInput" numberOnly>
+                          </span>
+                          <span>&nbsp;&nbsp;</span>
+                          <span>
+                            <select class="form-control" formControlName="chargeUnit">
+                              <option value="HOUR">HOUR</option>
+                              <option value="MINUTES">MINUTES</option>
+                            </select>
+                          </span>
+                        </span>
+                        <!--  <div class="row">
+                              <div class="col-2 no-gutters"><span>Per</span></div>
+                            <div class="col-3 no-gutters">
+                              <input type="text" formControlName="chargeUnitValue" class="form-control" numberOnly>
+                            </div>
+                            
+                            <div class="col-3 no-gutters">
+                              <select class="form-control" formControlName="chargeUnit">
+                                <option value="HOUR">HOUR</option>
+                                <option value="MINUTES">MINUTES</option>
+
+                              </select>
+                            </div>
+                          </div> -->
+                      </td>
+                      <td>
+                        <span ngbTooltip="Delete Rate" container="body" class="cursor" (click)="deleteVariableRate(i)">
+                          <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="row"
+                *ngIf="ipdServiceForm.get('variableRateList').controls[0].get('chargePattern').value!=SBISConstantsRef.IPD_SERVICE_CHARGE_PATTERN.FLAT">
+                <div class="col-lg-12 text-right">
+                  <!-- <button class="btn btn-primary" (click)="addVariableRateForm()" type="button">Add Rate</button> -->
+                  <button type="button" class="btn btn-secondary btn-sm add-row" id="addVariableRate"
+                    (click)="addVariableRateForm()">
+                    <i class="fas fa-plus-square"></i>&nbsp;{{'PRESCRIPTION.ADD_ROW_LINK'| translate}}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 text-center">
+              <button class="btn btn-secondary" (click)="showIpdServiceDetailsSection()" type="button">CANCEL</button>
+              <button class="btn btn-primary" (click)="attempToSaveIpdService()" type="button">SAVE</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

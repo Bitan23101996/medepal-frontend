@@ -1,0 +1,53 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+
+ <div class="row">
+    <div class="col-6">
+      <label>{{'DOCTOR_PROFILE.DOCTOR_PROFILE_HEADER_IMAGE' | translate}} </label>
+      <div class="profileBtnHolder" style="margin: 0">
+        <input type="file" accept="image/*" [hidden]="true" id="prescriptionHeaderPhoto" (change)="uploadHeader($event)">
+        <label for="prescriptionHeaderPhoto">
+          <i ngbTooltip="Upload Prescription Header" container="body" class="fas fa-camera"></i>
+        </label>
+      </div>
+      <img *ngIf="providerFileSource.PRESCRIPTION_HEADER !=''" [src]="domSanitizer.bypassSecurityTrustUrl(providerFileSource.PRESCRIPTION_HEADER)" width="300" height="50" alt="...">
+      <p *ngIf="(providerFileSource.PRESCRIPTION_HEADER =='' || providerFileSource.PRESCRIPTION_HEADER ==null)" class="float-left notSpecified">Not Specified</p>
+      <div class="table-action-btn delete cursor grey text-right custom-img-delete-style w300" width="300" *ngIf="providerFileSource.PRESCRIPTION_HEADER">
+        <img src="assets/image/delete.svg" height="20" alt="" ngbTooltip="Delete" (click)="resetDoctorSignatureHeaderFooterImage('header')">
+    </div> 
+  
+    </div>
+ </div>
+
+ <hr>
+
+ <div class="row">
+     <div class="col-6">
+       <label>{{'DOCTOR_PROFILE.DOCTOR_PROFILE_FOOTER_IMAGE' | translate}} </label>
+       <div class="profileBtnHolder" style="margin: 0">
+         <input type="file" accept="image/*" [hidden]="true" id="prescriptionFooterPhoto" (change)="uploadFooter($event)">
+         <label for="prescriptionFooterPhoto">
+           <i ngbTooltip="Upload Prescription Footer" container="body" class="fas fa-camera"></i>
+         </label>
+       </div>
+       <img *ngIf="providerFileSource.PRESCRIPTION_FOOTER !=''" [src]="domSanitizer.bypassSecurityTrustUrl(providerFileSource.PRESCRIPTION_FOOTER)" width="300" height="50" alt="...">
+       <p *ngIf="(providerFileSource.PRESCRIPTION_FOOTER =='' || providerFileSource.PRESCRIPTION_FOOTER ==null)" class="float-left notSpecified">Not Specified</p>
+       <div class="table-action-btn delete cursor grey text-right custom-img-delete-style w300" *ngIf="providerFileSource.PRESCRIPTION_FOOTER">
+       <img src="assets/image/delete.svg" height="20" alt="" ngbTooltip="Delete" (click)="resetDoctorSignatureHeaderFooterImage('footer')">
+     </div>
+     </div>
+   </div>

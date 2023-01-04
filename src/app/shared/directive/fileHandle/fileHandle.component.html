@@ -1,0 +1,129 @@
+<!-- <div *ngIf="!multiple">
+    <input type="text" placeholder="Text Name" [value]="singleFile.text" (change)="onChangeSingleFile($event)" (keyup)="onChangeSingleFile($event)">
+    <br>
+    <input type="file" id="{{fileId}}" (change)="selectSingleFile($event)" [hidden]="true">
+    <div *ngIf="singleFile.fileName !=''">
+        <label>{{singleFile.fileName}}</label> &nbsp;&nbsp;&nbsp;<span class="pointer" style="color:red" (click)="closeSingleFile()">close</span>
+    </div>
+    <label class="pointer" *ngIf="singleFile.fileName ==''" for="{{fileId}}" style="color:rgb(31, 177, 31)">upload</label>
+</div> -->
+
+<div *ngIf="multiple">
+    
+        <p-table [value]="multipleFil" class="documentUploadtable">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th class="text-left" width="10%">Document Type</th>
+                        <th class="text-left" width="15%">Document Number</th>
+                        <th class="text-left" width="10%">Print In Invoice</th>
+                        <th class="text-left" width="10%">Document File</th>
+                        <th class="text-left" width="5%"></th>
+                    </tr>             
+                </ng-template>
+                <ng-template pTemplate="body" let-item let-i="rowIndex">
+                <tr>
+                    <td class="text-left" width="10%">{{item.documentType}}</td>
+                    <td class="text-left" width="15%">
+                        <span *ngIf="item.editMode">{{item.documentNumber}}</span>
+                        <input *ngIf="!item.editMode" type="text"  class="form-control" [value]="item.documentNumber" (blur)="changeValue('documentNumber',item,$event)">
+                    </td>
+                    <td class="text-left" width="10%">
+                            <span *ngIf="item.editMode">{{item.printInInvoice==true?'Yes':'No'}}</span>
+                        <input type="checkbox" *ngIf="!item.editMode"   [checked]="item.printInInvoice" (blur)="changeValue('printInInvoice',item,$event)">
+                    </td>
+                    <td class="text-left" width="10%">
+                            <div class="row text-left">
+                                    <div class="col-md-9" *ngIf="item.fileName !=''"> {{item.fileName}}</div>
+                                    <div class="col-md-9" *ngIf="item.fileName ==''">{{item.fileName}}</div>
+                                    <input type="file" id="{{item.id}}" (change)="selectMultipleFile($event, item)" [hidden]="true">
+                                    <div class="col-md-3 float-right" *ngIf="!item.editMode">
+                                        <label *ngIf="item.fileName ==''" for="{{item.id}}" style="margin-bottom: -4px !important;"> <i class="fa fa-upload pointer"
+                                                aria-hidden="true"></i></label>
+                                        <label *ngIf="item.fileName !=''" style="margin-bottom: -4px !important;"><i class="fa fa-eraser pointer" aria-hidden="true" (click)="closeMultipleFile(item)"></i></label>
+                                    </div>
+                            </div>
+                    </td>
+                    <td class="text-left" width="5%">
+                        <span *ngIf="item.editMode" (click)="editDocument(item,i)"
+                            ngbTooltip="Edit" container="body" class="table-action-btn grey cursor">
+                            <img src="../../../../../assets/image/edit.svg" height="20" alt="">
+                        </span>
+                        <span *ngIf="(!item.editMode && item.fileName =='') || (!item.editMode && item.fileName !='')" ngbTooltip="Save Details" container="body"
+                        (click)="upload(item)" class="table-action-btn grey cursor">
+                            <img src="../../../../../assets/image/save.svg" height="25" alt="">
+                        </span>
+                        <span *ngIf="!item.editMode" ngbTooltip="Cancel" container="body"
+                                  (click)="cancelDocument(item,i)" class="table-action-btn grey cursor">
+                                  <img src="../../../../../assets/image/cancel.svg" height="20" alt="">
+                         </span>
+                    </td>
+                </tr>
+                </ng-template>
+        </p-table>
+    <div *ngIf="1==2">
+
+   
+    <div class="row" *ngFor="let item of multipleFil; let i=index;" style=" border-bottom: 0.5px dotted rgb(200, 200, 250);" >
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Document Description <span class="validation-error">*</span></label>
+                <input type="text" [disabled]="true" class="form-control" [value]="item.documentDescription" (change)="onChangeMultipleFile($event, item)"
+                    (keyup)="onChangeMultipleFile($event, item)" required disabled>
+            </div>
+        </div>
+        <div class="col-md-2">
+                <div class="form-group">
+                    <label>Document Type <span class="validation-error">*</span></label>
+                    <input type="text" [disabled]="true" class="form-control" [value]="item.documentType" required>
+                </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label>Document Number </label>
+                <input type="text"  class="form-control" [value]="item.documentNumber" (blur)="changeValue('documentNumber',item,$event)">
+            </div>
+        </div>
+
+        <div class="col-md-2 text-center">
+            <div class="form-group">
+                <label>Invoice Print</label>
+                <input type="checkbox"  class="form-control" [checked]="item.printInInvoice" (change)="changeValue('printInInvoice',item,$event)">
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label> Document File <span class="validation-error">*</span></label>
+                <div class="row">
+                    <div class="col-md-9" *ngIf="item.fileName !=''"> <input type="text" [disabled]="true" title="{{item.fileName}}" class="form-control" [value]="item.fileName" ></div>
+                    <div class="col-md-9" *ngIf="item.fileName ==''"><input type="text" [disabled]="true" class="form-control" [value]="'No File Uploaded'"></div>
+                    <input type="file" id="{{item.id}}" (change)="selectMultipleFile($event, item)" [hidden]="true">
+                    <div class="col-md-3 float-right">
+                        <label *ngIf="item.fileName ==''" for="{{item.id}}" style="margin-bottom: 0px !important;"> <i class="fa fa-upload pointer"
+                                aria-hidden="true"></i></label>
+                        <label *ngIf="item.fileName !=''" style="margin-bottom: 0px !important;"><i class="fa fa-eraser pointer" aria-hidden="true" (click)="closeMultipleFile(item)"></i></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <div class="float-right">
+                <div class="form-group">
+                    <label></label>
+                    <button type="button"  title="Upload" class="btn btn-primary btn-sm" (click)="upload(item)">Save</button>
+                </div>
+                <!-- <button class="btn btn-primary btn-sm" title="Clear" style="margin-left:5px;"> Clear</button> -->
+            </div>
+        </div>
+        <!-- <input type="text" placeholder="Text Name" [value]="item.text" (change)="onChangeMultipleFile($event, item)"
+            (keyup)="onChangeMultipleFile($event, item)">
+        <br>
+        <input type="file" id="{{item.id}}" (change)="selectMultipleFile($event, item)" [hidden]="true">
+        <div *ngIf="item.fileName !=''">
+            <label>{{item.fileName}}</label> &nbsp;&nbsp;&nbsp;<span class="pointer" style="color:red" (click)="closeMultipleFile(item)">close</span>
+        </div>
+        <label class="pointer" *ngIf="item.fileName ==''" for="{{item.id}}" style="color:rgb(31, 177, 31)">upload</label>
+        &nbsp;&nbsp;&nbsp; <span (click)="deleteMultipleFile(i)">Delete</span>
+        &nbsp;&nbsp;&nbsp; <span (click)="addMultipleFile()" *ngIf="i==multipleFil.length-1">Add</span> -->
+    </div>
+</div>
+</div>

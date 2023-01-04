@@ -1,0 +1,1100 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+<div class="row">
+
+  <div class="my-testreports-table col-md-12 page-content pt-0">
+    <div class="card min-height292px" *ngIf="allFetchData">
+      <div class="row">
+        <div class="col-md-7">
+          <h1 class="top-label">
+            <span>{{'ALLERGY_PROCEDURE_HISTORY.EXISTING_ALLERGY'| translate}} </span>
+          </h1>
+        </div>
+        <div class="col-md-5 text-right">
+          <button type="submit" class="btn btn-primary" [disabled]="allergyAddDisableFlag"
+            (click)="addAllergy()">{{'COMMON.ADD_BUTTON'| translate}}</button>
+        </div>
+      </div>
+      <hr>
+      <!--start display data-->
+      <form [formGroup]="form">
+        <div class="text-center not-found" *ngIf="(form.controls.allergy['controls'].length==0)">
+          <h3>{{'ALLERGY_PROCEDURE_HISTORY.ALLERGY_ERROR_MSG'| translate}}</h3>
+        </div>
+        <div class="filterPanel">
+          <div *ngIf="form.controls.allergy['controls'].length>0">
+            <div formArrayName="allergy" class="align-middle row">
+              <div class="col-lg-12">
+                <div class="overflow-x-hidden">
+                  <div class="content table-responsive for-medium search-result not-for-mobile">
+                    <table class="table table-fixed">
+                      <thead>
+                        <tr class="border-top-lightgrey">
+                          <th class="col-4 text-left alergy-procedure-thead-custom-style padding-left0" scope="col"
+                            nowrap>
+                            {{'ALLERGY_PROCEDURE_HISTORY.ALLERGY_TYPES'| translate}}
+                          </th>
+                          <th class="col-4 text-left alergy-procedure-thead-custom-style padding-left15px" scope="col"
+                            nowrap>
+                            {{'ALLERGY_PROCEDURE_HISTORY.ALLERGY_CAUSES'| translate}}
+                          </th>
+                          <th class="col-4 alergy-procedure-thead-custom-style padding-left0" scope="col" nowrap>&nbsp;
+                          </th>
+                        </tr>
+                      </thead>
+
+                      <tbody class="lifeStyleScrollHidden display-grid">
+                        <tr *ngFor="let ctrl of form.controls.allergy.controls; let i = index"
+                          class="border-bottom-lightgrey" [formGroupName]="i">
+                          <td class="col-4 text-left font-weight400 padding-left0" *ngIf="!ctrl.get('isEdit').value">
+                            <p class="textDot">{{ctrl.get('allergyType').value}}</p>
+                          </td>
+                          <td class="col-4 text-left font-weight400 padding-left0" *ngIf="ctrl.get('isEdit').value">
+                            <select formControlName="allergyType">
+                              <option *ngFor="let allergyTypeEl of allergyType" value="{{allergyTypeEl.displayValue}}">
+                                {{allergyTypeEl.displayValue}}
+                              </option>
+                            </select>
+                            <div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.allergyType.dirty">
+                              <span *ngIf="ctrl.hasError('required', 'allergyType')"
+                                class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                            </div>
+                          </td>
+                          <td class="col-4 text-left font-weight400" *ngIf="!ctrl.get('isEdit').value">
+                            <p class="textDot" data-toggle="tooltip" title="{{ctrl.get('causes').value}}">
+                              {{ctrl.get('causes').value}}
+                            </p>
+                          </td>
+                          <td class="col-4 text-left font-weight400" *ngIf="ctrl.get('isEdit').value">
+                            <input type="text" formControlName="causes" class="TypeOfJobInput" />
+                            <div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.causes.dirty">
+                              <span *ngIf="ctrl.hasError('required', 'causes')"
+                                class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                            </div>
+                          </td>
+                          <td class="col-4 text-right occupationActionTd" *ngIf="!ctrl.get('isEdit').value">
+                            <div class="row">
+                              <div class="col-8">
+                                <span *ngIf="isAddNewButtonDisable != true" (click)="editAllergy(ctrl)"
+                                  class="table-action-btn grey cursor"><img src="../../../../../assets/image/edit.svg"
+                                    height="20" alt=""></span>
+                                <span *ngIf="isAddNewButtonDisable == true" class="table-action-btn grey"><img
+                                    src="../../../../../assets/image/edit.svg" height="20" alt=""></span>
+                              </div>
+                              <div class="col-3">
+                                <span *ngIf="isAddNewButtonDisable != true" (click)="deleteAllergy(ctrl, i)"
+                                  class="table-action-btn grey cursor occupationDeleteIcon"><img
+                                    src="../../../../../assets/image/delete.svg" height="20" alt=""></span>
+                                <span *ngIf="isAddNewButtonDisable == true" class="table-action-btn grey"><img
+                                    src="../../../../../assets/image/delete.svg" height="20" alt=""></span>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="col-4 text-right occupationActionTd" *ngIf="ctrl.get('isEdit').value ">
+                            <div class="row">
+                              <div class="col-8">
+                                <span [hidden]="ctrl.get('userAllergyId').value==0" ngbTooltip="Cancel"
+                                  (click)="cancelAllergy(ctrl, i , 'edit')" class="table-action-btn grey cursor"><img
+                                    src="../../../../../assets/image/cancel.svg" height="20" alt=""></span>
+                                <span (click)="saveAllergy(ctrl)" class="table-action-btn grey cursor"><img
+                                    src="../../../../../assets/image/save.svg" height="25" alt=""></span>
+                              </div>
+                              <div class="col-3">
+                                <span [hidden]="ctrl.get('userAllergyId').value!==0"
+                                  (click)="cancelAllergy(ctrl, i, 'add')" class="table-action-btn grey cursor"><img
+                                    src="../../../../../assets/image/cancel.svg" height="20" alt=""></span>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="content table-responsive search-result for-very-small"
+                    [ngClass]="tableEdit ? 'editable-table' : ''">
+                    <p-table [value]="form.controls.allergy.controls"
+                      [paginator]="form.controls.allergy.controls.length>10" [rows]=10>
+                      <ng-template pTemplate="body" let-ctrl let-i="rowIndex">
+                        <tr [formGroupName]="i">
+                          <ng-container>
+                            <td class="mobile-table">
+                              <table>
+                                <tr>
+                                  <td class="small-header">{{'ALLERGY_PROCEDURE_HISTORY.ALLERGY_TYPES'| translate}}</td>
+                                  <td class="mb-0" *ngIf="!ctrl.get('isEdit').value">
+                                    <p class="textDot">{{ctrl.get('allergyType').value}}</p>
+                                  </td>
+                                  <td class="mb-0" *ngIf="ctrl.get('isEdit').value">
+                                    <select formControlName="allergyType">
+                                      <option *ngFor="let allergyTypeEl of allergyType"
+                                        value="{{allergyTypeEl.displayValue}}">
+                                        {{allergyTypeEl.displayValue}}
+                                      </option>
+                                    </select>
+                                    <div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.allergyType.dirty">
+                                      <span *ngIf="ctrl.hasError('required', 'allergyType')"
+                                        class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                    </div>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td class="small-header">{{'ALLERGY_PROCEDURE_HISTORY.ALLERGY_CAUSES'| translate}}
+                                  </td>
+                                  <td class="mb-0" *ngIf="!ctrl.get('isEdit').value">
+                                    <p class="textDot" data-toggle="tooltip" title="{{ctrl.get('causes').value}}">
+                                      {{ctrl.get('causes').value}}
+                                    </p>
+                                  </td>
+                                  <td class="mb-0" *ngIf="ctrl.get('isEdit').value">
+                                    <input type="text" formControlName="causes" class="TypeOfJobInput" />
+                                    <div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.causes.dirty">
+                                      <span *ngIf="ctrl.hasError('required', 'causes')"
+                                        class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                    </div>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td class="align-left"></td>
+                                  <td class="text-right mb-0" *ngIf="!ctrl.get('isEdit').value">
+                                    <div class="row">
+                                      <div class="col-8">
+                                        <span *ngIf="isAddNewButtonDisable != true" (click)="editAllergy(ctrl)"
+                                          class="table-action-btn grey cursor"><img
+                                            src="../../../../../assets/image/edit.svg" height="20" alt=""></span>
+                                        <span *ngIf="isAddNewButtonDisable == true" class="table-action-btn grey"><img
+                                            src="../../../../../assets/image/edit.svg" height="20" alt=""></span>
+                                      </div>
+                                      <div class="col-3 mr-1">
+                                        <span *ngIf="isAddNewButtonDisable != true" (click)="deleteAllergy(ctrl, i)"
+                                          class="table-action-btn grey cursor occupationDeleteIcon"><img
+                                            src="../../../../../assets/image/delete.svg" height="20" alt=""></span>
+                                        <span *ngIf="isAddNewButtonDisable == true" class="table-action-btn grey"><img
+                                            src="../../../../../assets/image/delete.svg" height="20" alt=""></span>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td class="text-right mb-0" *ngIf="ctrl.get('isEdit').value ">
+                                    <div class="row">
+                                      <div class="col-8">
+                                        <span [hidden]="ctrl.get('userAllergyId').value==0" ngbTooltip="Cancel"
+                                          (click)="cancelAllergy(ctrl, i , 'edit')"
+                                          class="table-action-btn grey cursor"><img
+                                            src="../../../../../assets/image/cancel.svg" height="20" alt=""></span>
+                                        <span [hidden]="ctrl.get('userAllergyId').value!==0"
+                                          (click)="cancelAllergy(ctrl, i, 'add')"
+                                          class="table-action-btn grey cursor"><img
+                                            src="../../../../../assets/image/cancel.svg" height="20" alt=""></span>
+                                      </div>
+                                      <div class="col-3 mr-1">
+                                        <span (click)="saveAllergy(ctrl)" class="table-action-btn grey cursor"><img
+                                            src="../../../../../assets/image/save.svg" height="25" alt=""></span>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </ng-container>
+                        </tr>
+                      </ng-template>
+                    </p-table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-lg-6 page-content my-testreports-table">
+        <div class="card min-height292px">
+          <div class="row">
+            <div class="col-md-7">
+              <h1 class="top-label">
+                <span>Family History</span>
+              </h1>
+            </div>
+            <div class="col-md-5 text-right">
+              <button [disabled]="isEditFamily" type="submit" class="btn btn-primary"
+                (click)="addFamilyHistory()">Add</button>
+            </div>
+          </div>
+          <hr>
+          <div class="filterPanel">
+            <div class="overflow-hidden">
+              <div class="text-center not-found" *ngIf="familyHistory.familyHistories.length==0">
+                <h3>{{'ALLERGY_PROCEDURE_HISTORY.FAMILY_ERROR_MSG'| translate}}</h3>
+              </div>
+              <div class="content table-responsive for-medium search-result not-for-mobile">
+                <p-table *ngIf="familyHistory.familyHistories.length>0" [value]="familyHistory.familyHistories"
+                  [paginator]="familyHistory.familyHistories.length>10" [rows]=10>
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th width="29%">Diseases</th>
+                      <th width="22%">Relation</th>
+                      <th class="text-center" width="18%">Year</th>
+                      <th width="15%" class="small-hide">Cured</th>
+                      <th class="small-hide"></th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-familyHistory let-ri="rowIndex">
+                    <tr>
+                      <td *ngIf="!familyHistory.isEdit">{{familyHistory.diseaseName}}</td>
+                      <td style="padding-top: 21px !important;" *ngIf="familyHistory.isEdit">
+                        <!-- <input type="text" [(ngModel)]="familyHistory.diseaseName"> -->
+                        <app-name preventType="all" (onNameChange)="changeName($event, 'familyHistoryDiseaseName', ri)"
+                          [(ngModel)]="familyHistory.diseaseName"></app-name>
+                      </td>
+                      <td *ngIf="!familyHistory.isEdit">{{familyHistory.relation}}</td>
+                      <td style="padding-top: 19px !important;" *ngIf="familyHistory.isEdit">
+                        <select class="width85px" [(ngModel)]="familyHistory.relation">
+                          <option *ngFor="let relation of relationList" value="{{relation.displayValue}}">
+                            {{relation.displayValue}}
+                          </option>
+                        </select>
+                      </td>
+                      <td class="text-center" *ngIf="!familyHistory.isEdit">{{familyHistory.diseaseYear}}</td>
+                      <td *ngIf="familyHistory.isEdit">
+                        <app-datepicker [minMode]="'year'" [maxDate]="maxDate" [dateInputFormat]="'yyyy'"
+                          [(ngModel)]="familyHistory.diseaseYear"
+                          (valueChange)="onSelectDateFamily($event,familyHistory)">
+                        </app-datepicker>
+                      </td>
+                      <td class="small-hide" style="padding-top: 18px !important;">
+                        <input class="margin-left13px" [disabled]="!familyHistory.isEdit" type="checkbox"
+                          [(ngModel)]="familyHistory.curedFlag">
+                      </td>
+                      <td class="small-hide">
+                        <span *ngIf="familyHistory.isEdit" (click)="cancelFamilyHistory(familyHistory, ri)"
+                          class="table-action-btn grey cursor"><img src="../../../../../assets/image/cancel.svg"
+                            height="20" alt=""></span>
+                        <span *ngIf="!familyHistory.isEditRow"><span *ngIf="!familyHistory.isEdit "
+                            class="table-action-btn grey cursor" (click)="editFamilyHistory(familyHistory, ri)"><img
+                              src="../../../../../assets/image/edit.svg" height="20" alt=""></span></span>
+                        <span *ngIf="familyHistory.isEdit" (click)="updateFamilyHistory(familyHistory)"
+                          class="table-action-btn grey cursor"><img src="../../../../../assets/image/save.svg"
+                            height="25" alt=""></span>
+                        <span *ngIf="!familyHistory.isEditRow"><span *ngIf="!familyHistory.isEdit"
+                            (click)="deleteFamilyHistory(familyHistory)"
+                            class="table-action-btn grey cursor occupationDeleteIcon"><img
+                              src="../../../../../assets/image/delete.svg" height="20" alt=""></span></span>
+                      </td>
+                    </tr>
+                    <tr class="small-show-1024-768">
+                      <td>
+                        <div class="small-header">Cured</div>
+                        <div class="align-top mt-2">
+                          <input class="margin-left13px" [disabled]="!familyHistory.isEdit" type="checkbox"
+                            [(ngModel)]="familyHistory.curedFlag">
+                        </div>
+                      </td>
+                      <td></td>
+                      <td>
+                        <div class="small-header min-height15px"></div>
+                        <div class="row">
+                          <div class="col-5">
+                            <span *ngIf="familyHistory.isEdit" (click)="cancelFamilyHistory(familyHistory, ri)"
+                              class="table-action-btn grey cursor"><img src="../../../../../assets/image/cancel.svg"
+                                height="20" alt=""></span>
+                            <span *ngIf="!familyHistory.isEditRow"><span *ngIf="!familyHistory.isEdit "
+                                class="table-action-btn grey cursor" (click)="editFamilyHistory(familyHistory, ri)"><img
+                                  src="../../../../../assets/image/edit.svg" height="20" alt=""></span></span>
+                          </div>
+                          <div class="col-7">
+                            <span *ngIf="familyHistory.isEdit" (click)="updateFamilyHistory(familyHistory)"
+                              class="table-action-btn grey cursor"><img src="../../../../../assets/image/save.svg"
+                                height="25" alt=""></span>
+                            <span *ngIf="!familyHistory.isEditRow"><span *ngIf="!familyHistory.isEdit"
+                                (click)="deleteFamilyHistory(familyHistory)"
+                                class="table-action-btn grey cursor occupationDeleteIcon"><img
+                                  src="../../../../../assets/image/delete.svg" height="20" alt=""></span></span>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="small-show">
+                      <td>
+                        <div class="small-header">Cured</div>
+                        <div class="align-top mt-2">
+                          <input class="margin-left13px" [disabled]="!familyHistory.isEdit" type="checkbox"
+                            [(ngModel)]="familyHistory.curedFlag">
+                        </div>
+                      </td>
+                      <td></td>
+                      <td>
+                        <div class="small-header min-height15px"></div>
+                        <div class="row">
+                          <div class="col-5">
+                            <span *ngIf="familyHistory.isEdit" (click)="cancelFamilyHistory(familyHistory, ri)"
+                              class="table-action-btn grey cursor"><img src="../../../../../assets/image/cancel.svg"
+                                height="20" alt=""></span>
+                            <span *ngIf="!familyHistory.isEditRow"><span *ngIf="!familyHistory.isEdit "
+                                class="table-action-btn grey cursor" (click)="editFamilyHistory(familyHistory, ri)"><img
+                                  src="../../../../../assets/image/edit.svg" height="20" alt=""></span></span>
+                          </div>
+                          <div class="col-7">
+                            <span *ngIf="familyHistory.isEdit" (click)="updateFamilyHistory(familyHistory)"
+                              class="table-action-btn grey cursor"><img src="../../../../../assets/image/save.svg"
+                                height="25" alt=""></span>
+                            <span *ngIf="!familyHistory.isEditRow"><span *ngIf="!familyHistory.isEdit"
+                                (click)="deleteFamilyHistory(familyHistory)"
+                                class="table-action-btn grey cursor occupationDeleteIcon"><img
+                                  src="../../../../../assets/image/delete.svg" height="20" alt=""></span></span>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="small-show-1024-768">
+                      <td class="show-border" colspan="3"></td>
+                    </tr>
+                    <tr class="small-show">
+                      <td class="show-border" colspan="3"></td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+              <div class="content table-responsive search-result for-very-small">
+                <p-table *ngIf="familyHistory.familyHistories.length>0" [value]="familyHistory.familyHistories"
+                  [paginator]="familyHistory.familyHistories.length>10" [rows]=10>
+                  <ng-template pTemplate="body" let-familyHistory let-ri="rowIndex">
+                    <tr>
+                      <ng-container>
+                        <td class="mobile-table">
+                          <table>
+                            <tr>
+                              <td class="small-header">Diseases</td>
+                              <td class="mb-0">
+                                <span *ngIf="!familyHistory.isEdit">{{familyHistory.diseaseName}}</span>
+                                <span *ngIf="familyHistory.isEdit">
+                                  <app-name preventType="all"
+                                    (onNameChange)="changeName($event, 'familyHistoryDiseaseName', ri)"
+                                    [(ngModel)]="familyHistory.diseaseName"></app-name>
+                                </span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="small-header">Relation</td>
+                              <td class="mb-0">
+                                <span *ngIf="!familyHistory.isEdit">{{familyHistory.relation}}</span>
+                                <span *ngIf="familyHistory.isEdit">
+                                  <select class="width85px" [(ngModel)]="familyHistory.relation">
+                                    <option *ngFor="let relation of relationList" value="{{relation.displayValue}}">
+                                      {{relation.displayValue}}
+                                    </option>
+                                  </select>
+                                </span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="small-header">Year</td>
+                              <td class="mb-0">
+                                <span *ngIf="!familyHistory.isEdit">{{familyHistory.diseaseYear}}</span>
+                                <span *ngIf="familyHistory.isEdit">
+                                  <app-datepicker [minMode]="'year'" [maxDate]="maxDate" [dateInputFormat]="'yyyy'"
+                                    [(ngModel)]="familyHistory.diseaseYear"
+                                    (valueChange)="onSelectDateFamily($event,familyHistory)">
+                                  </app-datepicker>
+                                </span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="small-header">Cured</td>
+                              <td class="mb-0">
+                                <span>
+                                  <input class="margin-left13px" [disabled]="!familyHistory.isEdit" type="checkbox"
+                                    [(ngModel)]="familyHistory.curedFlag">
+                                </span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="small-header"></td>
+                              <td class="mb-0">
+                                <div class="row text-right">
+                                  <div class="col-8">
+                                    <img *ngIf="familyHistory.isEdit" (click)="cancelFamilyHistory(familyHistory, ri)"
+                                      src="../../../../../assets/image/cancel.svg" height="16" alt="">
+                                    <img *ngIf="!familyHistory.isEditRow" (click)="editFamilyHistory(familyHistory, ri)"
+                                      src="../../../../../assets/image/edit.svg" height="16" alt="">
+                                  </div>
+                                  <div class="col-3 mr-1">
+                                    <img *ngIf="familyHistory.isEdit" (click)="updateFamilyHistory(familyHistory)"
+                                      src="../../../../../assets/image/save.svg" height="16" alt="">
+                                    <img *ngIf="!familyHistory.isEditRow" (click)="deleteFamilyHistory(familyHistory)"
+                                      src="../../../../../assets/image/delete.svg" height="16" alt="">
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </ng-container>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--end of div for Family history-->
+      <!--div for Current medicine-->
+      <div class="col-lg-6 page-content my-testreports-table">
+        <div class="card min-height292px">
+          <div class="row">
+            <div class="col-md-7">
+              <h1 class="top-label">
+                <span>Current Medicine</span>
+              </h1>
+            </div>
+            <div class="col-md-5 text-right">
+              <button [disabled]="isEditCurrentMedicine" type="submit" class="btn btn-primary"
+                (click)="addCurrentMedicine()">Add</button>
+            </div>
+          </div>
+          <hr>
+          <div class="filterPanel">
+            <div class="content overflow-hidden">
+              <div class="text-center not-found" *ngIf="currentMedicine.currentMedicinesArr.length==0">
+                <h3>{{'ALLERGY_PROCEDURE_HISTORY.CURRENT_MEDICINE_ERROR_MSG'| translate}}</h3>
+              </div>
+              <div class="content table-responsive for-medium search-result not-for-mobile">
+                <p-table *ngIf="currentMedicine.currentMedicinesArr.length>0"
+                  [value]="currentMedicine.currentMedicinesArr"
+                  [paginator]="currentMedicine.currentMedicinesArr.length>10" [rows]=10>
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th width="50%">Medicine Name</th>
+                      <th width="30%">Date</th>
+                      <th class="small-hide"></th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-currentMedicine let-ri="rowIndex">
+                    <tr>
+                      <td *ngIf="!currentMedicine.isEdit">{{currentMedicine.medicineName}}</td>
+                      <td style="padding-top: 21px !important;" *ngIf="currentMedicine.isEdit">
+                        <p-autoComplete styleClass="currentMedicineListAutoComplete" *ngIf="isEditAutoComplete"
+                          [style]="{'z-index': '1009'}" [field]="'isEditAutoComplete' ? '' : 'brandName'"
+                          [(ngModel)]="currentMedicine.medicineName" [suggestions]="results"
+                          (completeMethod)="search($event)" [size]="30" placeholder="Search for medicines"
+                          [minLength]="1">
+                          <ng-template let-resultEl pTemplate="item">
+                            <span class="display-inline-block width85"
+                              (click)="onClickMedAddByMedSearchDrpDwn(resultEl)">
+                              <span class="font-size11px font-weight500">{{resultEl.brandName}}</span><br>
+                              <span class="textDot font9px">Composition: {{resultEl.product_composition}}</span>
+                            </span>
+                          </ng-template>
+                        </p-autoComplete>
+                        <p-autoComplete styleClass="currentMedicineListAutoComplete" *ngIf="!isEditAutoComplete"
+                          [style]="{'z-index': '1009'}" [field]="'!isEditAutoComplete' ? 'brandName' : ''"
+                          [(ngModel)]="currentMedicine.medicineName" [suggestions]="results"
+                          (completeMethod)="search($event)" [size]="30" placeholder="Search for medicines"
+                          [minLength]="1">
+                          <ng-template let-resultEl pTemplate="item">
+                            <span class="display-inline-block width85"
+                              (click)="onClickMedAddByMedSearchDrpDwn(resultEl)">
+                              <span class="font-size11px font-weight500">{{resultEl.brandName}}</span><br>
+                              <span class="textDot font9px">Composition: {{resultEl.product_composition}}</span>
+                            </span>
+                          </ng-template>
+                        </p-autoComplete>
+                      </td>
+                      <td *ngIf="!currentMedicine.isEdit">{{currentMedicine.startDate | dateFormat}}</td>
+                      <td *ngIf="currentMedicine.isEdit">
+                        <app-datepicker [(ngModel)]="currentMedicine.startDate"
+                          (valueChange)="onSelectDateMedicine($event,currentMedicine)" position="top"
+                          [maxDate]="maxDate">
+                        </app-datepicker>
+                      </td>
+                      <td class="small-hide">
+                        <span *ngIf="currentMedicine.isEdit" (click)="cancelCurrentMedicine(currentMedicine, ri)"
+                          class="table-action-btn grey cursor"><img src="../../../../../assets/image/cancel.svg"
+                            height="20" alt=""></span>
+                        <span *ngIf="!currentMedicine.isEditRow"><span *ngIf="!currentMedicine.isEdit"
+                            class="table-action-btn grey cursor" (click)="editCurrentMedicine(currentMedicine, ri)"><img
+                              src="../../../../../assets/image/edit.svg" height="20" alt=""></span></span>
+                        <span *ngIf="currentMedicine.isEdit" (click)="updateCurrentMedicine(currentMedicine, ri)"
+                          class="table-action-btn grey cursor"><img src="../../../../../assets/image/save.svg"
+                            height="25" alt=""></span>
+                        <span *ngIf="!currentMedicine.isEditRow"><span *ngIf="!currentMedicine.isEdit"
+                            (click)="deleteCurrentMedicine(currentMedicine)"
+                            class="table-action-btn grey cursor occupationDeleteIcon"><img
+                              src="../../../../../assets/image/delete.svg" height="20" alt=""></span></span>
+                      </td>
+                    </tr>
+                    <tr class="small-show-1024-768">
+                      <td></td>
+                      <td>
+                        <div class="small-header min-height15px"></div>
+                        <div class="align-top mt-2">
+                          <div class="row">
+                            <div class="col-5 text-right">
+                              <span *ngIf="currentMedicine.isEdit" (click)="cancelCurrentMedicine(currentMedicine, ri)"
+                                class="table-action-btn grey cursor mr-3"><img
+                                  src="../../../../../assets/image/cancel.svg" height="20" alt=""></span>
+                              <span *ngIf="!currentMedicine.isEditRow"><span *ngIf="!currentMedicine.isEdit"
+                                  class="table-action-btn grey cursor mr-3"
+                                  (click)="editCurrentMedicine(currentMedicine, ri)"><img
+                                    src="../../../../../assets/image/edit.svg" height="20" alt=""></span></span>
+                            </div>
+                            <div class="col-4 text-right">
+                              <span *ngIf="currentMedicine.isEdit" (click)="updateCurrentMedicine(currentMedicine, ri)"
+                                class="table-action-btn grey cursor mr-3"><img
+                                  src="../../../../../assets/image/save.svg" height="25" alt=""></span>
+                              <span *ngIf="!currentMedicine.isEditRow"><span *ngIf="!currentMedicine.isEdit"
+                                  (click)="deleteCurrentMedicine(currentMedicine)"
+                                  class="table-action-btn grey cursor occupationDeleteIcon mr-3"><img
+                                    src="../../../../../assets/image/delete.svg" height="20" alt=""></span></span>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="small-show">
+                      <td></td>
+                      <td>
+                        <div class="small-header min-height15px"></div>
+                        <div class="align-top mt-2">
+                          <div class="row">
+                            <div class="col-8 text-right">
+                              <span *ngIf="currentMedicine.isEdit" (click)="cancelCurrentMedicine(currentMedicine, ri)"
+                                class="table-action-btn grey cursor"><img src="../../../../../assets/image/cancel.svg"
+                                  height="20" alt=""></span>
+                              <span *ngIf="!currentMedicine.isEditRow"><span *ngIf="!currentMedicine.isEdit"
+                                  class="table-action-btn grey cursor"
+                                  (click)="editCurrentMedicine(currentMedicine, ri)"><img
+                                    src="../../../../../assets/image/edit.svg" height="20" alt=""></span></span>
+                            </div>
+                            <div class="col-4 text-right">
+                              <span *ngIf="currentMedicine.isEdit" (click)="updateCurrentMedicine(currentMedicine, ri)"
+                                class="table-action-btn grey cursor"><img src="../../../../../assets/image/save.svg"
+                                  height="25" alt=""></span>
+                              <span *ngIf="!currentMedicine.isEditRow"><span *ngIf="!currentMedicine.isEdit"
+                                  (click)="deleteCurrentMedicine(currentMedicine)"
+                                  class="table-action-btn grey cursor occupationDeleteIcon"><img
+                                    src="../../../../../assets/image/delete.svg" height="20" alt=""></span></span>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="small-show">
+                      <td class="show-border" colspan="2"></td>
+                    </tr>
+                    <tr class="small-show-1024-768">
+                      <td class="show-border" colspan="2"></td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+              <div class="content table-responsive search-result for-very-small">
+                <p-table *ngIf="currentMedicine.currentMedicinesArr.length>0"
+                  [value]="currentMedicine.currentMedicinesArr"
+                  [paginator]="currentMedicine.currentMedicinesArr.length>10" [rows]=10>
+                  <ng-template pTemplate="body" let-currentMedicine let-ri="rowIndex">
+                    <tr>
+                      <ng-container>
+                        <td class="mobile-table">
+                          <table>
+                            <tr>
+                              <td class="small-header">Medicine Name</td>
+                              <td class="mb-0">
+                                <span *ngIf="!currentMedicine.isEdit">{{currentMedicine.medicineName}}</span>
+                                <span *ngIf="currentMedicine.isEdit">
+                                  <p-autoComplete styleClass="currentMedicineListAutoComplete"
+                                    *ngIf="isEditAutoComplete" [style]="{'z-index': '1009'}"
+                                    [field]="'isEditAutoComplete' ? '' : 'brandName'"
+                                    [(ngModel)]="currentMedicine.medicineName" [suggestions]="results"
+                                    (completeMethod)="search($event)" [size]="30" placeholder="Search for medicines"
+                                    [minLength]="1">
+                                    <ng-template let-resultEl pTemplate="item">
+                                      <span class="display-inline-block width85"
+                                        (click)="onClickMedAddByMedSearchDrpDwn(resultEl)">
+                                        <span class="font-size11px font-weight500">{{resultEl.brandName}}</span><br>
+                                        <span class="textDot font9px">Composition:
+                                          {{resultEl.product_composition}}</span>
+                                      </span>
+                                    </ng-template>
+                                  </p-autoComplete>
+                                  <p-autoComplete styleClass="currentMedicineListAutoComplete"
+                                    *ngIf="!isEditAutoComplete" [style]="{'z-index': '1009'}"
+                                    [field]="'!isEditAutoComplete' ? 'brandName' : ''"
+                                    [(ngModel)]="currentMedicine.medicineName" [suggestions]="results"
+                                    (completeMethod)="search($event)" [size]="30" placeholder="Search for medicines"
+                                    [minLength]="1">
+                                    <ng-template let-resultEl pTemplate="item">
+                                      <span class="display-inline-block width85"
+                                        (click)="onClickMedAddByMedSearchDrpDwn(resultEl)">
+                                        <span class="font-size11px font-weight500">{{resultEl.brandName}}</span><br>
+                                        <span class="textDot font9px">Composition:
+                                          {{resultEl.product_composition}}</span>
+                                      </span>
+                                    </ng-template>
+                                  </p-autoComplete>
+                                </span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="small-header">Date</td>
+                              <td class="mb-0">
+                                <span *ngIf="!currentMedicine.isEdit">{{currentMedicine.startDate | dateFormat}}</span>
+                                <span *ngIf="currentMedicine.isEdit">
+                                  <app-datepicker [(ngModel)]="currentMedicine.startDate"
+                                    (valueChange)="onSelectDateMedicine($event,currentMedicine)" position="top"
+                                    [maxDate]="maxDate">
+                                  </app-datepicker>
+                                </span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="small-header"></td>
+                              <td class="mb-0 text-right">
+                                <div class="row">
+                                  <div class="col-8">
+                                    <span *ngIf="currentMedicine.isEdit"
+                                      (click)="cancelCurrentMedicine(currentMedicine, ri)"
+                                      class="table-action-btn grey cursor"><img
+                                        src="../../../../../assets/image/cancel.svg" height="20" alt=""></span>
+                                    <span *ngIf="!currentMedicine.isEditRow"><span *ngIf="!currentMedicine.isEdit"
+                                        class="table-action-btn grey cursor"
+                                        (click)="editCurrentMedicine(currentMedicine, ri)"><img
+                                          src="../../../../../assets/image/edit.svg" height="20" alt=""></span></span>
+                                  </div>
+                                  <div class="col-3 mr-1">
+                                    <span *ngIf="currentMedicine.isEdit"
+                                      (click)="updateCurrentMedicine(currentMedicine, ri)"
+                                      class="table-action-btn grey cursor"><img
+                                        src="../../../../../assets/image/save.svg" height="25" alt=""></span>
+                                    <span *ngIf="!currentMedicine.isEditRow"><span *ngIf="!currentMedicine.isEdit"
+                                        (click)="deleteCurrentMedicine(currentMedicine)"
+                                        class="table-action-btn grey cursor occupationDeleteIcon"><img
+                                          src="../../../../../assets/image/delete.svg" height="20" alt=""></span></span>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </ng-container>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--end of div for Current medicine-->
+    </div>
+  </div>
+  <!--div for procedure history-->
+  <div class="col-md-12">
+    <div class="row">
+      <div class="my-testreports-table col-lg-6 page-content">
+        <div class="card min-height292px">
+          <div class="row">
+            <div class="col-md-7">
+              <h1 class="top-label">
+                <span>Surgery History</span>
+              </h1>
+            </div>
+            <div class="col-md-5 text-right">
+              <button [disabled]="isEditProcedure" type="submit" class="btn btn-primary"
+                (click)="addProcedure()">Add</button>
+            </div>
+          </div>
+          <hr>
+          <div class="filterPanel">
+            <div class="overflow-hidden">
+              <div class="text-center not-found" *ngIf="procedure.procedures.length==0">
+                <h3>{{'ALLERGY_PROCEDURE_HISTORY.PROCEDURE_ERROR_MSG'| translate}}</h3>
+              </div>
+              <div class="content table-responsive for-medium search-result not-for-mobile">
+                <p-table *ngIf="procedure.procedures.length>0" [value]="procedure.procedures"
+                  [paginator]="procedure.procedures.length>10" [rows]=10>
+                  <ng-template pTemplate="header">
+                    <tr>
+                     
+                      <th width="43%">SURGERY</th>
+                      <th width="35%">YEAR</th>
+                      <th width="15%" class="small-hide"></th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-procedure let-ri="rowIndex">
+                    <tr>
+                      <td *ngIf="!procedure.isEdit">{{procedure.procedureName}}</td>
+                      <td *ngIf="procedure.isEdit">
+                        <!-- <input type="text" placeholder="procedure name" [(ngModel)]="procedure.procedureName"> -->
+                        <app-name preventType="all" placeholder="procedure name"
+                          (onNameChange)="changeName($event, 'procedureName', ri)"
+                          [(ngModel)]="procedure.procedureName">
+                        </app-name>
+                      </td>
+                      <td *ngIf="!procedure.isEdit">{{procedure.procedureYear | date: 'yyyy'}}</td>
+                      <td *ngIf="procedure.isEdit">
+                        <app-datepicker [minDate]="minDate" [maxDate]="maxDate" [minMode]="'year'"
+                          [dateInputFormat]="'yyyy'" [(ngModel)]="procedure.procedureYear"
+                          (valueChange)="onSelectDateProcedure($event,procedure)">
+                        </app-datepicker>
+                      </td>
+                      <td class="small-hide">
+                        <span *ngIf="procedure.isEdit" ngbTooltip="Cancel" (click)="cancelProcedure(procedure, ri)"
+                          class="table-action-btn grey cursor"><img src="../../../../../assets/image/cancel.svg"
+                            height="20" alt=""></span>
+                        <span *ngIf="!procedure.isEdit" class="table-action-btn grey cursor"
+                          (click)="editProcedure(ri, procedure)"><img src="../../../../../assets/image/edit.svg"
+                            height="20" alt=""></span>
+                        <span *ngIf="procedure.isEdit" (click)="saveProcedureHistory(procedure)"
+                          class="table-action-btn grey cursor"><img src="../../../../../assets/image/save.svg"
+                            height="25" alt=""></span>
+                        <span *ngIf="!procedure.isEdit" (click)="deleteProcedureHistory(procedure)"
+                          class="table-action-btn grey cursor occupationDeleteIcon"><img
+                            src="../../../../../assets/image/delete.svg" height="20" alt=""></span>
+                      </td>
+                    </tr>
+                    <tr class="small-show">
+                      <td></td>
+                      <td>
+                        <div class="small-header"></div>
+                        <div class="align-top">
+                          <div class="row">
+                            <div class="col-8 text-right">
+                              <span *ngIf="procedure.isEdit" ngbTooltip="Cancel"
+                                (click)="cancelProcedure(procedure, ri)" class="table-action-btn grey cursor"><img
+                                  src="../../../../../assets/image/cancel.svg" height="20" alt=""></span>
+                              <span *ngIf="!procedure.isEdit" class="table-action-btn grey cursor"
+                                (click)="editProcedure(ri, procedure)"><img src="../../../../../assets/image/edit.svg"
+                                  height="20" alt=""></span>
+                            </div>
+                            <div class="col-4">
+                              <span *ngIf="procedure.isEdit" (click)="saveProcedureHistory(procedure)"
+                                class="table-action-btn grey cursor mr-3"><img src="../../../../../assets/image/save.svg"
+                                  height="25" alt=""></span>
+                              <span *ngIf="!procedure.isEdit" (click)="deleteProcedureHistory(procedure)"
+                                class="table-action-btn grey cursor occupationDeleteIcon mr-3"><img
+                                  src="../../../../../assets/image/delete.svg" height="20" alt=""></span>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="small-show-1024-768">
+                      <td></td>
+                      <td>
+                        <div class="small-header min-height15px"></div>
+                        <div class="align-top">
+                          <div class="row">
+                            <div class="col-5 text-right">
+                              <span *ngIf="procedure.isEdit" ngbTooltip="Cancel"
+                                (click)="cancelProcedure(procedure, ri)" class="table-action-btn grey cursor mr-3"><img
+                                  src="../../../../../assets/image/cancel.svg" height="20" alt=""></span>
+                              <span *ngIf="!procedure.isEdit" class="table-action-btn grey cursor mr-3"
+                                (click)="editProcedure(ri, procedure)"><img src="../../../../../assets/image/edit.svg"
+                                  height="20" alt=""></span>
+                            </div>
+                            <div class="col-4 text-right">
+                              <span *ngIf="procedure.isEdit" (click)="saveProcedureHistory(procedure)"
+                                class="table-action-btn grey cursor mr-3"><img
+                                  src="../../../../../assets/image/save.svg" height="25" alt=""></span>
+                              <span *ngIf="!procedure.isEdit" (click)="deleteProcedureHistory(procedure)"
+                                class="table-action-btn grey cursor occupationDeleteIcon mr-3"><img
+                                  src="../../../../../assets/image/delete.svg" height="20" alt=""></span>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="small-show">
+                      <td class="show-border" colspan="2"></td>
+                    </tr>
+                    <tr class="small-show-1024-768">
+                      <td class="show-border" colspan="2"></td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+              <div class="content table-responsive search-result for-very-small">
+                <p-table *ngIf="procedure.procedures.length>0" [value]="procedure.procedures"
+                  [paginator]="procedure.procedures.length>10" [rows]=10>
+                  <ng-template pTemplate="body" let-procedure let-ri="rowIndex">
+                    <tr>
+                      <ng-container>
+                        <td class="mobile-table">
+                          <table>
+                            <tr>
+                              <td class="small-header">SURGERY</td>
+                              <td class="mb-0">
+                                <span *ngIf="!procedure.isEdit">{{procedure.procedureName}}</span>
+                                <span *ngIf="procedure.isEdit">
+                                  <app-name preventType="all" placeholder="procedure name"
+                                    (onNameChange)="changeName($event, 'procedureName', ri)"
+                                    [(ngModel)]="procedure.procedureName">
+                                  </app-name>
+                                </span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="small-header">YEAR</td>
+                              <td class="mb-0">
+                                <span *ngIf="!procedure.isEdit">{{procedure.procedureYear | date: 'yyyy'}}</span>
+                                <span *ngIf="procedure.isEdit">
+                                  <app-datepicker [minDate]="minDate" [maxDate]="maxDate" [minMode]="'year'"
+                                    [dateInputFormat]="'yyyy'" [(ngModel)]="procedure.procedureYear"
+                                    (valueChange)="onSelectDateProcedure($event,procedure)">
+                                  </app-datepicker>
+                                </span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="small-header"></td>
+                              <td class="mb-0 text-right">
+                                <div class="row">
+                                  <div class="col-8">
+                                    <span *ngIf="procedure.isEdit" ngbTooltip="Cancel"
+                                      (click)="cancelProcedure(procedure, ri)" class="table-action-btn grey cursor"><img
+                                        src="../../../../../assets/image/cancel.svg" height="20" alt=""></span>
+                                    <span *ngIf="!procedure.isEdit" class="table-action-btn grey cursor"
+                                      (click)="editProcedure(ri, procedure)"><img
+                                        src="../../../../../assets/image/edit.svg" height="20" alt=""></span>
+                                  </div>
+                                  <div class="col-3 mr-1">
+                                    <span *ngIf="procedure.isEdit" (click)="saveProcedureHistory(procedure)"
+                                      class="table-action-btn grey cursor"><img
+                                        src="../../../../../assets/image/save.svg" height="25" alt=""></span>
+                                    <span *ngIf="!procedure.isEdit" (click)="deleteProcedureHistory(procedure)"
+                                      class="table-action-btn grey cursor occupationDeleteIcon"><img
+                                        src="../../../../../assets/image/delete.svg" height="20" alt=""></span>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </ng-container>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--div for Disease history-->
+      <div class="my-testreports-table col-lg-6 page-content">
+        <div class="card min-height292px">
+          <div class="row">
+            <div class="col-md-7">
+              <h1 class="top-label">
+                <span>Disease History</span>
+              </h1>
+            </div>
+            <div class="col-md-5 text-right">
+              <button [disabled]="isEditDisease" type="submit" class="btn btn-primary"
+                (click)="addDisease()">Add</button>
+            </div>
+          </div>
+          <hr>
+          <div class="filterPanel">
+            <div class="overflow-hidden">
+              <div class="text-center not-found" *ngIf="disease.diseases.length==0">
+                <h3>{{'ALLERGY_PROCEDURE_HISTORY.DISEASE_ERROR_MSG'| translate}}</h3>
+              </div>
+              <div class="content table-responsive for-medium search-result not-for-mobile">
+                <p-table *ngIf="disease.diseases.length>0" [value]="disease.diseases"
+                  [paginator]="disease.diseases.length>10" [rows]=10>
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th width="36%">Diseases</th>
+                      <th width="27%">Year</th>
+                      <th width="17%">Cured</th>
+                      <th class="small-hide"></th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-disease let-ri="rowIndex">
+                    <tr>
+                      <td *ngIf="!disease.isEdit">{{disease.diseaseName}}</td>
+                      <td *ngIf="disease.isEdit">
+                        <!-- <input type="text" placeholder="disease name" [(ngModel)]="disease.diseaseName"> -->
+                        <app-name preventType="all" placeholder="disease name"
+                          (onNameChange)="changeName($event, 'diseaseName', ri)" [(ngModel)]="disease.diseaseName">
+                        </app-name>
+                      </td>
+                      <td *ngIf="!disease.isEdit">{{disease.diseaseYear |date: 'yyyy'}}</td>
+                      <td *ngIf="disease.isEdit">
+                        <app-datepicker [minMode]="'year'" [maxDate]="maxDate" [minDate]="minDate"
+                          [dateInputFormat]="'yyyy'" [(ngModel)]="disease.diseaseYear"
+                          (valueChange)="onSelectDateDiseas($event,disease)">
+                        </app-datepicker>
+                        <!-- <input type="text"
+                                  class="form-control" 
+                                  value="{{ disease.diseaseYear | date: 'yyyy' }}"
+                                  [bsConfig]="bsConfig"
+                                  bsDatepicker [(bsValue)]="disease.diseaseYear"> -->
+                        <!-- <input type="number" maxlength="4" placeholder="disease year" [(ngModel)]="disease.diseaseYear"> -->
+                      </td>
+                      <td>
+                        <input [disabled]="!disease.isEdit" type="checkbox" [(ngModel)]="disease.cured">
+                      </td>
+                      <td class="small-hide">
+                        <span *ngIf="disease.isEdit" (click)="cancelDisease(disease, ri)"
+                          class="table-action-btn grey cursor"><img src="../../../../../assets/image/cancel.svg"
+                            height="20" alt=""></span>
+                        <span *ngIf="!disease.isEdit" class="table-action-btn grey cursor"
+                          (click)="editDisease(ri, disease)"><img src="../../../../../assets/image/edit.svg" height="20"
+                            alt=""></span>
+                        <span *ngIf="disease.isEdit" (click)="updateDiseaseHistory(disease)"
+                          class="table-action-btn grey cursor"><img src="../../../../../assets/image/save.svg"
+                            height="25" alt=""></span>
+                        <span *ngIf="!disease.isEdit" (click)="deleteDiseaseHistory(disease)"
+                          class="table-action-btn grey cursor occupationDeleteIcon"><img
+                            src="../../../../../assets/image/delete.svg" height="20" alt=""></span>
+                      </td>
+                    </tr>
+                    <tr class="small-show">
+                      <td></td>
+                      <td></td>
+                      <td>
+                        <div class="small-header min-height15px"></div>
+                        <div class="align-top">
+                          <div class="row">
+                            <div class="col-6 text-right">
+                              <span *ngIf="disease.isEdit" (click)="cancelDisease(disease, ri)"
+                                class="table-action-btn grey cursor"><img src="../../../../../assets/image/cancel.svg"
+                                  height="20" alt=""></span>
+                              <span *ngIf="!disease.isEdit" class="table-action-btn grey cursor"
+                                (click)="editDisease(ri, disease)"><img src="../../../../../assets/image/edit.svg"
+                                  height="20" alt=""></span>
+                            </div>
+                            <div class="col-3">
+                              <span *ngIf="disease.isEdit" (click)="updateDiseaseHistory(disease)"
+                                class="table-action-btn grey cursor"><img src="../../../../../assets/image/save.svg"
+                                  height="25" alt=""></span>
+                              <span *ngIf="!disease.isEdit" (click)="deleteDiseaseHistory(disease)"
+                                class="table-action-btn grey cursor occupationDeleteIcon"><img
+                                  src="../../../../../assets/image/delete.svg" height="20" alt=""></span>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="small-show-1024-768">
+                      <td></td>
+                      <td class="text-right">
+                        <span *ngIf="disease.isEdit" (click)="cancelDisease(disease, ri)"
+                          class="table-action-btn grey cursor margin-right79px"><img
+                            src="../../../../../assets/image/cancel.svg" height="20" alt=""></span>
+                        <span *ngIf="!disease.isEdit" class="table-action-btn grey cursor margin-right79px"
+                          (click)="editDisease(ri, disease)"><img src="../../../../../assets/image/edit.svg" height="20"
+                            alt=""></span>
+                      </td>
+                      <td>
+                        <span *ngIf="disease.isEdit" (click)="updateDiseaseHistory(disease)"
+                          class="table-action-btn grey cursor"><img src="../../../../../assets/image/save.svg"
+                            height="25" alt=""></span>
+                        <span *ngIf="!disease.isEdit" (click)="deleteDiseaseHistory(disease)"
+                          class="table-action-btn grey cursor occupationDeleteIcon"><img
+                            src="../../../../../assets/image/delete.svg" height="20" alt=""></span>
+                      </td>
+                    </tr>
+                    <tr class="small-show">
+                      <td class="show-border" colspan="3"></td>
+                    </tr>
+                    <tr class="small-show-1024-768">
+                      <td class="show-border" colspan="3"></td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+              <div class="content table-responsive search-result for-very-small">
+                <p-table *ngIf="disease.diseases.length>0" [value]="disease.diseases"
+                  [paginator]="disease.diseases.length>10" [rows]=10>
+                  <ng-template pTemplate="body" let-disease let-ri="rowIndex">
+                    <tr>
+                      <ng-container>
+                        <td class="mobile-table">
+                          <table>
+                            <tr>
+                              <td class="small-header">Diseases</td>
+                              <td class="mb-0">
+                                <span *ngIf="!disease.isEdit">{{disease.diseaseName}}</span>
+                                <span *ngIf="disease.isEdit">
+                                  <app-name preventType="all" placeholder="disease name"
+                                    (onNameChange)="changeName($event, 'diseaseName', ri)"
+                                    [(ngModel)]="disease.diseaseName">
+                                  </app-name>
+                                </span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="small-header">Year</td>
+                              <td class="mb-0">
+                                <span *ngIf="!disease.isEdit">{{disease.diseaseYear |date: 'yyyy'}}</span>
+                                <span *ngIf="disease.isEdit">
+                                  <app-datepicker [minMode]="'year'" [maxDate]="maxDate" [minDate]="minDate"
+                                    [dateInputFormat]="'yyyy'" [(ngModel)]="disease.diseaseYear"
+                                    (valueChange)="onSelectDateDiseas($event,disease)">
+                                  </app-datepicker>
+                                </span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="small-header">Cured</td>
+                              <td class="mb-0">
+                                <input [disabled]="!disease.isEdit" type="checkbox" [(ngModel)]="disease.cured">
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="small-header"></td>
+                              <td class="mb-0 text-right">
+                                <div class="row">
+                                  <div class="col-8">
+                                    <span *ngIf="disease.isEdit" (click)="cancelDisease(disease, ri)"
+                                      class="table-action-btn grey cursor"><img
+                                        src="../../../../../assets/image/cancel.svg" height="20" alt=""></span>
+                                    <span *ngIf="!disease.isEdit" class="table-action-btn grey cursor"
+                                      (click)="editDisease(ri, disease)"><img src="../../../../../assets/image/edit.svg"
+                                        height="20" alt=""></span>
+                                  </div>
+                                  <div class="col-3 mr-1">
+                                    <span *ngIf="disease.isEdit" (click)="updateDiseaseHistory(disease)"
+                                      class="table-action-btn grey cursor"><img
+                                        src="../../../../../assets/image/save.svg" height="25" alt=""></span>
+                                    <span *ngIf="!disease.isEdit" (click)="deleteDiseaseHistory(disease)"
+                                      class="table-action-btn grey cursor occupationDeleteIcon"><img
+                                        src="../../../../../assets/image/delete.svg" height="20" alt=""></span>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </ng-container>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--end of div Disease history-->
+    </div>
+    <!--end of div procedure history-->
+  </div>

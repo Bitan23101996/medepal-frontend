@@ -1,0 +1,56 @@
+agm-map {
+    height: 500px;
+}
+/* .diastolic-preview-label{
+    position: relative;
+    left: -65%;
+    top: 11px;
+}
+.diastolic-preview-label:before{
+    content: "/";
+    font-size: 20px;
+    font-weight: 500;
+    color: #ad4274;
+    margin-right: 15px;
+ } */
+ .sys-label{
+    float: left;
+ }
+
+ .diastolic-label:before{
+    content: "/";
+    font-size: 20px;
+    font-weight: 500;
+    color: #ad4274;
+    margin-right: 7px;
+ }
+
+ .sys-label.ng-star-inserted{
+    margin-bottom:0 !important;
+ }
+
+ .dias-label.ng-star-inserted{
+    margin-bottom:0 !important;
+ }
+ 
+ .dias-label{
+    /* float: right; */
+    right: -29px;
+    position: relative;
+    top: -32px;
+ }
+ .diastolic-label{
+    float: left;
+ }
+ .separator-label{
+    float: left;
+    margin-right: 6px;
+    font-size: 20px;
+    font-weight: 300;
+    color: #211d1d;
+    margin-top: -4px;
+ }
+ .generic{
+    font-style: italic;
+    font-size: smaller;
+}

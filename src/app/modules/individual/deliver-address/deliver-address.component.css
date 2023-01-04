@@ -1,0 +1,41 @@
+.selected-card{
+	background: #eeeeee;
+}
+
+.card-footer{
+	background: #fff;
+	padding-bottom:4px;
+}
+
+
+.not-possible{
+	display:none;
+}
+
+.disabledDeliverAddressCursor .possible{
+	display:none;
+}
+
+.disabledDeliverAddressCursor .not-possible{
+	display:block;
+	color:#c03356;
+	font-weight:400;
+	padding-bottom:12px;
+}
+
+.nomb.ng-star-inserted{
+	margin-bottom: 0 !important;
+}
+
+.editable .form-group{
+	margin-bottom:20px !important;
+}
+
+.tel .input-group{
+	margin-bottom:10px;
+}
+
+.edit.card-footer{
+	border-top:none;
+	padding-bottom:20px;
+}

@@ -1,0 +1,201 @@
+<div class="row top-btn-area">
+  <div class="col-lg-11"></div>
+  <div class="review-order-button pr-0 col-lg-1">
+    <button class="btn btn-primary" (click)="backOperation()">Back</button>
+  </div>
+</div>
+<div class="row page-content">
+  <div class="col-lg-8">
+    <div class="col-lg-12  pl-0 pr-0">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="float-left">Delivery Address</h5>
+          <div class="float-right"><button type="button" (click)="backOperation()" class="btn btn-secondary">Edit</button></div>
+        </div>
+        <div class="row card-body">
+          <div class="col-12">
+            <p>
+              {{delivarAddress.line1}} &nbsp; {{delivarAddress.line2}}
+            </p>
+            <p>
+              <span>{{delivarAddress.city}}</span>&nbsp;<span>{{delivarAddress.state}}</span>&nbsp;<span>{{delivarAddress.pinCode}}</span>
+            </p>
+            <p>{{delivarAddress.country}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 card mt-3">
+      <div class="card-header" style="border-bottom:none">
+        <h5>Order Summary</h5>
+      </div>
+      <div class="row">
+
+        <div class="col-12 small-size-hide med-list">
+          <div class="col-md-12">
+            <div class="row med-list-header padding10 ">
+              <div class="col-6">
+                <h6>{{'ORDER_MEDICINE.GRID_HEADER_MEDICINE_LEBEL_NAME' | translate}}</h6>
+              </div>
+              <!-- <div class="col-md-2 text-right">
+                        <h6>{{'ORDER_MEDICINE.GRID_HEADER_UNIT_PRICE_LEBEL_NAME' | translate}}</h6>
+                      </div> -->
+              <div class="col-3">
+                <h6>{{'ORDER_MEDICINE.GRID_HEADER_QUANTITY_LEBEL_NAME' | translate}}</h6>
+              </div>
+              <div class="col-3 text-right">
+                <h6 class="mr-2">{{'ORDER_MEDICINE.GRID_HEADER_TOTAL_PRICE_LEBEL_NAME' | translate}}</h6>
+              </div>
+            </div>
+          </div>
+          <!--Data-->
+          <div class="col-md-12" *ngFor="let orders of cartData">
+            <div *ngFor="let orderList of orders.cartItems; let i = index" style="margin-bottom:0px !important;">
+              <div class="row pt-2">
+                <div class="col-6">
+                  <div class="row margin-bottom-15px padding-left15px pl-0">
+                    <div class="col-10">
+                      <p><b>{{orderList.itemName}}</b></p>
+                    </div>
+                    <div class="col-2 pl-0">
+                      <label *ngIf="orderList.prescriptionRequired"
+                        title="prescription required"><i class="fas fa-file-medical"></i></label>
+                    </div>
+                  </div>
+                  <span title="by {{orderList.brandName}}">by {{orderList.brandName}}</span><br>
+                  <span>{{orderList.product_package}}</span>
+                </div>
+                <div class="col-3">
+                  <p>{{orderList.numUnits}}</p>
+                </div>
+                <div class="col-3  text-right">
+                  <p>{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{orderList.netAmount | number:'2.2-2'}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center pb-2">
+            <button class="btn btn-primary" (click)="placeOrder()">{{'ORDER_MEDICINE.PLACE_ORDER' | translate}}</button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 small-size-show review-medicine-list-scroll">
+          <div class="border">
+            <div class="col-12" *ngFor="let orders of cartData">
+              <div *ngFor="let orderList of orders.cartItems; let i = index" class="mt-2">
+                <div class="row">
+                  <div class="col-5">
+                    <h6 class="small-header mt-1">{{'ORDER_MEDICINE.GRID_HEADER_MEDICINE_LEBEL_NAME' | translate}}</h6>
+                  </div>
+                  <div class="col-7">
+                    <div class="row padding-left15px margin-bottom-14px">
+                      <div class="col-9 pl-0 pr-0">
+                        <p><b>{{orderList.itemName}}</b></p>
+                      </div>
+                      <div class="col-3">
+                        <label *ngIf="orderList.prescriptionRequired"
+                          title="prescription required"><i class="fas fa-file-medical"></i></label>
+                      </div>
+                    </div>
+                    <span title="by {{orderList.brandName}}">by {{orderList.brandName}}</span><br>
+                    <span>{{orderList.product_package}}</span>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-5">
+                    <h6 class="small-header mt-1">{{'ORDER_MEDICINE.GRID_HEADER_QUANTITY_LEBEL_NAME' | translate}}</h6>
+                  </div>
+                  <div class="col-7 text-right">
+                    <p class="mr-3">{{orderList.numUnits}}</p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-5">
+                    <h6 class="small-header mt-1">{{'ORDER_MEDICINE.GRID_HEADER_TOTAL_PRICE_LEBEL_NAME' | translate}}</h6>
+                  </div>
+                  <div class="col-7 text-right">
+                    <p>{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{orderList.netAmount | number:'2.2-2'}}</p>
+                  </div>
+                </div>
+                <hr class="mt-0 mb-0">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 mt-md-0 mt-4">
+    <div class="card green-card">
+      <div class="card-header">
+        <h5>Pricing details</h5>
+      </div>
+      <div class="row">
+        <div class="col-7">
+          <p class="">{{'ORDER_MEDICINE.SUBTOTAL_LEBEL_NAME' | translate}} ({{cardItemCount}}
+              {{'ORDER_MEDICINE.ITEM_LEBEL_NAME' | translate}}<ng-container *ngIf="cardItemCount>1">s</ng-container>):
+            </p>
+        </div>
+        <div class="col-5 padding-top4px-for-review-order">
+          <p class="float-right"><b>{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{totalAmount | number:'1.2-2'}}</b></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-8">
+          <p class="">{{'ORDER_MEDICINE.DELIVERY_CHARGE' | translate}}</p>
+        </div>
+        <div class="col-4 padding-top4px-for-review-order">
+          <p class="float-right">{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{deliveryCharge | number:'1.2-2'}}</p>
+        </div>
+      </div>
+      <div class="row" *ngIf="grandTotal > 0 && tax > 0">
+        <div class="col-8">
+          <p class="">{{'ORDER_MEDICINE.TAX' | translate}}</p>
+        </div>
+        <div class="col-4 padding-top4px-for-review-order">
+          <p class="float-right">{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{tax | number:'1.2-2'}}</p>
+        </div>
+      </div>
+      <div class="row no-mb" *ngIf="grandTotal > 0 && discount > 0">
+        <div class="col-8">
+          <p class="">{{'ORDER_MEDICINE.DISCOUNT' | translate}}</p>
+        </div>
+        <div class="col-4 padding-top4px-for-review-order">
+          <p class="float-right">{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{discount | number:'1.2-2'}}</p>
+        </div>
+      </div>
+
+      <div class="row top-border">
+        <div class="col-7">
+          <p class="grand-total">{{'ORDER_MEDICINE.GRAND_TOTAL' | translate}}</p>
+        </div>
+        <div class="col-5 padding-top4px-for-review-order">
+          <p class="float-right sub-total-heading"><b>{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{grandTotal | number:'1.2-2'}}</b></p>
+        </div>
+      </div>
+      <div class="text-center pb-2">
+        <button class="btn btn-primary" (click)="placeOrder()">{{'ORDER_MEDICINE.PLACE_ORDER' | translate}}</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<jw-modal id="paytm-popup">
+  <div class="method-container">
+    <h1 class="text-center">{{'SEARCH.SEARCH_PLEASE_DO_NOT_REFRESH_THIS_PAGE' | translate }}</h1>
+  </div>
+  <form #someVar method="post" action="{{ paytmRespObj.redirectUrl }}" name="f1">
+    <input type="hidden" name="MID" value="{{ paytmRespObj.MID }}">
+    <input type="hidden" name="WEBSITE" value="{{ paytmRespObj.website }}">
+    <input type="hidden" name="CHANNEL_ID" value="{{ paytmRespObj.channelid }}">
+    <input type="hidden" name="INDUSTRY_TYPE_ID" value="{{ paytmRespObj.industrytypeid }}">
+    <input type="hidden" name="ORDER_ID" value="{{ paytmRespObj.orderid }}">
+    <input type="hidden" name="CUST_ID" value="{{ paytmRespObj.custid }}">
+    <input type="hidden" name="TXN_AMOUNT" value="{{ paytmRespObj.txnamount }}">
+    <input type="hidden" name="CALLBACK_URL" value="{{ paytmRespObj.callbackurl }}">
+    <input type="hidden" name="CHECKSUMHASH" value="{{ paytmRespObj.checksumhash }}">
+  </form>
+</jw-modal>

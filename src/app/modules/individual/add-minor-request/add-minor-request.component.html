@@ -1,0 +1,216 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="row bt-style">
+      <div class="col-md-2">
+    </div>
+  <div class="row top-btn-area">
+    <div class="col-lg-12">
+        <button class="btn btn-secondary btn-sm"  (click)="goBack()" >{{'ADD_MINOR.ADD_MINOR_BACK' | translate}}
+        </button>&nbsp;&nbsp;
+      <button class="btn btn-primary btn-sm" type="submit"  (click)="saveMinorDetails();">{{'ADD_MINOR.ADD_MINOR_SAVE' | translate}}
+      </button>
+  </div>
+</div>
+</div>
+</div>
+  <div class="col-lg-12">
+    <form [formGroup]="addMinorCtrl" class="form-signin">
+      <!-- <div> -->
+        <div class="row page-content">
+          <!-- <div class="col-12"> -->
+            <!-- <div> -->
+               <!--NAME-->
+
+              <div class="col-10">
+
+                <div class="row">
+                  <div class="col-lg-2"><label class="control-label bt-style">{{'ADD_MINOR.ADD_MINOR_NAME' | translate}}</label></div>
+                  <div class="col-lg-6">
+                    <input type="text" class="form-control" formControlName="name" (keydown)="onKeydown($event)"
+                      name="name" />
+                      <span *ngIf="addMinorCtrl.get('isSubmit').value || addMinorCtrl.controls.name.dirty">
+                          <span *ngIf="addMinorCtrl.hasError('required', 'name')" class="validation-error">{{
+                              'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                          <span *ngIf="addMinorCtrl.hasError('minlength', 'name')" class="validation-error">{{
+                              'VALIDATION.VALIDATION_FIRST_NAME_NOT_LESS_THAN' | translate }}</span>
+                          <span *ngIf="addMinorCtrl.hasError('maxlength', 'name')" class="validation-error">{{
+                              'VALIDATION.VALIDATION_FIRST_NAME_NOT_MORE_THAN' | translate }}</span>
+                          <span *ngIf="addMinorCtrl.hasError('pattern', 'name')" class="validation-error">{{
+                              'VALIDATION.VALIDATION_ONLY_LETTER' | translate }}</span>
+                      </span>
+                  </div>
+
+                </div>
+              </div><br><br><br>
+
+
+              <!--DOB-->
+
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-2">
+                    <label class="control-label bt-style">{{'ADD_MINOR.ADD_MINOR_DOB' | translate}}</label>
+                  </div>
+                  <div class="col-4" >
+                  <app-datepicker class="dobSelect" formControlName="dateOfBirth" [maxDate]="maxDate" position="bottom"></app-datepicker>
+                    <span *ngIf="addMinorCtrl.get('isSubmit').value || addMinorCtrl.controls.dateOfBirth.dirty">
+                        <span *ngIf="addMinorCtrl.hasError('required', 'dateOfBirth')" class="validation-error">{{
+                            'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                    </span>
+                  </div>
+            <!--Gender-->
+                    <div class="col-4" ><label class="control-label bt-style gender_label"
+                      >{{'ADD_MINOR.ADD_MINOR_GENDER' | translate}}</label></div>
+                    <div class="col-2">
+                      <select formControlName="gender" class="gender_select">
+                          <option *ngFor="let gender of masterGender" [value]="gender.displayValue">{{gender.displayValue}}</option>
+                      </select>
+                      <!-- <span>
+                          <span *ngIf="addMinorCtrl.hasError('required', 'gender')" class="validation-error">{{
+                              'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                      </span> -->
+                  </div>
+
+                </div>
+              </div><br><br><br>
+
+              <!--CONTACT NO-->
+
+              <div class="col-10">
+
+                <div class="row">
+                  <div class="col-2"><label class="control-label bt-style">{{'ADD_MINOR.ADD_MINOR_CONTACT_NO' | translate}}</label></div>
+                  <div class="col-8"> <int-phone-prefix [locale]="'IN'" [defaultCountry]="'in'" (change)="checkContactNumber(addMinorCtrl.value.contactNo)" formControlName="contactNo"></int-phone-prefix></div>
+
+                </div>
+              </div><br><br><br>
+
+              <!--EMAIL.ID-->
+
+              <div class="col-10">
+
+                <div class="row">
+                  <div class="col-md-2"><label class="control-label bt-style">{{'ADD_MINOR.ADD_MINOR_EMAIL_ID' | translate}}</label></div>
+                  <div class="col-lg-6"><input type="email" class="form-control" formControlName="emailAddress" (change)="checkUserName(addMinorCtrl.value.emailAddress)" /></div>
+
+                </div>
+              </div><br><br><br>
+
+              <!--RELATIONSHIP-->
+
+              <div class="col-12">
+
+                <div class="row">
+                  <div class="col-md-2"><label class="control-label bt-style">{{'ADD_MINOR.ADD_MINOR_RELATIONSHIP' | translate}} &nbsp;</label></div>
+                  <div class="col-lg-8" style="    margin-left: -35px;
+                  ">
+                    <select formControlName="relationship" class="widthSelectIm">
+                      <option *ngFor="let relation of relationshipArr" class="cursor" [value]="relation">{{relation}}</option>
+                    </select>
+<!--                     
+                   <span>
+                        <span *ngIf="addMinorCtrl.hasError('required', 'relationship')" class="validation-error">{{
+                            'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                    </span> -->
+                  </div>
+
+                </div>
+              </div><br><br><br>
+              
+                <!--BLOOD GROUP-->
+
+                <div class="col-12">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <label class="userKey">{{'ADD_MINOR.ADD_MINOR_BLOOD_GROUP' | translate}}
+                        </label>
+                      </div>
+                      <div class="col-lg-8" style="    margin-left: -35px;
+                      ">
+                                <select class="bg_select" formControlName="bloodGroup">
+                                    <option *ngFor="let bloodgp of masterBloodGroup" [value]="bloodgp.displayValue">{{bloodgp.displayValue}}</option>
+                                </select>
+                                <span>
+                                    <!-- <span *ngIf="addMinorCtrl.hasError('required', 'bloodGroup')" class="validation-error">{{
+                                        'VALIDATION.VALIDATION_REQUIRED' | translate }}</span> -->
+                                </span>
+                      </div>
+    
+                    </div>
+                  </div><br><br><br>
+                  <div class="col-12">
+                      <div class="row">
+                          <div class="col-md-4">
+                              <label class="userKey">{{'ADD_MINOR.ADD_MINOR_ASSOICIATE_GUARDIAN_DETAILS' | translate}}
+                              </label>
+                          </div>
+                          <div class="col-8">
+                            <label><i class="fa fa-plus cursor" (click)="createSearchInputField()"></i></label>
+                          </div>
+                        </div>
+                  </div><br><br><br>  
+            <!-- </div> -->
+          <!-- </div> -->
+        </div>
+      <!-- </div> -->
+    </form>
+    <div class="row">  
+    <div class="col-12 margin-left-15px">
+     <div *ngFor="let guardianDetail of minorGuardianDetails.newGuardianArr; let i=index;">
+         <!-- <div [formGroupName]="i"> -->
+           <div class="col-12">
+             <div class="row">  
+                 <div class="col-sm-3">  
+                    <label class="control-label bt-style">{{'ADD_MINOR.ADD_MINOR_NAME' | translate}}</label>
+                     <input [disabled]="guardianDetail.isEdit" type="text" class="form-control" placeholder="name" (focusout)="addEAddress()" [(ngModel)]="guardianDetail.gName">
+                 </div>  
+                 <div class="col-sm-4">
+                     <label class="control-label bt-style">{{'ADD_MINOR.ADD_MINOR_EMAIL_ID' | translate}}</label>
+                     <input [disabled]="guardianDetail.isEdit" type="text" placeholder="email" class="form-control"(focusout)="addEAddress()" [(ngModel)]="guardianDetail.gEmail">  
+                 </div> 
+                 <div class="col-sm-3">  
+                     <label class="control-label bt-style">{{'ADD_MINOR.ADD_MINOR_CONTACT_NO' | translate}}</label>
+                     <int-phone-prefix [disabled]="guardianDetail.isEdit" [locale]="'IN'" [defaultCountry]="'in'" (focusout)="addEAddress()"  [(ngModel)]="guardianDetail.gContact"></int-phone-prefix>
+                     <!-- <input type="text" placeholder="mobile" class="form-control" (focusout)="eAddressGetData()"formControlName="gmobile">   -->
+                 </div>
+                 <!-- <div class="col-sm-2">
+                  <label class="control-label bt-style" style="    margin-left: 25px;
+                  ">I am &nbsp;</label>
+                  <select style="margin-left: 25px;
+                  width: 119px;" [(ngModel)]="guardianRelation">
+                    <option *ngFor="let relation of relationshipArr" class="cursor">{{relation}}</option>
+                  </select>
+                 </div> -->
+                  <div class="col-sm-2 addBtn">
+                    <label><i class="fa fa-trash cursor" (click)="deleteGuardianList(guardianDetail)"></i></label>
+                  </div>
+                
+                
+             </div>  
+           </div>
+             <br>  
+             
+         <!-- </div>   -->
+     </div>  
+   </div>
+ </div>
+  </div>
+ 
+  
+</div>

@@ -1,0 +1,910 @@
+<section class="pageMainContin">
+  <div *ngIf="loading" class="cover">
+    <div class="loader">
+      <div class="loading-img"><img width=250px src="../../../../../assets/image/logo.svg" /></div>
+      <div class="loading-txt">Loading<div class="dot-elastic"></div>
+      </div>
+    </div>
+  </div>
+  <div class="row page-content" *ngIf="allDataFetched">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="header cardHeader ">
+          <div class="row">
+            <div class="col-12 col-sm-6">
+              <h1>{{ headingToDisplay | translate}}</h1>
+            </div>
+            <div class="col-12 col-sm-6 page-header-link">
+
+
+              <div class="col-12 text-right">
+                <span *ngFor="let headingData of headingsArray">
+                  <a href="javascript:void(0)" id="mem-myself" (click)="onClickSecondHeader(headingData.appointmentFor)"
+                    *ngIf="headingData.appointmentFor != appointmentFor">
+                    <ng-container *ngIf="headingData.appointmentFor != appointmentFor">
+                      {{ headingData.headingLabel | translate}}</ng-container>
+                  </a>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center not-found" *ngIf="appoinmentList.length == 0">
+          <h3>{{"APPOINTMENT.APPOINTMENT_NO_APPOINMENT" | translate }}</h3>
+        </div>
+        <div *ngIf="appoinmentList != 0">
+
+          <div class="content appointment-margin table-responsive for-medium search-result not-for-mobile">
+            <div class="page-heading-info appointment" *ngIf="!memberMyselfButton">
+              <h2> Displaying your doctor appointments</h2>
+            </div>
+            <p-table [value]="appoinmentList" [paginator]="appoinmentList.length > 15" [rows]=15>
+              <ng-template pTemplate="header">
+                <tr>
+                  <th style="width: 11%;" scope="col">{{"APPOINTMENT.APPOINTMENT_FOR" | translate }}</th>
+                  <th style="width: 11%;">{{"APPOINTMENT.APPOINTMENT_DOCTOR_NAME" | translate }}</th>
+                  <th style="width: 14%;">{{"APPOINTMENT.APPOINTMENT_DATE" | translate}}</th>
+                  <!-- <th>{{"APPOINTMENT.APPOINTMENT_TIME" | translate }}</th> -->
+                  <th style="width: 14%;" scope="col">{{"APPOINTMENT.APPOINTMENT_CHAMBER_NAME" | translate}}</th>
+                  <th style="width: 9%;" scope="col" class="small-hide">
+                    {{"APPOINTMENT.APPOINTMENT_PAYMENT_STATUS" | translate}}</th>
+                  <th style="width: 7%;" scope="col" class="small-hide">
+                    {{"APPOINTMENT.APPOINTMENT_STATUS" | translate }}</th>
+                  <!-- sbis-poc/app/issues/594-->
+                  <th style="width: 2%;" class="text-center small-hide" scope="col"></th>
+                  <!-- <th scope="col" class="small-hide" style="width:5%"></th> -->
+                  <th scope="col" style="width: 23%" class="small-hide"></th>
+                  <!-- <th scope="col" class="small-hide"></th> -->
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-appoinment>
+                <ng-container>
+                  <tr *ngIf="!memberMyselfButton"
+                    [style.background-color]="appoinment.isDoctorOnline != undefined ? '#f4fff5': none">
+                    <td class="align-top"><span class="textDot"
+                        title="{{appoinment.userName}}">{{appoinment.userName}}</span>
+                    </td>
+                    <td class="align-top"><span class="textDot"
+                        title="{{appoinment.doctorName}}">{{appoinment.doctorName}}</span>
+                      <div *ngIf="appoinment.isDoctorOnline != undefined"
+                        class="custom-online-circle-div-for-display-online">
+                        <div class="online-consultation-circle-div"></div>
+                        <div class="online-consultation-text-div">Online</div>
+                      </div>
+                    </td>
+                    <td class="align-top">{{appoinment.appointmentDate | dateFormat}},
+                      {{appoinment.appointmentTime | slice:0:5}}</td>
+                    <!-- <td class="align-top">{{appoinment.appointmentTime | slice:0:5}}</td> -->
+                    <td class="align-top">
+                      <span class="textDot" title="{{appoinment.chamberName}}">{{appoinment.chamberName}}</span>
+                      <div
+                        *ngIf="(appoinment.opdType=='L' || appoinment.onlineConsultation == 'Y') && appoinment.isDoctorOnline == undefined"
+                        class="online-consultation-outside-div">
+                        <div class="online-consultation-text-div" title="Online Consultation">Online Consultation</div>
+                      </div>
+                    </td>
+                    <td class="align-top small-hide">
+                      <!-- {{appoinment.paymentStatus}} -->
+                      <div>
+                        <b>Paid:</b> {{'SEARCH.SEARCH_INR_SIGN' | translate }} {{appoinment.paidAmount}}
+                      </div>
+                      <div>
+                        <b>Due:</b> {{'SEARCH.SEARCH_INR_SIGN' | translate }} <span
+                          *ngIf="appoinment.due >= 0">{{appoinment.due}}</span> <span
+                          *ngIf="appoinment.due < 0">0</span>
+                      </div>
+                    </td>
+                    <td class="align-top small-hide">
+                      <span class="badge badge-secondary" *ngIf="appoinment.appointmentState == 'REQ'"><span
+                          class="font-size14px">{{"APPOINTMENT.APPOINTMENT_REQUESTED" | translate}}</span></span>
+                      <span *ngIf="appoinment.appointmentState == 'CXL'" class="badge badge-danger"><span
+                          class="font-size14px">{{"APPOINTMENT.APPOINTMENT_CANCELLED" | translate}}</span></span>
+                      <span *ngIf="appoinment.appointmentState == 'CON'" class="badge badge-confirmed"><span
+                          class="font-size14px">{{"APPOINTMENT.APPOINTMENT_CONFIRMED" | translate}}</span></span>
+                      <span *ngIf="appoinment.appointmentState == 'COM'" class="badge badge-success">
+                        <span class="font-size14px">{{"APPOINTMENT.APPOINTMENT_COMPLETED" | translate}}</span></span>
+                      <span *ngIf="appoinment.appointmentState == 'REJ'" class="badge badge-danger">
+                        <span class="font-size14px">{{"APPOINTMENT.APPOINTMENT_REJECTED" | translate}}</span></span>
+                      <span *ngIf="appoinment.appointmentState == 'VIP'" class="badge badge-primary">
+                        <span class="font-size14px">{{"APPOINTMENT.APPOINTMENT_IN_PROGRESS" | translate}}</span></span>
+                      <span *ngIf=" appoinment.appointmentState === 'NSH'" class="badge badge-noShow">
+                        <span class="font-size14px">No Show</span></span>
+
+                      <!-- message style 2--><img *ngIf="appoinment.appointmentState == 'REQ'"
+                        class="cursor requested-icon" src="../../../../assets/image/information.svg" height="13"
+                        [ngbPopover]="apptreq" triggers="mouseenter:mouseleave" container="body"
+                        popoverClass="popover-info" /><!-- message style 2-->
+                    </td>
+                    <!-- sbis-poc/app/issues/594-->
+                    <td class="text-center cursor small-hide my-appointment-prescription-td">
+                      <span *ngIf="appoinment.appointmentState == 'COM'" title="Prescription"
+                        (click)="goToDoctorPres(appoinment.appointmentRefNo)">
+                        <!-- {{"APPOINTMENT.APPOINTMENT_PRESCRIPTION" | translate}} -->
+                        <img src="../../../assets/image/prescription.svg" height="20">
+                      </span>
+                    </td>
+                    <td class="small-hide multi-btn-w-divider">
+                      <button type="button" class="btn btn-secondary cursor"
+                        (click)="openAppointmentDetails(appoinment)">Details</button>
+                      <button class="btn btn-secondary cursor" *ngIf="appoinment.appointmentState == 'CON' || 
+                  appoinment.appointmentState == 'REQ'"
+                        (click)="openProblemNarration(appoinment, appoinment.userName, appoinment.doctorName);">SPECIFY
+                        symptom</button>
+                      <button *ngIf="appoinment.appointmentState =='COM'" class="btn btn-secondary cursor"
+                        (click)="giveRating(appoinment);op.toggle($event)">Rate</button>
+                      <button
+                        *ngIf="appoinment.appointmentState != 'CXL' && appoinment.appointmentState != 'COM' && appoinment.appointmentState != 'REJ' && appoinment.appointmentState != 'VIP'  && appoinment.editPermission==true && appoinment.viewPermission==true"
+                        type="button" (click)="deleteAppoinment(appoinment)"
+                        class="btn btn-secondary cursor">CANCEL</button>
+                      <button
+                        *ngIf="(appoinment.outstandingAmount > 0 && appoinment.appointmentState != 'CXL') && ((appoinment.onlineConsultation == 'Y' || appoinment.opdType == 'L') || appoinment.appointmentState == 'CON')"
+                        class="btn btn-secondary cursor" type="button" (click)="payOrder(appoinment)">Pay Now</button>
+
+                      <button
+                        *ngIf="appoinment.appointmentState == 'COM' || appoinment.appointmentState == 'REJ' || appoinment.appointmentState == 'CXL'"
+                        (click)="openBookAppoinment(appoinment)" class="btn btn-secondary cursor">Re Book</button>
+
+                      <!--Working on app/issues/600 - Video Chat-->
+                      <img
+                        *ngIf="(appoinment.opdType=='L' || appoinment.onlineConsultation == 'Y') &&
+                        appoinment.appointmentState != 'CXL' && appoinment.appointmentState != 'COM' && appoinment.appointmentState != 'REJ'"
+                        class="cursor" ngbTooltip="Click for Online Consultation" container="body"
+                        (click)="onChatClick(appoinment)"
+                        [src]="appoinment.isDoctorOnline == undefined ? '../../../../../assets/image/video-call.svg': '../../../../../assets/image/communications.svg'"
+                        height="25">
+                      <!--  end of working on app/issues/600-->
+                    </td>
+                  </tr>
+                  <!--For Member's Appointment-->
+                  <tr *ngIf="memberMyselfButton"
+                    [style.background-color]="appoinment.isDoctorOnline != undefined ? '#f4fff5': none">
+                    <td class="align-top"><span class="textDot"
+                        title="{{appoinment.userName}}">{{appoinment.userName}}</span>
+                    </td>
+                    <td class="align-top"><span class="textDot"
+                        title="{{appoinment.doctorName}}">{{appoinment.doctorName}}</span>
+                      <div *ngIf="appoinment.isDoctorOnline != undefined"
+                        class="custom-online-circle-div-for-display-online">
+                        <div class="online-consultation-circle-div"></div>
+                        <div class="online-consultation-text-div">Online</div>
+                      </div>
+                    </td>
+                    <td class="align-top">{{appoinment.appointmentDate | dateFormat}},
+                      {{appoinment.appointmentTime | slice:0:5}}</td>
+                    <!-- <td class="align-top">{{appoinment.appointmentTime | slice:0:5}}</td> -->
+                    <td class="align-top">
+                      <span class="textDot" title="{{appoinment.chamberName}}">{{appoinment.chamberName}}</span>
+                      <div
+                        *ngIf="(appoinment.opdType=='L' || appoinment.onlineConsultation == 'Y') && appoinment.isDoctorOnline == undefined"
+                        class="online-consultation-outside-div">
+                        <div class="online-consultation-text-div" title="Online Consultation">Online Consultation</div>
+                      </div>
+                    </td>
+                    <td class="align-top small-hide">
+                      <!-- {{appoinment.paymentStatus}} -->
+                      <div>
+                        <b>Paid:</b> {{'SEARCH.SEARCH_INR_SIGN' | translate }} {{appoinment.paidAmount}}
+                      </div>
+                      <div>
+                        <b>Due:</b> {{'SEARCH.SEARCH_INR_SIGN' | translate }} <span
+                          *ngIf="appoinment.due >= 0">{{appoinment.due}}</span> <span
+                          *ngIf="appoinment.due < 0">0</span>
+                      </div>
+                    </td>
+                    <td class="align-top small-hide">
+                      <span class="badge badge-secondary" *ngIf="appoinment.appointmentState == 'REQ'"><span
+                          class="font-size14px">{{"APPOINTMENT.APPOINTMENT_REQUESTED" | translate}}</span></span>
+                      <span class="badge badge-danger" *ngIf="appoinment.appointmentState == 'CXL'"><span
+                          class="font-size14px">{{"APPOINTMENT.APPOINTMENT_CANCELLED" | translate}}</span></span>
+                      <span class="badge badge-confirmed" *ngIf="appoinment.appointmentState == 'CON'"><span
+                          class="font-size14px">{{"APPOINTMENT.APPOINTMENT_CONFIRMED" | translate}}</span></span>
+                      <span class="badge badge-success" *ngIf="appoinment.appointmentState == 'COM'"><span
+                          class="font-size14px">{{"APPOINTMENT.APPOINTMENT_COMPLETED" | translate}}</span></span>
+                      <span class="badge badge-danger" *ngIf="appoinment.appointmentState == 'REJ'"><span
+                          class="font-size14px">{{"APPOINTMENT.APPOINTMENT_REJECTED" | translate}}</span></span>
+                      <span class="badge badge-primary" *ngIf="appoinment.appointmentState == 'VIP'"><span
+                          class="font-size14px">{{"APPOINTMENT.APPOINTMENT_IN_PROGRESS" | translate}}</span></span>
+
+                      <span *ngIf=" appoinment.appointmentState === 'NSH'" class="badge badge-noShow">
+                        <span class="font-size14px">No Show</span></span>
+                      <!-- message style 2--><img *ngIf="appoinment.appointmentState == 'REQ'"
+                        class="cursor requested-icon" src="../../../../assets/image/information.svg" height="13"
+                        [ngbPopover]="apptreq" triggers="mouseenter:mouseleave" container="body"
+                        popoverClass="popover-info" /><!-- message style 2-->
+                    </td>
+                    <td class="align-top small-hide"
+                      *ngIf="appoinment.appointmentState == '' || appoinment.appointmentState == null">
+                      <span class="status-cancel">{{"APPOINTMENT.APPOINTMENT_NULL" | translate}}
+                      </span>
+                    </td>
+                    <!-- sbis-poc/app/issues/594-->
+                    <td class="text-center cursor small-hide my-appointment-prescription-td">
+                      <span *ngIf="appoinment.appointmentState == 'COM'" title="Prescription"
+                        (click)="goToDoctorPres(appoinment.appointmentRefNo)">
+                        <!-- {{"APPOINTMENT.APPOINTMENT_PRESCRIPTION" | translate}} -->
+                        <img src="../../../assets/image/prescription.svg" height="20">
+                      </span>
+                    </td>
+                    <td class="small-hide multi-btn-w-divider">
+                      <button type="button" class="btn btn-secondary cursor"
+                        (click)="openAppointmentDetails(appoinment)">Details</button>
+                      <button type="button" class="btn btn-secondary cursor" *ngIf="appoinment.appointmentState == 'CON' || 
+                    appoinment.appointmentState == 'REQ'" (click)="openProblemNarration(appoinment);">SPECIFY
+                        symptom</button>
+                      <button type="button" (click)="op.toggle($event); giveRating(appoinment)"
+                        [disabled]="appoinment.appointmentState !='COM'"
+                        class="btn btn-secondary cursor">{{"APPOINTMENT.APPOINTMENT_RATE" | translate}}</button>
+                      <button type="button"
+                        *ngIf="appoinment.appointmentState != 'CXL' && appoinment.appointmentState != 'COM' && appoinment.appointmentState != 'REJ' && appoinment.appointmentState != 'VIP' && appoinment.editPermission==true && appoinment.viewPermission==true"
+                        class="btn btn-secondary cursor" (click)="deleteAppoinment(appoinment)">CANCEL</button>
+                      <button
+                        *ngIf="(appoinment.outstandingAmount > 0 && appoinment.appointmentState != 'CXL') && ((appoinment.onlineConsultation == 'Y' || appoinment.opdType == 'L') || appoinment.appointmentState == 'CON')"
+                        class="btn btn-secondary cursor" type="button" (click)="payOrder(appoinment)">Pay Now</button>
+                      <button
+                        *ngIf="appoinment.appointmentState == 'COM' || appoinment.appointmentState == 'REJ' || appoinment.appointmentState == 'CXL'"
+                        (click)="openBookAppoinment(appoinment)" class="btn btn-secondary cursor">Re Book</button>
+                      <!--Working on app/issues/600 - Video Chat-->
+                      <img
+                        *ngIf="(appoinment.opdType=='L' || appoinment.onlineConsultation == 'Y') &&
+                        appoinment.appointmentState != 'CXL' && appoinment.appointmentState != 'COM' && appoinment.appointmentState != 'REJ'"
+                        class="cursor" ngbTooltip="Click for Online Consultation" container="body"
+                        (click)="onChatClick(appoinment)"
+                        [src]="appoinment.isDoctorOnline == undefined ? '../../../../../assets/image/video-call.svg': '../../../../../assets/image/communications.svg'"
+                        height="25">
+                      <!--end of Working on app/issues/600 - Video Chat-->
+                    </td>
+                  </tr>
+                  <!--for ipad-->
+                  <tr class="small-show"
+                    [style.background-color]="appoinment.isDoctorOnline != undefined ? '#f4fff5': none">
+                    <td>
+                      <div class="small-header">{{"APPOINTMENT.APPOINTMENT_STATUS" | translate }}</div>
+                      <div class="align-top">
+                        <span class="badge badge-secondary" *ngIf="appoinment.appointmentState == 'REQ'"><span
+                            class="font-size14px">{{"APPOINTMENT.APPOINTMENT_REQUESTED" | translate}}</span></span>
+                        <span *ngIf="appoinment.appointmentState == 'CXL'" class="badge badge-danger"><span
+                            class="font-size14px">{{"APPOINTMENT.APPOINTMENT_CANCELLED" | translate}}</span></span>
+                        <span *ngIf="appoinment.appointmentState == 'CON'" class="badge badge-confirmed"><span
+                            class="font-size14px">{{"APPOINTMENT.APPOINTMENT_CONFIRMED" | translate}}</span></span>
+                        <span *ngIf="appoinment.appointmentState == 'COM'" class="badge badge-success">
+                          <span class="font-size14px">{{"APPOINTMENT.APPOINTMENT_COMPLETED" | translate}}</span></span>
+                        <span *ngIf="appoinment.appointmentState == 'REJ'" class="badge badge-danger">
+                          <span class="font-size14px">{{"APPOINTMENT.APPOINTMENT_REJECTED" | translate}}</span></span>
+                        <span *ngIf="appoinment.appointmentState == 'VIP'" class="badge badge-primary">
+                          <span
+                            class="font-size14px">{{"APPOINTMENT.APPOINTMENT_IN_PROGRESS" | translate}}</span></span>
+
+                        <span *ngIf=" appoinment.appointmentState === 'NSH'" class="badge badge-noShow">
+                          <span class="font-size14px">No Show</span></span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="small-header">{{"APPOINTMENT.APPOINTMENT_PAYMENT_STATUS" | translate}}</div>
+                      <div class="align-top">
+                        <!-- {{appoinment.paymentStatus}} -->
+                        <div>
+                          <b>Paid:</b> {{'SEARCH.SEARCH_INR_SIGN' | translate }} {{appoinment.paidAmount}}
+                        </div>
+                        <div>
+                          <b>Due:</b> {{'SEARCH.SEARCH_INR_SIGN' | translate }} <span
+                            *ngIf="appoinment.due >= 0">{{appoinment.due}}</span> <span
+                            *ngIf="appoinment.due < 0">0</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="small-header">{{"APPOINTMENT.APPOINTMENT_BY" | translate }}</div>
+                      <div class="align-top"><span class="textDot"
+                          title="{{appoinment.userName}}">{{appoinment.appointmentByName}}</span></div>
+                      <div class="align-top mt-3">
+                          <div class="row">
+                            <div class="col-6" *ngIf="(appoinment.outstandingAmount > 0 && appoinment.appointmentState != 'CXL') && ((appoinment.onlineConsultation == 'Y' || appoinment.opdType == 'L') || appoinment.appointmentState == 'CON')">
+                              <button class="btn btn-sm btn-primary" type="button" (click)="payOrder(appoinment)">Pay
+                                Now</button>
+                            </div>
+                            <div class="col-6" *ngIf="appoinment.appointmentState == 'COM' || appoinment.appointmentState == 'REJ' || appoinment.appointmentState == 'CXL'">
+                              <button (click)="openBookAppoinment(appoinment)" class="btn btn-secondary cursor">Re Book</button>
+                            </div>
+                          </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="small-header">{{"APPOINTMENT.APPOINTMENT_PROBLEM_NARRATION" | translate}}</div>
+                      <div class="align-top row min-height30px">
+                        <div class="col-12">
+                          <button class="btn btn-secondary-narrow" *ngIf="appoinment.appointmentState == 'CON' || 
+                            appoinment.appointmentState == 'REQ'"
+                            (click)="openProblemNarration(appoinment, appoinment.userName, appoinment.doctorName);">SPECIFY</button>
+                        </div>
+                      </div>
+                      <div class="row mt-2">
+                        <div class="col-4" *ngIf="appoinment.appointmentState =='COM'">
+                          <div class="align-top" (click)="giveRating(appoinment)">
+                            <button class="btn btn-secondary-narrow" (click)="op.toggle($event)">Rate</button>
+                          </div>
+                        </div>
+                        <div class="col-4" *ngIf="appoinment.appointmentState == 'COM'">
+                          <span title="Prescription" (click)="goToDoctorPres(appoinment.appointmentRefNo)">
+                            <img src="../../../assets/image/prescription.svg" height="20">
+                          </span>
+                        </div>
+                        <div class="col-4">
+                          <button
+                            *ngIf="appoinment.appointmentState != 'CXL' && appoinment.appointmentState != 'COM' && appoinment.appointmentState != 'REJ' && appoinment.appointmentState != 'VIP' && appoinment.editPermission==true && appoinment.viewPermission==true"
+                            class="btn btn-secondary-narrow" (click)="deleteAppoinment(appoinment)">CANCEL</button>
+                        </div>
+                      </div>
+                      <div class="row mt-2"
+                        *ngIf="(appoinment.opdType=='L' || appoinment.onlineConsultation == 'Y') &&
+                      appoinment.appointmentState != 'CXL' && appoinment.appointmentState != 'COM' && appoinment.appointmentState != 'REJ'">
+                        <div class="col-4 text-center">
+                          <img class="cursor" ngbTooltip="Click for Online Consultation" container="body"
+                            (click)="onChatClick(appoinment)"
+                            [src]="appoinment.isDoctorOnline == undefined ? '../../../../../assets/image/video-call.svg': '../../../../../assets/image/communications.svg'"
+                            height="25">
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="small-show-1024-768"
+                    [style.background-color]="appoinment.isDoctorOnline != undefined ? '#f4fff5': none">
+                    <td>
+                      <div class="small-header">{{"APPOINTMENT.APPOINTMENT_STATUS" | translate }}</div>
+                      <div class="align-top">
+                        <span class="badge badge-secondary" *ngIf="appoinment.appointmentState == 'REQ'"><span
+                            class="font-size14px">{{"APPOINTMENT.APPOINTMENT_REQUESTED" | translate}}</span></span>
+                        <span *ngIf="appoinment.appointmentState == 'CXL'" class="badge badge-danger"><span
+                            class="font-size14px">{{"APPOINTMENT.APPOINTMENT_CANCELLED" | translate}}</span></span>
+                        <span *ngIf="appoinment.appointmentState == 'CON'" class="badge badge-confirmed"><span
+                            class="font-size14px">{{"APPOINTMENT.APPOINTMENT_CONFIRMED" | translate}}</span></span>
+                        <span *ngIf="appoinment.appointmentState == 'COM'" class="badge badge-success">
+                          <span class="font-size14px">{{"APPOINTMENT.APPOINTMENT_COMPLETED" | translate}}</span></span>
+                        <span *ngIf="appoinment.appointmentState == 'REJ'" class="badge badge-danger">
+                          <span class="font-size14px">{{"APPOINTMENT.APPOINTMENT_REJECTED" | translate}}</span></span>
+                        <span *ngIf="appoinment.appointmentState == 'VIP'" class="badge badge-primary">
+                          <span
+                            class="font-size14px">{{"APPOINTMENT.APPOINTMENT_IN_PROGRESS" | translate}}</span></span>
+
+                        <span *ngIf=" appoinment.appointmentState === 'NSH'" class="badge badge-noShow">
+                          <span class="font-size14px">No Show</span></span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="small-header">{{"APPOINTMENT.APPOINTMENT_PAYMENT_STATUS" | translate}}</div>
+                      <div class="align-top">
+                        <!-- {{appoinment.paymentStatus}} -->
+                        <div>
+                          <b>Paid:</b> {{'SEARCH.SEARCH_INR_SIGN' | translate }} {{appoinment.paidAmount}}
+                        </div>
+                        <div>
+                          <b>Due:</b> {{'SEARCH.SEARCH_INR_SIGN' | translate }} <span
+                            *ngIf="appoinment.due >= 0">{{appoinment.due}}</span> <span
+                            *ngIf="appoinment.due < 0">0</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="small-header">{{"APPOINTMENT.APPOINTMENT_BY" | translate }}</div>
+                      <div class="align-top"><span class="textDot"
+                          title="{{appoinment.userName}}">{{appoinment.appointmentByName}}</span></div>
+                      <div class="align-top mt-3">
+                        <div class="row">
+                          <div class="col-6" *ngIf="(appoinment.outstandingAmount > 0 && appoinment.appointmentState != 'CXL') && ((appoinment.onlineConsultation == 'Y' || appoinment.opdType == 'L') || appoinment.appointmentState == 'CON')">
+                            <button class="btn btn-sm btn-primary" type="button" (click)="payOrder(appoinment)">Pay
+                              Now</button>
+                          </div>
+                          <div class="col-6" *ngIf="appoinment.appointmentState == 'COM' || appoinment.appointmentState == 'REJ' || appoinment.appointmentState == 'CXL'">
+                            <button (click)="openBookAppoinment(appoinment)" class="btn btn-secondary cursor">Re Book</button>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="small-header">{{"APPOINTMENT.APPOINTMENT_PROBLEM_NARRATION" | translate}}</div>
+                      <div class="align-top row min-height30px">
+                        <div class="col-12">
+                          <button class="btn btn-secondary-narrow" *ngIf="appoinment.appointmentState == 'CON' || 
+                            appoinment.appointmentState == 'REQ'"
+                            (click)="openProblemNarration(appoinment, appoinment.userName, appoinment.doctorName);">SPECIFY</button>
+                        </div>
+                      </div>
+                      <div class="row mt-2">
+                        <div class="col-4" *ngIf="appoinment.appointmentState =='COM'">
+                          <div class="align-top" (click)="giveRating(appoinment)">
+                            <button class="btn btn-secondary-narrow" (click)="op.toggle($event)">Rate</button>
+                          </div>
+                        </div>
+                        <div class="col-4" *ngIf="appoinment.appointmentState == 'COM'">
+                          <span title="Prescription" (click)="goToDoctorPres(appoinment.appointmentRefNo)">
+                            <img src="../../../assets/image/prescription.svg" height="20">
+                          </span>
+                        </div>
+                        <div class="col-4">
+                          <button
+                            *ngIf="appoinment.appointmentState != 'CXL' && appoinment.appointmentState != 'COM' && appoinment.appointmentState != 'REJ' && appoinment.appointmentState != 'VIP' && appoinment.editPermission==true && appoinment.viewPermission==true"
+                            class="btn btn-secondary-narrow" (click)="deleteAppoinment(appoinment)">CANCEL</button>
+                        </div>
+                      </div>
+                      <div class="row mt-2"
+                        *ngIf="(appoinment.opdType=='L' || appoinment.onlineConsultation == 'Y') &&
+                      appoinment.appointmentState != 'CXL' && appoinment.appointmentState != 'COM' && appoinment.appointmentState != 'REJ'">
+                        <div class="col-4 text-center">
+                          <img class="cursor" ngbTooltip="Click for Online Consultation" container="body"
+                            (click)="onChatClick(appoinment)"
+                            [src]="appoinment.isDoctorOnline == undefined ? '../../../../../assets/image/video-call.svg': '../../../../../assets/image/communications.svg'"
+                            height="25">
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="small-show-1024-768"
+                    [style.background-color]="appoinment.isDoctorOnline != undefined ? '#f4fff5': none">
+                    <td>
+                      <div class="small-header"></div>
+                    </td>
+                  </tr>
+                  <tr class="small-show"
+                    [style.background-color]="appoinment.isDoctorOnline != undefined ? '#f4fff5': none">
+                    <td class="show-border" colspan="4"></td>
+                  </tr>
+                  <tr class="small-show-1024-768"
+                    [style.background-color]="appoinment.isDoctorOnline != undefined ? '#f4fff5': none">
+                    <td class="show-border" colspan="4"></td>
+                  </tr>
+                  <!--end of ipad design-->
+                </ng-container>
+              </ng-template>
+            </p-table>
+          </div>
+          <div class="content table-responsive search-result for-very-small ">
+            <p-table [value]="appoinmentList" [paginator]="appoinmentList.length > 15" [rows]=15>
+              <ng-template pTemplate="body" let-appoinment>
+                <tr [style.background-color]="appoinment.isDoctorOnline != undefined ? '#f4fff5': none">
+                  <ng-container>
+                    <td class="mobile-table">
+                      <table>
+                        <tr>
+                          <td class="small-header">{{"APPOINTMENT.APPOINTMENT_FOR" | translate }}</td>
+                          <td class="mb-0" title="{{appoinment.userName}}">
+                            <span class="textDotInline">{{appoinment.userName}}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="small-header">{{"APPOINTMENT.APPOINTMENT_DOCTOR_NAME" | translate }}</td>
+                          <td class="mb-0" title="{{appoinment.doctorName}}">
+                            <span class="textDotInline">{{appoinment.doctorName}}</span><br />
+                            <div *ngIf="appoinment.isDoctorOnline != undefined"
+                              class="custom-online-circle-div-for-display-online">
+                              <div class="online-consultation-circle-div"></div>
+                              <div class="online-consultation-text-div">Online</div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="small-header">{{"APPOINTMENT.APPOINTMENT_DATE" | translate}}</td>
+                          <td class="mb-0">
+                            <span class="textDotInline">{{appoinment.appointmentDate | dateFormat}},
+                              {{appoinment.appointmentTime | slice:0:5}}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="small-header">{{"APPOINTMENT.APPOINTMENT_CHAMBER_NAME" | translate}}</td>
+                          <td class="mb-0" title="{{appoinment.chamberName}}">
+                            <div class="textDotInline">{{appoinment.chamberName}}</div><br>
+                            <div
+                              *ngIf="(appoinment.opdType=='L' || appoinment.onlineConsultation == 'Y') && appoinment.isDoctorOnline == undefined"
+                              class="online-consultation-outside-div">
+                              <div class="online-consultation-text-div" title="Online Consultation">Online Consultation
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="small-header">{{"APPOINTMENT.APPOINTMENT_STATUS" | translate }}</td>
+                          <td class="mb-0">
+                            <span>
+                              <span class="badge badge-secondary" *ngIf="appoinment.appointmentState == 'REQ'"><span
+                                  class="font-size14px">{{"APPOINTMENT.APPOINTMENT_REQUESTED" | translate}}</span></span>
+                              <span *ngIf="appoinment.appointmentState == 'CXL'" class="badge badge-danger"><span
+                                  class="font-size14px">{{"APPOINTMENT.APPOINTMENT_CANCELLED" | translate}}</span></span>
+                              <span *ngIf="appoinment.appointmentState == 'CON'" class="badge badge-confirmed"><span
+                                  class="font-size14px">{{"APPOINTMENT.APPOINTMENT_CONFIRMED" | translate}}</span></span>
+                              <span *ngIf="appoinment.appointmentState == 'COM'" class="badge badge-success">
+                                <span
+                                  class="font-size14px">{{"APPOINTMENT.APPOINTMENT_COMPLETED" | translate}}</span></span>
+                              <span *ngIf="appoinment.appointmentState == 'REJ'" class="badge badge-danger">
+                                <span
+                                  class="font-size14px">{{"APPOINTMENT.APPOINTMENT_REJECTED" | translate}}</span></span>
+                              <span *ngIf="appoinment.appointmentState == 'VIP'" class="badge badge-primary">
+                                <span
+                                  class="font-size14px">{{"APPOINTMENT.APPOINTMENT_IN_PROGRESS" | translate}}</span></span>
+
+                              <span *ngIf=" appoinment.appointmentState === 'NSH'" class="badge badge-noShow">
+                                <span class="font-size14px">No Show</span></span>
+                            </span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="small-header">{{"APPOINTMENT.APPOINTMENT_PAYMENT_STATUS" | translate}}</td>
+                          <td class="mb-0">
+                            <!-- <span>{{appoinment.paymentStatus}}</span> -->
+                            <div>
+                              <b>Paid:</b> {{'SEARCH.SEARCH_INR_SIGN' | translate }} {{appoinment.paidAmount}}
+                            </div>
+                            <div>
+                              <b>Due:</b> {{'SEARCH.SEARCH_INR_SIGN' | translate }} <span
+                                *ngIf="appoinment.due >= 0">{{appoinment.due}}</span> <span
+                                *ngIf="appoinment.due < 0">0</span>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="small-header">{{"APPOINTMENT.APPOINTMENT_BY" | translate }}</td>
+                          <td class="mb-0" title="{{appoinment.appointmentByName}}">
+                            <span class="textDotInline">{{appoinment.appointmentByName}}</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="small-header">{{"APPOINTMENT.APPOINTMENT_PROBLEM_NARRATION" | translate}}</td>
+                          <td class="mb-0">
+                            <!-- <span> -->
+                            <button class="btn btn-secondary-narrow pl-0" *ngIf="appoinment.appointmentState == 'CON' || 
+                            appoinment.appointmentState == 'REQ'"
+                              (click)="openProblemNarration(appoinment, appoinment.userName, appoinment.doctorName);">SPECIFY</button>
+                            <!-- </span> -->
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="align-left">
+                            <div class="row">
+                              <div
+                                *ngIf="(appoinment.outstandingAmount > 0 && appoinment.appointmentState != 'CXL') && ((appoinment.onlineConsultation == 'Y' || appoinment.opdType == 'L') || appoinment.appointmentState == 'CON')"
+                                class="col-6">
+                                <button class="btn btn-sm btn-primary appointment-payment-btn-custom-css mb-0 ml-0"
+                                  type="button" (click)="payOrder(appoinment)">Pay Now</button>
+                              </div>
+                              <div class="col-6" *ngIf="appoinment.appointmentState == 'COM' || appoinment.appointmentState == 'REJ' || appoinment.appointmentState == 'CXL'">
+                                <button (click)="openBookAppoinment(appoinment)" class="btn btn-secondary cursor">Re
+                                  Book</button>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="align-right">
+                            <div class="row">
+                              <div class="col-3" *ngIf="appoinment.appointmentState =='COM'">
+                                <ng-container (click)="giveRating(appoinment)">
+                                  <button class="btn btn-sm btn-secondary-narrow mb-0 pl-0"
+                                    (click)="op.toggle($event)">Rate</button>
+                                </ng-container>
+                              </div>
+                              <div class="col-3" *ngIf="appoinment.appointmentState == 'COM'">
+                                <span title="Prescription" (click)="goToDoctorPres(appoinment.appointmentRefNo)" nowrap>
+                                  <img src="../../../assets/image/prescription.svg" height="20">
+                                </span>
+                              </div>
+                              <div class="col-3">
+                                <button
+                                  *ngIf="appoinment.appointmentState != 'CXL' && appoinment.appointmentState != 'COM' && appoinment.appointmentState != 'REJ' && appoinment.appointmentState != 'VIP' && appoinment.editPermission==true && appoinment.viewPermission==true"
+                                  class="btn btn-secondary-narrow"
+                                  (click)="deleteAppoinment(appoinment)">CANCEL</button>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr
+                          *ngIf="(appoinment.opdType=='L' || appoinment.onlineConsultation == 'Y') &&
+                        appoinment.appointmentState != 'CXL' && appoinment.appointmentState != 'COM' && appoinment.appointmentState != 'REJ'">
+                          <td class="align-left"></td>
+                          <td class="align-right">
+                            <div class="row">
+                              <div class="col-12">
+                                <img class="cursor" ngbTooltip="Click for Online Consultation" container="body"
+                                  (click)="onChatClick(appoinment)"
+                                  [src]="appoinment.isDoctorOnline == undefined ? '../../../../../assets/image/video-call.svg': '../../../../../assets/image/communications.svg'"
+                                  height="25">
+
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </ng-container>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+<!--chat-->
+
+<app-video-chat-component *ngIf="showVideoChat" (onCloseClick)="showVideoChat = false" [appointmentRefNo]="refNo">
+</app-video-chat-component>
+
+
+<p-overlayPanel #op>
+  <app-rate-doctor [id]="op" (onClose)="onCloseOverlay($event)" [appointment]="appointment" [editRating]="editRating"
+    [ratingList]="ratingList"></app-rate-doctor>
+</p-overlayPanel>
+
+<!-- <ng-template #bookAppoinmentModal>
+  <div *ngIf="appointmentDetails">
+    <app-book-appoinment [modalRef]="modalRef" (onClose)="onClosePopUp($event)" [data]="appointmentDetails"
+      [id]="'modify-appoinment-popup'"></app-book-appoinment>
+  </div>
+</ng-template> -->
+
+<jw-modal id="payment-method-popup">
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="method-header">
+        <h2>{{"APPOINTMENT.APPOINTMENT_SELECT_PAYMENT_TYPE" | translate}}</h2>
+      </div>
+      <div class="method-container">
+        <div class="method" (click)="paymentMethod('PAYTM')">
+          <img src="assets/png/paytm.png" alt="">
+        </div>
+        <div class="method" (click)="paymentMethod('PAYPAL')">
+          <img src="assets/png/paypal.png" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+
+</jw-modal>
+
+<jw-modal id="paytm-popup">
+  <div class="method-container">
+    <h1 style="text-align: center">{{"APPOINTMENT.APPOINTMENT_DO_NOT_REFRESH" | translate}}</h1>
+  </div>
+  <form #someVar method="post" action="{{ paytmRespObj.redirectUrl }}" name="f1">
+    <input type="hidden" name="MID" value="{{ paytmRespObj.MID }}">
+    <input type="hidden" name="WEBSITE" value="{{ paytmRespObj.website }}">
+    <input type="hidden" name="CHANNEL_ID" value="{{ paytmRespObj.channelid }}">
+    <input type="hidden" name="INDUSTRY_TYPE_ID" value="{{ paytmRespObj.industrytypeid }}">
+    <input type="hidden" name="ORDER_ID" value="{{ paytmRespObj.orderid }}">
+    <input type="hidden" name="CUST_ID" value="{{ paytmRespObj.custid }}">
+    <input type="hidden" name="TXN_AMOUNT" value="{{ paytmRespObj.txnamount }}">
+    <input type="hidden" name="CALLBACK_URL" value="{{ paytmRespObj.callbackurl }}">
+    <input type="hidden" name="CHECKSUMHASH" value="{{ paytmRespObj.checksumhash }}">
+  </form>
+</jw-modal>
+
+<ng-template #prescriptionPreviewModal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{"APPOINTMENT.APPOINTMENT_PRESCRIPTION" | translate}}
+    </h4>
+    <!-- <span class="ml-2" id="download-ico"><app-report [fileName]="fileName" [reportType]="reportType" [pk]="pk"></app-report></span>
+    <span class="ml-2" id="print-ico"><img src="../../../../assets/image/print.svg" height="15" class="cursor"/></span> -->
+    <button type="button" class="close float-right" (click)="modalRef.hide()" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <app-prescription-preview [appRefNo]="appRefNo"></app-prescription-preview>
+</ng-template>
+<!-- sbis-poc/app/issues/594-->
+<ng-template #problemNarration>
+  <form [formGroup]="problemNarrationForm">
+    <div class="modal-header">
+      <h4 class="modal-title">SPECIFY YOUR SYMPTOMS</h4>
+      <button type="button" class="close" (click)="modalRef.hide()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body problem-narration">
+      <!-- <div class="row">
+            <div class="pr-12 col-md-12 page-content filter-panel-width form-group">
+            <textarea [readonly]="roleName == 'DOCTOR' && isAnyDoctorComment" formControlName="problemNarration" class = "form-control" style="height:200px !important;" placeholder = "Type your Comment"></textarea>
+            </div>
+        </div> -->
+      <div class="row">
+        <div class="symtomps-style2 ">
+          <h2>Specify your reasons for visiting the doctor before your appointment</h2>
+          <div class=" desc-box1 symtomps-style3 symtomps-margin">
+            <h2><b>How does it help?</b></h2>
+            <h2> It minimises the chance of not reporting to the doctor any problem that you might be having. Helps the
+              doctor towards a better treatment process.</h2>
+          </div>
+        </div>
+        <div class="pr-3 col-md-12 page-content filter-panel-width">
+          <div class="panel-list">
+            <div class="row">
+              <div class="col-12">
+                <!--  For Patient -->
+                <div class="row">
+                  <div class="col-lg-12 text-left">
+                    <h6>{{patientName}}</h6>&nbsp;&nbsp;<span>{{patientTime | date:'medium'}}</span>
+                  </div>
+                  <div class="pr-12 col-md-12 page-content filter-panel-width form-group">
+                    <textarea [readonly]="roleName=='DOCTOR'"
+                      [placeholder]="roleName=='INDIVIDUAL'?'Please enter your problem':''"
+                      formControlName="patientProblemNarration" class="form-control"
+                      style="height:80px !important;"></textarea>
+                  </div>
+                </div>
+                <!--  For Doctor -->
+                <div class="row" *ngIf="isDoctorNarrate">
+                  <div class="col-lg-12 text-left">
+                    <h6>{{doctorName}}</h6>&nbsp;&nbsp;<span>{{doctorTime | date:'medium'}}</span>
+                  </div>
+                  <div class="pr-12 col-md-12 page-content filter-panel-width form-group">
+                    <textarea [readonly]="roleName=='INDIVIDUAL'"
+                      [placeholder]="roleName=='DOCTOR'?'Please enter instruction':''"
+                      formControlName="doctorProblemNarration" class="form-control"
+                      style="height:80px !important;"></textarea>
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="row">
+        <div class="pr-8 col-md-12 page-content filter-panel-width">
+          <div class="text-right">
+            <button class="btn btn-secondary btn-sm" (click)="modalRef.hide()">Cancel</button>
+            <button [disabled]="!myNarration"
+              *ngIf="(roleName == 'DOCTOR' && !isAnyDoctorComment) || (roleName == 'INDIVIDUAL' && !isAnyIndividualComment)"
+              class="btn btn-primary btn-sm" (click)="problemNarrationComment()">Save</button>
+            <button [disabled]="!myNarration"
+              *ngIf="(roleName == 'DOCTOR' && isAnyDoctorComment) || (roleName == 'INDIVIDUAL' && isAnyIndividualComment)"
+              class="btn btn-primary btn-sm" (click)="problemNarrationComment()">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-template>
+<ng-template #previewModal>
+  <div class="modal-header">
+    <h4 class="modal-title">Preview</h4>
+    <button type="button" class="close" (click)="previewModalRef.hide()" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body problem-narration">
+    <div class="row">
+      <iframe width="300" height="300" [src]="getUrl(previewProblemNarration)"></iframe>
+    </div>
+  </div>
+</ng-template>
+
+<p-sidebar [(visible)]="visibleSidebarAppointmentDetails" [dismissible]="false" [showCloseIcon]="false" appendTo="body"
+  position="right" styleClass="modal-sidebar" styleClass="room-sidebar">
+  <div (click)="closeSideBar()" class="close-btn cursor"><i class="fas fa-times"></i></div>
+  <div class="row">
+    <div class="col-md-12">
+      <h1 class="font-size-for-room-sidebar-title">APPOINTMENT DETAILS</h1>
+    </div>
+  </div>
+  <section>
+    <div class="sidebarList">
+      <div class="row page-content">
+        <div class="col-lg-12">
+          <div class="row">
+            <div class="col-12">
+              <h1 class="mb-0">{{mySelectedAppointmentDetails?.doctorName}}</h1>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6 ml-1">
+              <label>Chamber Name</label>
+              <div class="mb-0">{{mySelectedAppointmentDetails?.chamberName}}</div>
+              <div class="small-text mb-1">
+                <!-- <span class="cursor ml-1">
+                  <img src="../../../assets/image/pin.svg" height="12px">
+                </span> -->
+                <span>{{mySelectedAppointmentDetails?.address}}</span>
+              </div>
+              <label>Appointment Date</label>
+              <span>{{mySelectedAppointmentDetails?.appointmentDate | dateFormat}}&nbsp;{{mySelectedAppointmentDetails?.appointmentTime | slice:0:5}}
+              </span>
+            </div>
+            <div class="col-5">
+              <label>Patient</label>
+              <div class="mb-0">{{mySelectedAppointmentDetails?.userName}}</div>
+            </div>
+          </div><br>
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="table-responsive small-tabl-padd no-btm-border">
+                  <div class="card-header billing-sidebar payment">
+                    <h5>PAYMENT DETAILS</h5>
+                  </div>
+                  <div class="card-body">
+                    <p-table [value]="mySelectedAppointmentDetails?.paymentDetails">
+                      <ng-template pTemplate="header">
+                        <tr>
+                          <th class="text-left" width="9%">Date</th>
+                          <th class="text-left" width="8%">Status</th>
+                          <th class="text-right" width="10%">Total Amount</th>
+                          <th class="text-right" width="8%">Paid Amount</th>
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-payment let-i="rowIndex">
+                        <tr>
+                          <td width="9%" class="text-left">{{payment.date | date: 'dd-MM-yyyy'}}</td>
+                          <td width="8%" class="text-left">{{payment.paymentStatus | uppercase }}</td>
+                          <td width="10%" class="text-right">{{payment.totalAmount  | currency:'INR'}} </td>
+                          <td width="8%" class="text-right">
+                            {{payment.paidAmount  | currency:'INR'}}
+                            <!-- <img src="../../../assets/image/print.svg" (click)="generatePaymentReport(payment.txnRefNo)"
+                              height="15" class="cursor" /> -->
+                          </td>
+                        </tr>
+                      </ng-template>
+                    </p-table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><br>
+          <div *ngIf="mySelectedAppointmentDetails?.invoiceList.length > 0" class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="table-responsive small-tabl-padd no-btm-border">
+                  <div class="card-header billing-sidebar payment">
+                    <h5>INVOICE DETAILS</h5>
+                  </div>
+                  <div class="card-body">
+                    <p-table *ngIf="mySelectedAppointmentDetails?.invoiceList.length > 0"
+                      [value]="mySelectedAppointmentDetails?.invoiceList">
+                      <ng-template pTemplate="header">
+                        <tr>
+                          <th class="text-left" width="30%">INVOICE</th>
+                          <th class="text-right"></th>
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-invoice let-i="rowIndex">
+                        <tr>
+                          <td class="text-left">
+                            <a href="javascript:void(0)"
+                              (click)="downloadInvoice(invoice, 'PRINT')">{{invoice.invoiceNo}}</a>
+                          </td>
+                          <td class="text-right">
+                            <button class="btn btn-primary btn-sm"
+                              (click)="downloadInvoice(invoice, 'DOWNLOAD')">Download Invoice</button>
+                          </td>
+                        </tr>
+                      </ng-template>
+                    </p-table>
+                    <div class="text-center" style="color:#ce8a35"
+                      *ngIf="mySelectedAppointmentDetails?.invoiceList.length==0">
+                      NO INVOICE
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</p-sidebar>
+
+<ng-template #apptreq>{{'COMMON.APP_REQ_MY_APPOINTMENT' | translate}}</ng-template>
+
+<ng-template #bookAppoinmentModal>
+  <div *ngIf="appoinment" id="book-appoinment-popup">
+    <div class="book-app-close-btn">
+      <button type="button" class="close" id="pop-close" aria-label="close" (click)="backClicked()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <app-book-appoinment [modalRef]="modalRef" (onClose)="onClosePopUp($event)" [data]="appoinment"
+      [id]="'book-appoinment-popup'">
+    </app-book-appoinment>
+  </div>
+</ng-template>

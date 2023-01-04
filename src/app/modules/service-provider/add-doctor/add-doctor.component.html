@@ -1,0 +1,692 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<div class="content">
+  <div *ngIf="loading" class="cover">
+    <div class="loader">
+      <div class="loading-img"><img width=250px src="../../../../../assets/image/logo.svg" /></div>
+      <div class="loading-txt">Loading<div class="dot-elastic"></div>
+      </div>
+    </div>
+  </div>
+  <div class="row page-content">
+    <div class="col-lg-12">
+      <form [formGroup]="addUserForm" (ngSubmit)="saveAddUser()" *ngIf="addUser">
+        <div class="row top-btn-area deliver-address-display-action-button-hide">
+          <div class="col-md-12 text-right">
+            <button type="submit" class="btn btn-primary btn-sm float-right">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_SAVE_PROFILE'
+              | translate}}</button>
+            <button type="button" (click)="cancel()" class="btn btn-secondary btn-sm float-right mr-2">Cancel</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 deliver-address-display-action-button-show">
+            <div class="row page-content text-right mr-2">
+              <div class="col-7 col-xs-8 col-sm-8 pr-0">
+                <button type="button" (click)="cancel()" class="btn btn-secondary btn-sm float-right mr-2">Cancel</button>
+              </div>
+              <div class="col-5 col-xs-4 col-sm-4 pr-0">
+                <button type="submit" class="btn btn-primary btn-sm float-right">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_SAVE_PROFILE'
+                      | translate}}</button>
+              </div>
+            </div><br>
+          </div>
+          <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12 col-12">
+            <div class="text-center">
+              <div class="text-center" (mouseover)="progress.isShowUploadBtn=true"
+                (mouseout)="progress.isShowUploadBtn=false">
+                <div *ngIf="progress.percentage>0" class="progress-bar progress-bar-info progress-bar-striped"
+                  role="progressbar" attr.aria-valuenow="{{progress.percentage}}" aria-valuemin="0" aria-valuemax="100"
+                  [ngStyle]="{width:progress.percentage+'%'}">
+                  {{progress.percentage}}%</div>
+                <img *ngIf="profileImageSrc =='' && addUserForm.value.gender!='F'"
+                  src="../../../../../assets/image/doctor-pic.svg" class="image" id="image-corner" alt="...">
+                <img *ngIf="profileImageSrc ==''  && addUserForm.value.gender=='F'"
+                  src="../../../../../assets/image/doctor-female.svg" class="image" id="image-corner" alt="...">
+                <img *ngIf="profileImageSrc !=''" [src]="domSanitizer.bypassSecurityTrustUrl(profileImageSrc)"
+                  class="image" id="image-corner" alt="...">
+                <div class="middle" style="opacity:1;left: 90%;top: 70%;">
+                  <div class="profileBtnHolder-for-add-doctor">
+                    <input type="file" accept="image/*" [hidden]="true" id="profilePhoto" (change)="selectFile($event)">
+                    <label *ngIf="progress.percentage>0"><i class="fas fa-camera"></i></label>
+                    <label *ngIf="!progress.percentage>0" for="profilePhoto"><i class="fas fa-camera"></i></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-10 col-lg-10 col-md-12 col-sm-12 col-12 pl-lg-5 pl-md-5 pl-3">
+            <div class="row">
+              <div class="col-lg-6 col-md-12 col-sm-12 col-12">
+                <div class="form-group">
+                  <label class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_NAME' | translate}} <span
+                      class="validation-error"></span></label>
+                  <app-name formControlName="doctorName" preventType="all" required="required" autofocus="autofocus">
+                  </app-name>
+                  <span *ngIf="submitted && lControls.doctorName.errors">
+                    <span *ngIf="lControls.doctorName.errors.required" class="validation-error">* Name is required</span>
+                  </span>
+                  <input type="hidden" formControlName="refNo">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+                <div class="form-group">
+                  <label class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_REGISTRATION_NUMBER_LABEL' |
+                    translate}}<span class="validation-error"></span></label>
+                  <input type="text" class="form-control" formControlName="registrationNo"
+                    (blur)="isregVerified($event.target.value)">
+                  <span *ngIf="submitted && lControls.registrationNo.errors">
+                    <span *ngIf="lControls.registrationNo.errors.required" class="validation-error">* Registration No. is
+                      required</span>
+                  </span>
+                  <!-- Issue app#754 -->
+  
+                  <span class="validation-error notSpecified"
+                    *ngIf="addUserForm.get('registrationStatus').value =='N' && addUserForm.get('registrationNo').value">{{'COMMON.NOT_VERIFIED' | translate}}</span>
+                  <span style="right: 46px;top: 29px;position: absolute;"
+                    *ngIf="addUserForm.get('registrationStatus').value =='Y'" data-toggle="tooltip" title="Verified"><img
+                      src="../../../../../assets/image/verified.svg" height="18px;"></span>
+                </div>
+              </div>
+              <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+                <div class="form-group">
+                  <label class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_EXPERIENCE' | translate}}<span
+                      class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span></label>
+                  <input type="number" class="form-control" min="0" [max]="age-1"
+                    (keyup)="expriencenceValidation($event.target.value)" formControlName="yearsOfExperience" />
+                </div>
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-8 col-sm-12 col-12">
+                <div class="form-group">
+                  <label class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_GENDER' | translate}}
+                    <span class="validation-error"> </span>
+                  </label>
+                  <select id="gender" name="gender" class="form-control" formControlName="gender">
+                    <option *ngFor="let gender of masterGender" value="{{gender.attributeValue}}">{{gender.displayValue}}
+                    </option>
+                  </select>
+                  <span *ngIf="submitted && lControls.gender.errors">
+                    <span *ngIf="lControls.gender.errors.required" class="validation-error">{{
+                      'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                  </span>
+                </div>
+              </div>
+              <div class="col-4"></div>
+            </div>
+            <div class="row">
+              <div class="col-xl-3 col-lg-6 col-md-10 col-sm-12 col-12">
+                <div class="form-group">
+                  <label class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_EMAIL_LABEL' | translate}}</label>
+                  <input type="text" class="form-control" formControlName="emailId"
+                    (blur)="checkDuplicateEmail($event.target.value, i)" (blur)=isEmailExist($event.target.value)
+                    [readonly]="isReadOnlyEmail">
+                  <span *ngIf="isValidEmail==='true'" class="validation-error">
+                    *Email already exist
+                  </span>
+                  <p data-toggle="tooltip" title="{{addUserForm.get('emailId').value}}">
+                    <span *ngIf="addUserForm.get('email_verification_status').value == 'Y'" data-toggle="tooltip"
+                      title="Verified" style="position: absolute;right: 16px;top: 32px;">
+                      <img src="../../../../../assets/image/verified.svg" height="18px;">
+                    </span>
+                    <a style="font-size: 11px;" *ngIf="addUserForm.get('email_verification_status').value == 'N' "
+                      (click)="emailVerify()" href="javascript:void(0)">Verify Email</a>
+                  </p>
+                </div>
+              </div>
+              <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-12">
+                <div class="form-group">
+                  <label class="userKey control-label">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_MOBILE_LABEL' | translate}}
+                  </label>
+                  <div *ngIf="isReadOnlyContact">
+                    <input type="text" class="form-control" formControlName="mobileNo1" (keypress)="keyPress($event)"
+                      (keyup)="checkContactNumber($event.target.value, i)" (keyup)="isMobileNoExist($event.target.value)"
+                      [readonly]="isReadOnlyContact">
+                    <p data-toggle="tooltip" title="{{addUserForm.get('mobileNo1').value}}">
+                      <span *ngIf="addUserForm.get('contact_verification_status').value == 'Y'" data-toggle="tooltip"
+                        style="position: absolute;right: 16px;top: 32px;" title="Verified">
+                        <img src="../../../../../assets/image/verified.svg" height="18px;">
+                      </span>
+                      <a style="font-size: 11px;" *ngIf="addUserForm.get('contact_verification_status').value == 'N'"
+                        (click)="mobileVerify()" href="javascript:void(0)">Verify Mobile</a>
+                    </p>
+                    <div *ngIf="!otpVerifySuccess" class="col-lg-7">
+                      <div class="row">
+                        <input *ngIf="otpVerify" type="text" formControlName="otp" class="form-control user-verify-otp">
+                        <button style="margin-top: -15px;" *ngIf="otpVerify" type="button"
+                          class="btn btn-secondary btn-sm" (click)="cancelSection()">Cancel</button>
+                        &nbsp;&nbsp;&nbsp;<button type="button" *ngIf="otpVerify" style="margin-top: -15px;"
+                          class="btn btn-primary btn-sm" (click)="otpSubmit()">Submit OTP</button>
+                      </div>
+                      <div class="row">
+                        <a style="margin-top: -11px;margin-left: 29px;" *ngIf="otpVerify" href="javascript:void(0)"
+                          (click)="resendOtp()">resend OTP</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="!isReadOnlyContact">
+                    <int-phone-prefix [locale]="'IN'" [defaultCountry]="'in'" formControlName="mobileNo1"
+                      (keypress)="keyPress($event)" (keyup)="checkContactNumber($event.target.value, i)"
+                      (keyup)="isMobileNoExist($event.target.value)"></int-phone-prefix>
+                  </div>
+                  <span *ngIf="isValidMobileNo==='true'" class="validation-error">
+                    *Ph already exist
+                  </span>
+                  <span *ngIf="submitted && lControls.mobileNo1.errors">
+                    <span *ngIf="lControls.mobileNo1.errors.required" class="validation-error">* Contact number is
+                      required</span>
+                  </span>
+                </div>
+              </div>
+              <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                <div class="form-group">
+                  <label>Associated With </label>
+                  <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-6">
+                      <label><input type="checkbox" formControlName="isOpdCheck"
+                          (change)="onChangeIpdOrOpd($event,'isOpdCheck')">
+                        <!-- formControlName="autoConfirmAppointment"-->
+                        OPD</label>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-6">
+                      <label><input type="checkbox" (change)="onChangeIpdOrOpd($event,'isIpdCheck')"
+                          formControlName="isIpdCheck">
+                        IPD</label>
+                    </div>
+                  </div>
+                </div>
+  
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row page-content">
+          <div class="col-xl-7 col-lg-7 col-md-12 col-sm-12 col-12">
+            <div class="card">
+              <div class="row card-body">
+                <div class="col-12">
+                  <div class="row">
+                    <div class="col-7"><label>{{'DOCTOR_PROFILE.DOCTOR_QUALIFICATION' | translate}}</label></div>
+                    <div class="col-5"><button type="button" class="btn btn-primary float-right mb-2"
+                        (click)="addQualification()">
+                        Add</button></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="content table-responsive pt-0 not-for-mobile">
+                        <table class="table">
+                          <thead>
+                            <tr class="d-flex">
+                              <th class="col-4">Qualification</th>
+                              <th class="col-4">Year</th>
+                              <th class="col-3">Institute</th>
+                              <th class="col-1"></th>
+                            </tr>
+                          </thead>
+                          <tbody formArrayName="doctorQualificationList" *ngIf="qualificationArray.length > 0">
+                            <tr class="d-flex"
+                              *ngFor="let q of addUserForm.get('doctorQualificationList').controls; let i = index"
+                              [formGroup]="q" [attr.id]="'tr'+i">
+                              <td class="col-4">
+                                <select class="form-control" formControlName="qualificationPk" name="Id"
+                                  (change)="onSelectQualification($event.target.value,i)">
+                                  <option [ngValue]="qualification.qualificationPk"
+                                    *ngFor="let qualification of qualificationList"
+                                    [selected]="qualification.qualificationPk == q.value.qualificationPk.value">
+                                    {{qualification.qualificationCode}}
+                                  </option>
+                                </select>
+  
+                                <span *ngIf="isDuplicateQualification[i]" class="validation-error">
+                                  *Duplicate
+  
+                                </span>
+                              </td>
+                              <td class="col-4">
+                                <select id="Id" class="form-control" formControlName="yearProcured" name="Id">
+                                  <option [ngValue]="year" *ngFor="let year of years">
+                                    {{year}}
+                                  </option>
+                                </select>
+                              </td>
+                              <td class="col-3">
+                                <input type="text" class="form-control" formControlName="institute" />
+                              </td>
+                              <td class="col-1">
+                                <span ngbTooltip="Delete Doctor Qualification" container="body"
+                                  (click)="deleteQualification(i)" class="cursor deleteIco"><img class="grey"
+                                    src="../../../../../assets/image/delete.svg" width="15"></span>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="table-responsive pt-0 for-very-small">
+                        <div formArrayName="doctorQualificationList" *ngIf="qualificationArray.length > 0">
+                          <div *ngFor="let q of addUserForm.get('doctorQualificationList').controls; let i = index"
+                            [formGroup]="q" [attr.id]="'tr'+i">
+                            <table class="table">
+                              <tr class="text-left">
+                                <td class="mobile-table">
+                                  <table class="w-100">
+                                    <tr>
+                                      <td class="small-header">Qualification</td>
+                                      <td>
+                                        <select class="form-control" formControlName="qualificationPk" name="Id"
+                                          (change)="onSelectQualification($event.target.value,i)">
+                                          <option [ngValue]="qualification.qualificationPk"
+                                            *ngFor="let qualification of qualificationList"
+                                            [selected]="qualification.qualificationPk == q.value.qualificationPk.value">
+                                            {{qualification.qualificationCode}}
+                                          </option>
+                                        </select>
+                                        <span *ngIf="isDuplicateQualification[i]"
+                                          class="validation-error">*Duplicate</span>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td class="small-header">Year</td>
+                                      <td>
+                                        <select id="Id" class="form-control" formControlName="yearProcured" name="Id">
+                                          <option [ngValue]="year" *ngFor="let year of years">
+                                            {{year}}
+                                          </option>
+                                        </select>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td class="small-header">Institute</td>
+                                      <td>
+                                        <input type="text" class="form-control" formControlName="institute" />
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td class="small-header"></td>
+                                      <td class="text-right">
+                                        <span ngbTooltip="Delete Doctor Qualification" container="body"
+                                          (click)="deleteQualification(i)" class="cursor deleteIco"><img class="grey"
+                                            src="../../../../../assets/image/delete.svg" width="15"></span>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12">
+            <div class="card">
+              <div class="row card-body">
+                <div class="col-12">
+                  <div class="row">
+                    <div class="col-7"><label>{{'DOCTOR_PROFILE.DOCTOR_SPECIALIZATION' | translate}}</label></div>
+                    <div class="col-5"><button type="button" class="btn btn-primary float-right mb-2"
+                        (click)="addSpecialization()">
+                        Add</button></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="table-responsive not-for-mobile">
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th>Specialization</th>
+                              <th>SubSpecialization</th>
+                              <th></th>
+                            </tr>
+                          </thead>
+                          <tbody formArrayName="doctorSpecializationList" *ngIf="specializationArray.length > 0">
+                            <tr *ngFor="let s of addUserForm.get('doctorSpecializationList').controls; let i = index"
+                              [formGroup]="s" [attr.id]="'tr'+i">
+                              <td>
+                                <select id="Id" class="form-control" formControlName="specializationPk" name="Id"
+                                  (change)="onSelect($event.target.value,i)">
+                                  <option [ngValue]="specialization.specializationPk"
+                                    *ngFor="let specialization of specializationList"
+                                    [selected]="specialization.specializationPk == s.value.specializationPk.value">
+                                    {{specialization.specialization}}
+                                  </option>
+                                </select>
+                                <span *ngIf="isDuplicateSpecialization[i]" class="validation-error">
+                                  *Duplicate
+                                </span>
+                              </td>
+                              <td>
+                                <select id="Id" class="form-control" formControlName="subSpecializationPk" name="Id"
+                                  *ngIf="subSpecializationListArr[i] ">
+                                  <option [ngValue]="subSpecialization.subSpecializationPk"
+                                    *ngFor="let subSpecialization of subSpecializationListArr[i]">
+                                    {{subSpecialization.subSpecialization}}
+                                  </option>
+                                </select>
+                              </td>
+                              <td>
+                                <span ngbTooltip="Delete Doctor Specialization" container="body"
+                                  (click)="deleteSpecialization(i)" class="cursor deleteIco"><img class="grey"
+                                    src="../../../../../assets/image/delete.svg" width="15"></span>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="table-responsive pt-0 for-very-small">
+                        <div formArrayName="doctorSpecializationList" *ngIf="specializationArray.length > 0">
+                          <div *ngFor="let s of addUserForm.get('doctorSpecializationList').controls; let i = index"
+                            [formGroup]="s" [attr.id]="'tr'+i">
+                            <table class="table">
+                              <tr class="text-left">
+                                <td class="mobile-table">
+                                  <table class="w-100">
+                                    <tr>
+                                      <td class="small-header">Specialization</td>
+                                      <td>
+                                        <select id="Id" class="form-control" formControlName="specializationPk" name="Id"
+                                          (change)="onSelect($event.target.value,i)">
+                                          <option [ngValue]="specialization.specializationPk"
+                                            *ngFor="let specialization of specializationList"
+                                            [selected]="specialization.specializationPk == s.value.specializationPk.value">
+                                            {{specialization.specialization}}
+                                          </option>
+                                        </select>
+                                        <span *ngIf="isDuplicateSpecialization[i]" class="validation-error">
+                                          *Duplicate
+                                        </span>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td class="small-header">SubSpecialization</td>
+                                      <td>
+                                        <select id="Id" class="form-control" formControlName="subSpecializationPk"
+                                          name="Id" *ngIf="subSpecializationListArr[i] ">
+                                          <option [ngValue]="subSpecialization.subSpecializationPk"
+                                            *ngFor="let subSpecialization of subSpecializationListArr[i]">
+                                            {{subSpecialization.subSpecialization}}
+                                          </option>
+                                        </select>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td class="small-header"></td>
+                                      <td class="text-right">
+                                        <span ngbTooltip="Delete Doctor Specialization" container="body"
+                                          (click)="deleteSpecialization(i)" class="cursor deleteIco"><img class="grey"
+                                            src="../../../../../assets/image/delete.svg" width="15"></span>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row page-content">
+          <div class="col-xl-7 col-lg-7 col-md-12 col-sm-12 col-12" >
+            <div class="card" *ngIf="addUserForm.get('isOpdCheck')?.value">
+              <div class="card-header">
+                <h5><label>CHAMBER DETAILS</label></h5>
+              </div>
+              <div class="row card-body">
+                <div class="col-12">
+                  <div formGroupName="chamberForm">
+                    <div>
+                      <div class="row mt-3">
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label class="userKey control-label">Room No.</label>
+                            <input type="text" class="form-control" formControlName="roomNo">
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label class="userKey control-label">Department</label>
+                            <input type="text" class="form-control" formControlName="department">
+                          </div>
+                        </div>
+  
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label class="userKey control-label">Average Visit Duration <span
+                                class="validation-error">*</span></label>
+                            <input type="text" class="form-control" formControlName="averageVisitDuration"
+                              #avgvisitDuration numbersOnly>
+  
+                            <span *ngIf="submitted && addUserForm.get('chamberForm').get('averageVisitDuration').errors">
+                              <span *ngIf="addUserForm.get('chamberForm').get('averageVisitDuration').errors.required"
+                                class="validation-error">* Average Visit Duration is required</span>
+                            </span>
+  
+                            <span class="validation-error" *ngIf="isAvgDurGrtStartEndTime">Average visit duration must be
+                              less than chamber timing slots</span>
+                          </div>
+                          <div class="validation-error mb-2">{{timingValidationMsg}}</div>
+                        </div>
+                        <div class="col-md-6">
+                          <label><input type="checkbox" (change)="toggleEditable($event)"
+                              formControlName="autoConfirmAppointment">
+                            Auto confirm Appointment</label>
+                        </div>
+                        <!-- Added for app#690 -->
+                        <div class="col-md-6">
+                          <label><input type="checkbox" (change)="toggleEditableAppBySrlNo($event)"
+                              formControlName="appointmentBySerialNo">
+                            Appointment By Serial No.</label>
+                        </div>
+                        <div class="col-md-12">
+                          <br>
+                          <label><input type="checkbox" (change)="acceptOnlineAppointmentsChange($event)"
+                            formControlName="acceptonline">
+                            {{'DOCTOR_CHAMBER_VALIDATION.ACCEPT_ONLINE'|translate}}</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row page-content" *ngIf="addUserForm.get('isOpdCheck')?.value">
+              <div class="col-12">
+                <!-- <app-working-schedule [saveStatus]="saveStatus" [timingDataFromResponse]="timingDataFromResponse"
+                  (workScheduleData)="getWorkScheduleData($event)"></app-working-schedule> -->
+                  <app-working-schedule-ngb [saveStatus]="saveStatus" [timingDataFromResponse]="timingDataFromResponse"
+              (workScheduleData)="getWorkScheduleData($event)"></app-working-schedule-ngb>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12">
+            <div formGroupName="chamberForm">
+              <div class="card" *ngIf="addUserForm.get('isOpdCheck')?.value">
+                <div class="row">
+                  <div class="col-7"><label>OPD FEES</label></div>
+                </div>
+              <div class="row card-body">
+                    <div class="col-12">
+                      <div class="row">
+                        <div class="col-12">
+                          <div formArrayName="doctorFeesList" *ngIf="feesArray.length > 0">
+                            <div class="table-responsive not-for-mobile">
+                              <p-table [value]="addUserForm.controls.chamberForm.get('doctorFeesList').controls"  [paginator]="false">
+                                <ng-template pTemplate="header">
+                                  <tr>
+                                    <th width="68%">Description</th>
+                                    <th width="30%">Fees</th>
+                                    <th width="19%"></th>
+                                  </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-f let-i="rowIndex">
+                                  <tr [formGroup]="f" [attr.id]="'tr'+i">
+                                    <td>
+                                      <p style="font-weight: 300;">{{f.get('displayValue').value}}</p>
+                                    </td>
+                                    <td>
+                                      <input type="number" min="0.00" class="form-control ui-fees" #feeAmt
+                                        formControlName="amount"
+                                        (keyup)="validatePrepayAmount(prepayAmt.value, addUserForm.value.chamberForm.doctorFeesList)"
+                                        (keypress)="numberOnly($event)" required>
+                                    </td>
+                                    <td>
+                                      <span *ngIf="isAddFees && i != 0" ngbTooltip="Delete Fees" container="body"
+                                        (click)="deleteFees(i)" class="cursor deleteIco"><img class="grey"
+                                          src="../../../../../assets/image/delete.svg" width="15"></span>
+                                    </td>
+                                  </tr>
+                                </ng-template>
+                              </p-table>
+                              <div  *ngIf="isAddFees && feesArray.value.length != 2" class="text-right"><button type="button" class="btn btn-secondary btn-sm add-row" (click)="addFees()">
+                                  <i class="fas fa-plus-square"></i>&nbsp;{{'DOCTOR_CHAMBER.ADD_CLINIC_FEES'| translate}}</button></div>
+                              <!-- <span *ngIf="submitted && !lControls.doctorFeesList.valid">
+                                <span class="validation-error">*
+                                  {{'DOCTOR_CHAMBER_VALIDATION.REQUIRED'|translate}}</span>
+                              </span>                             -->
+                            </div>
+                            <div class="table-responsive for-very-small">
+                              <div *ngFor="let f of addUserForm.controls.chamberForm.get('doctorFeesList').controls; let i = index"
+                                [formGroup]="f" [attr.id]="'tr'+i">
+                                <table class="w-100">
+                                  <tr class="text-left">
+                                    <td class="mobile-table">
+                                      <table class="w-100">
+                                        <tr>
+                                          <td class="small-header">Description</td>
+                                          <td class="mb-0 text-right">
+                                            <div>
+                                              <p style="font-weight: 300;">{{f.get('displayValue').value}}</p>
+                                            </div>
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td class="small-header">Fees</td>
+                                          <td class="mb-0 text-right">
+                                            <input type="number" min="0.00" class="form-control ui-fees" #feeAmt
+                                              formControlName="amount"
+                                              (keyup)="validatePrepayAmount(prepayAmt.value, addUserForm.value.chamberForm.doctorFeesList)"
+                                              (keypress)="numberOnly($event)" required>
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td class="small-header"></td>
+                                          <td class="mb-0 text-right">
+                                            <span *ngIf="isAddFees && i != 0" ngbTooltip="Delete Fees" container="body"
+                                              (click)="deleteFees(i)" class="cursor deleteIco"><img class="grey"
+                                                src="../../../../../assets/image/delete.svg" width="15"></span>
+                                          </td>
+                                        </tr>
+                                      </table>
+                                    </td>
+                                  </tr>
+                                </table>
+                                <div  *ngIf="isAddFees && feesArray.value.length != 2" class="text-right"><button type="button" class="btn btn-secondary btn-sm add-row" (click)="addFees()">
+                                    <i class="fas fa-plus-square"></i>&nbsp;{{'DOCTOR_CHAMBER.ADD_CLINIC_FEES'| translate}}</button></div>                          
+                              </div>
+                            </div>
+                          </div>
+                          <div *ngIf="isFees">
+                            <div class="row">
+                              <div class="col-7 margin-left12px">
+                                <label>TOTAL: <br> <small class="small-txt"><em>(Fees charged to patients)</em></small></label>
+                              </div>
+                              <div class="col-4 text-right">
+                                <span>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                                  {{totalFees}}</span>
+                              </div>
+                            </div>
+                            <hr>
+                          </div>
+                          <div class="row">
+                            <div class="col-12">
+                              <div class="form-group">
+                                <label class="userKey control-label label-inline">Advance Amount
+                                    <span class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span> <!--1391-->
+                                </label><!-- message style 2--><img class="cursor" src="../../../../assets/image/information.svg"
+                                height="13" [ngbPopover]="apptToday5" triggers="mouseenter:mouseleave" container="body"
+                                popoverClass="popover-info" /><!-- message style 2-->
+                                <input type="number" min="0" class="form-control" formControlName="prepayAmount" 
+                                  #prepayAmt (keypress)="numberOnly($event)"
+                                  (keyup)="validatePrepayAmountByFeesArr(prepayAmt.value, addUserForm.value.chamberForm.doctorFeesList)">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div><!--end of card class-->
+  
+  
+            </div>
+            <div class="card" *ngIf="addUserForm.get('isIpdCheck')?.value">
+              <div class="row card-body">
+                <div class="col-12">
+                  <div class="row">
+                    <div class="col-7"><label>IPD FEES</label></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="table-responsive not-for-mobile">
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th width="50%">Description</th>
+                              <th width="40%">Fees</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>
+                                <p>{{ipdFeesDescription[0].displayValue}}</p>
+                              </td>
+                              <td>
+                                <input type="number" formControlName="ipdFees">
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="row mt-2">
+          <div class="col-md-12 text-right">
+            <button type="submit" class="btn btn-primary btn-sm float-right">{{'DOCTOR_PROFILE.DOCTOR_PROFILE_SAVE_PROFILE'
+              | translate}}</button>
+            <button type="button" (click)="cancel()" class="btn btn-secondary btn-sm float-right mr-2">Cancel</button>
+          </div>
+        </div>
+  
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,41 @@
+<div class="container">
+  <div class="row card">
+    <div class="col-lg-12">
+      <!-- <div class="card"> -->
+        <div class="header cardHeader ">
+          <div class="row">
+            <div class="col-12 col-md-12 text-left">
+              <h1>{{headerText}}</h1>
+            </div>
+          </div>
+        </div><br>
+        <div class="row">
+          <div class="col-12 text-center" *ngIf="paymentState == 'CONFIRM'">
+            <img src="../../../../assets/image/confirm.svg" height="50" alt="" />
+          </div>
+          <div class="col-12 text-center" *ngIf="paymentState == 'CANCEL'">
+            <img src="../../../../assets/image/error.svg" height="50" alt="" />
+          </div>
+        </div><br>
+        <div *ngIf="paymentState == 'CONFIRM'">
+          <div class="text-center not-found" *ngFor="let message of confirmationMsg">
+            <h3>{{message}}</h3>
+          </div>
+        </div>
+        <div *ngIf="paymentState == 'CANCEL'">
+          <div class="text-center not-found" *ngFor="let message of confirmationMsg">
+            <h3>{{message}}</h3>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-12 text-center">
+            <button type="button" class="mr-1 btn btn-primary btn-md" (click)="routeToPage()">{{actionButtonName}}</button>
+            <button *ngIf="actionButtonTwoName" type="button" class="m-1 btn btn-primary btn-md" (click)="routeToRetryPage()">{{actionButtonTwoName}}</button>
+          </div>
+        </div>
+        <br><br>
+      <!-- </div> -->
+    </div>
+  </div>
+</div>

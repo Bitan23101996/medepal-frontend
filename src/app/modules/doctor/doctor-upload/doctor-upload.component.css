@@ -1,0 +1,95 @@
+
+/*
+*  * |///////////////////////////////////////////////////////////////////////|
+*  * |                                                                       |
+*  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+*  * | All Rights Reserved                                                   |
+*  * |                                                                       |
+*  * | This document is the sole property of StellaBlue Interactive          |
+*  * | Services Pvt. Ltd.                                                    |
+*  * | No part of this document may be reproduced in any form or             |
+*  * | by any means - electronic, mechanical, photocopying, recording        |
+*  * | or otherwise - without the prior written permission of                |
+*  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+*  * |                                                                       |
+*  * |///////////////////////////////////////////////////////////////////////|
+*  */
+
+.custom-img-delete-style {
+    display: block;
+    float: left;
+}
+.w100 {
+    width:100px;
+}
+.w300 {
+    width:300px;
+}
+.flag{
+    width: 18px;
+    height: 18px;
+}
+.signature_design {
+    height: 41px;
+    /* width: 14em; */
+    width: 100%;
+    margin-bottom: -11px !important;
+}
+.header_footer_design {
+    height: 55px;
+    width: 100%;
+    margin-bottom: -11px !important;
+}
+.signature_design_not_specified {
+    height: 41px;
+    width: 14em;
+    border: 1px solid #a7a7a7;
+}
+.header_footer_not_specified {
+    height: 55px;
+    width: 58em;
+    /* border: 1px solid #a7a7a7; */
+}
+.side-label {
+    color: #116d0d;
+    font-weight: 500;
+    font-size: unset;
+}
+.top-description-p {
+    margin-bottom: 0px;
+    font-size: 11px;
+    font-weight: 400;
+}
+.checkbox-input {
+    float: left;
+    padding-right: 4px;
+}
+.checkbox-label {
+    color: #7f2d91;
+    font-weight: 400;
+    font-size: small;
+}
+.content_position {
+    padding-left: 0px;
+    padding-right: 0px;
+    margin-left: 15px;
+    border: 1px solid #a7a7a7;
+}
+.upload p
+{
+    line-height: 22px;
+}
+
+.prescription-heading h2{
+    font-size:14px;
+    font-weight:400;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    color:#5f5f5f;
+    margin-bottom: 0px;
+    
+}
+.box-margin 
+{
+    margin-left: 15px;
+}

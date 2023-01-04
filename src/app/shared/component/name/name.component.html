@@ -1,0 +1,9 @@
+<span *ngIf="formControlName != null">
+    <input type="text" class="form-control" formControlName={{formControlName}} [disabled]="disabled" [readonly]="readonly"
+        (ngModelChange)="update($event)" required={{required}} autofocus={{autofocus}} (keydown)="onKeydown($event)" onpaste="return false" placeholder="{{placeholder}}">
+</span>
+<span *ngIf="formControlName == null">
+    <input type="text" [(ngModel)]="ngModel" (ngModelChange)="update($event)" [ngModelOptions]="{standalone: true}" [disabled]="disabled"
+    required={{required}} autofocus={{autofocus}} (keydown)="onKeydown($event)" onpaste="return false" placeholder="{{placeholder}}">
+</span>
+

@@ -1,0 +1,7 @@
+
+ .block{
+    pointer-events: none;
+}
+.block button{
+    display: none !important;
+}

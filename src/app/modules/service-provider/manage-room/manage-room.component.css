@@ -1,0 +1,34 @@
+.sidebarList {
+	height: calc(100vh - 63px) !important;
+	overflow-y: auto;
+    overflow-x: hidden;
+}
+.card.roomPanel {
+    padding: .1rem .1rem 0 .1rem !important;
+}
+.roomPanel .table-responsive{
+	overflow-x: inherit !important;
+}
+.ui-dropdown .ui-dropdown-clear-icon {
+    margin-top: -10px !important;
+}
+body .pi {
+    color: #952689 !important;
+}
+
+.close-btn{
+	position:absolute;
+	left:-30px;
+	top:0;
+	height:30px;
+	width:30px;
+	background:#f5f8f9;
+	text-align:center;
+	line-height:30px;
+}
+.input-50{
+    width: 110px !important;
+}
+.input-sm{
+    width: 70px !important;
+}

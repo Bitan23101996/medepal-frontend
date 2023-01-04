@@ -1,0 +1,57 @@
+<form [formGroup]="searchActionForm">
+  <div class="row">
+    <!-- <div class="col-5">
+          <div class="row">
+              <div class="col-md-9" *ngIf="fileName !=''"> <input type="text" [disabled]="true" title="{{fileName}}" class="form-control" [value]="fileName" ></div>
+              <div class="col-md-9" *ngIf="fileName ==''"><input type="text" [disabled]="true" class="form-control" [value]="'No File Uploaded'">
+                <div *ngIf="submitted && fileName ==''" class="validation-error">This field is required</div>
+              </div>
+              <input type="file" (change)="selectSingleFile($event)" [hidden]="true" id="{{idForFile}}" required>
+              
+              <div class="col-md-3 float-right">
+                  <label ngbTooltip="Upload File" container="body" class="cursor" *ngIf="fileName ==''" for="{{idForFile}}"> <i class="fa fa-upload pointer"
+                          aria-hidden="true"></i></label>
+                  <label ngbTooltip="Remove File" container="body"  class="cursor" *ngIf="fileName !=''"><i class="fa fa-eraser pointer" aria-hidden="true" (click)="closeSingleFile()"></i></label>
+              </div>
+          </div>
+      </div> -->
+    <div class="col-6">
+      <div>
+      <select class="form-control" formControlName="reasonCode" required>
+        <!-- <option value="">Select</option> -->
+        <option *ngFor="let r of resonList" value="{{r.reasonCode}}">{{r.description}}</option>
+      </select>
+      <span *ngIf="ifRejected && submitted && searchActionForm.controls.reasonCode.errors">
+        <span *ngIf="searchActionForm.controls.reasonCode.errors.required" class="validation-error">This field is required</span>
+      </span>
+    </div>
+    </div>
+    <div class="col-6">
+      <button type="button" *ngIf="docInfo.approvalStatus!='PENDING_VERIFICATION'" href="javascript:void(0);" (click)="getHistory(docInfo)" popoverTitle="Approval History"
+      placement="left" [autoClose]="'outside'" [ngbPopover]="popupContent" class="btn-primary btn-sm mr-2" container="body" ><i class="fa fa-eye"></i> View History</button>
+      <button type="button" *ngIf="docInfo.approvalStatus=='PENDING_VERIFICATION' || docInfo.approvalStatus=='REVOKED' || docInfo.approvalStatus=='REJECTED'" class="btn-primary btn-sm mr-2" (click)="saveSearchActionForm('APPROVED')">Approve</button>
+      <button type="button" *ngIf="docInfo.approvalStatus=='PENDING_VERIFICATION'" class="btn-primary btn-sm mr-2" (click)="saveSearchActionForm('REJECTED')">Reject</button>
+      <button type="button" *ngIf="docInfo.approvalStatus=='APPROVED'" class="btn-primary btn-sm mr-2" (click)="saveSearchActionForm('REVOKED')">Revoke</button>
+      
+    </div>
+  </div>
+
+
+</form>
+
+<ng-template #popupContent>
+  <table class="table">
+    <thead>
+      <th>Approval Status</th>
+      <th>Date/Time</th>
+      <th>Reason</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let vh of verificationHistoryList">
+        <td>{{vh.approvalStatus}}</td>
+        <td>{{vh.approvedRejectedDateTime}}</td>
+        <td>{{vh.reasonCode}}</td>
+      </tr>
+    </tbody>
+  </table>
+</ng-template>

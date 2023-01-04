@@ -1,0 +1,41 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+ <!doctype html>
+ <html lang="en">
+ <head>
+   <meta charset="utf-8">
+   <title>MEDePAL: HEALTHCARE TERMINUS</title>
+   <base href="/">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="icon" type="image/x-icon" href="favicon.ico"/>
+   <!--<link rel="stylesheet" href="assets/css/bootstrap.min.css" />-->
+   <link rel="stylesheet" href="assets/css/animate.min.css" />
+   <link rel="stylesheet" href="assets/css/paper-dashboard.css" />
+    <link rel="stylesheet" href="assets/css/sbis.css" />
+   <link rel="stylesheet" href="assets/css/themify-icons.css" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
+   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBWVyk6Tdm6Hpl_nA_IssRZFoxGMXjM1dU"></script>
+   <!--script src="https://sample.sendbird.com/livechat/SendBird.min.js"></script-->
+   <!--script src="https://sample.sendbird.com/livechat/build/liveChat.SendBird.js"></script-->
+ </head>
+ <body>
+   <app-root></app-root>
+ </body>
+ </html>

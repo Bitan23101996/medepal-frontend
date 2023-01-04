@@ -1,0 +1,483 @@
+<!-- /*******************************************************************************
+ * * |///////////////////////////////////////////////////////////////////////|
+ * * |                                                                       |
+ * * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ * * | All Rights Reserved                                                   |
+ * * |                                                                       |
+ * * | This document is the sole property of StellaBlue Interactive          |
+ * * | Services Pvt. Ltd.                                                    |
+ * * | No part of this document may be reproduced in any form or             |
+ * * | by any means - electronic, mechanical, photocopying, recording        |
+ * * | or otherwise - without the prior written permission of                |
+ * * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ * * |                                                                       |
+ * * |///////////////////////////////////////////////////////////////////////|
+ ******************************************************************************/ -->
+
+
+<section class="pageMainContin">
+  <div *ngIf="loading" class="cover">
+    <div class="loader">
+        <div class="loading-img"><img width=250px src="../../../../../assets/image/logo.svg"/></div>
+        <div class="loading-txt">Loading<div class="dot-elastic"></div></div>
+    </div>
+  </div>
+  <div class="content">
+    <div class="row page-content">
+      <div class="col-lg-12">
+        <form>
+          <div class="row">
+            <div class="w-10 pr-0 pl-3 sml-for-manage-room filter-panel-width"
+              [ngClass]="panelVisible ? 'panelVisible' : 'panelNotVisible'">
+              <div class="card">
+                <div class="filterPanel">
+                  <div class="row border-bottom">
+                    <div class="col-8">
+                      <h4 class="search-result-left-pen-heading">{{ 'FETCH_PATIENT.REFINE_BY' | translate }}</h4>
+                    </div>
+                    <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0);"
+                        (click)="resetAll()">{{ 'FETCH_PATIENT.RESET_ALL' | translate }}</a></div>
+                  </div>
+                  <div class="row overflow-auto scrollarea">
+                    <div class="col-md-12">
+                      <label class="page-header">Category</label>
+                      <input type="text" class="form-control" #category (input)="filterTable($event, 'category')">
+                    </div>
+                    <div class="col-md-12">
+                      <label class="page-header"><input type="checkbox" [checked]="false"
+                          (change)="filterTable($event, 'ac')">AC</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group text-right pt-2">
+                  <!-- <button type="submit" (click)="refinePanelhide()"
+                    class="btn btn-primary btn-sm">{{ 'COMMON.SEARCH_BUTTON' | translate }}</button> -->
+                </div>
+
+              </div>
+            </div>
+            <div class="col padding-top-for-medium">
+              <div class="card">
+                <div class="row header cardHeader pl-0 pr-0 pt-0 pb-3">
+                  <!-- /sbis-poc/app/issues/664-->
+                  <div class="col-md-4 col-lg-4 col-sm-5 col-12">
+                    <div>
+                      <h1>{{title}}</h1>
+                    </div>
+                  </div>
+                  <!-- /sbis-poc/app/issues/664-->
+                  <!-- <div class="col-lg-4 col-md-6 text-lg-center text-md-left pt-md-2 pt-lg-0">
+
+                  </div> -->
+                  <div class="col-lg-8 col-md-8 col-sm-7 col-12 text-right pt-md-2 pt-lg-0">
+                    <div class="row">
+                      <div class="col-sm-9 col-7">
+                        <div class="filterBtn mr-4 cursor" (click)="refinePanelDisplay()">Filters</div>
+                      </div>
+                      <div class="col-sm-3 col-5">
+                        <button class="btn btn-primary btn-sm" type="button" (click)="addRooms()">ADD</button>
+                      </div>
+                    </div>
+                    <!-- <div class="filterBtn mr-4 cursor" (click)="refinePanelDisplay()">Filters</div>
+                    <button type="button" class="btn btn-primary btn-sm" (click)="addRooms()">ADD</button> -->
+                  </div>
+                </div>
+
+                <div class="content table-responsive for-medium search-result not-for-mobile">
+                  <p-table [value]="resdata" [paginator]="resdata.length > 10" [rows]="10">
+                    <h1>{{title}}</h1>
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th scope="col">Category</th>
+                        <th class="text-right" scope="col">No Of Rooms</th>
+                        <th class="text-right" scope="col">Charge</th>
+                        <th scope="col"></th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-rowData let-i="rowIndex">
+                      <tr>
+                        <td>
+                          {{rowData.category}}
+                        </td>
+                        <td class="text-right">
+                          {{rowData.noOfRooms}}
+                        </td>
+                        <td class="text-right">
+                          {{'SEARCH.SEARCH_INR_SIGN' | translate}} {{rowData.charge}}
+                        </td>
+                        <td class="text-right">
+                          <span ngbTooltip="Edit Room Category" container="body"
+                            (click)="fillSaveRoomFormField(rowData)" class="cursor">
+                            <img class="grey" src="../../../../../assets/image/edit.svg" height="15" alt="">
+                          </span>
+                          &nbsp;&nbsp;&nbsp;&nbsp;
+                          <span ngbTooltip="Delete Room Category" container="body"
+                            (click)="deleteRoomCategory(i, rowData)" class="cursor">
+                            <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                          </span>
+                        </td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </div>
+                <div class="content table-responsive for-medium search-result for-very-small">
+                  <p-table [value]="resdata" [paginator]="isPaginator" [rows]="10">
+                    <ng-template pTemplate="body" let-rowData let-i="rowIndex">
+                      <tr>
+                        <ng-container>
+                          <td class="mobile-table">
+                            <table>
+                              <tr>
+                                <td class="small-header">Category</td>
+                                <td class="mb-0">{{rowData.category}}</td>
+                              </tr>
+                              <tr>
+                                <td class="small-header">No Of Rooms</td>
+                                <td class="mb-0">{{rowData.noOfRooms}}</td>
+                              </tr>
+                              <tr>
+                                <td class="small-header">Charge</td>
+                                <td class="mb-0">{{'SEARCH.SEARCH_INR_SIGN' | translate}} {{rowData.charge}}</td>
+                              </tr>
+                              <tr>
+                                <td class="small-header"></td>
+                                <td class="mb-0">
+                                  <div class="row text-right">
+                                    <div class="col-6">
+                                      <span ngbTooltip="Edit Room Category" container="body"
+                                        (click)="fillSaveRoomFormField(rowData)" class="cursor">
+                                        <img class="grey" src="../../../../../assets/image/edit.svg" height="15" alt="">
+                                      </span>
+                                    </div>
+                                    <div class="col-6">
+                                      <span ngbTooltip="Delete Room Category" container="body"
+                                        (click)="deleteRoomCategory(i, rowData)" class="cursor">
+                                        <img class="grey" src="../../../../../assets/image/delete.svg" height="15"
+                                          alt="">
+                                      </span>
+                                    </div>
+                                  </div>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </ng-container>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<p-sidebar [(visible)]="visibleSidebarRoom" [dismissible]="false" [showCloseIcon]="false" appendTo="body"
+  position="right" styleClass="modal-sidebar" styleClass="room-sidebar">
+  <div (click)="closeSideBar()" class="close-btn cursor"><i class="fas fa-times"></i></div>
+  <div class="row">
+    <div class="col-md-12">
+      <!-- <h1>{{'INVOICE.INVOICE' | translate}}</h1> -->
+      <h1 class="font-size-for-room-sidebar-title">{{title}}</h1>
+    </div>
+    <!-- <div class="col-md-6">
+      <button type="button" class="close float-right" (click)="closeSideBar()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+
+    </div> -->
+
+  </div>
+
+  <section>
+    <div class="sidebarList">
+      <div class="row page-content">
+        <div class="col-lg-12">
+          <form [formGroup]="saveRoomForm">
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group">
+                  <label class="page-header">Room Category</label>
+                  <input type="text" class="form-control" formControlName="roomCatagory" #category required
+                    (blur)="checkDuplicateCategory(category.value)">
+                  <span *ngIf="submitted && saveRoomForm.get('roomCatagory').errors ">
+                    <span *ngIf="saveRoomForm.get('roomCatagory').errors.required" class="validation-error">* Room
+                      category is required </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group">
+                  <label class="page-header">Description
+                    <span class="optional-label"> (Optional)</span>
+                  </label>
+                  <input type="text" class="form-control " formControlName="description">
+
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="row">
+
+                <div class="col-md-4 col-sm-6 col-12">
+                  <div class="form-group">
+                    <label class="page-header">No of Rooms</label>
+                    <input type="text" class="form-control" style="width: 94px;" formControlName="noOfRooms"
+                      numbersOnly [readonly]="isDisabledNext" maxlength="3">
+                    <span *ngIf="submitted && saveRoomForm.get('noOfRooms').errors ">
+                      <span *ngIf="saveRoomForm.get('noOfRooms').errors.required" class="validation-error">* No of room
+                        is required </span>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12">
+                  <div class="form-group">
+                    <label class="page-header">Bed Charge / day</label>
+                    <span style="display: inline-flex;">
+                      <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}} 
+                      </strong></span> 
+                      <span><input type="text" class="form-control input-50" formControlName="bedChargesPerDay"
+                      (input)="enableEffectiveDate($event)" numbersOnly required maxlength="5" style="padding-left: 6px !important;"></span>
+                    </span>  
+                   </div>
+                  <span *ngIf="submitted && saveRoomForm.get('bedChargesPerDay').errors ">
+                    <span *ngIf="saveRoomForm.get('bedChargesPerDay').errors.required" class="validation-error">* Bed
+                      Charge / day is required </span>
+                  </span>
+                </div>
+
+                <div class="col-md-3 col-sm-6 col-12">
+                  <label>
+                    <input type="checkbox" value="" formControlName="acFlag" [checked]="isChecked"
+                      (change)="statusChange($event)">
+                      AC Room</label>
+                </div>
+
+
+              </div>
+              <!--end of row 1-->
+
+              <div class="row">
+                <div class="col-md-4 col-sm-6 col-12">
+                  <label>
+                    <input type="checkbox" value="" formControlName="dayRentalFlag"
+                      (change)="changeDayRentalFlag($event)">
+                    Day Rental</label>
+                </div>
+                <div *ngIf="showDayCharge" class="col-md-7 col-sm-6 col-12">
+                  <div class="form-group">
+                     <label class="page-header">Day Charge</label>
+                    <span style="display: inline-flex;">
+                      <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}} 
+                      </strong></span> 
+                    <input type="text" class="form-control input-50" [readOnly]="disableDayRental"
+                      (input)="enableEffectiveDate($event)" formControlName="dayCharges" numbersOnly style="padding-left: 6px !important;">
+                    </span>
+                  </div>
+                  <span *ngIf="submitted && saveRoomForm.get('dayCharges').errors">
+                    <span
+                      *ngIf="saveRoomForm.get('dayCharges').value || saveRoomForm.get('dayCharges').errors.required"
+                      class="validation-error">* Day charge is required </span>
+                  </span>
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col-md-4 col-sm-6 col-12">
+                  <label>
+                    <input type="checkbox" value="" formControlName="extraPersonAllowedFlag"
+                      (change)="changeExtraPersonFlag($event)">
+                    Extra Person Allowed</label>
+                </div>
+
+
+                <div *ngIf="showExtraPersonCharge" class="col-md-7 col-sm-6 col-12 pr-0">
+                  <div class="form-group">
+                    <label class="page-header">Extra Person Charge / day</label>
+                    <span style="display: inline-flex;">
+                      <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}} 
+                      </strong></span> 
+                    <input type="text" class="form-control input-50" [readOnly]="disabledExtraPersonAllowed"
+                      (input)="enableEffectiveDate($event)" formControlName="extraPersonChargePerDay" numbersOnly style="padding-left: 6px !important;"
+                      required>
+                    </span>
+                  </div>
+                  <span *ngIf="submitted && saveRoomForm.get('extraPersonChargePerDay').errors">
+                    <span
+                      *ngIf="saveRoomForm.get('extraPersonChargePerDay').value || saveRoomForm.get('extraPersonChargePerDay').errors.required"
+                      class="validation-error">* Extra person charge is required </span>
+                  </span>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12 col-lg-12">
+                  <div class="form-group">
+                    <label class="page-header">Rate Effective From</label>
+                    <span class="float-left"><input type="text" placeholder="DD-MM-YYYY" required bsDatepicker
+                        [bsConfig]="{ dateInputFormat: dateFormat,showWeekNumbers: false }" class="form-control date"
+                        formControlName="rateEffectiveFrom" #dp="bsDatepicker" [readonly]="true"
+                        [isDisabled]="disabeledCalender" [minDate]="minDate">
+                      <span *ngIf="shwMsg && submitted && saveRoomForm.get('rateEffectiveFrom').errors ">
+                        <span *ngIf="saveRoomForm.get('rateEffectiveFrom').errors.required" class="validation-error">*
+                          Please specify date from which rate is effective</span>
+                      </span>
+
+                    </span>
+                    <span class="pt-2"><i (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen"
+                        class="far fa-calendar-alt"></i></span>
+                  </div>
+                </div>
+              </div>
+              <!--end of row 2-->
+
+              <div class="row" *ngIf="!isEdit">
+                <div class="col-12 text-right" style="margin-bottom: 5px;">
+                  <button type="button" (click)="goToNext()" [disabled]="isDisabledNext"
+                    class="btn btn-primary btn-sm">Next</button>
+                </div>
+                <!-- <div class="col-6">
+                  <button type="submit" (click)="cancel()"
+                  class="btn btn-primary btn-sm">Cancel</button>
+
+               </div> -->
+              </div>
+            </div>
+
+
+            <!--start of card 2-->
+            <div class="card roomPanel" *ngIf="showNextPanel" style="margin-top: 10px;">
+              <label *ngIf="hideChkBox">
+                <input type="checkbox" [checked]="false" [disabled]="isCheckBoxDisbl" (change)="chkBedNo($event)">
+                Same no. of beds in all rooms</label>
+              <div class="content table-responsive small-hide-for-sidebar-table">
+                <table style="width: 100.1%;" class="">
+                  <thead>
+                    <tr class="">
+                      <th style="width: 15%;"></th>
+                      <th style="width: 24%;">Room No/Name</th>
+                      <th>No of beds</th>
+                      <th>Department</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody formArrayName="roomDto" *ngIf="roomDto.length > 0">
+                    <tr *ngFor="let room of saveRoomForm.get('roomDto').controls; let i = index" [formGroup]="room"
+                      [attr.id]="'tr'+i">
+                      <td style="width: 90px;">
+                        Room {{i+1}}
+                      </td>
+                      <td>
+                        <input type="text" class="form-control input-lg" formControlName="roomNo"  (input)="processDuplicateCheck($event,i)" required>
+                        <span *ngIf="submitted && saveRoomForm.get('roomDto').controls[i].get('roomNo').errors ">
+                          <span *ngIf="saveRoomForm.get('roomDto').controls[i].get('roomNo').errors.required"
+                            class="validation-error">* No of room/Name is required </span>
+                        </span>
+                      </td>
+                      <td class="">
+                        <input type="text" class="form-control input-sm" formControlName="noBeds" required>
+                        <span *ngIf="submitted && saveRoomForm.get('roomDto').controls[i].get('noBeds').errors ">
+                          <span *ngIf="saveRoomForm.get('roomDto').controls[i].get('noBeds').errors.required"
+                            class="validation-error">* No of beds</span>
+                        </span>
+                      </td>
+                      <td>
+                        <p-dropdown [style]="{'width':'100%'}" [options]="departmentList" formControlName="department"
+                          (onChange)="changeEntity(selectedValue.value)" #selectedValue placeholder="Select department"
+                          [showClear]="true" class="border-none custom-w-100" [appendTo]="body"></p-dropdown>
+                        <!-- <select  class="form-control" (change)="changeEntity(selectedValue.value)" #selectedValue formControlName="department">
+                           <option *ngFor="let d of departmentList" [value]="d.departmentPk">{{d.department}}</option>  
+                        </select> -->
+                      </td>
+                      <td>
+                        <span ngbTooltip="Delete Room" container="body" (click)="deleteRoom(i, room)" class="cursor">
+                          <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="text-right"><button type="button" class="btn btn-secondary btn-sm add-row"
+                    (click)="addRoomData()">
+                    <i class="fas fa-plus-square"></i>&nbsp;{{'PRESCRIPTION.ADD_ROW_LINK'| translate}}</button>
+                </div>
+              </div>
+              <div class="content table-responsive small-show-for-sidebar-table">
+                <div *ngFor="let room of saveRoomForm.get('roomDto').controls; let i = index" [formGroup]="room"
+                  [attr.id]="'tr'+i">
+                  <table>
+                    <tr class="text-left">
+                      <td class="mobile-table">
+                        <table class="w-100">
+                          <tr>
+                            <td class="small-header"></td>
+                            <td class="mb-0">Room {{i+1}}</td>
+                          </tr>
+                          <tr>
+                            <td class="small-header">Room No/Name</td>
+                            <td class="mb-0">
+                              <input type="text" class="form-control input-sm" formControlName="roomNo" required>
+                              <span *ngIf="submitted && saveRoomForm.get('roomDto').controls[i].get('roomNo').errors ">
+                                <span *ngIf="saveRoomForm.get('roomDto').controls[i].get('roomNo').errors.required"
+                                  class="validation-error">* No of room/Name is required </span>
+                              </span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="small-header">No of beds</td>
+                            <td class="mb-0">
+                              <input type="text" class="form-control input-sm text-right" formControlName="noBeds"
+                                required>
+                              <span *ngIf="submitted && saveRoomForm.get('roomDto').controls[i].get('noBeds').errors ">
+                                <span *ngIf="saveRoomForm.get('roomDto').controls[i].get('noBeds').errors.required"
+                                  class="validation-error">* No of beds</span>
+                              </span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="small-header">Department</td>
+                            <td class="mb-0">
+                              <p-dropdown [style]="{'width':'114%'}" [options]="departmentList"
+                                formControlName="department" (onChange)="changeEntity(selectedValue.value)"
+                                #selectedValue placeholder="Select department" [showClear]="true"
+                                class="border-none custom-w-100" [appendTo]="body"></p-dropdown>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="small-header"></td>
+                            <td class="mb-0 text-right">
+                              <span ngbTooltip="Delete Room" container="body" (click)="deleteRoom(i, room)"
+                                class="cursor mr-4">
+                                <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                              </span>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <div class="text-right"><button type="button" class="btn btn-secondary btn-sm add-row"
+                    (click)="addRoomData()">
+                    <i class="fas fa-plus-square"></i>&nbsp;{{'PRESCRIPTION.ADD_ROW_LINK'| translate}}</button>
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-12 text-right">
+                  <button type="button" class="btn btn-secondary btn-sm mr-2" (click)="goTocancel()" *ngIf="!isEdit">Cancel</button>
+                  <button type="button" [disabled]="!saveRoomForm.dirty" class="btn btn-primary btn-sm"
+                    (click)="submit()">Save</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</p-sidebar>

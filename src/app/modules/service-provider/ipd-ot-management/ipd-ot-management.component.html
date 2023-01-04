@@ -1,0 +1,466 @@
+<!-- 
+/*
+*  * |///////////////////////////////////////////////////////////////////////|
+*  * |                                                                       |
+*  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+*  * | All Rights Reserved                                                   |
+*  * |                                                                       |
+*  * | This document is the sole property of StellaBlue Interactive          |
+*  * | Services Pvt. Ltd.                                                    |
+*  * | No part of this document may be reproduced in any form or             |
+*  * | by any means - electronic, mechanical, photocopying, recording        |
+*  * | or otherwise - without the prior written permission of                |
+*  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+*  * |                                                                       |
+*  * |///////////////////////////////////////////////////////////////////////|
+*  */
+/* 
+-->
+
+<div class="row  page-content">
+  <div class="col-12">
+
+      <!-- OT LIST DISPLAY START -->
+      <div class="row" *ngIf="htmlElements.showOtListSection">
+          <div class="col-12">
+            <div class="row">
+              <!-- <div class="col-md-2"></div> -->
+              <div class="col-8" *ngIf="otMasterDetailsList.length> 0; else noDataFoundBlock"> <!--Working on app/issue/1511-->
+                <div class="content table-responsive search-result not-for-mobile">
+                  <p-table [value]="otMasterDetailsList" [paginator]="otMasterDetailsList.length>10" [rows]="10">
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th width="26%" scope="col">Name</th>
+                        <th class="text-center" width="26%" scope="col">Bed No.</th>
+                        <th class="text-right" width="28%" scope="col">Rate</th>
+                        <th width="10%" scope="col"></th> <!--Working on app/issue/1511-->
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-operationTheater let-i="rowIndex">
+                      <tr>
+                        <td>
+                          {{operationTheater.name}}
+                        </td>
+                        <td class="text-center">
+                          <p *ngFor="let bedResource of operationTheater.otBedResourceList">
+                            <span>{{bedResource.resourceName}}</span>
+                          </p>
+                        </td>
+                        <td class="text-right">
+                          <div *ngIf="operationTheater.otRate.rateType=='FIX' ; else slabBlock">
+                            {{operationTheater.otRate.totalCharge==null?'N/A':operationTheater.otRate.totalCharge | currency:'INR'}}
+                            <span *ngIf="operationTheater.otRate.chargeUnitValue!=null"> per {{operationTheater.otRate.chargeUnitValue}}
+                              {{operationTheater.otRate.chargeUnit}} </span>
+                          </div>
+                          <ng-template #slabBlock>
+                            <div *ngIf="operationTheater.otVariableRateList.length>0 ">
+                              <p *ngFor="let otVarRate of operationTheater.otVariableRateList">
+
+                                <span *ngIf="otVarRate.slidingRateFlag=='Y' && otVarRate.endRange!=null"> Next
+                                  <span>{{nextHourCalculation(otVarRate)}}</span>
+                                  <span> {{otVarRate.rangeUnit | lowercase }} - </span>
+                                  <span>
+                                    {{otVarRate.rate | currency:'INR' }}
+                                  </span>
+                                  <span>per {{otVarRate.chargeUnitValue}} {{otVarRate.chargeUnit | lowercase}} </span>
+                                </span>
+                                <span *ngIf="otVarRate.slidingRateFlag=='N' && otVarRate.endRange!=null"> Upto
+                                  <span>{{otVarRate.endRange}}</span>
+                                  <span> {{otVarRate.rangeUnit | lowercase}} - </span>
+                                  <span>
+                                    {{otVarRate.rate | currency:'INR'}}
+                                  </span>
+                                  <span *ngIf="otVarRate.chargeUnitValue!=null">per {{otVarRate.chargeUnitValue}} {{otVarRate.chargeUnit | lowercase}} </span>
+                                </span>
+                                <span *ngIf="otVarRate.endRange==null && otVarRate.chargeUnit!=null">More than
+                                  {{otVarRate.startRange}}
+                                  <span> {{otVarRate.rangeUnit | lowercase}} - </span>
+                                  <span>
+                                    {{otVarRate.rate | currency:'INR' }}
+                                  </span>
+                                  <span>per {{otVarRate.chargeUnitValue}} {{otVarRate.chargeUnit | lowercase}} </span>
+                                </span>
+                                <span *ngIf="otVarRate.endRange==null && otVarRate.chargeUnit==null">More than
+                                  {{otVarRate.startRange}}
+                                  <span> {{otVarRate.rangeUnit | lowercase}} - </span>
+                                  <span>
+                                    {{otVarRate.rate | currency:'INR' }}
+                                  </span>
+                                </span>
+                              </p>
+                            </div>
+                          </ng-template>
+                        </td>
+                        <td class="text-right">
+                          <span ngbTooltip="Edit Operation Theater Details" container="body" class="cursor"
+                            (click)="editOtDetails(operationTheater)">
+                            <img class="grey" src="../../../../../assets/image/edit.svg" height="15" alt="">
+                          </span> &nbsp;&nbsp;&nbsp;&nbsp;
+                          <span ngbTooltip="Delete Operation Theater Details" container="body"
+                            class="cursor" (click)="deleteOtDetails(operationTheater)">
+                            <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                          </span>
+                        </td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </div>
+               
+              </div>
+              <ng-template #noDataFoundBlock>
+                <div class="col-12 text-center" style="margin-top:20px;">
+                  <h1>{{currentTab}} not configured</h1>
+                </div>
+              </ng-template>
+            </div>
+            <div [ngClass]="otMasterDetailsList.length>10?'row addNewPosition':'row'">
+              <div class="col-8 text-right" >
+                <button *ngIf="htmlElements.showOtListSection" type="button" class="btn btn-secondary btn-sm "
+                  id="addIpdService" (click)="showOtMasterAddEditSection()">
+                  <i class="fas fa-plus-square"></i>&nbsp;Add Record</button>
+              </div>
+            </div>
+          </div>
+      </div>
+
+      <!-- ADD/EDIT SECTION START -->
+      <div class="row addEditIpdService " *ngIf="htmlElements.showOtMasterAddEditSection">
+          <!-- Working on app/issue/1595 -->
+          <div class="col-12">
+            <form [formGroup]="opearationTheaterForm">
+              <div class="row">
+                <div class="col-4">
+                  <div class="form-group">
+                    <label>OPEARATION THEATER NAME</label>
+                    <input type="text" class="form-control" formControlName="name" required>
+    
+                    <div *ngIf="isSubmitted && opearationTheaterForm.controls.name.errors">
+                      <div class="validation-error" *ngIf="opearationTheaterForm.controls.name.errors.required">This field
+                        is
+                        required</div>
+                    </div>
+                  </div>
+                </div>
+               
+                <div class=" col-2">
+                  <div class="form-group">
+                    <label>Code <span class="optional-label"> (Optional)</span></label>
+                    <input type="text" class="form-control" formControlName="code" >
+    
+                  </div>
+                </div> 
+                
+              </div>
+              
+              <div class="row">
+                <div class="col-9">
+                  <div class="row" formGroupName="otRate" >
+                    <div class="col-12">
+                      <div class="card mt-3 mb-3" style="position: initial;">
+                        <div class="card-header gen-invoice"><h5>CHARGE DETAILS</h5></div>
+                          <div class="card-body">
+                              <div class="row mt-3">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label>Rate Type</label>
+                                        <span class="radio-inline">
+                                          <input type="radio" name="rateType"
+                                            [checked]="opearationTheaterForm.controls.otRate.controls.rateType.value==SBISConstantsRef.IPD_SERVICE_RATE_TYPE.FIX"
+                                            (change)="onRateTypeChange(SBISConstantsRef.IPD_SERVICE_RATE_TYPE.FIX)"> &nbsp;&nbsp; Flat Rate
+                                        </span>
+                                        &nbsp;&nbsp;
+                                        <span class="radio-inline"><input type="radio" name="rateType"
+                                            [checked]="opearationTheaterForm.controls.otRate.controls.rateType.value==SBISConstantsRef.IPD_SERVICE_RATE_TYPE.SLAB"
+                                            (change)="onRateTypeChange(SBISConstantsRef.IPD_SERVICE_RATE_TYPE.SLAB)"> &nbsp;&nbsp; Variable Rate
+                                        </span>
+                                        <div *ngIf="isSubmitted && opearationTheaterForm.controls.otRate.controls.rateType.errors">
+                                          <div class="validation-error" *ngIf="opearationTheaterForm.controls.otRate.controls.rateType.errors.required">This field
+                                            is
+                                            required</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label>Charged By</label>
+                                        <span class="radio-inline">
+                                          <input type="radio" name="chargedBy"
+                                            [checked]="opearationTheaterForm.controls.otRate.controls.chargedBy.value==SBISConstantsRef.IPD_SERVICE_CHARGED_BY.BOTH"
+                                            (change)="onChargedByChange(SBISConstantsRef.IPD_SERVICE_CHARGED_BY.BOTH)"> &nbsp;&nbsp; Both
+                                        </span>
+                                        &nbsp;&nbsp;
+                                        <span class="radio-inline"><input type="radio" name="chargedBy"
+                                            [checked]="opearationTheaterForm.controls.otRate.controls.chargedBy.value==SBISConstantsRef.IPD_SERVICE_CHARGED_BY.CLINIC"
+                                            (change)="onChargedByChange(SBISConstantsRef.IPD_SERVICE_CHARGED_BY.CLINIC)"> &nbsp;&nbsp; Clinic
+                                        </span>
+                                        <div *ngIf="isSubmitted && opearationTheaterForm.controls.otRate.controls.chargedBy.errors">
+                                          <div class="validation-error" *ngIf="opearationTheaterForm.controls.otRate.controls.chargedBy.errors.required">This field
+                                            is
+                                            required</div>
+                                        </div>
+                                      </div>
+                                </div>
+                              </div>
+
+                              <div class="row mt-1">
+                                  <div class="col-12 ">
+                                    <label *ngIf="opearationTheaterForm.controls.otRate.controls.rateType.value==SBISConstantsRef.IPD_SERVICE_RATE_TYPE.FIX">FIX RATE DETAILS</label>
+                                    <label *ngIf="opearationTheaterForm.controls.otRate.controls.rateType.value!=SBISConstantsRef.IPD_SERVICE_RATE_TYPE.FIX">SLAB RATE DETAILS</label>
+                                  </div>
+                              </div>
+
+                              <div class="row" style="border-top:1px solid #662d91">
+                                <div class="col-12">
+                                    <div class="row pt-2" id="fixedRateSection" *ngIf="opearationTheaterForm.controls.otRate.controls.rateType.value==SBISConstantsRef.IPD_SERVICE_RATE_TYPE.FIX">
+                                                      
+                                        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-4 " *ngIf="opearationTheaterForm.controls.otRate.controls.chargedBy.value==SBISConstantsRef.IPD_SERVICE_CHARGED_BY.BOTH">
+                                          <div class="form-group">
+                                            <label>Doctor Charge</label>
+                                            <span style="display:inline-flex;">
+                                              <span style="margin-top:6px"><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                                                </strong>
+                                              </span>
+                                              <input style="padding:6px !important" type="text" class="form-control"
+                                                formControlName="providerCharge"
+                                                [readonly]="opearationTheaterForm.controls.otRate.controls.chargedBy.value==SBISConstantsRef.IPD_SERVICE_CHARGED_BY.CLINIC"
+                                                (blur)="calculateIpdServiceCharge()">
+                                            </span>
+                                            <div *ngIf="isSubmitted && showChargeByError.providerChargeError">
+                                              <div class="validation-error" *ngIf="showChargeByError.providerChargeError">This field
+                                                is
+                                                required</div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-4 ">
+                                          <div class="form-group">
+                                            <label>Clinic Charge </label>
+                                          
+                                            <span style="display:inline-flex;">
+                                              <span style="margin-top:6px"><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                                                </strong>
+                                              </span>
+                                              <input style="padding:6px !important" type="text" class="form-control " formControlName="clinicCharge"
+                                                (blur)="calculateIpdServiceCharge()">
+                                            </span>
+                                            <div *ngIf="isSubmitted && showChargeByError.clinicChargeError">
+                                              <div class="validation-error" *ngIf="showChargeByError.clinicChargeError">This field
+                                                is
+                                                required</div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-4 col-12">
+                                          <div class="form-group">
+                                            <label>Total Charge </label>
+                                            <label *ngIf="totalCharge>0">
+                                              <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}} </strong>
+                                              </span>{{totalCharge}}
+                                            </label>
+                                          </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" id="variableRateSection"
+                    *ngIf="opearationTheaterForm.controls.otRate.controls.rateType.value==SBISConstantsRef.IPD_SERVICE_RATE_TYPE.SLAB">
+                    <div class="col-11">
+                      
+                      <div  class="content table-responsive no-btm-border"
+                        *ngIf="otVariableRateList.length > 0">
+                        <table class="table" id="serviceListTable">
+                         
+                          <tbody formArrayName="otVariableRateList" *ngIf="otVariableRateList">
+                            <tr *ngFor="let variableRate of opearationTheaterForm.get('otVariableRateList').controls; let i = index"
+                              [formGroup]="variableRate" [attr.id]="'tr'+i">
+                              <td >{{i+1}}.</td>
+                              <td >                                 
+                                <!-- <label class="form-control" *ngIf="i==0">Upto</label> -->
+                                <select class="form-control" formControlName="chargePattern" (change)="onPatternChange($event)"
+                                  required>
+                                  <option [value]="SBISConstantsRef.IPD_SERVICE_CHARGE_PATTERN.UPTO">
+                                    {{SBISConstantsRef.IPD_SERVICE_CHARGE_PATTERN.UPTO}}</option>
+                                  <option [value]="SBISConstantsRef.IPD_SERVICE_CHARGE_PATTERN.NEXT" *ngIf="i>0">
+                                    {{SBISConstantsRef.IPD_SERVICE_CHARGE_PATTERN.NEXT}}</option>
+                                  <option [value]="SBISConstantsRef.IPD_SERVICE_CHARGE_PATTERN.MORE_THAN" *ngIf="i>0">
+                                    {{SBISConstantsRef.IPD_SERVICE_CHARGE_PATTERN.MORE_THAN}}</option>
+        
+                                  <option [value]="SBISConstantsRef.IPD_SERVICE_CHARGE_PATTERN.FLAT" *ngIf="i==0">
+                                    {{SBISConstantsRef.IPD_SERVICE_CHARGE_PATTERN.FLAT}}</option>
+                                </select>
+                                <span
+                                  *ngIf="showVariableRateValidationError && opearationTheaterForm.get('otVariableRateList').controls[i].get('chargePattern').errors">
+                                  <span
+                                    *ngIf="opearationTheaterForm.get('otVariableRateList').controls[i].get('chargePattern').errors.required"
+                                    class="validation-error"> {{'VALIDATION.VALIDATION_REQUIRED' | translate}} </span>
+                                </span>
+                              </td>
+                              <td
+                                *ngIf="opearationTheaterForm.get('otVariableRateList').controls[i].get('chargePattern').value!=SBISConstantsRef.IPD_SERVICE_CHARGE_PATTERN.FLAT">
+                                <span style="display: inline-flex;">
+                                  <span style="display: inline-flex;width: 50%;">
+                                    <span>
+                                      <input type="text" class="form-control serviceListTableInput" formControlName="inputValue"
+                                        numberOnly (blur)="checkInputValueForCurrentVarRate($event,i)">
+                                      <span
+                                        *ngIf="showVariableRateValidationError && opearationTheaterForm.get('otVariableRateList').controls[i].get('rangeUnit').errors">
+                                        <span
+                                          *ngIf="opearationTheaterForm.get('otVariableRateList').controls[i].get('rangeUnit').errors.required"
+                                          class="validation-error"> {{'VALIDATION.VALIDATION_REQUIRED' | translate}} </span>
+                                      </span>
+                                    </span>
+                                  </span>
+                                  <span>&nbsp;&nbsp; &nbsp;&nbsp;</span>
+                                  <span>
+                                    <select class="form-control" formControlName="rangeUnit">
+                                      <option value="HOUR">HOUR</option>
+                                      <option value="MINUTES">MINUTES</option>
+                                    </select>
+                                  </span>
+                                </span>
+                              </td>
+                              <td>
+                                <span style="display: inline-flex;">
+                                  <span><strong>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                                    </strong>
+                                  </span>
+                                  <span>
+                                    <input type="text" class="form-control serviceListTableInput" formControlName="rate"
+                                      numberOnly>
+                                    <span
+                                      *ngIf="showVariableRateValidationError && opearationTheaterForm.get('otVariableRateList').controls[i].get('rate').errors">
+                                      <span
+                                        *ngIf="opearationTheaterForm.get('otVariableRateList').controls[i].get('rate').errors.required"
+                                        class="validation-error"> {{'VALIDATION.VALIDATION_REQUIRED' | translate}} </span>
+                                    </span>
+                                  </span>
+                                </span>
+                              </td>
+                              <td>
+                                <span style="display: inline-flex;">
+                                  <span style="margin-top:5px;">Per&nbsp;&nbsp;</span>
+                                  <span style="width: 50%;">
+                                    <input type="text" formControlName="chargeUnitValue"
+                                      class="form-control serviceListTableInput" numberOnly>
+                                  </span>
+                                  <span>&nbsp;&nbsp;</span>
+                                  <span>
+                                    <select class="form-control" formControlName="chargeUnit">
+                                      <option value="HOUR">HOUR</option>
+                                      <option value="MINUTES">MINUTES</option>
+                                    </select>
+                                  </span>
+                                </span>
+                                <!--  <div class="row">
+                                      <div class="col-2 no-gutters"><span>Per</span></div>
+                                    <div class="col-3 no-gutters">
+                                      <input type="text" formControlName="chargeUnitValue" class="form-control" numberOnly>
+                                    </div>
+                                    
+                                    <div class="col-3 no-gutters">
+                                      <select class="form-control" formControlName="chargeUnit">
+                                        <option value="HOUR">HOUR</option>
+                                        <option value="MINUTES">MINUTES</option>
+        
+                                      </select>
+                                    </div>
+                                  </div> -->
+                              </td>
+                              <td>
+                                <span ngbTooltip="Delete Rate" container="body" class="cursor" (click)="deleteVariableRate(i)">
+                                  <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                                </span>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                       <div class="row"
+                        *ngIf="opearationTheaterForm.get('otVariableRateList').controls[0].get('chargePattern').value!=SBISConstantsRef.IPD_SERVICE_CHARGE_PATTERN.FLAT">
+                        <div class="col-11 text-right">
+                          
+                          <button type="button" class="btn btn-secondary btn-sm add-row" id="addVariableRate"
+                            (click)="addVariableRateForm()">
+                            <i class="fas fa-plus-square"></i>&nbsp;{{'PRESCRIPTION.ADD_ROW_LINK'| translate}}</button>
+                        </div>
+                      </div> 
+                    </div>
+                                    </div>
+                                </div>
+                              </div>
+                          </div>
+                      </div>
+                          
+                          
+                    </div>
+                  </div>
+                </div>
+                <div class="col-3">
+                    <div class="row" id="otBedResourceListSection">
+                        <div class="col-12">
+                            <div class="card mt-3 mb-3" style="position: initial;">
+                                <div class="card-header gen-invoice" style="border-bottom: 1px solid #5e237c;">
+                                  <label><h5>BED DETAILS</h5></label>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="content table-responsive" style="height:200px;max-height:calc(100vh - 200px);overflow-y:auto;">
+                                                <table style="width: 100%;" >
+                                                  <thead>
+                                                    <tr class="">
+                                                      <th style="width: 30%;">Sl No.</th>
+                                                      <th style="width: 60%;">BED No</th>
+                                                      <th style="width: 10%;"></th>
+                                                    </tr>
+                                                  </thead>
+                                                  <tbody formArrayName="otBedResourceList" *ngIf="otBedResourceList.length > 0">
+                                                    <tr *ngFor="let otBedResource of opearationTheaterForm.get('otBedResourceList').controls; let i = index" [formGroup]="otBedResource"
+                                                      [attr.id]="'tr'+i">
+                                                      <td style="width: 90px;">
+                                                      {{i+1}}.
+                                                      </td>
+                                                      <td>
+                                                        <input type="text" class="form-control input-lg" formControlName="resourceName"  required>
+                                                        <span *ngIf="submitted && opearationTheaterForm.get('otBedResourceList').controls[i].get('resourceName').errors ">
+                                                          <span *ngIf="opearationTheaterForm.get('otBedResourceList').controls[i].get('resourceName').errors.required"
+                                                            class="validation-error">* Bed No. is required </span>
+                                                        </span>
+                                                      </td>
+                                                    
+                                                      <td>
+                                                        <span ngbTooltip="Delete Bed" container="body" (click)="deleteOtBed(i,otBedResource)" class="cursor">
+                                                          <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                                                        </span>
+                                                      </td>
+                                                    </tr>
+                                                  </tbody>
+                                                </table>
+                                                <div class="text-right"><button type="button" class="btn btn-secondary btn-sm add-row"
+                                                    (click)="addOtBedResourceForm()">
+                                                    <i class="fas fa-plus-square"></i>&nbsp;{{'PRESCRIPTION.ADD_ROW_LINK'| translate}}</button>
+                                                </div>
+                                              </div>
+                                        </div>
+                                      </div>
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+              </div>
+    
+             
+              <div class="row">
+                <div class="col-12 text-center">
+                  <button class="btn btn-secondary" (click)="showOtListSection()" type="button">CANCEL</button>
+                  <button class="btn btn-primary" (click)="attempToSaveOtDetails()" type="button">SAVE</button>
+                </div>
+              </div>
+            </form>
+          </div>
+      </div>
+
+
+  </div>
+</div>
+

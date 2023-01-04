@@ -1,0 +1,87 @@
+<div class="row" *ngIf="allDataFetched">
+  <div class="col-lg-12">
+            <form [formGroup]="form">
+            <div class="row top-btn-area">
+                <div class="col-lg-10"></div>
+                <div class="col-lg-2">
+                    <button type="button" [disabled]="isAddNewButtonDisable" (click)="addOccupation()" class="btn btn-sm btn-primary float-right">
+                                {{ 'USER_PROFILE.USER_PROFILE_OCCUPATION_ADD_LABEL' | translate }}</button>
+                </div>
+            </div>
+              <div class="alert alert-warning" *ngIf="form.controls.occupation.controls.length==0">
+                  {{ 'USER_PROFILE.USER_PROFILE_OCCUPATION_EMPTY_ERROR_MESSAGE' | translate }}
+              </div><br>
+              <div formArrayName="occupation" class="align-middle row" *ngIf="form.controls.occupation.controls.length>0">
+
+                <div class="col-lg-12">
+                    <div class="table-responsive">
+                      <table class="table table-fixed">
+                              <thead>
+                                <tr class="d-flex">
+                                  <th class="col-4" scope="col">{{ 'USER_PROFILE.USER_PROFILE_OCCUPATION_NATURE_OF_JOB' | translate }}</th>
+                                  <th class="col-4" scope="col">{{ 'USER_PROFILE.USER_PROFILE_OCCUPATION_TYPE_OF_JOB' | translate }}</th>
+                                  <th class="col-2" scope="col">{{ 'USER_PROFILE.USER_PROFILE_OCCUPATION_WORKING_HOURS' | translate }}</th>
+                                  <th class="col-2" scope="col">Actions</th>
+                                </tr>
+                              </thead>
+
+                              <tbody class="single-table">
+                                  <tr *ngFor="let ctrl of form.controls.occupation.controls; let i = index" [formGroupName]="i">
+                                      <td class="col-4" *ngIf="!ctrl.get('isEdit').value">
+                                          <p class="textDot">{{ctrl.get('natureOfJob').value}}</p>
+                                      </td>
+                                      <td class="col-4" *ngIf="ctrl.get('isEdit').value">
+                                          <select formControlName="natureOfJob">
+                                              <option *ngFor="let job of natureOfJob" value="{{job}}">{{job}}</option>
+                                          </select>
+                                          <div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.natureOfJob.dirty">
+                                              <span *ngIf="ctrl.hasError('required', 'natureOfJob')" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                          </div>
+                                      </td>
+                                      <td class="col-4" *ngIf="!ctrl.get('isEdit').value">
+                                          <p class="textDot" data-toggle="tooltip" title="{{ctrl.get('typeOfJob').value}}">{{ctrl.get('typeOfJob').value}}</p>
+                                      </td>
+                                      <td class="col-4" *ngIf="ctrl.get('isEdit').value">
+                                          <input type="text" formControlName="typeOfJob" />
+                                          <div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.typeOfJob.dirty">
+                                              <span *ngIf="ctrl.hasError('required', 'typeOfJob')" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                              <span *ngIf="ctrl.hasError('pattern', 'typeOfJob')" class="validation-error">{{ 'VALIDATION.VALIDATION_TYPE_OF_JOB_LETTER' | translate }}</span>
+                                          </div>
+                                      </td>
+                                      <td class="col-2" *ngIf="!ctrl.get('isEdit').value">
+                                          <p class="textDot">{{ctrl.get('workingHours').value}}</p>
+                                      </td>
+                                      <td class="col-2" *ngIf="ctrl.get('isEdit').value">
+                                          <input type="number" formControlName="workingHours" min="1" (keydown)="onKeydown($event)"/>
+                                          <div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.workingHours.dirty">
+                                              <span *ngIf="ctrl.hasError('required', 'workingHours')" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                              <span *ngIf="ctrl.hasError('min', 'workingHours')" class="validation-error">{{ 'VALIDATION.VALIDATION_OCCUPATION_WORKING_HOURS_MIN' | translate }}</span>
+                                              <span *ngIf="ctrl.hasError('max', 'workingHours')" class="validation-error">{{ 'VALIDATION.VALIDATION_OCCUPATION_WORKING_HOURS_MAX' | translate }}</span>
+                                          </div>
+                                      </td>
+                                      <td class="col-2" *ngIf="!ctrl.get('isEdit').value">
+                                          <span *ngIf="isAddNewButtonDisable != true" (click)="editOccupation(ctrl)" ngbTooltip="Edit Occupation" class="table-action-btn grey cursor"><img src="../../../../../assets/image/edit.svg" height="20" alt=""></span>
+                                          <span *ngIf="isAddNewButtonDisable == true" class="table-action-btn grey"><img src="../../../../../assets/image/edit.svg" height="20" alt=""></span>
+                                          <span *ngIf="isAddNewButtonDisable != true" ngbTooltip="delete Occupation" (click)="deleteOccupation(ctrl, i)" class="table-action-btn grey cursor"><img src="../../../../../assets/image/delete.svg" height="20" alt=""></span>
+                                          <span *ngIf="isAddNewButtonDisable == true" class="table-action-btn grey"><img src="../../../../../assets/image/delete.svg" height="20" alt=""></span>
+                                      </td>
+                                      <td class="col-2" *ngIf="ctrl.get('isEdit').value ">
+                                          <span [hidden]="ctrl.get('id').value==0" ngbTooltip="Cancel" (click)="backButtonOp(ctrl, i)" class="table-action-btn grey cursor"><img src="../../../../../assets/image/cancel.svg" height="20" alt=""></span>
+                                          <span [hidden]="ctrl.get('id').value!==0" ngbTooltip="Cancel" (click)="backButtonOp(ctrl, i)" class="table-action-btn grey cursor"><img src="../../../../../assets/image/cancel.svg" height="20" alt=""></span>
+
+                                          <span ngbTooltip="Save Occupation" (click)="saveOccupation(ctrl)" class="table-action-btn grey cursor"><img src="../../../../../assets/image/save.svg" height="22" alt=""></span>
+                                          <!-- <span ngbTooltip="delete Occupation" (click)="deleteOccupation(ctrl, i)" class="table-action-btn grey cursor"><img src="../../../../../assets/image/delete.svg" height="20" alt=""></span> -->
+                                      </td>
+                                  </tr>
+                              </tbody>
+                          </table>
+                        </div>
+                </div>
+              </div>
+              <!-- <div class="col-sm-12">
+                  <button type="button" (click)="addOccupation()" class="btn btn-sm btn-primary">
+                      {{ 'USER_PROFILE.USER_PROFILE_OCCUPATION_ADD_LABEL' | translate }}</button>
+              </div> -->
+              </form>
+  </div>
+</div>

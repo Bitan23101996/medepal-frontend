@@ -1,0 +1,398 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+ <ng-template #calendarModal>
+  <form [formGroup]="appointmentForm">
+    <div class="modal-header">
+      <h4 class="modal-title">APPOINTMENT</h4>
+      <button type="button" class="close float-right" (click)="modalRef.hide();addNew=false;isModalOpened=false;" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <!--  doctor appointment body div start  -->      
+      <app-common-prescription [formGroup]="appointmentForm" [dtFormat]="dtFormat" [entityName]="entityName"
+        [chamberList]="chamberList" [endTimingErrorFlag]="endTimingErrorFlag" [isModal]="true"
+        [startTimingErrorFlag]="startTimingErrorFlag" [submitted]="submitted"
+        [isNewMinor]="isNewMinor" [isMinorDisable]="isMinorDisable" [isGender]="isGender"
+        [displaySidebar]="displaySidebar" [associatedUserDetailsList]="minorUsers" [getUserDetails]="getUserDetails"
+        [usingComponentStr]="usingComponentStr" [isDob]="isDob" [isPopulated]="isPopulated"
+        (convertTimingOnChange)="convertTiming($event.event, $event.label)" (oncloseList)="emitDisplaySidebar($event)"
+        (emitUserDetails)="emitUserDetails($event)" (emitAssociateUser)="emitAssociateUser($event)"
+         (emitUserAddressDetails)="emitUserAddressDetails($event)" [userAddressDetails]="userAddressDetails"></app-common-prescription>
+
+    </div>
+    <div class="modal-footer" *ngIf="appointmentForm.controls.appointmentState.value!==null">
+      <button type="button" class="btn btn-primary btn-sm" (click)="viewPrescription(appointmentForm.controls.appointmentRefNo.value)" *ngIf="appointmentForm.controls.appointmentState.value == 'COM'">View</button>
+      <button type="button" class="btn btn-primary btn-sm" (click)="editPrescription(appointmentForm.value, appointmentForm.controls.appointmentRefNo.value)" *ngIf="appointmentForm.controls.appointmentState.value == 'COM' && user_roleName==='DOCTOR'">Edit</button>
+      <!-- Working on app/issues/1185 -->
+      <button type="button" class="btn btn-primary btn-sm" *ngIf="appointmentForm.controls.appointmentState.value==APP_STATE.COMPLETED 
+        || appointmentForm.controls.appointmentState.value==APP_STATE.CONFIRMED
+        || appointmentForm.controls.appointmentState.value==APP_STATE.VIP"
+        (click)="showInvoice(appointmentForm.controls.appointmentRefNo.value)">{{'INVOICE.INVOICE' | translate}}</button>
+      <!--End Working on app/issues/1185 -->
+      <div *ngIf="!isStartVisit">
+        <button type="button" class="btn btn-primary btn-sm"
+          [hidden]="appointmentForm.controls.appointmentState.value==APP_STATE.REQUESTED || appointmentForm.controls.appointmentState.value==APP_STATE.COMPLETED || appointmentForm.controls.appointmentState.value==APP_STATE.VIP"
+          (click)="manageDoctorAppointment(APP_STATE.VIP)">Start Visit</button>
+        <button type="button" class="btn btn-primary btn-sm"
+          *ngIf="appointmentForm.controls.appointmentState.value==APP_STATE.VIP"
+          (click)="manageDoctorAppointment(APP_STATE.VIP)">Resume Visit</button>
+      </div>
+
+      <button type="button" class="btn btn-danger"
+        [hidden]="appointmentForm.controls.appointmentState.value==APP_STATE.REQUESTED || appointmentForm.controls.appointmentState.value==APP_STATE.COMPLETED || appointmentForm.controls.appointmentState.value==APP_STATE.VIP"
+        (click)="rejectOrCancelDoctorAppointment(APP_STATE.CANCELLED)">Cancel Appointment</button>
+
+      <button type="button" class="btn btn-success btn-sm"
+        [hidden]="appointmentForm.controls.appointmentState.value==APP_STATE.CONFIRMED || appointmentForm.controls.appointmentState.value==APP_STATE.COMPLETED || appointmentForm.controls.appointmentState.value==APP_STATE.VIP"
+        (click)="manageDoctorAppointment(APP_STATE.CONFIRMED)">Confirm</button>
+
+      <button type="button" class="btn btn-danger"
+        [hidden]="appointmentForm.controls.appointmentState.value==APP_STATE.CONFIRMED || appointmentForm.controls.appointmentState.value==APP_STATE.COMPLETED || appointmentForm.controls.appointmentState.value==APP_STATE.VIP"
+        (click)="rejectOrCancelDoctorAppointment(APP_STATE.REJECTED)">Reject</button>
+
+    </div>
+    <div class="modal-footer" *ngIf="appointmentForm.controls.appointmentState.value==null">
+      <button type="button" *ngIf="entityName=='DOCTOR'" class="btn btn-primary btn-sm"
+        (click)="saveDoctorAppointment(APP_STATE.CONFIRMED)">Create</button>
+      <button type="button" *ngIf="entityName=='HOSPITAL'" class="btn btn-primary btn-sm"
+        (click)="saveDoctorAppointment(APP_STATE.REQUESTED)">Create</button>
+    </div>
+  </form>
+
+
+
+  <!-- Working on app/issues/1185 -->
+  <p-sidebar [(visible)]="displaySidebarInvoice" [dismissible]="false" [showCloseIcon]="false" appendTo="body"
+    position="right" styleClass="modal-sidebar" [style]="{width:'50%'}">
+    <div class="row">
+      <div class="col-md-6">
+        <h1>{{'INVOICE.INVOICE' | translate}}</h1>
+      </div>
+      <div class="col-md-6">
+        <button type="button" class="close float-right" (click)="closeInvoice()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <!-- <button class="btn btn-primary float-right" type="button" (click)="closeInvoice()">{{'COMMON.CLOSE_BUTTON' | translate}}</button> -->
+      </div>
+    </div>
+    <div *ngIf="displaySidebarInvoice"> <!-- Working on app/issues/1915 -->
+      <app-invoice-voucher [appointmentRefNo]="appointmentRefNo" [invoiceList]="invoiceList"></app-invoice-voucher>
+    </div>
+  </p-sidebar>
+  <!--End Working on app/issues/1185 -->
+
+</ng-template>
+
+<ng-template #prescriptionPreviewModal>
+  <div class="modal-header">
+    <!-- sbis-poc/app/issues/806 -->
+    <!-- <h4 class="modal-title">Prescription</h4> -->
+    <!-- <span class="ml-2" id="download-ico"><app-report [fileName]="fileName" [reportType]="reportType" [pk]="pk"></app-report></span>
+     <span class="ml-2" id="print-ico"><img src="../../../../assets/image/print.svg" height="15" class="cursor"/></span> -->
+    <button type="button" class="close float-right" (click)="modalRef.hide()" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <!-- Working on app/issues/1267 -->
+  <!-- <app-prescription-preview [appRefNo]="appRefNo"></app-prescription-preview>  -->
+  <app-prescription-preview [appRefNo]="appRefNo" [customType]="customType"></app-prescription-preview>
+  <!-- End Working on app/issues/1267 -->
+</ng-template>
+
+<div class="row">
+  <div class="col-md-12">
+  <!--  <div *ngIf="loading" class="cover">
+      <div class="loader">
+          <div class="loading-img"><img width=250px src="../../../../../assets/image/logo.svg"/></div>
+          <div class="loading-txt">Loading<div class="dot-elastic"></div></div>
+      </div>
+    </div> -->
+    <div class="row">
+      <div class="col-md-12 mb-0" *ngIf="entityName == 'HOSPITAL'">
+        <div class="float-left">
+          <h4 class="search-result-left-pen-heading mb-0">{{'COMMON.SEARCH_BY'| translate}}</h4>
+        </div>
+        <div class="text-right doc-calender float-right link-pos-adj custom-mt-3"><a href="javascript:void(0)"
+            (click)="doctorCalendarResetAll()">{{'SEARCH.RESET' | translate }}
+            All</a></div>
+      </div>
+      <div class="col-md-12 mb-4" *ngIf="entityName == 'HOSPITAL'">
+        <form [formGroup]="refineFormGroup">
+          <div class="row">
+            <div class="float-left doctor-calender-custom-style pl-3 pr-3">
+              <div class="float-left mr-3 opd-calendar-doctor-label"><label
+                  class="refine-panel-label-style">{{'SEARCH.SEARCH_FIND_DOCTOR_BY_NAME_SPECIALITY' | translate}}</label>
+              </div>
+              <div class="float-left mt-2 custom-drpdwn custom-width">
+                <p-autoComplete styleClass="autoComplete" formControlName="refineSpecialisation" 
+                  [suggestions]="specializationsListToDisplay" (completeMethod)="getSpecializationList($event)" [dropdown]="true"
+                  [size]="25" placeholder="Search Specialization" [minLength]="1" (onSelect)="preSearchRefinePanel()">
+                  <ng-template let-results pTemplate="item">
+                    <span>{{results}}</span>
+                  </ng-template>
+                </p-autoComplete>
+              </div>
+            </div>
+            <div class="float-left doctor-calender-custom-style pl-3 pr-3">
+              <label
+                class="float-left display-inline-block refine-panel-label-style custom-w-100">{{'SEARCH.DAYS_OF_WEEK' | translate}}</label>
+              <div class="float-left custom-w-100">
+                <div class="form-check float-left ml-2 mr-2 pl-3">
+                  <input class="form-check-input mt-5-custom" type="checkbox" (change)="getCheckedValues('refineScheduleMonDay',$event)" formControlName="refineScheduleMonDay">
+                  <label class="form-check-label days-of-week-custom-style mt-3 ">
+                    <span class="hide-col-for-mobile">{{'SEARCH.MON' | translate }}</span>
+                    <span class="show-col-for-mobile">{{'SEARCH.MON_SHORT' | translate }}</span>
+                  </label>
+                </div>
+                <div class="form-check float-left ml-2 mr-2 pl-3">
+                  <input class="form-check-input mt-5-custom" type="checkbox" (change)="getCheckedValues('refineScheduleTueDay',$event)" formControlName="refineScheduleTueDay">
+                  <label class="form-check-label days-of-week-custom-style hide-col-for-mobile mt-3 ">
+                    <span class="hide-col-for-mobile">{{'SEARCH.TUE' | translate }}</span>
+                    <span class="show-col-for-mobile">{{'SEARCH.TUE_SHORT' | translate }}</span>
+                  </label>
+                </div>
+                <div class="form-check float-left ml-2 mr-2 pl-3">
+                  <input class="form-check-input mt-5-custom" type="checkbox" (change)="getCheckedValues('refineScheduleWedDay',$event)" formControlName="refineScheduleWedDay">
+                  <label class="form-check-label days-of-week-custom-style  mt-3 ">
+                    <span class="hide-col-for-mobile">{{'SEARCH.WED' | translate }}</span>
+                    <span class="show-col-for-mobile">{{'SEARCH.WED_SHORT' | translate }}</span>
+                  </label>
+                </div>
+                <div class="form-check float-left ml-2 mr-2 pl-3">
+                  <input class="form-check-input mt-5-custom" type="checkbox" (change)="getCheckedValues('refineScheduleThuDay',$event)" formControlName="refineScheduleThuDay">
+                  <label class="form-check-label days-of-week-custom-style  mt-3 ">
+                    <span class="hide-col-for-mobile">{{'SEARCH.THU' | translate }}</span>
+                    <span class="show-col-for-mobile">{{'SEARCH.THU_SHORT' | translate }}</span>
+                  </label>
+                </div>
+                <div class="form-check float-left ml-2 mr-2 pl-3">
+                  <input class="form-check-input mt-5-custom" type="checkbox" (change)="getCheckedValues('refineScheduleFriDay',$event)" formControlName="refineScheduleFriDay">
+                  <label class="form-check-label days-of-week-custom-style  mt-3 ">
+                    <span class="hide-col-for-mobile">{{'SEARCH.FRI' | translate }}</span>
+                    <span class="show-col-for-mobile">{{'SEARCH.FRI_SHORT' | translate }}</span>
+                  </label>
+                </div>
+                <div class="form-check float-left ml-2 mr-2 pl-3">
+                  <input class="form-check-input mt-5-custom" type="checkbox" (change)="getCheckedValues('refineScheduleSatDay',$event)" formControlName="refineScheduleSatDay">
+                  <label class="form-check-label days-of-week-custom-style  mt-3 ">
+                    <span class="hide-col-for-mobile">{{'SEARCH.SAT' | translate }}</span>
+                    <span class="show-col-for-mobile">{{'SEARCH.SAT_SHORT' | translate }}</span>
+                  </label>
+                </div>
+                <div class="form-check float-left ml-2 mr-2 pl-3">
+                  <input class="form-check-input mt-5-custom" type="checkbox" (change)="getCheckedValues('refineScheduleSunDay',$event)" formControlName="refineScheduleSunDay">
+                  <label class="form-check-label days-of-week-custom-style  mt-3 ">
+                    <span class="hide-col-for-mobile">{{'SEARCH.SUN' | translate }}</span>
+                    <span class="show-col-for-mobile">{{'SEARCH.SUN_SHORT' | translate }}</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="float-left doctor-calender-custom-style pl-3 pr-3">
+              <div class="float-left mr-2">
+                <label class="refine-panel-label-style">{{'SEARCH.TIMING' | translate }}</label>
+              </div>
+              <div class="float-left mt-2">
+                <p-dropdown [options]="timeSlotDetails" formControlName="refineAvailabilityTime" [showClear]="true" 
+                  placeholder="select time" class="border-none custom-w-100" (onChange)="preSearchRefinePanel()"  >
+                </p-dropdown>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <div *ngIf="entityName == 'HOSPITAL'" class="col-lg-3 col-sm-3">
+        <div class="row ml-1">
+          <div class="col-md-12 pl-0 scrollareaForOpdCalenderDocList cursor">
+            <div [ngClass]="docList.cssClass" *ngFor="let docList of doctorListForOPDToDisplay; let index=index">
+              <div class="col-md-12" (click)="populateCalendar(docList.ref_no,index)">
+                <div class="row">
+                  <h6 class="col-md-12">{{docList.name | uppercase}}</h6>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">{{docList.qualifications}}</div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">{{docList.specifications}}</div>
+                </div>
+                <div class="row pt-2" *ngIf="docList.timeslotList && docList.timeslotList.length > 0">
+                  <div [ngClass]="i%2!=0 ? 'dayofweek col-6 mb-0 pl-0':'dayofweek col-6 mb-0 pr-0'" class=""
+                    *ngFor="let day of docList.timeslotList.sort(sortFunc); let i =index">
+                    <!--[ngClass]="i%2!=0 ? 'text-right':''"-->
+                    <p class="day mb-0"><span class="spacer">{{daysOfWeekModel[day.dayOfWeek]}}</span><span
+                        class="time">{{day.startTime | timeFormat}} - {{day.endTime | timeFormat}}</span></p>
+                  </div>
+                </div>
+                <div *ngIf="docList.nextAvailability">Next Availability: {{docList.nextAvailability | date}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div [ngClass]="entityName == 'HOSPITAL'? 'col-lg-9 col-sm-9': 'col-lg-12 col-sm-12'">
+        <div class="row">
+          <!-- Doctor dropdown -->
+          <div class="col-md-4" *ngIf="isRoleHospital">
+            <form [formGroup]="calendarForm">
+              <div class="float-left ml-1 mr-3 opd-calendar-doctor-label">
+                <label class="refine-panel-label-style">Doctor</label>
+              </div>
+              <div class="float-left mt-2 custom-bold">
+                <p-autoComplete styleClass="autoComplete" formControlName="doctorName" 
+                  [suggestions]="optionsDoctorToDisplay" (completeMethod)="getDoctorNameList($event)" [size]="25"
+                  placeholder="Search Doctor" [minLength]="1" (onSelect)="refineByDocName()">
+                  <ng-template let-results pTemplate="item">
+                    <span>{{results}}</span>
+                  </ng-template>
+                </p-autoComplete>
+              </div>
+            </form>
+          </div>
+
+          <div class="col-lg-4 col-md-4 text-center calendar">
+            <div class="btn-group dateNextPrev">
+              <div class="cursor mt-1 mr-lg-2 mr-md-1" [class.active]="view === CalendarView.Day"
+                mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate"
+                (viewDateChange)="nextPrevDateChange($event)">
+                <img src="../../../../../assets/image/prev.svg" height="20" alt="">
+              </div>
+              <div class="calendar" mwlCalendarToday [(viewDate)]="viewDate">
+                <label>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</label>
+              </div>
+              <div class="cursor mt-1 ml-lg-2 ml-md-1" [class.active]="view === CalendarView.Day" mwlCalendarNextView
+                [view]="view" [(viewDate)]="viewDate" (viewDateChange)="nextPrevDateChange($event)">
+                <img src="../../../../../assets/image/next.svg" height="20" alt="">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 text-right">
+            <div class="btn-group">
+              <div class="btn btn-sm" [ngClass]="view === CalendarView.Month ? 'btn-primary' : 'btn-secondary'"
+                (click)="monthView()" [class.active]="view === CalendarView.Month">
+                Month
+              </div>
+              <div class="btn btn-sm ml-2 mr-2" (click)="weekView()"
+                [ngClass]="view === CalendarView.Week ? 'btn-primary' : 'btn-secondary'"
+                [class.active]="view === CalendarView.Week">
+                Week
+              </div>
+              <div class="btn btn-sm" (click)="setDay()"
+                [ngClass]="view === CalendarView.Day ? 'btn-primary' : 'btn-secondary'"
+                [class.active]="view === CalendarView.Day">
+                Day
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-12">
+            <div [ngSwitch]="view">
+              <mwl-calendar-month-view *ngSwitchCase="CalendarView.Month" [viewDate]="viewDate" [events]="events"
+                [refresh]="refresh" [activeDayIsOpen]="activeDayIsOpen" (dayClicked)="dayClicked($event.day)"
+                (eventClicked)="handleEvent('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)">
+              </mwl-calendar-month-view>
+              <mwl-calendar-week-view *ngSwitchCase="CalendarView.Week" [viewDate]="viewDate" [events]="events"
+                [refresh]="refresh" [hourSegments]="hourSegments" (hourSegmentClicked)="hourClicked($event)"
+                (eventClicked)="handleEvent('Clicked', $event.event)" (eventTimesChanged)="eventTimesChanged($event)"
+                [dayStartHour]="minStartTime" [dayEndHour]="maxEndTime"
+                (beforeViewRender)="beforeWeekViewRender($event)">
+              </mwl-calendar-week-view>
+              <mwl-calendar-day-view *ngSwitchCase="CalendarView.Day" [viewDate]="viewDate" [events]="events"
+                [refresh]="refresh" [hourSegments]="hourSegments" (eventClicked)="handleEvent('Clicked', $event.event)"
+                (eventTimesChanged)="eventTimesChanged($event)" (hourSegmentClicked)="hourClicked($event)"
+                [dayStartHour]="minDayStartTime" [dayEndHour]="maxDayEndTime"
+                (beforeViewRender)="beforeDayViewRender($event)">
+              </mwl-calendar-day-view>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class="btn btn-primary btn-sm addNew" (click)="addEvent()">
+  <i class="fas fa-plus"></i> Add New
+</button>
+<ng-template #feedbackModal>
+  <div class="modal-header">
+    <h4 class="modal-title">FEEDBACK</h4>
+    <button type="button" class="close float-right" (click)="modalRef.hide();addNew=false;" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-lg-5 border">
+        <div class="row padding10">
+          <div class="col-lg-10"><label>PREVIOUS FEEDBACK</label></div>
+        </div>
+        <hr>
+        <div class="feedback-scrollarea">
+          <div class="paddingForPeerCOnsultingCase" *ngFor="let feedback of feedbacks">
+            <div class="row margin-bottom-12px">
+              <div class="col-lg-5 text-left margin-left-14px">
+                <div class="row text-left">
+                  <img height="15" class="margin-left17px" *ngIf="feedback.attachedFilePath"
+                    (click)="downloadFile(feedback)" src="../../../../assets/image/download.svg" alt="">
+                </div>
+              </div>
+              <div class="col-lg-7 margin-left14px text-right">
+                <p class="margin-left-13px">
+                  {{feedback.feedbackTime | dateFormat}}&nbsp;{{feedback.feedbackTime | date: 'hh:mm'}}</p>
+              </div>
+            </div>
+            <div class="row border padding17">
+              <label>{{feedback.feedback}}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-7 border">
+        <form [formGroup]=feedbackForm>
+          <div class="row padding10">
+            <div class="col-lg-10"><label>NEW FEEDBACK</label></div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <textarea rows="5" class="feedback-textarea" formControlName="myFeedback" (change)="feedbackTextField()"
+                placeholder="message..."></textarea>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4">
+              <label for="file-upload" class="feedbackFileUpload">{{'PEER_CONSLT.UPLOAD_IMAGE' | translate}}</label>
+              <input type="file" accept=".pdf,.png,.jpg" id="file-upload" (change)="feedbackFileSelected($event)">
+            </div>
+            <div class="col-lg-3 text-left selectedImage">
+              {{selectedFiles}}
+            </div>
+            <div class="col-lg-4 text-right margin-left31px">
+              <button [disabled]="!feedbackButton || feedbackForm.get('myFeedback').value == ''"
+                class="btn btn-sm btn-primary" (click)="setFeedback()">SUBMIT</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</ng-template>

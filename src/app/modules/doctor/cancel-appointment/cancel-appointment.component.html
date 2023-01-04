@@ -1,0 +1,240 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<div class="row">
+  <div *ngIf="loading" class="cover">
+    <div class="loader">
+        <div class="loading-img"><img width=250px src="../../../../../assets/image/logo.svg"/></div>
+        <div class="loading-txt">Loading<div class="dot-elastic"></div></div>
+    </div>
+  </div>
+  <div class="col-lg-12">
+    <form #search="ngForm" (ngSubmit)="searchAppointment()">
+		<div class="cancel-font">
+		<p >Unplanned appointment cancellations cannot be avoided. Appointments can be cancelled across a time period in selected chambers or across all your chambers. You have the flexibility of selecting and cancelling specific appointments.</p>
+		</div>
+		<div class= "cancel-appointment information-header headingcancel" >
+		
+	<h2>
+		Specify date range and select chambers to search for appointments that you would like to cancel
+	</h2>
+	  </div>
+		<div class="row">
+		
+					<div class="col-xl-3 col-lg-5"> <!--app#1497-->
+							<div class="row pt-md-3 pt-lg-0">
+								<div class="col-md-6">
+									
+									<div class="form-group">
+									<label>Date from <span class="validation-error">*</span></label>
+									<div class="float-left custom-datePicker">
+										<input type="text" #dp="bsDatepicker" placeholder="DD-MM-YYYY" bsDatepicker [bsConfig]="{ dateInputFormat: dtFormat, showWeekNumbers: false }" (bsValueChange)="onValueChange('fromDate',$event)"
+										class="form-control" [(ngModel)]="from" name="from" [readonly]="true" [minDate]="minDate" required #fromDateVal="ngModel" placement="bottom">
+									</div>	
+									<div class="pt-1"><i (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt cursor"></i>
+												</div>					
+									</div>
+									<div *ngIf="search.submitted && fromDateVal.errors">
+									<p class="validation-error" *ngIf="fromDateVal.errors.required">This is a required field</p>
+									</div>
+								</div>
+								<div class="col-md-6" *ngIf="action == 'cancel'">
+									<div class="form-group">
+									<label>Date to <span class="validation-error" >*</span></label>
+									<div class="float-left custom-datePicker">
+									<input type="text" #dp="bsDatepicker" (bsValueChange)="onValueChange('toDate',$event)" position="bottom" placeholder="DD-MM-YYYY" bsDatepicker [bsConfig]="{ dateInputFormat: dtFormat, showWeekNumbers: false}"
+										class="form-control" [(ngModel)]="to" name="to" [readonly]="true" [minDate]="minDate" required #toDateVal="ngModel" placement="bottom">
+										</div>
+										<div class="pt-1"><i (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt cursor"></i>
+												</div>
+									</div>
+									<div *ngIf="search.submitted && toDateVal.errors">
+									<p class="validation-error" *ngIf="toDateVal.errors.required">This is a required field</p>
+									</div>
+								</div>
+								<div class="col-md-6" *ngIf="action == 'holiday'">
+									<div class="form-group">
+									<label>Date to</label>
+									<div class="float-left custom-datePicker">
+									<input type="text" (bsValueChange)="onValueChange('toDate',$event)" placeholder="DD-MM-YYYY" bsDatepicker [bsConfig]="{ dateInputFormat: dtFormat, showWeekNumbers: false  }"
+										class="form-control" [(ngModel)]="to" name="to" [readonly]="true" [minDate]="minDate" #toDateVal="ngModel">
+										</div>
+										<div class="pt-1"><i (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt cursor"></i>
+												</div>
+									</div>
+								</div>
+							</div>
+					</div>
+        <div class="col-xl-3 col-lg-7"> <!--app#1497-->
+          <div class="form-group cancel-appt">
+			<label>Chamber</label>
+            <div class="form-check-inline">
+              <span class="form-check-label bs-radio">
+                <input type="radio" class="mr-2 mt-1" name="select-chamber" checked (click)="showChamber('A')"><div class="radio-label">All</div>
+              </span>
+            </div>
+            <div class="form-check-inline">
+              <span class="form-check-label bs-radio">
+                <input type="radio" class="mr-1 mt-1" name="select-chamber" (click)="showChamber('C')"><div class="radio-label">Select Chamber</div>
+              </span>
+            </div>
+			<div class="float-left">
+				<select class="form-control" [(ngModel)]="chamber" name="chamber" [hidden]="!showChamberFlag">
+					<option value="0" selected>Select</option>
+					<option *ngFor="let i of chamberList" [value]="i.chamberRefNo">{{i.chamberName}}</option>
+				</select>
+			</div>
+          </div>
+        </div>
+		
+		<div class="col-xl-2 col-lg-12 text-xl-right text-lg-center text-md-left">  <!--app#1497-->
+			 <div class="row" *ngIf="action == 'cancel'">
+				<div class="col-md-12 pt-xl-4 pt-lg-0 pt-md-0">
+				<button type="submit" class="btn btn-primary btn-sm">Search Appointment
+		
+				</button>
+				</div>
+			</div>
+			
+			
+			 <div class="row" *ngIf="action == 'holiday'">
+			 <div class="col-md-12 pt-xl-4 pt-lg-0 pt-md-0">
+				<button type="button" class="btn btn-primary btn-sm float-left" (click)="cancelAllAppointments(search)">Mark As Holiday</button>
+			 </div>
+			</div>
+		</div>
+      </div>
+
+
+      
+    </form>
+    <div>
+
+    </div>
+    <form [formGroup]="appointments">
+	  <div class="not-found text-center pt-3" *ngIf="appointmentList.length == 0 || markAsHoliday"><h3>No Appointments between these dates</h3></div>
+	 <div class="headingcancel " >
+	  <div *ngIf ="appointmentList.length > 0" class="page-heading-info">
+		  <h2>Your confirmed appointment list for  {{from | date:'dd-MM-yyyy'}} to  {{to | date:'dd-MM-yyyy'}}</h2>
+	  </div> 
+	 </div>
+	 
+      <div class="content table-responsive appt-cancel-table" *ngIf="appointmentList.length > 0 && !markAsHoliday">
+		<div class= "cancel-appointment1 information-header" *ngIf ="appointmentList.length > 0" >
+			<h2>
+				Select the appointments that you would like to cancel
+			</h2>
+		 </div>
+        <table class="table" *ngIf="action == 'cancel'">
+          <thead>
+            <tr class="d-flex">
+              <th class="pb-0 col-1">
+                <input type="checkbox" class="chkbox header" (click)="selectAll($event)">
+              </th>
+              <th class="col-lg-3 col-md-4">Chamber</th>
+              <th class="col-xl-3 col-lg-3 col-md-4">Patient Name</th>
+			  <th class="col-lg-1 col-md-1 hide-for-very-small">Date</th>
+			  <th class="col-xl-1 col-lg-1 col-md-1 date hide-for-very-small cancel-margin"></th>
+             
+              <!-- <th class="col-xl-4 col-lg-4 hide-for-small">Reason</th> --> <!--app#1497-->
+            </tr>
+          </thead>
+          <tbody formArrayName="appointmentList" *ngIf="appointmentList.length > 0 && !markAsHoliday">
+            <tr *ngFor="let i of appointmentList.controls; let index = index" [formGroup]="i">
+			  <td colspan=5 class="padding-adj">
+				  <table class="w-100">
+					  <tr class="d-flex">
+						  <td class="col-1" style="border-bottom: 1px solid #dee2e6 !important;">
+							<input class="chkbox" type="checkbox" #checkbox_{{index}} formControlName="isChecked" (change)="setValidator(index)">
+							<!-- <input type="hidden" formControlName="appointmentPk"> --><!--app#1497-->
+						  </td>
+						  <td class="col-lg-3 col-md-4" style="border-bottom: 1px solid #dee2e6 !important;">
+							<div>
+							  <input type="text" class="form-control" formControlName="chamberName" readonly>
+							</div>
+						  </td>
+						  <td class="col-xl-3 col-lg-3 col-md-4" style="border-bottom: 1px solid #dee2e6 !important;">
+							<input type="text" class="form-control" formControlName="patientName" readonly>
+						  </td>
+						  <td class="col-xl-1 col-lg-1 col-md-1 date hide-for-very-small" style="border-bottom: 1px solid #dee2e6 !important;">
+							<input type="text" class="form-control" formControlName="appointmentDateStr">
+						  </td>
+						  <td class="col-xl-1 col-lg-1 col-md-2 date hide-for-very-small cancel-margin" style="border-bottom: 1px solid #dee2e6 !important;">
+								<input type="text" class="form-control" formControlName="appointmentTimeStr" readonly>
+								
+								</td>
+								<!-- <td class="col-xl-4 col-lg-4 hide-for-small">
+							<textarea class="form-control cancel-reason" formControlName="appointmentCxlReason"></textarea>
+						  </td> --><!--app#1497-->
+					  </tr>
+					  <tr class="d-flex show-for-small hide-for-very-small">
+					   <!-- <td class="col-12" colspan=5>
+							<div class="responsive-popup-heading">Reason</div>
+							<div><textarea class="form-control cancel-reason" formControlName="appointmentCxlReason"></textarea></div>
+					   </td> --><!--app#1497-->
+					  </tr>
+					  <tr class="d-flex show-for-very-small">
+					  <td class="col-6 padding-for-very-small-first-cell" colspan=3>
+							<div class="responsive-popup-heading">On</div>
+							<div><input type="text" class="form-control" formControlName="appointmentDateStr" readonly></div>
+					   </td>
+					   <td class="col-6 padding-for-very-small" colspan=2>
+							<div class="responsive-popup-heading">At</div>
+							<div><input type="text" class="form-control" formControlName="appointmentTimeStr" readonly></div>
+					   </td>
+					   </tr>
+					   <tr class="d-flex show-for-very-small">
+					   <!-- <td class="col-12 padding-for-very-small-first-cell" colspan=5>
+							<div class="responsive-popup-heading">Reason</div>
+							<div><textarea class="form-control cancel-reason" formControlName="appointmentCxlReason"></textarea></div>
+					   </td> --><!--app#1497-->
+					  </tr>
+				  </table>
+			  </td>
+			</tr>
+			
+          </tbody>
+        </table>
+	  </div>
+	  
+	  <div class="row" > <!--app#1497-->
+			<!-- <div class="col-md-6"></div> -->
+			  <div  class="col-8 form-group" *ngIf="shwReason">
+				  <div class="row">
+					  <div class="col-xl-5 col-lg-4  "></div>
+					  <div class="col-xl-4 col-lg-4 ">
+							  <label class="control-label">Reason
+									  <span class="optional-label"> (Optional)</span>
+							  </label>
+							  <textarea class="form-control cancel-reason" formControlName="appointmentCxlReason"></textarea>
+					  </div>
+					  <div class="col-xl-3 col-lg-4  text-right" *ngIf="action == 'cancel'">
+							  <button type="button" style="margin-top: 23px;margin-left: -12px;" *ngIf="appointmentList.length > 0" class="btn btn-primary btn-sm" (click)="cancelMultipleAppointments()" [disabled]="!showBtnFlag">Cancel Appointment(s)</button>
+					  </div>
+					  <!-- <label class="control-label">Reason
+							  <span class="optional-label"> (Optional)</span>
+							</label>
+					  <textarea class="form-control cancel-reason" formControlName="appointmentCxlReason"></textarea>
+					  
+					  <button type="button" *ngIf="appointmentList.length > 0" class="btn btn-primary btn-sm" (click)="cancelMultipleAppointments()" [disabled]="!showBtnFlag">Cancel Appointment(s)</button> -->
+				  </div>
+			  </div>
+			  <div class="col-4"></div>
+			  
+	   </div>
+    </form>
+  </div>
+</div>

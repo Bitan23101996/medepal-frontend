@@ -1,0 +1,13 @@
+.order h2{
+    font-size:18px;
+    font-weight:400;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    color:#5f5f5f;
+}
+
+.multi-btn-w-divider1 btn-secondary
+{
+    border-left: 1px solid;
+}

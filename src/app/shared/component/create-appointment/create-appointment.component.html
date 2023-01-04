@@ -1,0 +1,32 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="page-heading-info">
+        <h2 id="welcome-msg">Specify patient details, appointment time & location to create a new appointment.</h2>
+      </div>
+    </div>
+    <div class="col-lg-12 col-xl-8">
+      <app-common-prescription-ngbt [formGroup]="appointmentForm" [dtFormat]="dtFormat" [entityName]="entityName"
+        [chamberList]="chamberList" [endTimingErrorFlag]="endTimingErrorFlag"
+        [startTimingErrorFlag]="startTimingErrorFlag" [submitted]="submitted" [isNewMinor]="isNewMinor"
+        [isMinorDisable]="isMinorDisable" [isGender]="isGender" [displaySidebar]="displaySidebar"
+        [associatedUserDetailsList]="minorUsers" [getUserDetails]="getUserDetails"
+        [usingComponentStr]="usingComponentStr" [isDob]="isDob" [isPopulated]="isPopulated" [isModal]="false"
+        (convertTimingOnChange)="convertTiming($event.event, $event.label)" (oncloseList)="emitDisplaySidebar($event)"
+        (emitUserDetails)="emitUserDetails($event)" (emitAssociateUser)="emitAssociateUser($event)" 
+        (emitUserAddressDetails)="emitUserAddressDetails($event)">
+      </app-common-prescription-ngbt>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-6 pr-0 text-right">
+          <button type="button" class="btn btn-secondary btn-sm" (click)="backToMyAppointments()">Cancel</button>
+          <button type="button" class="btn btn-primary btn-sm mr-2"
+            (click)="saveDoctorAppointment(APP_STATE.CONFIRMED)">Create</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,236 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+<div class="row">
+  <div *ngIf="loading" class="cover">
+    <div class="loader">
+        <div class="loading-img"><img width=250px src="../../../../../assets/image/logo.svg"/></div>
+        <div class="loading-txt">Loading<div class="dot-elastic"></div></div>
+    </div>
+  </div>
+  <div class="pr-0 pl-3 sml page-content filter-panel-width" [ngClass]="panelVisible ? 'panelVisible' : 'panelNotVisible'">
+    <div class="card prescription-panel-shadow min-height292px">
+      <div class="filterPanel">
+        <div class="row border-bottom">
+          <div class="col-8">
+            <h4 class="search-result-left-pen-heading">{{'SEARCH.REFINE_BY' | translate }}</h4>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-9">
+            <label class="page-header">{{'MY_PRESCRIPTION.DOCTOR_NAME' | translate}}</label>
+          </div><br>
+        </div>
+        <div>
+          <input type="text" placeholder="{{'PEER_CONSLT.DOC_NAME_PLACEHOLDER' | translate}}" (keyup)="filterByInputText($event,'doctor')">
+        </div><br>
+        <div class="row">
+          <div class="col-lg-9">
+            <label class="page-header">{{'MY_PRESCRIPTION.PATIENT_NAME_LEBEL' | translate}}</label>
+          </div><br>
+        </div>
+        <div>
+          <input type="text" placeholder="{{'PEER_CONSLT.PATIENT_NAME_PLACEHOLDER' | translate}}" (keyup)="filterByInputText($event,'patient')">
+        </div><br>
+      </div>
+    </div>
+  </div>
+  <div class="my-prescription-table col page-content pt-0">
+    <!--my list-->
+    <div class="card min-height292px">
+      <div class="row">
+        <div class="col-md-10">
+          <h1 class="top-label">{{'PEER_CONSLT.PANEL_LIST_FOR_ME' | translate}}</h1>
+        </div>
+		    <div class="col-2 text-right"><span class="cursor filterBtn" (click)="refinePanelDisplay()">Filters</span></div>
+      </div><br>
+      <div class="filterPanel">
+        <div class="content table-responsive table-overflow-hidden hide-for-very-small-both-side">
+          <p-table [value]="peerConsultingListFilterForMe" [paginator]="peerConsultingListFilterForMe.length>5" [rows]=5>
+            <ng-template pTemplate="header">
+              <tr>
+                <th width="20%" class="text-left">{{'PEER_CONSLT.REFERNCE_NO' | translate}}</th>
+                <!-- <th width="20%" class="text-left">Doctor</th> -->
+                <th width="27%" class="text-left">{{'PEER_CONSLT.PATIENT' | translate}}</th>
+                <th width="17%" class="text-left">{{'PEER_CONSLT.DATE' | translate}}</th>
+                <th width="26%" class="text-left">{{'PEER_CONSLT.MEMBERS' | translate}}</th>
+                <th width="10%"></th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-peerConsultingList>
+              <tr>
+                <td class="text-left">{{peerConsultingList.peerConsultingRefNo}}</td>
+                <!-- <td class="text-left">{{peerConsultingList.doctorName}}</td> -->
+                <td class="text-left">
+                  {{peerConsultingList.patientName}}
+                  ({{peerConsultingList.patientAge}}Y/
+                  <span *ngIf="peerConsultingList.patientGender == 'F'">F</span>
+                  <span *ngIf="peerConsultingList.patientGender == 'M'">M</span>)
+                </td>
+                <td class="text-left">{{peerConsultingList.createdDate | dateFormat}}</td>
+                <td class="text-left">
+                  <div class="peer-consulting-list-member" *ngFor="let member of peerConsultingList.members">
+                    <span *ngIf="member.panelMemberUserRef != docRefNumber">{{member.panelMemberName}}<span class="peerConsulting-comment-list"
+                        *ngIf="member.commentCount > 0">&nbsp;({{member.commentCount}} opinion)</span></span>
+                  </div>
+                </td>
+                <td class="cursor text-center"><a href="javascript:void(0)"
+                    (click)="openPeerConsultingCaseDetails(peerConsultingList)">{{'MY_PRESCRIPTION.VIEW' | translate}}</a>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+		
+		<div class="content table-responsive table-overflow-hidden show-for-very-small-both-side">
+			<p-table [value]="peerConsultingListFilterForMe" [paginator]="peerConsultingListFilterForMe.length>5" [rows]=5>
+				<ng-template pTemplate="body" let-peerConsultingList>
+				<tr>
+				  <td class="mobile-table">
+					<table >
+					<tr>
+						<td class="small-header">{{'PEER_CONSLT.REFERNCE_NO' | translate}}</td>
+						<td>{{peerConsultingList.peerConsultingRefNo}}</td>
+					</tr>
+					<tr>
+						<td class="small-header">{{'PEER_CONSLT.PATIENT' | translate}}</td>
+						<td>{{peerConsultingList.patientName}}
+                  ({{peerConsultingList.patientAge}}Y/
+                  <span *ngIf="peerConsultingList.patientGender == 'F'">F</span>
+                  <span *ngIf="peerConsultingList.patientGender == 'M'">M</span>)</td>
+					</tr>
+					<tr>
+						<td class="small-header">{{'PEER_CONSLT.DATE' | translate}}</td>
+						<td>{{peerConsultingList.createdDate | dateFormat}}</td>
+					</tr>
+					<tr>
+						<td class="small-header">{{'PEER_CONSLT.MEMBERS' | translate}}</td>
+						<td>
+							<div class="peer-consulting-list-member" *ngFor="let member of peerConsultingList.members">
+							<span *ngIf="member.panelMemberUserRef != docRefNumber">{{member.panelMemberName}}<span class="peerConsulting-comment-list"
+                        *ngIf="member.commentCount > 0">&nbsp;({{member.commentCount}} opinion)</span></span>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td class="cursor text-right"><a href="javascript:void(0)" (click)="openPeerConsultingCaseDetails(peerConsultingList)">{{'MY_PRESCRIPTION.VIEW' | translate}}</a>
+						</td>
+					</tr>
+				</table>
+			</td>			 
+		</tr>	
+				</ng-template>
+			</p-table>
+		</div>
+		
+		
+      </div>
+    </div>
+    <!--end of my list-->
+    <!--others List-->
+    <div class="card min-height292px">
+      <div class="row">
+        <div class="col-md-10">
+          <h1 class="top-label">{{'PEER_CONSLT.PANEL_LIST_FOR_OTHERS' | translate}}</h1>
+        </div>
+      </div>
+      <br>
+      <div class="filterPanel">
+        <div class="content table-responsive hide-for-very-small-both-side">
+          <p-table [value]="peerConsultingListFilterForOthers" [paginator]="peerConsultingListFilterForOthers.length>5"
+            [rows]=5>
+            <ng-template pTemplate="header">
+              <tr>
+                <th width="18%" class="text-left">{{'PEER_CONSLT.REFERNCE_NO' | translate}}</th>
+                <th width="20%" class="text-left">{{'PEER_CONSLT.DOCTOR' | translate}}</th>
+                <th width="15%" class="text-left">{{'PEER_CONSLT.PATIENT' | translate}}</th>
+                <th width="17%" class="text-left">{{'PEER_CONSLT.DATE' | translate}}</th>
+                <th width="20%" class="text-left">{{'PEER_CONSLT.MEMBERS' | translate}}</th>
+                <th width="10%"></th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-peerConsultingList>
+              <tr>
+                <td class="text-left">{{peerConsultingList.peerConsultingRefNo}}</td>
+                <td class="text-left">{{peerConsultingList.doctorName}}</td>
+                <td class="text-left">({{peerConsultingList.patientAge}}Y/
+                  <span *ngIf="peerConsultingList.patientGender == 'F'">F</span>
+                  <span *ngIf="peerConsultingList.patientGender == 'M'">M</span>)
+                </td>
+                <td class="text-left">{{peerConsultingList.createdDate | dateFormat}}</td>
+                <td class="text-left">
+                  <div class="" *ngFor="let member of peerConsultingList.members">
+                    <span *ngIf="member.panelMemberUserRef != docRefNumber">{{member.panelMemberName}}<span class="peerConsulting-comment-list"
+                        *ngIf="member.commentCount > 0">&nbsp;({{member.commentCount}} opinion)</span></span>
+                  </div>
+                </td>
+                <td class="cursor text-center"><a class="others" href="javascript:void(0)"
+                    (click)="openPeerConsultingCaseDetails(peerConsultingList)">{{'MY_PRESCRIPTION.VIEW' | translate}}</a>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+		
+		
+		<div class="content table-responsive show-for-very-small-both-side">
+			<p-table [value]="peerConsultingListFilterForOthers" [paginator]="peerConsultingListFilterForOthers.length>5" [rows]=5>
+				<ng-template pTemplate="body" let-peerConsultingList>
+					<tr>
+				  <td class="mobile-table">
+					<table >
+						<tr>
+							<td class="small-header">{{'PEER_CONSLT.REFERNCE_NO' | translate}}</td>
+							<td>{{peerConsultingList.peerConsultingRefNo}}</td>
+						</tr>
+						<tr>
+							<td class="small-header">{{'PEER_CONSLT.DOCTOR' | translate}}</td>
+							<td>{{peerConsultingList.doctorName}}</td>
+						</tr>
+						<tr>
+							<td class="small-header">{{'PEER_CONSLT.PATIENT' | translate}}</td>
+							<td>({{peerConsultingList.patientAge}}Y/
+								<span *ngIf="peerConsultingList.patientGender == 'F'">F</span>
+								<span *ngIf="peerConsultingList.patientGender == 'M'">M</span>)</td>
+						</tr>
+						<tr>
+							<td class="small-header">{{'PEER_CONSLT.DATE' | translate}}</td>
+							<td>{{peerConsultingList.createdDate | dateFormat}}</td>
+						</tr>
+						<tr>
+							<td class="small-header">{{'PEER_CONSLT.MEMBERS' | translate}}</td>
+							<td><div class="" *ngFor="let member of peerConsultingList.members">
+                    <span *ngIf="member.panelMemberUserRef != docRefNumber">{{member.panelMemberName}}<span class="peerConsulting-comment-list"
+                        *ngIf="member.commentCount > 0">&nbsp;({{member.commentCount}} opinion)</span></span>
+                  </div></td>
+						</tr>
+						<tr>
+							<td class="small-header"></td>
+							<td class="text-right"><a class="others" href="javascript:void(0)"
+                    (click)="openPeerConsultingCaseDetails(peerConsultingList)">{{'MY_PRESCRIPTION.VIEW' | translate}}</a></td>
+						</tr>
+					</table>
+					</td>			 
+				</tr>	
+				</ng-template>
+			</p-table>
+		</div>
+		
+      </div>
+    </div>
+    <!-- end of others List-->
+  </div>
+</div>

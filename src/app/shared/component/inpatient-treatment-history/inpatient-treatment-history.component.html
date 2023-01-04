@@ -1,0 +1,1130 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+ <ng-template #procedurePreviewModal>
+
+    <div class="modal-header">
+      <h4 class="modal-title">Procedure</h4>
+      <button type="button" class="close float-right" (click)="modalRef.hide()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <app-procedure-preview [procedureNote]="procedureNote"></app-procedure-preview>
+  </ng-template>
+
+<ng-template #prescriptionPreviewModal>
+
+  <div class="modal-header">
+    <h4 class="modal-title">{{'APPOINTMENT.APPOINTMENT_PRESCRIPTION'|translate}}</h4>
+    <button type="button" class="close float-right" (click)="modalRef.hide()" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <app-prescription-preview [prescriptionRefNo]="prescriptionRefNo" [admissionRefNo]="admissionRefNo"></app-prescription-preview>
+</ng-template>
+ <div class="card">
+  <div class="row header  pl-0 pr-0 pt-0">
+    <div class="col-lg-10 col-md-10 col-sm-10 col-9">
+      <div>
+        <h1>{{'PRESCRIPTION.TREATMENT_HISTORY'|translate}}</h1>
+      </div>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-2 col-3 text-right">
+        <button type="button" *ngIf="screenFlag=='prescription'" class="btn btn-secondary"
+        (click)="cancelPatientPreview()">{{'COMMON.BACK_BUTTON'|translate}}</button>
+      <button type="button" *ngIf="screenFlag!='prescription'" class="btn btn-secondary" (click)="back()">{{'COMMON.BACK_BUTTON'|translate}}</button>
+    </div>
+    <div class="col-12 text-lg-right text-md-right text-center border-top border-bottom action-bar-links mb-2" *ngIf="screenFlag!='prescription'">
+      <ng-container *ngIf="loggedInUser.entityName=='DOCTOR'">
+        <a  href="javascript:void(0)" class="mr-1" (click)="navigateToPrescription()">{{'SEARCH.NEW_PRESCRIPTION'|translate}}</a>
+        &nbsp;|&nbsp;
+        <a href="javascript:void(0)" class="mr-1 ml-1" (click)="navigateToProcedure()">{{'PROCEDURE.PROCEDURE_NOTE'| translate}}</a>
+        &nbsp;|&nbsp;
+        <a href="javascript:void(0)" class="mr-1 ml-1"
+        (click)="onClickEditDiagnosticsTestDetails(null, null,'add')">{{'SEARCH.ADD_TEST_REPORT'| translate}}</a>
+        &nbsp;|&nbsp;
+      </ng-container>
+      <ng-container *ngIf="loggedInUser.entityName=='DOCTOR' || loggedInUser.entityName=='HOSPITAL'">
+        <a href="javascript:void(0)" class="mr-1 ml-1" (click)="openVisitNoteSidebar()">{{'PROCEDURE.VISIT_NOTE'| translate}}</a>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="text-center not-found p-3" *ngIf="!showDataFlag">
+    <h3>{{'PRESCRIPTION.PAST_PRESCRIPTION_FETCHING_MSG'|translate}}</h3>
+  </div>
+
+  <div class="text-center not-found p-3" *ngIf="pastPrescription.length == 0 && showDataFlag">
+    <h3>{{'PRESCRIPTION.NO_PAST_TREATMENT_HISTORY'|translate}}</h3>
+  </div>
+  <div class="row" *ngIf="pastPrescription.length > 0 && showDataFlag">
+    <div class="col-6">
+      <div class="card mb-3">
+          
+          <div class="tbl-past-data"> 
+              <label class="page-header">Current Medication</label>   
+              <div class="col-12">
+                <i *ngIf="currentMedicationList.length == 0">{{'COMMON.NA'| translate}}</i>
+                <ol *ngIf="currentMedicationList.length > 0">
+                  <li *ngFor="let pm of currentMedicationList">
+                      <div class="row">
+                          <div class="col-lg-10 margin-bottom-20px">
+                        <ng-container *ngIf="pm.status=='NRM' && pm.medicineName!=null">
+                            <div *ngIf="pm.medicineName!=''">
+                              <span>
+                                {{pm.medicineName}} {{pm.sosFlag == 'Y'?' (SoS) ':''}}:
+                                <span *ngIf="pm.unitType !== ''">
+                                  
+                                  {{pm.noOfUnit}} {{pm.unitType | prescribeMedicine:pm.noOfUnit}} {{pm.sosFlag == 'Y'?'':'x '}}
+                                </span>
+                                <span *ngIf="pm.sosFlag == 'N' || pm.sosFlag == null">
+                                  
+                                  {{pm.dosageFrequency}}
+                                  <ng-container *ngIf="pm.dosageFrequency > 1">times</ng-container>
+                                  <ng-container *ngIf="pm.dosageFrequency <= 1">time</ng-container>
+                                  {{pm.dosageInterval == 'D' ? 'daily' : (pm.dosageInterval == 'W' ? 'weekly' : 'monthly')}} for {{pm.duration}}
+                                  
+                                  <ng-container *ngIf="pm.duration > 1">
+                                    {{pm.durationUnit == 'D' ? 'days' : (pm.durationUnit == 'W' ? 'weeks' : 'months')}}
+                                  </ng-container>
+                                  <ng-container *ngIf="pm.duration <= 1">
+                                    {{pm.durationUnit == 'D' ? 'day' : (pm.durationUnit == 'W' ? 'week' : 'month')}}
+                                  </ng-container>
+                                </span>
+                                <!-- {{pm.sosFlag == 'Y'?'':' - '}} -->
+                        
+                                {{pm.beforeAfterMealFlag != null ? (pm.beforeAfterMealFlag == 'A' ? ' - after meal': ' - before meal') : ''}}
+                                <span *ngIf="pm.comments !== ''">
+                                  - {{pm.comments}}
+                                </span>
+                        
+                              </span>
+                              
+                              <div *ngIf="pm.substituteMedicineList != null && pm.substituteMedicineList.length > 0">
+                                <p>
+                                  <u>{{'PRESCRIPTION.SUBSTITUTE_MEDICINE'| translate}}</u>
+                                </p>
+                                <ul>
+                                  <li *ngFor="let sm of pm.substituteMedicineList">
+                                    {{sm.medicineName}}
+                                  </li>
+                                </ul>
+                              </div>
+                              
+                            </div>
+                          </ng-container>
+                        </div>
+                        <div class="col-lg-2 text-right margin-bottom-20px"  *ngIf="loggedInUser.entityName=='DOCTOR'">
+                        <span class="mr-2" ngbTooltip="Edit Medicine" container="body" (click)="editMedicine(pm)">
+                            <img class="cursor" src="../../../../../assets/image/edit.svg" height="15" alt="">
+                          </span>
+                        <span ngbTooltip="Discontinue Medicine" container="body" (click)="discontinueMedicine(pm)">
+                        <img class="cursor" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                      </span>
+                    </div>
+                  </div>
+                  </li>
+                </ol>  
+                <!-- <ol class="patient-details-tbl-height">
+                  <li *ngFor="let rm of currentMedicationList">
+                    {{rm.medicineName}}
+                    <button class="btn btn-primary btn-sm float-right" (click)="discontinueMedicine(rm)">Discontinue</button>
+                  </li>
+                </ol> -->
+              </div>
+          </div>
+      </div>
+      
+    </div>
+    <div class="col-6">
+        <div class="card">
+            <div class="tbl-past-data"> 
+                <label class="page-header">Investigation History</label>   
+                <div class="col-12">
+                  <i *ngIf="investigationHistory.length == 0">{{'COMMON.NA'| translate}}</i>
+           
+            <ol *ngIf="investigationHistory.length > 0">
+                <li *ngFor="let t of investigationHistory" class="mb-0">
+                  <div class="row">
+                    <div class="col-lg-10 margin-bottom-20px">
+                      <span ngbTooltip="{{t.medicalAttributeName}} {{t.result}} {{t.unit}}" class="textDot">{{t.medicalAttributeName}}
+                        <ng-container *ngIf="t?.result">({{t.result}} {{t.unit}})
+                        </ng-container>
+                      </span>&nbsp;
+                    </div>
+
+                    <div class="col-lg-2 margin-left-20px">
+
+                      <span ngbTooltip="Update Medical Data" class="table-action-btn edit cursor" (click)="onClickEditDiagnosticsTestDetails(t, t.prescription,'edit')">
+                        <img src="assets/image/edit.svg" height="20" alt="">
+                      </span>
+                    </div>
+                  </div>
+                </li>
+              </ol>
+          </div>
+       </div>
+       </div>
+    </div>
+    <div class="col-12">
+      <div class="pastPrescriptionList">
+        <div *ngFor="let pp of pastPrescription">
+          <!-- Prescription Display Part -->
+          <div class="row no-gutters border-bottom" *ngIf="pp.prescriptionRefNo!=null">
+            <div class="col-2">
+              <p><span class="badge badge-success">{{'PROCEDURE.CONSULTATION'| translate}}</span></p>
+              <div> <b>{{pp.prescriptionCreatedDate | date : "dd-MM-yyyy"}}</b></div>
+              <div> <b>{{pp.prescriptionCreatedDate | date : "hh:mm a"}}</b></div>
+            </div>
+            <div class="col-10">
+                <div class="bold-text" *ngIf="loggedInUser.entityName=='HOSPITAL'">
+                  Visit by Dr.
+                  <span class="text-uppercase"> {{pp.doctor.doctorName}}</span>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-12">
+                      <label class="page-header">{{'PRESCRIPTION.SYMPTOMS'|translate}}</label>
+                      <div *ngIf="pp.symptomList.length==0">
+                          <i>{{'COMMON.NA'|translate}}</i>
+                        </div>
+                        <div *ngIf="pp.symptomList.length > 0">
+                          <ol>
+                            <li *ngFor="let d of pp.symptomList">
+                              {{d.symptom}}
+                            </li>
+                          </ol>
+                        </div>
+                     </div>
+                    <div class="col-lg-5 col-md-5 col-10">
+                      <label class="page-header">{{'PRESCRIPTION.DIAGNOSIS'|translate}}</label>
+                      <div *ngIf="pp.diagnosisList.length==0">
+                        <i>{{'COMMON.NA'|translate}}</i>
+                      </div>
+                      <div *ngIf="pp.diagnosisList.length > 0">
+                        <ol>
+                          <li *ngFor="let d of pp.diagnosisList">
+                            {{d.diagnosis}}
+                          </li>
+                        </ol>
+                      </div>
+                    </div>
+                    <div class="col-lg-1 col-md-1 col-2">
+                      <a href="javascript:void(0);" (click)="openPrescriptionModal(pp)">
+                        <img style="margin-top: 5px;" width="30" class="ng-tns-c1-1 ng-star-inserted treatment-history-presc-ico" src="../../../../../assets/image/prescription.svg">
+                      </a>
+                    </div>
+                  </div>
+    
+    
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <label class="page-header">{{'PRESCRIPTION.MEDICATIONS'|translate}}</label>
+                      <div *ngIf="pp.medicationDTOList.length==0">
+                        <i>{{'COMMON.NA'|translate}}</i>
+                      </div>
+                      <div *ngIf="pp.medicationDTOList.length > 0">
+                        <ol>
+                            <ng-container *ngFor="let pm of pp.medicationDTOList; let i = index">
+                              <ng-container *ngIf="pm.status=='NRM' && pm.medicineName!=null">
+                                <li *ngIf="pm.medicineName!=''">
+                                  <span>
+                                    {{pm.medicineName}} {{pm.sosFlag == 'Y'?' (SoS) ':''}}:
+                                    <span *ngIf="pm.unitType !== ''">
+                                      
+                                      {{pm.noOfUnit}} {{pm.unitType | prescribeMedicine:pm.noOfUnit}} {{pm.sosFlag == 'Y'?'':'x '}}
+                                    </span>
+                                    <span *ngIf="pm.sosFlag == 'N' || pm.sosFlag == null">
+                                      
+                                      {{pm.dosageFrequency}}
+                                      <ng-container *ngIf="pm.dosageFrequency > 1">times</ng-container>
+                                      <ng-container *ngIf="pm.dosageFrequency <= 1">time</ng-container>
+                                      {{pm.dosageInterval == 'D' ? 'daily' : (pm.dosageInterval == 'W' ? 'weekly' : 'monthly')}} for {{pm.duration}}
+                                      
+                                      <ng-container *ngIf="pm.duration > 1">
+                                        {{pm.durationUnit == 'D' ? 'days' : (pm.durationUnit == 'W' ? 'weeks' : 'months')}}
+                                      </ng-container>
+                                      <ng-container *ngIf="pm.duration <= 1">
+                                        {{pm.durationUnit == 'D' ? 'day' : (pm.durationUnit == 'W' ? 'week' : 'month')}}
+                                      </ng-container>
+                                    </span>
+                                   
+                            
+                                    {{pm.beforeAfterMealFlag != null ? (pm.beforeAfterMealFlag == 'A' ? ' - after meal': ' - before meal') : ''}}
+                                    <span *ngIf="pm.comments !== ''">
+                                      - {{pm.comments}}
+                                    </span>
+                            
+                                  </span>
+                                  
+                                  <div *ngIf="pm.substituteMedicineList != null && pm.substituteMedicineList.length > 0">
+                                    <p>
+                                      <u>{{'PRESCRIPTION.SUBSTITUTE_MEDICINE'| translate}}</u>
+                                    </p>
+                                    <ul>
+                                      <li *ngFor="let sm of pm.substituteMedicineList">
+                                        {{sm.medicineName}}
+                                      </li>
+                                    </ul>
+                                  </div>
+                                  
+                                </li>
+                              </ng-container>
+                            </ng-container>
+                          
+                        </ol>
+                      </div>
+                    </div>
+    
+    
+                    <div class="col-lg-5 col-md-5 col-10">
+                      <label class="page-header">{{'PRESCRIPTION.INVESTIGATIONS'|translate}}</label>
+                      <div *ngIf="pp.doctorRecommendedTestList.length==0">
+                        <i>{{'COMMON.NA'|translate}}</i>
+                      </div>
+                      <div *ngIf="pp.doctorRecommendedTestList.length > 0">
+                        <ol class="mb-0">
+                          <li *ngFor="let t of pp.doctorRecommendedTestList" class="mb-0">
+                            <div class="row">
+                              <div class="col-lg-10 margin-bottom-20px">
+                                <span ngbTooltip="{{t.medicalAttributeName}} {{t.result}} {{t.unit}}" class="textDot">{{t.medicalAttributeName}}
+                                  <ng-container *ngIf="t?.result">({{t.result}} {{t.unit}})
+                                  </ng-container>
+                                </span>&nbsp;
+                              </div>
+    
+                              <div class="col-lg-2 margin-left-20px">
+    
+                                <span ngbTooltip="Update Medical Data" class="table-action-btn edit cursor" (click)="onClickEditDiagnosticsTestDetails(t, pp,'edit')">
+                                  <img src="assets/image/edit.svg" height="20" alt="">
+                                </span>
+                              </div>
+                            </div>
+                          </li>
+                        </ol>
+    
+                        <div class="row ml-1">
+                          <div class="col-2 col-md-2 mb-0 p-0 display-inline-block text-center" *ngFor="let ppuploadedMRImg of pp.uploadedMRImages">
+                            <img [src]="transform(ppuploadedMRImg.imgSrc)" height="50px" width="50px" class="cursor border p-1 mr-1" (click)="openImageInNewTab(ppuploadedMRImg.imgSrc)"
+                              *ngIf="ppuploadedMRImg.contentType != 'application/pdf'" />
+    
+                            <img *ngIf="ppuploadedMRImg.contentType == 'application/pdf'" height="50px" width="50px" class="cursor border pt-1 pb-1 mr-1"
+                              (click)="openPdf(ppuploadedMRImg.actualSrc)" src="assets/image/pdf.svg" />
+                          </div>
+    
+                        </div>
+                      </div>
+                      <div class="row">
+                        <label class="mt-0 mb-0 col-md-12 col-lg-12 col-12 page-header">{{'PRESCRIPTION.NOTES'|translate}}</label>
+                        <div *ngIf="pp.doctorNote==null" class="col-md-12 col-lg-12 col-12">
+                          <i>{{'COMMON.NA'|translate}}</i>
+                        </div>
+                        <div *ngIf="pp.doctorNote!=null" class="col-md-12 col-lg-12 col-12">
+                          {{pp.doctorNote.note}}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-1 col-md-1 col-2" *ngIf="loggedInUser.entityName=='DOCTOR'">
+                        <a  *ngIf="screenFlag!='prescription'" href="javascript:void(0);" (click)="editPrescription(pp)" ngbTooltip="Edit Prescription" container="body">
+                          <img style="margin-top: 5px;" width="20" class="ng-tns-c1-1 ng-star-inserted treatment-history-presc-ico" src="../../../../../assets/image/edit.svg">
+                        </a>
+                      </div>
+                  </div>
+            </div>
+            <div class="col-12">
+              <!-- <div class="row">
+                <div class="col-6 history-dates bold-text">
+                  <b>{{pp.prescriptionDate | date : "dd-MM-yyyy"}}</b>
+                  <span class="badge badge-success ml-2">{{'PROCEDURE.CONSULTATION'| translate}}</span>
+                </div>
+
+                <div class="col-6 bold-text text-right" *ngIf="loggedInUser.entityName=='HOSPITAL'">
+                  Dr.
+                  <span class="text-uppercase"> {{pp.doctor.doctorName}}</span>
+                </div>
+
+              </div> -->
+              <!-- <div class="row">
+                <div class="col-lg-6 col-md-6 col-12">
+                  <label class="page-header">{{'PRESCRIPTION.SYMPTOMS'|translate}}</label>
+                  <div *ngIf="pp.symptomList.length==0">
+                      <i>{{'COMMON.NA'|translate}}</i>
+                    </div>
+                    <div *ngIf="pp.symptomList.length > 0">
+                      <ol>
+                        <li *ngFor="let d of pp.symptomList">
+                          {{d.symptom}}
+                        </li>
+                      </ol>
+                    </div>
+                 </div>
+                <div class="col-lg-5 col-md-5 col-10">
+                  <label class="page-header">{{'PRESCRIPTION.DIAGNOSIS'|translate}}</label>
+                  <div *ngIf="pp.diagnosisList.length==0">
+                    <i>{{'COMMON.NA'|translate}}</i>
+                  </div>
+                  <div *ngIf="pp.diagnosisList.length > 0">
+                    <ol>
+                      <li *ngFor="let d of pp.diagnosisList">
+                        {{d.diagnosis}}
+                      </li>
+                    </ol>
+                  </div>
+                </div>
+                <div class="col-lg-1 col-md-1 col-2">
+                  <a href="javascript:void(0);" (click)="openPrescriptionModal(pp)">
+                    <img style="margin-top: 5px;" width="30" class="ng-tns-c1-1 ng-star-inserted treatment-history-presc-ico" src="../../../../../assets/image/prescription.svg">
+                  </a>
+                </div>
+              </div>
+
+
+              <div class="row">
+                <div class="col-lg-6">
+                  <label class="page-header">{{'PRESCRIPTION.MEDICATIONS'|translate}}</label>
+                  <div *ngIf="pp.medicationDTOList.length==0">
+                    <i>{{'COMMON.NA'|translate}}</i>
+                  </div>
+                  <div *ngIf="pp.medicationDTOList.length > 0">
+                    <ol>
+                        <ng-container *ngFor="let pm of pp.medicationDTOList; let i = index">
+                          <ng-container *ngIf="pm.status=='NRM' && pm.medicineName!=null">
+                            <li *ngIf="pm.medicineName!=''">
+                              <span>
+                                {{pm.medicineName}} {{pm.sosFlag == 'Y'?' (SoS) ':''}}:
+                                <span *ngIf="pm.unitType !== ''">
+                                  
+                                  {{pm.noOfUnit}} {{pm.unitType | prescribeMedicine:pm.noOfUnit}} {{pm.sosFlag == 'Y'?'':'x '}}
+                                </span>
+                                <span *ngIf="pm.sosFlag == 'N' || pm.sosFlag == null">
+                                  
+                                  {{pm.dosageFrequency}}
+                                  <ng-container *ngIf="pm.dosageFrequency > 1">times</ng-container>
+                                  <ng-container *ngIf="pm.dosageFrequency <= 1">time</ng-container>
+                                  {{pm.dosageInterval == 'D' ? 'daily' : (pm.dosageInterval == 'W' ? 'weekly' : 'monthly')}} for {{pm.duration}}
+                                  
+                                  <ng-container *ngIf="pm.duration > 1">
+                                    {{pm.durationUnit == 'D' ? 'days' : (pm.durationUnit == 'W' ? 'weeks' : 'months')}}
+                                  </ng-container>
+                                  <ng-container *ngIf="pm.duration <= 1">
+                                    {{pm.durationUnit == 'D' ? 'day' : (pm.durationUnit == 'W' ? 'week' : 'month')}}
+                                  </ng-container>
+                                </span>
+                               
+                        
+                                {{pm.beforeAfterMealFlag != null ? (pm.beforeAfterMealFlag == 'A' ? ' - after meal': ' - before meal') : ''}}
+                                <span *ngIf="pm.comments !== ''">
+                                  - {{pm.comments}}
+                                </span>
+                        
+                              </span>
+                              
+                              <div *ngIf="pm.substituteMedicineList != null && pm.substituteMedicineList.length > 0">
+                                <p>
+                                  <u>{{'PRESCRIPTION.SUBSTITUTE_MEDICINE'| translate}}</u>
+                                </p>
+                                <ul>
+                                  <li *ngFor="let sm of pm.substituteMedicineList">
+                                    {{sm.medicineName}}
+                                  </li>
+                                </ul>
+                              </div>
+                              
+                            </li>
+                          </ng-container>
+                        </ng-container>
+                      
+                    </ol>
+                  </div>
+                </div>
+
+
+                <div class="col-lg-5 col-md-5 col-10">
+                  <label class="page-header">{{'PRESCRIPTION.INVESTIGATIONS'|translate}}</label>
+                  <div *ngIf="pp.doctorRecommendedTestList.length==0">
+                    <i>{{'COMMON.NA'|translate}}</i>
+                  </div>
+                  <div *ngIf="pp.doctorRecommendedTestList.length > 0">
+                    <ol class="mb-0">
+                      <li *ngFor="let t of pp.doctorRecommendedTestList" class="mb-0">
+                        <div class="row">
+                          <div class="col-lg-10 margin-bottom-20px">
+                            <span ngbTooltip="{{t.medicalAttributeName}} {{t.result}} {{t.unit}}" class="textDot">{{t.medicalAttributeName}}
+                              <ng-container *ngIf="t?.result">({{t.result}} {{t.unit}})
+                              </ng-container>
+                            </span>&nbsp;
+                          </div>
+
+                          <div class="col-lg-2 margin-left-20px">
+
+                            <span ngbTooltip="Update Medical Data" class="table-action-btn edit cursor" (click)="onClickEditDiagnosticsTestDetails(t, pp,'edit')">
+                              <img src="assets/image/edit.svg" height="20" alt="">
+                            </span>
+                          </div>
+                        </div>
+                      </li>
+                    </ol>
+
+                    <div class="row ml-1">
+                      <div class="col-2 col-md-2 mb-0 p-0 display-inline-block text-center" *ngFor="let ppuploadedMRImg of pp.uploadedMRImages">
+                        <img [src]="transform(ppuploadedMRImg.imgSrc)" height="50px" width="50px" class="cursor border p-1 mr-1" (click)="openImageInNewTab(ppuploadedMRImg.imgSrc)"
+                          *ngIf="ppuploadedMRImg.contentType != 'application/pdf'" />
+
+                        <img *ngIf="ppuploadedMRImg.contentType == 'application/pdf'" height="50px" width="50px" class="cursor border pt-1 pb-1 mr-1"
+                          (click)="openPdf(ppuploadedMRImg.actualSrc)" src="assets/image/pdf.svg" />
+                      </div>
+
+                    </div>
+                  </div>
+                  <div class="row">
+                    <label class="mt-0 mb-0 col-md-12 col-lg-12 col-12 page-header">{{'PRESCRIPTION.NOTES'|translate}}</label>
+                    <div *ngIf="pp.doctorNote==null" class="col-md-12 col-lg-12 col-12">
+                      <i>{{'COMMON.NA'|translate}}</i>
+                    </div>
+                    <div *ngIf="pp.doctorNote!=null" class="col-md-12 col-lg-12 col-12">
+                      {{pp.doctorNote.note}}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-1 col-md-1 col-2">
+                    <a  *ngIf="screenFlag!='prescription'" href="javascript:void(0);" (click)="editPrescription(pp)" ngbTooltip="Edit Prescription" container="body">
+                      <img style="margin-top: 5px;" width="20" class="ng-tns-c1-1 ng-star-inserted treatment-history-presc-ico" src="../../../../../assets/image/edit.svg">
+                    </a>
+                  </div>
+              </div> -->
+            </div>
+          </div>
+          <!-- Procedure Display Part -->
+          <div class="row no-gutters border-bottom" *ngIf="pp.procedureRefNo!=null && pp.noteType=='PRON'">
+              <div class="col-2">
+                  <p><span class="badge badge-primary">{{'PROCEDURE.PROCEDURE_NOTE'| translate}}</span></p>
+                  <div> <b>{{pp.procedureCreatedDate | date : "dd-MM-yyyy"}}</b></div>
+                  <div> <b>{{pp.procedureCreatedDate | date : "hh:mm a"}}</b></div>
+                </div>
+                <div class="col-10">
+                    <div class="bold-text" *ngIf="loggedInUser.entityName=='HOSPITAL'">
+                      Visit by Dr.
+                      <span class="text-uppercase"> {{pp.doctorName}}</span>
+                    </div>
+            
+              <div class="row">
+                <div class="col-lg-4 col-md-4 col-12 col-xs-4 col-sm-4">
+                  <label class="page-header">{{'PRESCRIPTION.PROCEDURE_NAME'|translate}}</label>
+                  <div *ngIf="pp.procedureName==null">
+                    <i>{{'COMMON.NA'|translate}}</i>
+                  </div>
+                  <div *ngIf="pp.procedureName!=null">
+                    {{pp.procedureName}}
+                  </div>
+
+                </div>
+
+                <!-- <div class="col-lg-4 col-md-4 col-10 col-xs-4 col-sm-4">
+                  <label class="page-header">{{'PRESCRIPTION.PROCEDURE_LOCATION'|translate}}</label>
+                  <div *ngIf="pp.procedureLocation==null">
+                    <i>{{'COMMON.NA'|translate}}</i>
+                  </div>
+                  <div *ngIf="pp.procedureLocation!=null">{{pp.procedureLocation}}
+                  </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-10 col-xs-2 col-sm-2">
+                  <label class="page-header">{{'PRESCRIPTION.PROCEDURE_DATETIME'|translate}}</label>
+                  <div *ngIf="pp.procedureStartTime==null">
+                    <i>{{'COMMON.NA'|translate}}</i>
+                  </div>
+                  <div *ngIf="pp.procedureStartTime!=null">
+                    {{pp.procedureDate | date : "dd-MM-yyyy"}} {{pp.procedureStartTime}}
+                  </div>
+                </div> -->
+                <div class="col-lg-6 col-md-6 col-10 col-xs-6 col-sm-6">
+                    <label class="page-header">{{'PROCEDURE.PROCEDURE_NOTE'|translate}}</label>
+                    <div *ngIf="pp.notes==null"><i>{{'COMMON.NA'|translate}}</i></div>
+                    <div *ngIf="pp.notes!=null">{{pp.notes}}</div>
+                </div>
+                <div class="col-lg-1 col-md-1 col-1 col-xs-1 col-sm-1"></div>
+
+                <div class="col-lg-1 col-md-1 col-1 col-xs-1 col-sm-1">
+
+                  <a href="javascript:void(0);" (click)="openProcedureModal(pp)">
+                    <img class="ng-tns-c1-1 ng-star-inserted treatment-history-presc-ico" src="../../../../../assets/image/add-medical.jpg" style="margin-top: 1px;width: 53px;position: absolute;
+            left: 7px;">
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Visit Note Display Part -->
+          <div class="row no-gutters border-bottom" *ngIf="pp.procedureRefNo!=null && pp.noteType=='IPDN'">
+              <div class="col-2">
+                  <p><span class="badge badge-warning">{{'PROCEDURE.VISIT_NOTE'| translate}}</span></p>
+                  <div> <b>{{pp.procedureCreatedDate | date : "dd-MM-yyyy"}}</b></div>
+                  <div> <b>{{pp.procedureCreatedDate | date : "hh:mm a"}}</b></div>
+                </div>
+                <div class="col-10">
+                    <!-- <div class="col-12 bold-text" *ngIf="loggedInUser.entityName=='HOSPITAL'">
+                      Visit by Dr.
+                      <span class="text-uppercase"> {{pp.doctorName}}</span>
+                    </div>   -->
+            
+                <div class="row">
+                  <div class="col-lg-10">
+                    <label class="page-header">Notes</label>
+                    <div *ngIf="pp.notes==null">
+                      <i>{{'COMMON.NA'|translate}}</i>
+                    </div>
+                    <div *ngIf="pp.notes!=null">
+                      {{pp.notes}}
+                    </div>  
+                  </div>
+
+                   <!--new add to show the uploaded files-->
+                   <div class="row ml-1">
+                    <div class="col-2 col-md-2 mb-0 p-0 display-inline-block text-center"
+                      *ngFor="let ppProcedureImages of pp.procedureImages">
+                      <img [src]="transform(ppProcedureImages.imgSrc)" height="50px" width="50px" class="cursor border p-1 mr-1"
+                      (click)="openImageInNewTab(ppProcedureImages.imgSrc)" *ngIf="ppProcedureImages.contentType != 'pdf'"/>
+
+                      <img *ngIf="ppProcedureImages.contentType == 'pdf'"  height="50px" width="50px" class="cursor border pt-1 pb-1 mr-1" (click)="openPdf(ppProcedureImages.imgSrc)"  src="assets/image/pdf.svg"/>
+                    </div>
+                  </div>
+                  <!-- end of new add to show the uploaded files-->
+  
+                  <!-- <div class="col-lg-4 col-md-4 col-10 col-xs-4 col-sm-4">
+                    <label class="page-header">{{'PRESCRIPTION.PROCEDURE_LOCATION'|translate}}</label>
+                    <div *ngIf="pp.procedureLocation==null">
+                      <i>{{'COMMON.NA'|translate}}</i>
+                    </div>
+                    <div *ngIf="pp.procedureLocation!=null">{{pp.procedureLocation}}
+                    </div>
+                  </div> -->
+                 
+                  <!-- <div class="col-lg-2">
+  
+                    <a href="javascript:void(0);" (click)="openProcedureModal(pp)">
+                      <img class="ng-tns-c1-1 ng-star-inserted treatment-history-presc-ico" src="../../../../../assets/image/add-medical.jpg" style="margin-top: 15px;width: 53px;position: absolute;
+              left: 7px;">
+                    </a>
+                  </div> -->
+                </div>
+              </div>
+            </div>
+
+        </div>
+
+      </div>
+    </div>
+    <div class="row mb-2">
+      <div class="col-md-12 text-right"></div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="showDiagnosticsTestReport">
+    <app-medical-test-results [selectedPatientDetail]="patientPrescriptionDetail" [selectedDiagnosticsDetails]="medicalDiagnosticDetailsData"
+      (medicalDetailsClose)="medicalDetailsClose($event)">
+    </app-medical-test-results>
+  </ng-container>
+
+   <!--procedure side bar-->
+   <p-sidebar [(visible)]="displayProcedureSidebar" blockScroll="true" [dismissible]="false" styleClass="procedureSidebar"  [style]="{width:'25vw'}" appendTo="body" position="right">
+    <div (click)="closeProcedureSidebar()" class="close-btn cursor"><i class="fas fa-times"></i></div>
+    <div *ngIf="displayProcedureSidebar" class="proceduresidebarArea noteArea">
+        <div class="row ">
+            <div class="col-6">
+              <h1 class="font-size-for-room-sidebar-title">Visit Note</h1>
+            </div>
+          </div>
+      <div class="row">
+        <div class="col-md-12">
+
+          <app-procedure [fromSidebar]="true" [admissionRefNo]="selectedAdmissionRefNo"
+            [selectedProcedureFromSideBar]="selectedProcedureNote"
+            (procedureSavedFromSidebar)="procedureSavedFromSidebar($event)"></app-procedure>
+        </div>
+        <!-- <div class="col-md-6 page-content" [ngClass]="noCardMsg ?'':'right-panel-top-padding' ">
+
+          <ng-container *ngFor="let pn of procedureNotes">
+            <div *ngIf="pn.notes" class="card notesCard">
+
+              <div class="row mb-0" *ngIf="pn.notes">
+                <div class="col-12 col-md-6"><span
+                    class="pr-2 font-color-grey font-size11">{{pn.procedureDate | date: 'dd-MM-yyyy'}}</span></div>
+
+                    <div class="col-md-6 text-right"><img alt=""
+                    class="cursor" height="20" src="../../../../../assets/image/edit-button.svg"
+                    (click)="editProcedure(pn)">
+                  </div>
+
+              </div>
+              <div *ngIf="pn.notes" class="mb-2 mt-2">{{pn.notes}}</div>
+              <div class="text-center mb-0 notesImageArea" *ngIf="pn.procedureUploadDtoList.length > 0">
+                <div class="display-inline-block mr-1 ml-1 "
+                  *ngFor="let pnImages of pn.procedureUploadDtoList">
+                <img [src]="transform(pnImages.imgSrc)"  height="70px" class="cursor"
+                (click)="openImageInNewTab(pnImages.imgSrc)" *ngIf="pnImages.contentType != 'pdf'"/>
+
+                <img *ngIf="pnImages.contentType == 'pdf'" height="60px" class="cursor" (click)="openPdf(pnImages.actualSrc)"  src="assets/image/pdf.svg"/>
+
+                </div>
+              </div>
+
+            </div>
+          </ng-container>
+          <div class="card roundedCard" *ngIf="noCardMsg">No Notes Added</div>
+        </div> -->
+      </div>
+    </div>
+  </p-sidebar>
+  <!--end of procedure side bar-->
+
+  <!-- Working on #2445 -->
+<ng-template #discontinueMedicineModal>
+
+    <div class="modal-header">
+      <h4 class="modal-title">Discontinue Medicine</h4>
+      <button type="button" class="close float-right" (click)="modalRef.hide()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="discontinueForm">
+          <p class="border-bottom">Medicine:
+            <b>{{medicine.medicineName}}</b>
+          </p>
+
+          <label>Effective From</label>
+          <label class="radio">
+            <label class="pl-0">Immediate</label>
+            <input type="radio" name="radio" (click)="setEffectiveFrom('I')">
+            <span style="margin-top: 4px;" class="checkmark"></span>
+          </label>
+          <label class="radio">
+            <label class="pl-0">Today</label>
+            <input type="radio" name="radio" (click)="setEffectiveFrom('T')">
+            <span style="margin-top: 4px;" class="checkmark"></span>
+          </label>
+          <label class="radio">
+            <label class="pl-0">Others</label>
+            <input type="radio" name="radio" (click)="setEffectiveFrom('O')">
+            <span style="margin-top: 4px;" class="checkmark"></span>
+          </label>
+          <input *ngIf="showDate" type="text" placeholder="DD-MM-YYYY" bsDatepicker [bsConfig]="{ dateInputFormat: dateFormat, showWeekNumbers: false }"
+            class="form-control date mt-2" #dp="bsDatepicker" placement="auto" formControlName="discontinueDate" name="discontinueDate">
+          <div class="validation-error">{{errMsg}}</div>
+          <button type="button" class="btn btn-primary mt-3" (click)="discontinue()" [disabled]="effictiveFrom==null">Discontinue</button>
+        </form>
+    </div>
+  </ng-template>
+
+  <ng-template #editMedicineModal>
+
+      <div class="modal-header">
+        <h4 class="modal-title">Edit Medicine</h4>
+        <button type="button" class="close float-right" (click)="modalRef.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <form [formGroup]="prescriptionForm">
+              <div formArrayName="medicationDTOList" *ngIf="medicationDTOList.length > 0">
+                  <div class="content table-responsive not-for-mobile">
+                    <table style="width: 100.1%;" class="">
+                      <thead>
+                        <tr class="">
+                          <th class="pr-0 small-width-header" style="width: 1%;">{{'PRESCRIPTION.SL_NO'| translate}}</th>
+                          <th class="medicine-name-header">
+                            <div class="smal-adj">{{'PRESCRIPTION.MEDICINE'| translate}}</div>
+                          </th>
+                          <th class="medicine-frequency medicine-frequency-spacer">{{'PRESCRIPTION.DOSAGE'| translate}}
+                          </th>
+                          <th style="width: 2%;"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr
+                          *ngFor="let medicine of prescriptionForm.get('medicationDTOList').controls; let i = index"
+                          [formGroup]="medicine" [attr.id]="'tr'+i">
+                          <td colspan=8 class="pres-main-table">
+                            <table width="100%">
+                              <tr class="pres-lg">
+                                <td class="pr-0" class="medicineNo">{{i+1}}</td>
+                                <td [attr.id]="'cell'+i" class="medic-auto-comp">
+                                  <!--Working on app/issues/717 by adding minLength=3-->
+                                  <p-autoComplete styleClass="medicineListAutoComplete" inputStyleClass="medicationStyle"
+                                    #med placeholder="Medicine Name" [suggestions]="results" [minLength]="3"
+                                    (onSelect)="setMedicineName($event, i)" (completeMethod)="getMedicineList($event)"
+                                    autoHighlight="false" formControlName="medicineName"
+                                    (onKeyUp)="managePk(med.value, i)" required>
+                                    
+                                  </p-autoComplete>
+                                  <!-- Working On app/issues/591 -->
+                                  <!-- <div class="position-relative">
+                                    <a *ngIf="showSubstituteMedicineIcon[i] || substituteMedicineLength[i] > 0"
+                                      class="float-left"
+                                      (click)="openSubstituteMedicineSidebar(prescriptionForm.get('medicationDTOList').controls[i].value, i)">
+                                      <img container="body" ngbTooltip="Substitute Medicine" title="Substitute Medicine"
+                                        class="cursor sub-medicine-ico" height="15px"
+                                        src="../../../../../assets/image/medicine.svg">
+                                    </a>
+                                  </div> -->
+                                  <!--End Working On app/issues/591 -->
+                                  <span
+                                    *ngIf="submitted && prescriptionForm.get('medicationDTOList').controls[i].get('medicineName').errors">
+                                    <span
+                                      *ngIf="prescriptionForm.get('medicationDTOList').controls[i].get('medicineName').errors.required"
+                                      class="validation-error">{{'VALIDATION.VALIDATION_REQUIRED'| translate}}</span>
+                                  </span>
+                                </td>
+                                <td class="medicine-frequency medicine-frequency-nopadding">
+                                  <div class="mb-1">
+                                    <div class="float-left pt-1 pb-1 pr-1">
+                                      <div class="float-left pl-3">
+                                        <div class="float-left pr-1"><input type="text" class="unit" floatExZero
+                                            formControlName="noOfUnit" min="1" max="100" /> </div>
+                                        <div class="float-left">
+                                          <select class="form-control" formControlName="unitType">
+                                            <option *ngFor="let u of unitType" value="{{u}}">{{u}}</option>
+                                          </select>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="float-left pt-1 pb-1">
+                                      <div class="">
+                                        <div class="float-left">
+                                          <div class="float-left"><input type="number" formControlName="dosageFrequency"
+                                              min="1" max="100" numbersExZeroOnly [readonly]="enableSos[i]" /> </div>
+                                          <div class="float-left">{{'PRESCRIPTION.TIMES'| translate}}</div>
+                                        </div>
+                                        <div class="float-left pl-2">
+                                          <select class="form-control" id="dosageDuration"
+                                            formControlName="dosageInterval" *ngIf="!enableSos[i]">
+                                            <option *ngFor="let dd of dosageDurationList"
+                                              value="{{dd.attributeValue}}">{{dd.displayValue}}</option>
+                                          </select>
+                                          <select class="form-control" id="dosageDuration"
+                                          formControlName="dosageInterval" *ngIf="enableSos[i]" disabled>
+                                          <option *ngFor="let dd of dosageDurationList"
+                                            value="{{dd.attributeValue}}">{{dd.displayValue}}</option>
+                                        </select>
+                                        </div>
+                                        <div class="float-left pl-1 pr-1">/</div>
+                                      </div>
+                                    </div>
+                                    <div class="float-left pt-1 pb-1 pl-0">
+                                      <div class="float-left pl-0 pt-1"> <input type="checkbox"
+                                          (click)="toggleSos($event, i)"
+                                          [checked]="prescriptionForm.get('medicationDTOList').controls[i].get('sosFlag').value == 'Y'">
+                                      </div>
+                                      <div class="float-left chkbox-spacer">{{'PRESCRIPTION.SOS'| translate}}</div>
+                                    </div>
+                                    <div class="float-left pt-1 pl-2">
+                                      <input type="number" formControlName="duration" min="1" max="100" numbersExZeroOnly
+                                        [readonly]="enableSos[i]" />
+                                    </div>
+                                    <div class="float-left pl-2 pt-1">
+                                      <select class="form-control" id="durationUnit" formControlName="durationUnit"
+                                        *ngIf="!enableSos[i]">
+                                        <option *ngFor="let du of durationUnitList"
+                                          value="{{du.attributeValue}}">{{du.displayValue}}</option>
+                                      </select>
+                                      <select class="form-control" id="durationUnit" formControlName="durationUnit"
+                                      *ngIf="enableSos[i]" disabled>
+                                        <option *ngFor="let du of durationUnitList"
+                                          value="{{du.attributeValue}}">{{du.displayValue}}</option>
+                                      </select>
+                                    </div>
+                                  </div>
+                                </td>
+                                <!-- <td style="width: 2%;">
+                                  <div ngbTooltip="Delete Medicine" container="body" (click)="deleteMedicine(i)"
+                                    class="pt-1 spacer-for-small">
+                                    <img class="cursor" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                                  </div>
+                                </td> -->
+                              </tr>
+                              <!-- <tr *ngIf="prescriptionForm.get('medicationDTOList').controls[i].get('genericName').value!=null && genericFlag=='Y'">
+                                  <td class="genericMedicine" colspan=7>
+                                      <div class="float-left mb-1 substituteMedicineChipHeader">
+                                          <label>Generic Name: </label>
+                                      </div>
+                                      <span class=" mb-1 ml-2">
+                                        {{prescriptionForm.get('medicationDTOList').controls[i].get('genericName').value}}
+                                      </span>
+                                  </td>
+                              </tr> -->
+                              <!-- <tr *ngIf="substituteMedicineLength[i] > 0">
+                                <td class="substituteMedicineRow" colspan=7>
+                                 
+                                  <div class="substituteMedicineArea">
+                                    <div class="float-left substituteMedicineChipHeader">
+                                      <label>{{'PRESCRIPTION.SUBSTITUTE_MEDICINE'| translate}}</label></div>
+                                    <div
+                                      *ngFor="let s of medicationDTOList.controls[i].get('substituteMedicineList').value; let j = index; let isLast=last"
+                                      class="substituteMedicineChip float-left">
+                                      {{s.medicineName}}
+                                      <a href="javascript:void(0);"
+                                        (click)="removeSubstituteMedicine(s, i, j)">x</a>&nbsp;{{isLast?"":","}}
+                                    </div>
+                                  </div>
+                                  
+                                </td>
+                              </tr> -->
+                              <tr class="pres-large-view">
+                                <td class="timiing-view " colspan=2>
+                                  <div class="pres-heading">&nbsp;</div>
+                                  <div class="pt-1 pb-2 pl-1">
+                                    <div class="float-left pt-1"><input type="checkbox"
+                                        [checked]="prescriptionForm.get('medicationDTOList').controls[i].get('beforeAfterMealFlag').value == 'B'"
+                                        (click)="selectTiming($event, i, 'B')"></div>
+                                    <div class="float-left chkbox-spacer">{{'PRESCRIPTION.BEFORE'| translate}}</div>
+                                    <div class="float-left pt-1 pl-3"><input type="checkbox"
+                                        [checked]="prescriptionForm.get('medicationDTOList').controls[i].get('beforeAfterMealFlag').value == 'A'"
+                                        (click)="selectTiming($event, i, 'A')"></div>
+                                    <div class="float-left chkbox-spacer">{{'PRESCRIPTION.AFTER'| translate}}</div>
+                                  </div>
+                                </td>
+                                <td class="comment-view comment-view-nopadding"  colspan=4>
+                                  <div class="pres-heading">{{'PRESCRIPTION.COMMENT'| translate}}</div>
+                                  <div class="w-100" style="padding-bottom:30px"> <input type="text"
+                                      class="form-control pres-comment" formControlName="comments" maxlength="255" />
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr class="pres-ipad-view">
+                                <td class="medicine-frequency-wsub medicine-frequency-nopadding"
+                                  colspan=3>
+                                  <div class="pres-heading">{{'PRESCRIPTION.DOSAGE'| translate}}</div>
+                                  <div class="mb-1">
+                                    <div class="float-left pt-1 pb-1 pr-1">
+                                      <div class="float-left pl-3 dosage-small-spacer">
+                                        <div class="float-left pr-1"><input type="number" formControlName="noOfUnit"
+                                            min="1" max="100" numbersExZeroOnly /> </div>
+                                        <div class="float-left">
+                                          <select class="form-control" formControlName="unitType">
+                                            <option *ngFor="let u of unitType" value="{{u}}">{{u}}</option>
+                                          </select>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="float-left pt-1 pb-1">
+                                      <div class="">
+                                        <div class="float-left">
+                                          <div class="float-left"><input type="number" formControlName="dosageFrequency"
+                                              min="1" max="100" numbersExZeroOnly [readonly]="enableSos[i]" /> </div>
+                                          <div class="float-left">{{'PRESCRIPTION.TIMES'| translate}}</div>
+                                        </div>
+                                        <div class="float-left pl-2">
+                                          <select class="form-control" id="dosageDuration"
+                                            formControlName="dosageInterval" [disabled]="enableSos[i]">
+                                            <option [disabled]="enableSos[i]" *ngFor="let dd of dosageDurationList"
+                                              value="{{dd.attributeValue}}">{{dd.displayValue}}</option>
+                                          </select>
+                                        </div>
+                                        <div class="float-left pl-1 pr-1">/</div>
+                                      </div>
+                                    </div>
+                                    <div class="float-left pt-1 pb-1 pl-0">
+                                      <div class="float-left pl-0 pt-1"> <input type="checkbox"
+                                          (click)="toggleSos($event, i)"
+                                          [checked]="prescriptionForm.get('medicationDTOList').controls[i].get('sosFlag').value == 'Y'">
+                                      </div>
+                                      <div class="float-left chkbox-spacer">{{'PRESCRIPTION.SOS'| translate}}</div>
+                                    </div>
+                                    <div class="float-left pt-1 pl-2">
+                                      <input type="number" formControlName="duration" min="1" max="100"
+                                        numbersExZeroOnly />
+                                    </div>
+                                    <div class="float-left pl-2 pt-1">
+                                      <select class="form-control" id="durationUnit" formControlName="durationUnit">
+                                        <option *ngFor="let du of durationUnitList" value="{{du.attributeValue}}">
+                                          {{du.displayValue}}</option>
+                                      </select>
+                                    </div>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr class="pres-ipad-view">
+                                <td colspan=4>
+                                  <table class="w-100">
+                                    <tr>
+                                      <td class="timiing-view" width='40%'>
+                                        <div class="pres-heading">{{'PRESCRIPTION.TIMING'| translate}}</div>
+                                        <div class="pt-1 pb-2 pl-1">
+                                          <div class="float-left pt-1"><input type="checkbox"
+                                              [checked]="prescriptionForm.get('medicationDTOList').controls[i].get('beforeAfterMealFlag').value == 'B'"
+                                              (click)="selectTiming($event, i, 'B')"></div>
+                                          <div class="float-left chkbox-spacer">{{'PRESCRIPTION.BEFORE'| translate}}</div>
+                                          <div class="float-left pt-1 pl-3"><input type="checkbox"
+                                              [checked]="prescriptionForm.get('medicationDTOList').controls[i].get('beforeAfterMealFlag').value == 'A'"
+                                              (click)="selectTiming($event, i, 'A')"></div>
+                                          <div class="float-left chkbox-spacer">{{'PRESCRIPTION.AFTER'| translate}}</div>
+                                        </div>
+                                      </td>
+                                      <td class="comment-view comment-view-nopadding" width='60%'>
+                                        <div class="pres-heading">&nbsp;</div>
+                                        <div class="w-100"> <input type="text" class="form-control pres-comment"
+                                            formControlName="comments" maxlength="255" /></div>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="content table-responsive for-very-small">
+                    <div
+                      *ngFor="let medicine of prescriptionForm.get('medicationDTOList').controls; let i = index"
+                      [formGroup]="medicine" [attr.id]="'tr'+i">
+                      <table class="w-100">
+                        <tr class="text-left">
+                          <td class="mobile-table">
+                            <table class="w-100">
+                              <tr>
+                                <td class="small-header">{{'PRESCRIPTION.SL_NO'| translate}}</td>
+                                <td class="mb-0">{{i+1}}</td>
+                              </tr>
+                              <tr>
+                                <td class="small-header">{{'PRESCRIPTION.MEDICINE'| translate}}</td>
+                                <td class="mb-0">
+                                  <div class="row">
+                                    <div class="col-10 pr-0">
+                                      <p-autoComplete styleClass="medicineListAutoComplete"
+                                        inputStyleClass="medicationStyle" #med placeholder="Medicine Name"
+                                        [suggestions]="results" [minLength]="3" (onSelect)="setMedicineName($event, i)"
+                                        (completeMethod)="getMedicineList($event)" autoHighlight="false"
+                                        formControlName="medicineName"
+                                        onkeydown="if (event.keyCode == 13) {document.getElementById('addMedication').click()}"
+                                        (onKeyUp)="managePk(med.value, i)" required>
+                                        <ng-template let-results pTemplate="item">
+                                          <span style="font-size:11px;font-weight: 500;">{{results.brandName}}</span>
+                                          <br>
+                                          <span style="font-size:9px">{{'PRESCRIPTION.COMPOSITION'| translate}} :
+                                            {{results.composition}}</span>
+                                        </ng-template>
+                                      </p-autoComplete>
+                                    </div>
+                                    <div class="col-2 pl-0">
+                                      <!-- Working On app/issues/591 -->
+                                      <!-- <div class="position-relative"> -->
+                                      <!-- <a *ngIf="showSubstituteMedicineIcon[i] || substituteMedicineLength[i] > 0"
+                                        class="float-left"
+                                        (click)="openSubstituteMedicineSidebar(prescriptionForm.get('medicationDTOList').controls[i].value, i)">
+                                        <img container="body" ngbTooltip="Substitute Medicine" title="Substitute Medicine"
+                                          class="cursor" height="15px" src="../../../../../assets/image/medicine.svg">
+                                      </a> -->
+                                      <!-- </div> -->
+                                      <!--End Working On app/issues/591 -->
+                                      <span
+                                        *ngIf="submitted && prescriptionForm.get('medicationDTOList').controls[i].get('medicineName').errors">
+                                        <span
+                                          *ngIf="prescriptionForm.get('medicationDTOList').controls[i].get('medicineName').errors.required"
+                                          class="validation-error">{{'VALIDATION.VALIDATION_REQUIRED'| translate}}</span>
+                                      </span>
+                                    </div>
+                                    <!-- <div class="col-12" *ngIf="substituteMedicineLength[i] > 0">
+                                     
+                                      <div class="substituteMedicineArea">
+                                        <div class="float-left substituteMedicineChipHeader">
+                                          <label>{{'PRESCRIPTION.SUBSTITUTE_MEDICINE'| translate}}</label></div>
+                                        <div
+                                          *ngFor="let s of medicationDTOList.controls[i].get('substituteMedicineList').value; let j = index; let isLast=last"
+                                          class="substituteMedicineChip float-left">
+                                          {{s.medicineName}}
+                                          <a href="javascript:void(0);"
+                                            (click)="removeSubstituteMedicine(s, i, j)">x</a>&nbsp;{{isLast?"":","}}
+                                        </div>
+                                      </div>
+                                      
+                                    </div> -->
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td class="small-header">{{'PRESCRIPTION.DOSAGE'| translate}}</td>
+                                <td class="mb-0">
+                                  <div class="mb-1 row">
+                                    <div class="col-sm-4 col-12 pl-0 pr-0">
+                                      <div class="float-left pl-2">
+                                        <div class="float-left pr-1"><input type="text" class="unit" floatExZero
+                                            formControlName="noOfUnit" min="1" max="100" /> </div>
+                                        <div class="float-left">
+                                          <select class="form-control" formControlName="unitType">
+                                            <option *ngFor="let u of unitType" value="{{u}}">{{u}}</option>
+                                          </select>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-6 col-12 pl-0 pr-0">
+                                      <div class="">
+                                        <div class="float-left">
+                                          <div class="float-left"><input type="number" formControlName="dosageFrequency"
+                                              min="1" max="100" numbersExZeroOnly [readonly]="enableSos[i]" /> </div>
+                                          <div class="float-left">{{'PRESCRIPTION.TIMES'| translate}}</div>
+                                        </div>
+                                        <div class="float-left pl-2">
+                                          <select class="form-control" id="dosageDuration"
+                                            formControlName="dosageInterval" [disabled]="enableSos[i]">
+                                            <option [disabled]="enableSos[i]" *ngFor="let dd of dosageDurationList"
+                                              value="{{dd.attributeValue}}">{{dd.displayValue}}</option>
+                                          </select>
+                                        </div>
+                                        <div class="float-left pl-1 pr-1">/</div>
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-2 col-12 pr-0">
+                                      <div class="float-left pl-0 pt-1"> <input type="checkbox"
+                                          (click)="toggleSos($event, i)"
+                                          [checked]="prescriptionForm.get('medicationDTOList').controls[i].get('sosFlag').value == 'Y'">
+                                      </div>
+                                      <div class="float-left chkbox-spacer">{{'PRESCRIPTION.SOS'| translate}}</div>
+                                    </div>
+                                    <div class="col-5 text-right">
+                                      <input type="number" formControlName="duration" min="1" max="100" numbersExZeroOnly
+                                        [readonly]="enableSos[i]" />
+                                    </div>
+                                    <div class="col-7">
+                                      <select class="form-control" id="durationUnit" formControlName="durationUnit"
+                                        [disabled]="enableSos[i]">
+                                        <option [disabled]="enableSos[i]" *ngFor="let du of durationUnitList"
+                                          value="{{du.attributeValue}}">{{du.displayValue}}</option>
+                                      </select>
+                                    </div>
+                                  </div>
+                                </td>
+                              </tr>
+                              <!-- <tr>
+                                <td class="small-header"></td>
+                                <td class="mb-0 text-right">
+                                  <div ngbTooltip="Delete Medicine" container="body" (click)="deleteMedicine(i)"
+                                    class="pt-1 spacer-for-small">
+                                    <img class="cursor" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                                  </div>
+                                </td>
+                              </tr> -->
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+            <button type="button" class="btn btn-primary mt-3" (click)="savePrescription()">Save</button>
+          </form>
+      </div>
+    </ng-template>

@@ -1,0 +1,31 @@
+<div class="ui-g">
+    <div class="ui-g-12 ui-md-5 ui-g-nopad drag-column" style="margin-left: 17px;">
+        <ul style="margin:0;padding:0">
+            <li *ngFor="let car of availableCars" class="ui-helper-clearfix" pDraggable="cars"
+                (onDragStart)="dragStart($event,car)" (onDragEnd)="dragEnd($event)">
+                <i class="fa fa-arrows fa-2x" style="float:right;margin-top:8px"></i>
+                <!-- <img src="assets/showcase/images/demo/car/{{car.brand}}.png" style="float:left" draggable="false"> -->
+                <div style="margin:8px 0 0 8px;float:left">{{car.name}}</div>
+            </li>
+        </ul>
+    </div>
+    <div class="ui-g-12 ui-md-6 drop-column" pDroppable="cars" 
+        (onDrop)="drop($event)" [ngClass]="{'ui-highlight-car':draggedCar}">
+        <p-table [value]="selectedCars">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-car>
+                <tr>
+                    <td>{{car.name}}</td>
+                    <td>{{car.emailAddress}}</td>
+                    <td>{{car.contactNo}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>

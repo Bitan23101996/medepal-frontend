@@ -1,0 +1,63 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<div class="row">
+  <div class="col-lg-12">
+    <form [formGroup]="createPrescription" (ngSubmit)="savecreatePrescription()">
+      <!--isue number #765-->
+      <div class="row header cardHeader create-prescription  border-btm-none p-0">
+        <div class="row text-right top-btn-area">
+          <div class="cursor page-header-link mr-2 mt-1">
+            <span *ngIf="procedureFlag" (click)="onclickSecondHeading()">
+              <a href="javascript:void(0)">New Prescription</a>
+            </span>
+            <span *ngIf="!procedureFlag" (click)="onclickSecondHeading()">
+              <a href="javascript:void(0)">New Procedure Record</a>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="page-heading-info">
+            <h2 id="welcome-msg">Specify patient details to create a new {{pageHeadingInfoName}}.</h2>
+          </div>
+        </div>
+        <div class="col-lg-12 col-xl-8">
+          <!-- Common component - app#916 -->
+          <app-common-prescription [formGroup]="createPrescription" [dtFormat]="dtFormat" [entityName]="entityName"
+            [chamberList]="chamberList" [endTimingErrorFlag]="endTimingErrorFlag" [submitted]="submitted"
+            [isNewMinor]="isNewMinor" [isMinorDisable]="isMinorDisable" [isGender]="isGender"
+            [displaySidebar]="displaySidebar" [associatedUserDetailsList]="minorUsers" [getUserDetails]="getUserDetails"
+            [usingComponentStr]="usingComponentStr" [procedureFlag]="procedureFlag" [prescriptionFlag]="prescriptionFlag" [isDob]="isDob"
+            [isPopulated]="isPopulated" [isModal]="false" [isPopulateOnlyPatientDetails]="isPopulateOnlyPatientDetails"
+            (emitUserDetails)="emitUserDetails($event)" (emitAssociateUser)="emitAssociateUser($event)"
+            (oncloseList)="emitDisplaySidebar($event)"  (emitUserAddressDetails)="emitUserAddressDetails($event)" #prescriptionForm></app-common-prescription>
+
+          <div class="row pb-3">
+            <div class="col-md-12 text-right">
+              <button type="submit" class="btn btn-primary btn-sm float-right cursor" *ngIf="!procedureFlag">Create
+                Prescription</button>
+              <button type="submit" class="btn btn-primary btn-sm float-right cursor" *ngIf="procedureFlag">Create
+                Procedure Record</button>
+              <button type="submit" (click)="back()" class="btn btn-secondary float-right mr-3 cursor">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

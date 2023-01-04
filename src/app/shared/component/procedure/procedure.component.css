@@ -1,0 +1,152 @@
+/*
+*  * |///////////////////////////////////////////////////////////////////////|
+*  * |                                                                       |
+*  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+*  * | All Rights Reserved                                                   |
+*  * |                                                                       |
+*  * | This document is the sole property of StellaBlue Interactive          |
+*  * | Services Pvt. Ltd.                                                    |
+*  * | No part of this document may be reproduced in any form or             |
+*  * | by any means - electronic, mechanical, photocopying, recording        |
+*  * | or otherwise - without the prior written permission of                |
+*  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+*  * |                                                                       |
+*  * |///////////////////////////////////////////////////////////////////////|
+*  */
+/*
+Css modification according to the designer
+*/
+.custom-min-height {
+    height: 200px;
+}
+.custom-max-height {
+    max-height: 200px;
+    height:200px !important;
+}
+.padding-top20 {
+    padding-top: 20px !important;
+}
+
+.card.procedureCard{
+  padding:0;
+}
+
+.procedure-header{
+  background:#3db9d3;
+  height:30px;
+  border-top-left-radius:.25rem;
+  border-top-right-radius:.25rem;
+  color:#fff;
+  line-height: 30px;
+  vertical-align: middle;
+  font-weight:400;
+  padding-left:10px;
+  font-size:14px;
+}
+
+.procedure-header-upload{
+  background:#146199;
+  padding-left:0;
+}
+
+.btn.btn-primary.upload-add-btn{
+  border-radius:20px;
+  background:#effff0;
+  color:#28882e !important;
+  margin-top:5px;
+  padding-top:1px !important;
+  padding-bottom:1px !important;
+
+}
+
+.left-panel-procedure-note{
+  height: calc(100vh - 160px);
+  overflow: auto;
+}
+
+.main-left-panel{
+  background: #aaeef2;
+  padding:3px;
+  border:1px solid #59e3ec;
+  border-radius:5px;
+}
+
+.card.custom-bg-procedure{
+  background: #f3feff !important;
+  /*background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(226,245,247,1) 100%)!important;*/
+}
+
+
+
+.card.custom-bg-procedure label{
+  color:#000;
+}
+
+.card.custom-bg-procedure-normal label{
+  color:#1b78bb;
+  font-weight:400;
+}
+
+.card.custom-bg-procedure-normal label{
+  color:#1b78bb;
+  font-weight:400;
+}
+
+.main-right-panel{
+  background: linear-gradient(to right, rgba(247,247,247,1) 0%, rgba(255,255,255,1) 100%);
+  padding:10px;
+
+}
+
+.page-content .card.custom-bg-procedure{
+  box-shadow:0px 0px 15px #43b1b8;
+}
+
+/*.page-content .card.custom-bg-procedure-normal{
+  box-shadow:0px 0px 15px #43b1b8;
+}*/
+
+.card.custom-bg-procedure-normal{
+  border-top:2px solid #3eb9d4 !important;
+  border-bottom:2px solid #3eb9d4 !important;
+}
+
+.card.custom-bg-procedure-canvas{
+  border-top:2px solid #cf8a35 !important;
+  border-bottom:2px solid #cf8a35 !important;
+  background:#fffcf9;
+  padding-bottom:50px;
+}
+
+.card.custom-bg-procedure-normal .table-responsive{
+  overflow-x:hidden;
+}
+
+@media (max-width: 1024px) and (min-width: 576px) {
+  .left-panel-procedure-note{
+    height: calc(100vh - 200px);
+    overflow: auto;
+  }
+
+}
+
+
+
+@media (max-width: 576px) {
+  .custom-max-height {
+    max-height: 200px;
+    height:111px !important;
+  }
+
+  .chooseFile{
+    width: 192px !important;
+  }
+
+  .left-panel-procedure-note{
+    height: calc(100vh - 200px);
+    overflow: auto;
+  }
+  .procedure-note-mt{
+    margin-top:30px;
+  }
+}

@@ -1,0 +1,40 @@
+.medicine-details{
+    min-height: 136px;
+    overflow-y: auto;
+    max-height: 200px;
+}
+.order-heading{
+    font-weight: 500;
+    color: #662d91;
+    font-size: 1rem;
+}
+.order-heading a{
+    font-weight: 500;
+    color: #662d91;
+    font-size: 1rem;
+}
+.order-heading a:hover{
+    text-decoration: none;
+}
+.order-heading small{
+    font-weight: 500;
+    color: #403d39;
+    font-size: 0.7rem;
+    text-transform: capitalize;
+}
+.searchList .row.ng-star-inserted{
+    margin-bottom: 0px !important;
+}
+
+
+@media only screen and (min-width: 575px) and (max-width: 768px){
+  .medicine-details{
+      min-height: auto;
+  }
+}
+
+@media (max-width: 576px) {
+  .medicine-details{
+      min-height: auto;
+  }
+}

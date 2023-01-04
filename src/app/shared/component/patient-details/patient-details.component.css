@@ -1,0 +1,152 @@
+/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+
+.scrollarea {
+    min-height: calc(100vh - 600px);
+    max-height: calc(100vh - 600px);
+    overflow: auto;
+}
+.w-350{
+    width:350px;
+}
+.card-title{
+    font-size: .825rem;
+    font-weight: 500;
+    color: #662d91;
+    text-transform: uppercase;
+}
+.patientDetails {
+    margin-bottom: 10px;
+}
+.patientDetails .row{
+    margin-top: 2px;
+}
+.pastPrescriptionList .page-header{
+    text-transform: uppercase;
+    margin-top: 15px;
+    font-weight: 500;
+}
+.pastPrescriptionList ol{
+    margin-left: -26px;
+}
+.pastPrescriptionList .row{
+    border-bottom: 1px solid #e9e8e8;
+    margin: 4px;
+}
+	/* Working on app/issues/657 */
+	.patient-details-tbl-height {
+		max-height: 105px;
+		overflow: auto !important;
+		margin-bottom:0;
+		
+    }
+    ol.patient-details-tbl-height{
+        padding-left:26px;
+    }
+	.patient-details-tbl-height td{
+        padding: 0 !important;
+        margin-top: 3px;
+        border-bottom: 1px solid #f9f9f9;
+    }
+    .patient-details-tbl-height li{
+        font-size: 12px;
+        font-weight: 400;
+        color: #000;
+    }
+    .patient-details-tbl-height li.ng-star-inserted{
+        margin-bottom: 0px !important;
+    }
+    .patientDetails .row.ng-star-inserted {
+        margin-bottom: 0px !important;
+    }
+    .patientDetails.ng-star-inserted {
+        margin-bottom: 0px !important;
+    }
+    .filterPanel label.page-header{
+        margin-top: 10px !important;
+    }
+    /*End Working on app/issues/657 */
+
+    /*Working on app/issues/1084 */
+    .tbl-past-data td, .tbl-past-data li{
+        vertical-align: top;
+        font-size: 12px;
+        font-weight: 400;
+        color: #000; 
+        padding: 2px;
+    }
+    .pastVisit{
+        width: 50%;
+        float:left;
+        /* border-bottom: 1px solid #f1f1f1; */
+        padding: 3px;
+    }
+    .pastVisit a{
+        font-size: 12px;
+        font-weight: 400;
+        color: #000;
+    }
+    .pastVisit.ng-star-inserted{
+        margin-bottom: 0px !important;
+    }
+    /*End Working on app/issues/1084 */
+
+    .sidebarList{
+        height: calc(100vh - 112px);
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    .close-btn {
+        position: absolute;
+        left: -30px;
+        top: 0;
+        height: 30px;
+        width: 30px;
+        background: #f5f8f9;
+        text-align: center;
+        line-height: 30px;
+    }
+    .forms a {
+        font-size: 12px;
+        font-weight: 400;
+        color: #000;
+    }
+    .block{
+        pointer-events: none;
+    }
+
+    a.page-header.other-history-btn{
+      color:#000;
+      font-weight:500;
+      font-size:13px;
+      position: relative;
+    }
+
+
+
+      .arrow-right-presc{
+        font-size:18px;
+        position:absolute;
+        top:-2px;
+        right:-7px;
+      }
+
+.arrow-down-presc{
+    font-size: 18px;
+    position: absolute;
+    top: -5px;
+    right: -9px;
+}

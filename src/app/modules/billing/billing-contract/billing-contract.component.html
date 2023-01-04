@@ -1,0 +1,262 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+ <div *ngIf="!redirectFlag">
+    <app-success-card [successMsgEl]="redirectFlag" [successMsgFor]="successMsgFor"></app-success-card>
+    <div class="page-heading-info individual">
+		  <h2>Here's what should be your next steps</h2>
+      </div>
+          <div class="dashb-card button-margin border-left-profile ">
+                <div class="row">
+                      <div class="col-3 icon-display text-right">
+                       <img src="../../../../assets/image/Registration-header2.svg" height="70" width="70" alt="" />
+                      </div>
+                      <div class="col-sm-12 col-xl-4 col-md-6 col-lg-6 ">
+                        <div class="text-center playstore"><p> <b>Download our Mobile App</b></p>
+                      </div>
+                        <div class="text-center playstore1"><p>Use MEDePAL from the convenience of your smart phone </p>
+                    </div>
+                    </div>
+                      <div class="col-sm-12 image-margin icon-position-responsive col-lg-6 col-md-6 col-xl-5 text-left">
+                        <a href="https://apps.apple.com/in/app/medepal/id1483207993?mt=8" target="_blank"><img src="assets/image/apple.gif" class="cursor logo1" /></a>
+                        &nbsp; &nbsp; &nbsp;
+                        <img (click)="openDownloadModal('download')" src="assets/image/google.gif" class="cursor logo1 image-margin1" />
+                      </div>
+                   </div>
+              </div>
+            
+            <div class="row">
+              <div class="col-12">
+                <div class="row mb-3">
+                  <div class="col-12 mb-3 mb-xl-0 col-xl-4">
+                   <div class="dashb-card green-card">
+                     <div class="row ">
+                       <div class="col-sm-12 text-center col-lg-1 col-md-1 col-xl-1 pr-lg-0"> <img src="../../../../assets/image/buy.svg" height="40" alt="" /></div>
+                       <div class="col-sm-12 col-lg-11 col-md-11 col-xl-11 name-white button-margin ">UPLOAD YOUR SIGNATURE</div>
+                       </div>
+                     <div class="row ">
+                       <div class="col-12 name-white1 line">
+                         <p>Your digital pescriptions are signed with an electronic version of your signature. Upload an image or a scan of your signature which will be used to sign your prescriptions.</p>
+         
+                       </div></div>
+                     <div class="row position1">
+                     <div class="col-12 text-center">
+                       <div class="dashb-button cursor" (click)="mySignaturePage()">Upload Signature</div>
+                     </div>
+                     </div>
+                  </div>
+                </div>
+               <div class="col-12 mb-3 mb-xl-0 col-xl-4">
+                 <div class="dashb-card green-card1">
+                 <div class="row">
+                   <div class="col-sm-12 text-center col-lg-1 col-md-1 col-xl-1 pr-lg-0"> <img src="../../../../assets/image/chamber1.svg" height="40" alt="" /></div>
+                   <div class="col-sm-12 col-lg-11 col-md-11 col-xl-11 name-white button-margin">DO YOU HAVE MULTIPLE CHAMBERS?</div>
+                   </div>
+                   <div class="row">
+                   <div class="col-12 name-white1 line ">
+                     <p>Configure additional chambers and manage all your appointments and patients from a single screen</p>
+         
+                   </div></div>
+                   <div class="row">
+                   <div class="col-12 text-center">
+                     <div class="dashb-button1 cursor" (click)="addChamberPage()">Add Chamber</div>
+                   </div>
+                   </div>
+                 </div>
+               </div>
+               <div class="col-12 mb-3 mb-xl-0 col-xl-4">
+                 <div class="dashb-card green-card2">
+                 <div class="row ">
+                   <div class="col-sm-12 text-center col-lg-1 col-md-1 col-xl-1 pr-lg-0"> <img src="../../../../assets/image/nurse1.svg" height="40" alt="" /></div>
+                   <div class="col-sm-12 col-lg-11 col-md-11 col-xl-11 name-white button-margin">ADD FRONT DESK PERSONNEL</div>
+                   </div>
+                   <div class="row">
+                   <div class="col-12 name-white1 line">
+                     <p>Do you have a front desk personal or assistant to manage your appointments? Add them to the system so that they can handle activities on your behalf.</p>
+         
+                   </div></div>
+                   <div class="row">
+                   <div class="col-12 text-center">
+                     <div class="dashb-button2 cursor" (click)="addAssistantPage()">Add Assistant</div>
+                   </div>
+                   </div>
+                 </div>
+               </div>
+               </div>
+             </div>
+             </div>
+  </div>
+
+
+ <div class="row" *ngIf="redirectFlag">
+  <div class="col-lg-12">
+    <app-registration-workflow [workflow]="workflow" [isRegistrationWorkflowCompleted]="isRegistrationWorkflowCompleted"></app-registration-workflow>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="agreement1">
+          <!-- <p>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy
+            text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen
+            book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially
+            unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
+            and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+          </p>
+          <p>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy
+            text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen
+            book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially
+            unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
+            and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+          </p>
+          <p>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy
+            text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen
+            book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially
+            unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
+            and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+          </p>
+          <p>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy
+            text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen
+            book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially
+            unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
+            and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+          </p>
+          <p>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy
+            text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen
+            book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially
+            unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
+            and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+          </p>
+          <p>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy
+            text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen
+            book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially
+            unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
+            and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+          </p>
+          <p>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy
+            text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen
+            book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially
+            unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
+            and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+          </p>
+          <p>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy
+            text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen
+            book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially
+            unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
+            and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+          </p>
+          <p>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy
+            text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen
+            book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially
+            unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
+            and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+          </p>
+          <p>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy
+            text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen
+            book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially
+            unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
+            and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+          </p>
+          <p>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy
+            text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen
+            book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially
+            unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
+            and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+          </p>
+          <p>
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy
+            text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen
+            book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially
+            unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
+            and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+          </p> -->
+
+          <iframe  (scroll)="onScroll($event)" src="../../../assets/docs/agreement.html" width="100%" height="300px"></iframe>
+          
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="userKey control-label">
+                {{'BILLING.DOCTOR_NAME' | translate}}
+              </label>
+              <span>
+                  {{doctorName}}
+                </span>
+            </div>
+          </div>
+        </div>
+          <div class="row">
+          <div class="col-md-6">
+              <div class="form-group">
+                  <label class="userKey control-label">
+                    {{'BILLING.CURRENT_DATE_TIME' | translate}}
+                  </label>
+                  <span>
+                      {{currentDateTime | date:'dd-MM-yyyy hh:mm a'}}
+                    </span>
+                </div>
+          </div>
+          <div class="col-md-6">
+              <div class="form-group">
+                  <label class="userKey control-label">
+                    {{'BILLING.CURRENT_PLACE' | translate}}
+                  </label>
+                  <input type="text" class="form-control" style="width: 40%;" #place>
+                </div>
+          </div>
+        </div>
+        <!-- <div class="row" [hidden]="isRegistrationWorkflowCompleted"> -->
+            <div class="row">
+            <div class="col-lg-12 text-center">
+              <button type="button" class="btn btn-primary" (click)="acceptAgreement(place.value)"> <!--  [disabled]="disableAcceptBtn" -->
+                  {{'BILLING.I_ACCEPT_BTN' | translate}}
+              </button>
+              <p class="ip">
+                  {{'BILLING.IP_MSG' | translate}} <strong> {{ipAddress}} </strong>
+              </p>
+            </div>
+         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #download>
+	<div class="modal-header">
+      <h4 class="modal-title">Download</h4>
+      <button type="button" class="close" aria-label="close" (click)="modalRef.hide('cross click')">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+	<div class="modal-body text-center">
+		<h1 class="mb-2 download-link-header text-left">Due to worldwide COVID-19 pandemic, approval of an Android app by the Play Store now takes a long time.</h1>
+		<p class="download-link-text text-left">We have released critical updates to the app for our telehealth facility. Download the latest version on your mobile device from our trusted local store. </p>
+		<p class="download-link-text text-left" *ngIf="!mobileBrowserCheck"><b>Open https://www.medepal.com from your mobile browser and click on Google Play Store icon to download the latest version from our local store.</b></p>
+		<div *ngIf="mobileBrowserCheck"><a href="assets/apk/MEDePAL.apk" class="btn btn-primary">Download Latest Version</a></div>
+		<h1 class="pt-2 mb-2">Or</h1>
+		<h5 class="download-link"><a href="https://play.google.com/store/apps/details?id=com.stellablueis.medepal.serviceprovider"
+				target="_blank">Download the available version at Play store</a></h5>
+	</div>
+</ng-template>

@@ -1,0 +1,9 @@
+backend_version=2.6.0.0
+frontend_version=2.6.0.0
+batch_version=
+esbatch_version=
+mobile_version=
+
+#Release Date : 15-05-2020
+backend_tag=release-backend-version-2.6.0.0-sprint-1.28-DEV
+frontend_tag=release-frontend-version-2.6.0.0-sprint-1.28-DEV

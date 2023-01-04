@@ -1,0 +1,553 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+<!-- Working on app/issues/782 -->
+<div *ngIf="!redirectFlag">
+  <app-success-card [successMsgEl]="redirectFlag" [successMsgFor]="successMsgFor"></app-success-card>
+</div>
+<!--End Working on app/issues/782 -->
+<div class="row" *ngIf="redirectFlag">
+  <div class="col-lg-12">
+    <form [formGroup]="chamberForm" (ngSubmit)="saveChamber()" *ngIf="chamberForm">
+      <div class="row top-btn-area-for-inpatient-admission">
+        <div class="col-lg-12 text-right">
+          <button type="submit" class="btn btn-primary btn-sm float-right">{{'COMMON.SAVE_BUTTON'|translate}}</button>
+          <button type="button" class="btn btn-secondary btn-sm float-right mr-2"
+            (click)="backToMyChamber()">{{'COMMON.CANCEL_BUTTON'|translate}}</button>
+        </div>
+      </div>
+      <!-- Working on app/issues/782 -->
+      <app-registration-workflow [workflow]="workflow"
+        [isRegistrationWorkflowCompleted]="isRegistrationWorkflowCompleted"></app-registration-workflow>
+      <!-- End Working on app/issues/782 -->
+      <div class="page-heading-info" >
+        <h2>Specify your Chamber details</h2>
+      </div>
+       <div class= "addchamber information-header ptleft" >
+          <h2>
+            Your chamber details help to streamline the booking process for patients and appointment management life cycle for you for your clinics
+
+            </h2>
+          </div>
+      <div class="row page-content content-padding-for-inpatient-admission">
+        <div class="col-xl-5 col-lg-12 mb-xl-0 mb-lg-2 mb-md-2 mb-2 col-md-12">
+          <div class="card chamberVistMaxHeight">
+            <!-- app/issues/1349-->
+            <div class="card-header">
+              <h5>{{'DOCTOR_CHAMBER.CHAMBER_INFORMATION'| translate}}</h5>
+            </div>
+            <div class="row card-body">
+              <div class="col-12">
+                <div class="row">
+                  <input type="hidden" formControlName="chamberRef">
+                  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                    <div class="form-group">
+                      <label
+                        class="userKey control-label">{{'DOCTOR_CHAMBER_VALIDATION.CHAMBER_TYPE'|translate}}</label>
+                      <select class="form-control" (change)="populateOPD(selectedValue.value)" #selectedValue
+                        formControlName="opdType" required
+                        [disabled]="hospitalRefNo != null && isOnBoardedHospital ==  SBISConstantsRef.YES_NO_CONST.YES_ENUM">
+                        <option value="0" [disabled]="hospitalRefNo != null && isOnBoardedHospital == SBISConstantsRef.YES_NO_CONST.YES_ENUM">Select
+                        </option>
+                        <option [disabled]="hospitalRefNo != null && isOnBoardedHospital == SBISConstantsRef.YES_NO_CONST.YES_ENUM"
+                          *ngFor="let opd of opdCategories; let i = index" [value]="opd.key">{{opd.value}}</option>
+                      </select>
+                      <span *ngIf="submitted && lControls.opdType.errors">
+                        <span *ngIf="lControls.opdType.errors.required" class="validation-error">*
+                          {{'DOCTOR_CHAMBER_VALIDATION.CHAMBER_TYPE_REQUIRED'|translate}}</span>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                    <div class="form-group">
+                      <label class="userKey control-label">{{'USER_PROFILE.CHAMBER_NAME'|translate}}</label>
+                      <p-autoComplete styleClass="doc-chamber-autocomplete" formControlName="hospitalName" [suggestions]="opdList"
+                        (completeMethod)="getOPDList($event)" [size]="25" placeholder="Name" [minLength]="1"
+                        (onSelect)="populateHospitalAddress($event)"
+                        [disabled]="hospitalRefNo != null && isOnBoardedHospital == SBISConstantsRef.YES_NO_CONST.YES_ENUM">
+                        <ng-template let-results pTemplate="item">
+                          <span class="font-size11px font-weight500">{{results.hospitalName}}</span><br>
+                          <span class="textDot font9px mb-0">{{'DOCTOR_CHAMBER.DOCTOR_CHAMBER_ADDRESS'| translate}}: {{results.line1}} 
+                            <span *ngIf="results.line2">{{results.line2}}</span> {{results.city}} {{results.pinCode}}</span>
+                        </ng-template>
+                      </p-autoComplete>
+                      <span *ngIf="submitted && isNameSelected" class="validation-error">*
+                        {{'DOCTOR_CHAMBER_VALIDATION.CHAMBER_NAME_REQUIRED'|translate}}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                    <div class="form-group">
+                      <label class="userKey control-label">{{'DOCTOR_CHAMBER_VALIDATION.PHONE_ONE'|translate}}<span
+                          class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span></label>
+                      <!-- <input type="text" class="form-control" formControlName="phoneNo1"> -->
+                      <int-phone-prefix class="doc-chamber" [locale]="'IN'" [defaultCountry]="'in'"
+                        formControlName="phoneNo1"></int-phone-prefix>
+                    </div>
+                  </div>
+                  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                    <div class="form-group">
+                      <label class="userKey control-label">{{'DOCTOR_CHAMBER_VALIDATION.PHONE_TWO'|translate}}<span
+                          class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span></label>
+                      <int-phone-prefix class="doc-chamber" [locale]="'IN'" [defaultCountry]="'in'"
+                        formControlName="phoneNo2"></int-phone-prefix>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                    <div class="form-group">
+                      <label class="userKey control-label">{{'DOCTOR_CHAMBER_VALIDATION.ROOM_NO'|translate}}<span
+                          class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span></label>
+                      <input type="text" class="form-control" formControlName="roomNo">
+                    </div>
+                  </div>
+                  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                    <div class="form-group">
+                      <label class="userKey control-label">{{'DOCTOR_CHAMBER_VALIDATION.DEPARTMENT'|translate}}<span
+                          class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span></label>
+                      <input type="text" class="form-control" formControlName="department">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                    <div class="form-group">
+                      <label class="userKey control-label label-inline">{{'DOCTOR_CHAMBER_VALIDATION.AVG_VISIT_TIME'|translate}}
+                      </label><!-- message style 2--><img class="cursor" src="../../../../assets/image/information.svg"
+                      height="13" [ngbPopover]="apptToday" triggers="mouseenter:mouseleave" container="body"
+                      popoverClass="popover-info" /><!-- message style 2-->
+                      <input type="text" class="form-control" formControlName="averageVisitDuration"
+                        (keypress)="checkPattern($event)" required="required" numbersOnly>
+                      <span *ngIf="submitted && lControls.averageVisitDuration.errors">
+                        <span *ngIf="lControls.averageVisitDuration.errors.required" class="validation-error">*
+                          {{'DOCTOR_CHAMBER_VALIDATION.AVG_VISIT_TIME_REQUIRED'|translate}}</span>
+                      </span>
+                      <span class="validation-error"
+                        *ngIf="isAvgDurGrtStartEndTime">{{'DOCTOR_CHAMBER_VALIDATION.AVG_VISIT_TIME_REQUIRED_LESS'|translate}}</span>
+                    </div>
+                  </div>
+                  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                    <div class="form-group">
+                      <label
+                        class="userKey control-label label-inline">{{'DOCTOR_CHAMBER_VALIDATION.OVERBOOKING_LIMIT'|translate}}<span
+                        class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span></label><!-- message style 2--><img class="cursor" src="../../../../assets/image/information.svg"
+                        height="13" [ngbPopover]="apptToday1" triggers="mouseenter:mouseleave" container="body"
+                        popoverClass="popover-info" /><!-- message style 2-->
+                      <input type="text" class="form-control" formControlName="overbooking_limit" numbersOnly> <!--app#1391-->
+                    </div>
+                  </div>
+                </div>
+                <!-- Working on app/issues/843 -->
+                <div class="row">
+                  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                    <label class="label-inline">
+                      <input type="checkbox" (change)="toggleEditable($event)" formControlName="autoConfirmAppointment">
+                      {{'DOCTOR_CHAMBER_VALIDATION.AUTO_CONFIRM'|translate}}
+                     
+                    </label><!-- message style 2--><img class="cursor" src="../../../../assets/image/information.svg"
+                    height="13" [ngbPopover]="apptToday2" triggers="mouseenter:mouseleave" container="body"
+                    popoverClass="popover-info" /><!-- message style 2-->
+                  </div>
+                  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                    <label class="label-inline">
+                      <input type="checkbox" (change)="toggleEditableAppBySrlNo($event)"
+                        formControlName="appointmentBySerialNo">
+                      {{'DOCTOR_CHAMBER_VALIDATION.APPOINTMENT_BY_SRLNO'|translate}}
+                      
+                    </label><!-- message style 2--><img class="cursor" src="../../../../assets/image/information.svg"
+                    height="13" [ngbPopover]="apptToday3" triggers="mouseenter:mouseleave" container="body"
+                    popoverClass="popover-info" /><!-- message style 2-->
+                  </div>
+                  <div class="col-xl-7 col-lg-6 col-md-6 col-sm-6 col-12">
+                    <label class="label-inline">
+                      <input type="checkbox" (change)="acceptOnlineAppointmentsChange($event)"
+                        formControlName="acceptonline">
+                      {{'DOCTOR_CHAMBER_VALIDATION.ACCEPT_ONLINE'|translate}}
+                    </label><!-- message style 2--><img class="cursor" src="../../../../assets/image/information.svg"
+                    height="13" [ngbPopover]="onlineAppointment" triggers="mouseenter:mouseleave" container="body"
+                    popoverClass="popover-info" /><!-- message style 2-->
+                  </div>
+                </div>
+                <br>
+                <div class="row" *ngIf="showPrescriptionTypeSection">
+                  <!-- app/issues/1349-->
+                  <div class="col-xl-6 col-lg-3 col-md-4 col-sm-5 col-12">
+                    <span
+                      class="userKey control-label defaultLabelStyle label-inline">{{'DOCTOR_CHAMBER.DOCTOR_CHAMBER_PRESCRIPTION_TYPE'|translate}}</span>
+                      <!-- message style 2--><img class="cursor" src="../../../../assets/image/information.svg"
+                    height="13" [ngbPopover]="apptToday4" triggers="mouseenter:mouseleave" container="body"
+                    popoverClass="popover-info" /><!-- message style 2-->
+                  </div>
+                  <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                    <span class="form-check-label">
+                      <input type="radio" name="prescriptionTemplateType"
+                        value="{{SBISConstantsRef.PRESCRIPTION_TEMPLATE_TYPE.DOCTOR_OWN_PRESCRIPTION_TEMPLATE}}"
+                        (change)="selectPrescriptionTemplateType(SBISConstantsRef.PRESCRIPTION_TEMPLATE_TYPE.DOCTOR_OWN_PRESCRIPTION_TEMPLATE)"
+                        [checked]="chamberForm.get('prescriptionTemplate').value==SBISConstantsRef.PRESCRIPTION_TEMPLATE_TYPE.DOCTOR_OWN_PRESCRIPTION_TEMPLATE">
+                      {{'DOCTOR_CHAMBER.DOCTOR_CHAMBER_OWN_PRESCRIPTION_TEMPLATE'|translate}}
+                    </span>
+                    &nbsp;&nbsp;
+                    <span class="form-check-label">
+                      <input type="radio" name="prescriptionTemplateType"
+                        value="{{SBISConstantsRef.PRESCRIPTION_TEMPLATE_TYPE.DOCTOR_OPD_PRESCRIPTION_TEMPLATE}}"
+                        (change)="selectPrescriptionTemplateType(SBISConstantsRef.PRESCRIPTION_TEMPLATE_TYPE.DOCTOR_OPD_PRESCRIPTION_TEMPLATE)"
+                        [checked]="chamberForm.get('prescriptionTemplate').value==SBISConstantsRef.PRESCRIPTION_TEMPLATE_TYPE.DOCTOR_OPD_PRESCRIPTION_TEMPLATE"
+                        [attr.disabled]="chamberForm.get('opdType').value=='I' ? '':null">&nbsp;{{'DOCTOR_CHAMBER.DOCTOR_CHAMBER_OPD_PRESCRIPTION_TEMPLATE'|translate}}
+                    </span>
+                  </div>
+                </div>
+                <!-- End Working on app/issues/843 -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-7 col-lg-12 col-md-12 custom-z-index0">
+          <div class="row">
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 mb-2">
+              <div class="card">
+                <div class="card-header">
+                  <h5>{{'DOCTOR_CHAMBER.DOCTOR_CHAMBER_ADDRESS' | translate}}</h5>
+                </div>
+                <div class="row card-body">
+                  <div class="col-12">
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="form-group">
+                          <label
+                            class="userKey control-label">{{'USER_PROFILE.USER_PROFILE_COUNTRY_LABEL'|translate}}</label>
+                          <select (change)="countrySelect(country.value)" #country id="country" name="country"
+                            class="form-control" formControlName="country"
+                            [disabled]="(hospitalRefNo != null && isOnBoardedHospital == 'Y') || isOnBoardedHospitalForNew == 'Y'">
+                            <option
+                              [disabled]="(hospitalRefNo != null && isOnBoardedHospital == 'Y') || isOnBoardedHospitalForNew == 'Y'"
+                              *ngFor="let country of countries" value="{{country}}">{{country}}
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-4">
+                        <div class="form-group">
+                          <label class="userKey control-label">{{'USER_PROFILE.USER_PROFILE_PINCODE_LABEL'|translate}}
+                          </label>
+                          <!-- Changed for issue app#597 -->
+                          <input type="text" class="form-control" formControlName="pinCode" required="required"
+                            (keypress)="checkPattern($event)" (keyup)="fetchCountryStateCityByPin($event)"
+                            (change)="fetchCountryAndState()"
+                            [readonly]="(hospitalRefNo != null && isOnBoardedHospital == 'Y') || isOnBoardedHospitalForNew == 'Y'">
+                          <span *ngIf="submitted && lControls.pinCode.errors">
+                            <span *ngIf="lControls.pinCode.errors.required" class="validation-error">*
+                              {{'DOCTOR_CHAMBER_VALIDATION.PINCODE_REQUIRED'|translate}}</span>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="col-8">
+                        <div class="form-group">
+                          <label
+                            class="userKey control-label">{{'USER_PROFILE.USER_PROFILE_STATE_LABEL'|translate}}</label>
+                          <!-- Commented for issue app#597 -->
+                          <input type="text" class="form-control" #state id="state" formControlName="state"
+                            [readonly]="true">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="form-group">
+                          <label class="userKey control-label">{{'USER_PROFILE.USER_PROFILE_CITY_LABEL'|translate}}
+                          </label>
+                          <input type="text" class="form-control" formControlName="city"
+                            [readonly]="(hospitalRefNo != null && isOnBoardedHospital == 'Y') || isOnBoardedHospitalForNew == 'Y'">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="form-group">
+                          <label
+                            class="userKey control-label">{{'USER_PROFILE.USER_PROFILE_ADDRESS_LINE1_LABEL'|translate}}
+                          </label>
+                          <input type="text" class="form-control" formControlName="line1" required
+                            [readonly]="(hospitalRefNo != null && isOnBoardedHospital == 'Y') || isOnBoardedHospitalForNew == 'Y'">
+                          <span *ngIf="submitted && lControls.line1.errors">
+                            <span *ngIf="lControls.line1.errors.required"
+                              class="validation-error">*{{'DOCTOR_CHAMBER_VALIDATION.LINE_ONE_REQUIRED'|translate}}</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="form-group">
+                          <label
+                            class="userKey control-label">{{'USER_PROFILE.USER_PROFILE_ADDRESS_LINE2_LABEL'|translate}}
+                            <span class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span> <!--app#1391-->
+                          </label>
+                          <input type="text" class="form-control" formControlName="line2"
+                            [readonly]="(hospitalRefNo != null && isOnBoardedHospital == 'Y') || isOnBoardedHospitalForNew == 'Y'">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+              <div class="card" *ngIf="chamberForm.get('opdType').value !='I'">
+                <div class="card-header">
+                  <div class="row">
+                    <div class="col-12">
+                      <h5>Associated With </h5>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-6">
+                      <label><input type="checkbox" formControlName="isOpdCheck"
+                          (change)="onChangeIpdOrOpd($event,'isOpdCheck')">
+                        OPD</label>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-6">
+                      <label><input type="checkbox" (change)="onChangeIpdOrOpd($event,'isIpdCheck')"
+                          formControlName="isIpdCheck">
+                        IPD</label>
+                    </div>
+                  </div>
+                </div>  
+              </div>
+
+              <div [ngClass]="chamberForm.get('opdType').value=='I' ? 'card': 'card mt-2'" *ngIf="chamberForm.get('isOpdCheck').value"><!--class="card"-->
+                <div class="card-header border-btm-none chamber-info">
+                  <div class="row">
+                    <div class="col-12">
+                      <h5>OPD Fees</h5>
+                    </div>
+                  </div>
+                </div>
+                <div class="row card-body">
+                  <div class="col-12">
+                    <div class="row">
+                      <div class="col-12">
+                        <div formArrayName="chamberFeesList" *ngIf="feesArray.length > 0">
+                          <div class="table-responsive not-for-mobile">
+                            <p-table [value]="chamberForm.get('chamberFeesList').controls" [paginator]="false">
+                              <ng-template pTemplate="header">
+                                <tr>
+                                  <th width="68%">Description</th>
+                                  <th width="30%">Fees</th>
+                                  <th width="19%"></th>
+                                </tr>
+                              </ng-template>
+                              <ng-template pTemplate="body" let-f let-i="rowIndex">
+                                <tr [formGroup]="f" [attr.id]="'tr'+i">
+                                  <td>
+                                    <p style="font-weight: 300;">{{f.get('displayValue').value}}</p>
+                                  </td>
+                                  <td>
+                                    <input type="number" min="0.00" class="form-control ui-fees" #feeAmt
+                                      formControlName="amount"
+                                      (keyup)="validatePrepayAmount(prepayAmt.value, chamberForm.value.chamberFeesList)"
+                                      (keypress)="numberOnly($event)" required>
+                                  </td>
+                                  <td>
+                                    <span *ngIf="isAddFees && i != 0" ngbTooltip="Delete Fees" container="body"
+                                      (click)="deleteFees(i)" class="cursor deleteIco"><img class="grey"
+                                        src="../../../../../assets/image/delete.svg" width="15"></span>
+                                  </td>
+                                </tr>
+                              </ng-template>
+                            </p-table>
+                            <div  *ngIf="isAddFees && feesArray.value.length != 2" class="text-right"><button type="button" class="btn btn-secondary btn-sm add-row" (click)="addFees()">
+                                <i class="fas fa-plus-square"></i>&nbsp;{{'DOCTOR_CHAMBER.ADD_CLINIC_FEES'| translate}}</button></div>
+                            <span *ngIf="submitted && !lControls.chamberFeesList.valid">
+                              <span class="validation-error">*
+                                {{'DOCTOR_CHAMBER_VALIDATION.REQUIRED'|translate}}</span>
+                            </span>
+                          </div>
+                          <div class="table-responsive for-very-small">
+                            <div *ngFor="let f of chamberForm.get('chamberFeesList').controls; let i = index"
+                              [formGroup]="f" [attr.id]="'tr'+i">
+                              <table class="w-100">
+                                <tr class="text-left">
+                                  <td class="mobile-table">
+                                    <table class="w-100">
+                                      <tr>
+                                        <td class="small-header">Description</td>
+                                        <td class="mb-0 text-right">
+                                          <p style="font-weight: 300;">{{f.get('displayValue').value}}</p>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td class="small-header">Fees</td>
+                                        <td class="mb-0 text-right">
+                                          <input type="number" min="0.00" class="form-control ui-fees" #feeAmt
+                                            formControlName="amount"
+                                            (keyup)="validatePrepayAmount(prepayAmt.value, chamberForm.value.chamberFeesList)"
+                                            (keypress)="numberOnly($event)" required>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td class="small-header"></td>
+                                        <td class="mb-0 text-right">
+                                          <span *ngIf="isAddFees && i != 0" ngbTooltip="Delete Fees" container="body"
+                                            (click)="deleteFees(i)" class="cursor deleteIco"><img class="grey"
+                                              src="../../../../../assets/image/delete.svg" width="15"></span>
+                                        </td>
+                                      </tr>
+                                    </table>
+                                  </td>
+                                </tr>
+                              </table>
+                              <div  *ngIf="isAddFees && feesArray.value.length != 2" class="text-right"><button type="button" class="btn btn-secondary btn-sm add-row" (click)="addFees()">
+                                  <i class="fas fa-plus-square"></i>&nbsp;{{'DOCTOR_CHAMBER.ADD_CLINIC_FEES'| translate}}</button></div>                          
+                            </div>
+                          </div>
+                        </div>
+                        <div *ngIf="isFees">
+                          <div class="row">
+                            <div class="col-7 margin-left12px">
+                              <label>TOTAL: <br> <small class="small-txt"><em>(Fees charged to patients)</em></small></label>
+                            </div>
+                            <div class="col-4 text-right">
+                              <span>{{'SEARCH.SEARCH_INR_SIGN' | translate}}
+                                {{totalFees}}</span>
+                            </div>
+                          </div>
+                          <hr>
+                        </div>
+                        <div class="row">
+                          <div class="col-12">
+                            <div class="form-group">
+                              <label class="userKey control-label label-inline">Advance Amount
+                                  <span class="optional-label">{{'VALIDATION.OPTIONAL_LABEL' | translate }}</span> <!--1391-->
+                              </label><!-- message style 2--><img class="cursor" src="../../../../assets/image/information.svg"
+                              height="13" [ngbPopover]="apptToday5" triggers="mouseenter:mouseleave" container="body"
+                              popoverClass="popover-info" /><!-- message style 2-->
+                              <input type="number" min="0" class="form-control" formControlName="prepayAmount" 
+                                #prepayAmt (keypress)="numberOnly($event)"
+                                (keyup)="validatePrepayAmountByFeesArr(prepayAmt.value, chamberForm.value.chamberFeesList)">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- IPD FEES -->
+                <div class="card mt-2"  *ngIf="chamberForm.get('isIpdCheck').value && chamberForm.get('opdType').value !='I'">
+                  <div class="card-header border-btm-none chamber-info">
+                    <div class="row">
+                      <div class="col-12">
+                        <h5>IPD Fees</h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row card-body">
+                    <div class="col-12">
+                      <div class="row">
+                        <div class="col-12">
+                          <div>
+                            <div class="table-responsive not-for-mobile">
+                              <p-table [paginator]="false" [value]="ipdFeesArr">
+                                <ng-template pTemplate="header">
+                                  <tr>
+                                    <th width="68%">Description</th>
+                                    <th width="40%">Fees</th>
+                                  </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-i>
+                                  <tr>
+                                    <td>
+                                      <p style="font-weight: 300;">IPD Fees</p>
+                                    </td>
+                                    <td>
+                                      <input type="number" min="0.00" class="form-control ui-fees" 
+                                        formControlName="ipdFees">
+                                    </td>
+                                  </tr>
+                                </ng-template>
+                              </p-table>                       
+                            </div>
+                            <div class="table-responsive for-very-small">
+                              <div>
+                                <table class="w-100">
+                                  <tr class="text-left">
+                                    <td class="mobile-table">
+                                      <table class="w-100">
+                                        <tr>
+                                          <td class="small-header">Description</td>
+                                          <td class="mb-0 text-right">                                        
+                                            <div>
+                                              <p style="font-weight: 300;">IPD FEES</p>
+                                            </div>
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td class="small-header">Fees</td>
+                                          <td class="mb-0 text-right">
+                                            <input type="number" min="0.00" class="form-control ui-fees" 
+                                              formControlName="ipdFees" >
+                                          </td>
+                                        </tr>
+                                        <tr>
+                                          <td class="small-header"></td>                                      
+                                        </tr>
+                                      </table>
+                                    </td>
+                                  </tr>
+                                </table>                            
+                              </div>
+                            </div>
+                          </div>                                           
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <!-- end of IPD FEES -->
+            </div>
+          </div>
+
+         
+        </div>
+        <div class="col-12" *ngIf="chamberForm.get('isOpdCheck').value">
+          <div class="validation-error mb-2">{{timingValidationMsg}}</div>
+          <app-working-schedule-ngb [saveStatus]="saveStatus" [timingDataFromResponse]="timingDataFromResponse"
+            (workScheduleData)="getWorkScheduleData($event)"></app-working-schedule-ngb>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-lg-12 text-right">
+          <button type="submit" class="btn btn-primary btn-sm float-right">{{'COMMON.SAVE_BUTTON'|translate}}</button>
+          <button type="button" class="btn btn-secondary btn-sm float-right mr-2"
+            (click)="backToMyChamber()">{{'COMMON.CANCEL_BUTTON'|translate}}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<ng-template #apptToday>{{'IMPINFO.MSG1_DOCTOR_CHAMBER' | translate}}</ng-template>
+<ng-template #apptToday1>{{'IMPINFO.MSG2_DOCTOR_CHAMBER' | translate}}</ng-template>
+<ng-template #apptToday2>{{'IMPINFO.MSG3_DOCTOR_CHAMBER' | translate}}</ng-template>
+<ng-template #apptToday3>{{'IMPINFO.MSG4_DOCTOR_CHAMBER' | translate}}</ng-template>
+<ng-template #apptToday4>{{'IMPINFO.MSG5_DOCTOR_CHAMBER' | translate}}</ng-template>
+<ng-template #apptToday5>{{'IMPINFO.MSG6_DOCTOR_CHAMBER' | translate}}</ng-template>
+<ng-template #onlineAppointment>{{'IMPINFO.MSG_ACCECPT_ONLINE_APPOINTMENTS' | translate}}</ng-template>
+<!-- <app-working-schedule></app-working-schedule> -->

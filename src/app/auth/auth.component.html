@@ -1,0 +1,39 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+ <!-- <div class="login-ps" *ngIf="!isvefified"> -->
+ <div class="login-ps">
+  <div class="content-container">
+    <div class="information-container table-cells">
+      <div class="left-margin">
+        <div class="dark-grey-text"></div>
+        <h4 class="section-title step-title dark-grey-text bold-text">SBS Management System</h4>
+      </div>
+      <div class="login-pic">
+      </div>
+    </div>
+    <div class="login-container table-cells">
+      <div class="form-input">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div class="login-ps" *ngIf="isvefified">
+  <div class="content-container">
+    <router-outlet></router-outlet>
+  </div>
+</div> -->

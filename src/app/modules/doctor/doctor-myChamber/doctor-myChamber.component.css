@@ -1,0 +1,81 @@
+/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+
+ .table tr:nth-child(even){
+    background: #fff !important;
+}
+table {
+    width: 100%;
+    }
+    
+    table, td {
+    border-collapse: collapse;
+    }
+    
+    thead {
+    display: table; 
+    width: calc(100% - 17px); 
+    }
+    
+    tbody {
+    display: block; 
+    max-height: 400px; 
+    overflow-y: scroll; 
+    }
+    
+    th, td {
+    width: 40%; 
+    padding: 10px;
+    }
+    
+    
+    tr {
+    display: table; 
+    width: 100%;
+    } 
+.table > thead > tr > th{
+    /* font-weight: bold; */
+    /* background:#eed7ff; */
+}
+.btn-secondary{
+    font-size: 14px !important;
+    padding: 5px 10px !important;
+    border: 1px solid #662d91;
+    color: #662d91;
+    background: transparent;
+}
+.btn-sm.btn-primary {
+    font-size: 14px !important;
+    padding: 5px 10px !important;
+}
+.form-control{
+    font-size: 14px !important;
+}
+
+.chamber h2 
+{
+    
+        font-size:18px;
+ 
+       font-weight:400;
+        padding-top: 20px;
+        padding-bottom: 5px;
+        color:#5f5f5f;
+    }
+    .ptleft
+    {
+        padding-left: 10px;
+    }

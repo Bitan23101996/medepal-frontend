@@ -1,0 +1,403 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+ <div class="content">
+  <div *ngIf="loading" class="cover">
+    <div class="loader">
+        <div class="loading-img"><img width=250px src="../../../../../assets/image/logo.svg"/></div>
+        <div class="loading-txt">Loading<div class="dot-elastic"></div></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="w-10 pr-0 pl-3 sml-for-prescription page-content filter-panel-width"
+      [ngClass]="panelVisible ? 'panelVisible' : 'panelNotVisible'">
+      <div class="card">
+        <div class="filterPanel">
+          <div class="row border-bottom">
+            <div class="col-8">
+              <h4 class="search-result-left-pen-heading">{{'MY_PRESCRIPTION.PRESCRIPTION_REFINE_BY' | translate}}</h4>
+            </div>
+            <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0)"
+                (click)="resetAllFilter()">{{'MY_PRESCRIPTION.RESET_ALL' | translate}}</a></div>
+          </div>
+          <div class="row overflow-auto scrollarea" *ngIf="refinePanelShowFlag">
+            <div class="col-12">
+              <div class="resetBtn margin-top10">
+                <a (click)="resetDateRange()" href="javascript:void(0)">{{'MY_PRESCRIPTION.RESET' | translate}}</a>
+              </div>
+              <div class="row">
+                <div class="col-6 pl-1 pr-1">
+                  <div class="form-group">
+                    <label>{{'MY_PRESCRIPTION.FROM_DATE_LEBEL' | translate}}</label>
+                    <app-datepicker [maxDate]="returnMaxFromDate()" [(ngModel)]="filterDate.fromDate"
+                      (valueChange)="changeDate($event,'from')" [ngModelOptions]="{standalone: true}" position="bottom">
+                    </app-datepicker>
+                  </div>
+                </div>
+                <div class="col-6 pl-1 pr-1">
+                  <div class="form-group">
+                    <label>{{'MY_PRESCRIPTION.TO_DATE_LEBEL' | translate}}</label>
+                    <app-datepicker [maxDate]="maxDate" [(ngModel)]="filterDate.toDate"
+                      (valueChange)="changeDate($event,'to')" [ngModelOptions]="{standalone: true}" position="bottom">
+                    </app-datepicker>
+                  </div>
+                </div>
+              </div>
+              <div class="form-goup">
+                <div class="row pb-2">
+                  <div class="col-8">
+                    <label class="page-header margin-top0">{{'MY_PRESCRIPTION.PATIENT_NAME_LEBEL' | translate}}</label>
+                  </div>
+                  <div class="col-4 text-right link-pos-adj">
+                    <a (click)="resetAllFilterForPatient()"
+                      href="javascript:void(0)">{{'MY_PRESCRIPTION.RESET' | translate}}</a>
+                  </div>
+                </div>
+                <div *ngFor="let ptnObj of patientNames" class="form-check">
+                  <label class="form-check-label">
+                    <input type="checkbox" class="form-check-input" (click)="docFilterForPatient(ptnObj)"
+                      [checked]="ptnObj.selected">&nbsp;&nbsp;
+                    <span>{{ptnObj.forUserName}}</span>
+                  </label>
+                </div>
+              </div>
+              <div class="form-goup">
+                <div class="row pb-2">
+                  <div class="col-8">
+                    <label class="page-header margin-top0">{{'MY_PRESCRIPTION.DOCTOR_NAME' | translate}}</label>
+                  </div>
+                  <div class="col-4 text-right link-pos-adj">
+                    <a (click)="resetAllFilterForDoc()"
+                      href="javascript:void(0)">{{'MY_PRESCRIPTION.RESET' | translate}}</a>
+                  </div>
+                </div>
+                <div *ngFor="let drObj of doctorNames" class="form-check">
+                  <label class="form-check-label">
+                    <input type="checkbox" class="form-check-input" (click)="docFilterForDoctor(drObj)"
+                      [checked]="drObj.selected">&nbsp;&nbsp;
+                    <span>{{drObj.doctorName}}</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="(fetchAllData && (!refinePanelShowFlag))" class="not-found text-center margin-top10">
+            <h3> {{'COMMON.REFINE_PANEL_ERROR_MSG'| translate}}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col page-content">
+      <div class="card">
+        <div class="row">
+          <div class="col-md-6 col-12">
+            <h1 class="top-label">
+              <span >{{ headingToDisplay | translate}}</span>
+            </h1>
+          </div>
+          <div class="col-md-6 col-12 text-right">
+            <div class="row">
+              <div class="col-12 page-header-link text-right">
+                <span *ngFor="let headingData of headingsArray">
+                  <a href="javascript:void(0)" id="mem-myself" (click)="onClickSecondHeader(headingData.headingLabel)">
+                  <ng-container *ngIf="headingData.prescriptionFor != prescriptionFor">{{ headingData.headingLabel | translate}}</ng-container>
+                </a>
+              </span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12 col-12 text-right pb-3">
+            <span class="cursor mr-4 filterBtn" (click)="refinePanelDisplay()">Filters</span>
+          </div>
+        </div>
+        <hr>
+        <!--<div class="row page-content">
+          <div class="col-md-12 col-lg-12 text-right margin-top-5px">
+            <button class="btn btn-primary align-right"
+              (click)="uploadModal()">{{'MY_PRESCRIPTION.UPLOAD' | translate}}</button>
+          </div>
+          <div *ngIf="errorMsgShowFlag" class="col-lg-12 text-center not-found">
+            <h3>{{'MY_PRESCRIPTION.NO_PRESCRIPTION_FOUND' | translate}}</h3>
+          </div>
+        </div>-->
+        <!-- <div class="row page-content" *ngIf="prescriptionListToview.length > 0">
+          <div class="col-lg-12 text-right">
+            <div class="my-prescription-upload-button pl-0 pt-0 pb-0 text-right padding-bottom16px mr-2">
+              <button class="btn btn-primary align-right"
+                (click)="uploadModal()">{{'MY_PRESCRIPTION.UPLOAD' | translate}}</button>
+            </div>
+          </div>
+        </div> -->
+        <div class="page-heading-info prescription " *ngIf="prescriptionFor == SBISConstantsRef.MY_PRESCRIPTION_CONST.OWN">
+          <h2>Displaying your doctor prescriptions <span class="heading-style">(created in MEDePAL or uploaded by you)</span></h2>
+        </div>
+        <div class = "row">
+          <div class="col-9">
+            <div class=" col-md-12 text-right">
+              <button type="button" class="btn btn-primary align-right upload-button"
+                (click)="uploadModal()">{{'MY_PRESCRIPTION.UPLOAD' | translate}}</button>
+            </div>
+            <div *ngIf="errorMsgShowFlag" class="col-lg-12 text-center not-found">
+              <h3>{{'MY_PRESCRIPTION.NO_PRESCRIPTION_FOUND' | translate}}</h3>
+            </div>
+        <div class="content table-responsive for-medium search-result not-for-mobile" *ngIf="prescriptionListToview.length > 0">
+          <p-table [value]="prescriptionListToview" [paginator]="prescriptionListToview.length>10" [rows]=10>
+            <ng-template pTemplate="header">
+              <tr>
+                <th width="5%"></th>
+                <th width="30%" *ngIf="prescriptionFor != SBISConstantsRef.MY_PRESCRIPTION_CONST.OWN">{{'MY_PRESCRIPTION.PATIENT_NAME' | translate}}</th>
+                <th width="30%">{{'MY_PRESCRIPTION.DOCTOR_NAME' | translate}}</th>
+                <th width="15%">{{'MY_PRESCRIPTION.DATE' | translate}}</th>
+                <th width="10%"></th>
+                <th width="10%"></th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-prescription>
+              <tr>
+                <td *ngIf="prescription.source == 'SBIS'"  title="Digital prescription"><img height="14px;" src="../../../../assets/image/logo-r.jpg">
+                </td>
+                <td *ngIf="prescription.source != 'SBIS'"></td>
+                <td *ngIf="prescriptionFor != SBISConstantsRef.MY_PRESCRIPTION_CONST.OWN">{{prescription.forUserName}}</td>
+                <td>{{prescription.doctorName}}</td>
+                <td>{{prescription.prescriptionDate | dateFormat}}</td>
+                <td class="cursor" *ngIf="prescriptionFor != SBISConstantsRef.MY_PRESCRIPTION_CONST.OWN"><!--<a class="a-custom-color" href="javascript:void(0)"
+                    (click)="openPrescription(prescription)">{{'MY_PRESCRIPTION.VIEW' | translate}}</a>&nbsp;-->
+                    <button type="button" class="btn btn-secondary cursor table-action-btn multi-btn-w2 " container="body"href="javascript:void(0)"
+                    (click)="openPrescription(prescription)">{{'MY_PRESCRIPTION.VIEW' | translate}}</button>  
+                </td>
+                <td class="cursor" *ngIf="prescriptionFor == SBISConstantsRef.MY_PRESCRIPTION_CONST.OWN"><!--<a class="a-custom-color" href="javascript:void(0)"
+                  (click)="openPrescription(prescription)">{{'MY_PRESCRIPTION.VIEW' | translate}}</a>&nbsp;-->
+                  <button type="button" class="btn btn-secondary cursor table-action-btn multi-btn-w2 view-margin " container="body"href="javascript:void(0)"
+                  (click)="openPrescription(prescription)">{{'MY_PRESCRIPTION.VIEW' | translate}}</button>  
+              </td>
+                <td>
+                  <!--<span (click)="openEmailPopup(prescription)" title="Email">
+                    <i class="fas fa-envelope"></i>
+                  </span>--><button type="button" class="btn btn-secondary cursor table-action-btn  multi-btn-w-divide2" container="body" (click)="openEmailPopup(prescription)">EMAIL</button>  
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+        </div>
+        <div class="col-3 right-panel-border">
+          <div class="desc-box1">
+            <div class="main-header">Why should I upload my prescriptions?</div>
+            <div class="line-gap">
+            <p>You should upload all your prescriptions for easy access when required. No more searching for the paper prescriptions when there is a sudden need - either to look up some old medicines or show to a doctor.
+            </p>
+          </div>
+          </div>
+          <div class="desc-box3">
+            <div class="main-header">How do I upload my prescriptions?</div>
+            <div class="line-gap">
+            <p>Take a photo or a scan of your prescription. Click on the Upload button and upload the image or the scanned copy. Download it whenever you need it. Same can be done from the MEDePAL mobile app also. </p>
+          </div>
+          </div>
+          
+          <div class="desc-box2">
+            <div class="main-header">Do I need to upload prescriptions of doctors using MEDePAL?</div>
+            <div class="line-gap">
+            <p>No, you should not. Prescriptions of doctors using MEDePAL will automatically appear in your list of prescriptions.</p>
+          </div>
+          </div>
+          
+        </div>
+      
+    
+  
+        <div class="content table-responsive search-result for-very-small" *ngIf="prescriptionListToview.length > 0">
+          <p-table [value]="prescriptionListToview" [paginator]="prescriptionListToview.length>10" [rows]=10>
+            <ng-template pTemplate="body" let-prescription>
+              <tr>
+                <ng-container>
+                  <td class="mobile-table">
+                    <table>
+                      <tr>
+                        <td class="small-header">{{'MY_PRESCRIPTION.PATIENT_NAME' | translate}}</td>
+                        <td class="mb-0">
+                          {{prescription.forUserName}}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="small-header">{{'MY_PRESCRIPTION.DOCTOR_NAME' | translate}}</td>
+                        <td class="mb-0">
+                          {{prescription.doctorName}}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="small-header">{{'MY_PRESCRIPTION.DATE' | translate}}</td>
+                        <td class="mb-0">
+                          {{prescription.prescriptionDate | dateFormat}}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="align-left">
+                          <div class="row">
+                            <div class="col-6" *ngIf="prescription.source == 'SBIS'">
+                              <img height="14px;" src="../../../../assets/image/logo-r.jpg">
+                            </div>
+                            <div class="col-6">
+                              <a class="a-custom-color" href="javascript:void(0)"
+                                (click)="openPrescription(prescription)">{{'MY_PRESCRIPTION.VIEW' | translate}}</a>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="align-right">
+                          <div class="row">
+                            <div class="col-12 text-right mr-3">
+                              <span (click)="openEmailPopup(prescription)" title="Email">
+                                <i class="fas fa-envelope"></i>
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </ng-container>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+ </div>
+
+
+<!-- Modal -->
+<ng-template #prescriptionUpload>
+  <!-- Modal content-->
+  <div *ngIf="loading" class="cover-for-modal">
+    <div class="loader-for-modal">
+        <div class="loading-img"><img width=250px src="../../../../../assets/image/logo.svg"/></div>
+        <div class="loading-txt">Loading<div class="dot-elastic"></div></div>
+    </div>
+  </div>
+  <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
+    <div class="modal-header">
+      <h4 class="modal-title">{{'MY_PRESCRIPTION.PRESCRIPTION_UPLOAD' | translate}}</h4>
+      <button type="button" class="close" data-dismiss="modal" (click)="modalRef.hide()">&times;</button>
+    </div>
+      <div class="row">
+        <div class="col-md-4 padding20">
+          <label>{{'MY_PRESCRIPTION.PATIENT_NAME' | translate}}</label>
+          <select class="width167px" formControlName="forUserPk">
+            <option *ngFor="let ptnNameObj of patientNamelist" value="{{ptnNameObj.userRefNo}}">
+              {{ptnNameObj.forUserName}}
+            </option>
+          </select><br>
+          <span *ngIf="uploadForm.get('isSubmit').value || uploadForm.controls.forUserPk.dirty">
+            <span *ngIf="uploadForm.hasError('required', 'forUserPk')" class="validation-error">{{
+                    'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+          </span>
+        </div>
+        <div class="col-md-4 padding20">
+          <label>{{'MY_PRESCRIPTION.DOCTOR_NAME' | translate}}</label>
+          <app-name placeholder="Doctor Name" preventType="all" formControlName="doctorName" required="required">
+          </app-name>
+          <span *ngIf="uploadForm.get('isSubmit').value || uploadForm.controls.doctorName.dirty">
+            <span *ngIf="uploadForm.hasError('required', 'doctorName')" class="validation-error">{{
+                      'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+          </span>
+        </div>
+        <div class="col-md-4 padding20">
+          <label>{{'COMMON.VISIT_DATE' | translate}}</label>
+          <app-datepicker [maxDate]="maxDate" formControlName="date" position="right"></app-datepicker>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 padding20">
+          <!--<input type="file" (change)="prescriptionFileSelected($event)" formControlName="documents"
+            class="padding-top28px" />-->
+            <app-single-file [uploadForm]="uploadForm"></app-single-file>
+          <span *ngIf="uploadForm.get('isSubmit').value || uploadForm.controls.file.dirty">
+            <span *ngIf="uploadForm.hasError('required', 'file')" class="validation-error">{{
+                    'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+          </span>
+        </div>
+
+      </div>
+    <div class="modal-footer">
+      <button type="button" type="submit" class="btn btn-primary">{{'MY_PRESCRIPTION.UPLOAD' | translate}}</button>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #prescriptionPreviewModal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{'MY_PRESCRIPTION.PRESCRIPTION' | translate}}</h4>
+
+    <button type="button" class="close float-right" (click)="modalRef.hide()" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="row" *ngIf="!prescriptionSBIS">
+    <div class="col-md-12">
+      <div class="float-right mb-2">
+        <span class="ml-2" id="download-ico"><img src="../../../../assets/image/download.svg" (click)="downloadFile()"
+            height="15" class="cursor" /></span>
+        <span class="ml-2" id="print-ico"><img src="../../../../assets/image/print.svg" height="15"
+            class="cursor" /></span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="prescriptionSBIS">
+    <app-prescription-preview [modalRef]="modalRef" [prescriptionRefNo]="prescriptionRefNo"
+      [prescription]="prescription" [appRefNo]="appRefNo">
+    </app-prescription-preview>
+  </div>
+  <div *ngIf="!prescriptionSBIS">
+    <img *ngIf="download.contentType !='application/pdf'" class="prescription-img-size-full"
+      [src]="domSanitizer.bypassSecurityTrustUrl(download.downloadImageSrc)" id="image-corner" alt="">
+    <iframe width="100%" height="500" scrolling="no" frameborder="0" id="prescriptionIframe"
+      *ngIf="download.contentType =='application/pdf'"
+      [src]="domSanitizer.bypassSecurityTrustResourceUrl(download.downloadImageSrc)"></iframe>
+  </div>
+
+</ng-template>
+
+
+<!--modal to send document by email-->
+<ng-template #docSendEmailModal>
+  <!-- Modal content-->
+  <form [formGroup]="emailSendFormGroup" (ngSubmit)="sendDocViaEmail()">
+    <div class="modal-header">
+      <h4 class="modal-title">{{'COMMON.SEND_EMAIL_LABEL' | translate}}</h4>
+      <button type="button" class="close" data-dismiss="modal" (click)="modalRef.hide()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-6 padding20">
+          <label>EMAIL</label>
+          <input type="email" placeholder="Enter Email" formControlName="email">
+          <span *ngIf="emailSendFormGroup.controls.email.dirty">
+            <span *ngIf="emailSendFormGroup.hasError('required', 'email')" class="validation-error">{{
+                        'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+            <span *ngIf="emailSendFormGroup.hasError('pattern', 'email')" class="validation-error">
+              {{'VALIDATION.VALIDATION_EMAIL_NOT_CORRECT' | translate }}</span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" type="submit" [disabled]="!emailSendFormGroup.valid"
+        class="btn btn-primary">{{'COMMON.SEND_BUTTON' | translate}}</button>
+    </div>
+  </form>
+</ng-template>

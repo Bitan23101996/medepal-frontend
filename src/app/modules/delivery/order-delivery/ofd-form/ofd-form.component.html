@@ -1,0 +1,81 @@
+<form [formGroup]="ofdForm">
+    <label class="userKey control-label">Delivery State</label>
+    <div class="pl-4">
+      <input type="radio" class="form-check-input" name="delState" value="DLV"
+        (click)="setDeliveryState('DLV')" [checked]="ofdDeliveryFlag">Delivered<br>
+
+      <input type="radio" class="form-check-input" value="ATM"  name="delState"
+        (click)="setDeliveryState('ATM')" [checked]="!ofdDeliveryFlag">Failed
+      Delivery
+    </div>
+
+    <div class="delivered" *ngIf="ofdDeliveryFlag">
+        
+      <div class="form-group">
+        <label class="userKey control-label">
+          Delivered By
+          <span class="validation-error">*</span>
+        </label>
+        <input type="text" class="form-control" formControlName="deliveredBy" [required]="false">
+        <div *ngIf="submitted && ofdForm.controls.deliveredBy.errors">
+            <div class="validation-error" *ngIf="ofdForm.controls.deliveredBy.errors.required">This field is required</div>
+          </div>
+      </div>
+      <div class="form-group">
+        <label class="userKey control-label">
+          Received By
+          <span class="validation-error">*</span>
+          <!-- <span class="validation-error">
+              *</span> -->
+        </label>
+        <input type="text" class="form-control" formControlName="receivedBy">
+        <div *ngIf="submitted && ofdForm.controls.receivedBy.errors">
+            <div class="validation-error" *ngIf="ofdForm.controls.receivedBy.errors.required">This field is required</div>
+          </div>
+      </div>
+      <div class="form-group">
+        <label class="userKey control-label">
+          Received On
+          <span class="validation-error">*</span>
+        </label>
+        <input type="text" [minDate]="minDate" placeholder="DD-MM-YYYY"  formControlName="actualDelivery"
+          bsDatepicker [bsConfig]="{ dateInputFormat: dateFormat, showWeekNumbers: false  }"
+          class="form-control date-pick" #dp="bsDatepicker">
+        <span><i (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt date-picker-calendarIco"></i></span>
+        <div *ngIf="submitted && ofdForm.controls.actualDelivery.errors">
+            <div class="validation-error" *ngIf="ofdForm.controls.actualDelivery.errors.required">This field is required</div>
+          </div>
+      </div>
+      <!-- <button type="button" class="btn btn-primary mt-1" (click)="saveOfdToDelivery()">Submit</button> -->
+
+    </div>
+    
+    <div class="failedDelivery" *ngIf="!ofdDeliveryFlag">
+      <div class="form-group">
+        <label class="userKey control-label">
+          Reason Code
+          <span class="validation-error">*</span>
+        </label>
+        <select class="form-control" formControlName="reasonCode">
+          <option value="">Select</option>
+          <option *ngFor="let r of resonList" value="{{r.reasonCode}}">{{r.description}}</option>
+        </select>
+        <div *ngIf="submitted && ofdForm.controls.reasonCode.errors">
+            <div class="validation-error" *ngIf="ofdForm.controls.reasonCode.errors.required">This field is required</div>
+          </div>
+        
+      </div>
+
+      <!-- <div class="form-group">
+        <label class="userKey control-label">
+          Date
+        </label>
+        <input type="text" #dateOfATM [maxDate]="maxDate" placeholder="DD-MM-YYYY"
+          bsDatepicker [bsConfig]="{ dateInputFormat: dateFormat, showWeekNumbers: false  }"
+          class="form-control date-pick" [maxDate]="maxDate" #dp="bsDatepicker">
+        <span><i (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt date-picker-calendarIco"></i></span>
+      </div> -->
+      
+    </div>
+    <button type="button" class="btn btn-primary mt-1" (click)="saveOfdToDelivery()">Submit</button>
+</form>

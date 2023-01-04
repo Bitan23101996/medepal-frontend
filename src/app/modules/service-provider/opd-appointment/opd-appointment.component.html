@@ -1,0 +1,619 @@
+<!-- /*******************************************************************************
+ * * |///////////////////////////////////////////////////////////////////////|
+ * * |                                                                       |
+ * * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ * * | All Rights Reserved                                                   |
+ * * |                                                                       |
+ * * | This document is the sole property of StellaBlue Interactive          |
+ * * | Services Pvt. Ltd.                                                    |
+ * * | No part of this document may be reproduced in any form or             |
+ * * | by any means - electronic, mechanical, photocopying, recording        |
+ * * | or otherwise - without the prior written permission of                |
+ * * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ * * |                                                                       |
+ * * |///////////////////////////////////////////////////////////////////////|
+ ******************************************************************************/ -->
+<!--to view prescription-->
+<ng-template #prescriptionPreviewModal>
+    <div class="modal-header">
+        <button type="button" class="close float-right" (click)="modalRef.hide()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <app-prescription-preview [appRefNo]="appRefNo"></app-prescription-preview>
+</ng-template>
+<!--to view prescription-->
+<section class="pageMainContin">
+    <div *ngIf="loading" class="cover">
+        <div class="loader">
+            <div class="loading-img"><img width=250px src="../../../../../assets/image/logo.svg" /></div>
+            <div class="loading-txt">Loading<div class="dot-elastic"></div>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="row page-content">
+            <div class="col-lg-12">
+                <form [formGroup]="fetchPatientForm" (ngSubmit)="searchPatient()">
+                    <div class="row">
+                        <div class="w-10 pr-0 pl-3 sml-for-opd-appointments filter-panel-width"
+                            [ngClass]="panelVisible ? 'panelVisible' : 'panelNotVisible'">
+                            <div class="card">
+                                <div class="filterPanel">
+                                    <div class="row border-bottom">
+                                        <div class="col-8">
+                                            <h4 class="search-result-left-pen-heading">
+                                                {{ 'FETCH_PATIENT.REFINE_BY' | translate }}</h4>
+                                        </div>
+                                        <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0);"
+                                                (click)="resetAll()">{{ 'FETCH_PATIENT.RESET_ALL' | translate }}</a>
+                                        </div>
+                                    </div>
+                                    <div class="row overflow-auto scrollarea">
+                                        <div class="col-12">
+                                            <div class="row mt-3 mb-3">
+                                                <div class="col-8">
+                                                    <!-- Working on app/issues/1383 -->
+                                                    <label class="page-header">DATE</label>
+                                                </div>
+                                                <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0);"
+                                                        (click)="resetSearchDate()">{{ 'FETCH_PATIENT.RESET' | translate }}</a>
+                                                </div>
+                                            </div>
+                                            <div class="row" *ngIf="appointmentStatus !== 'REQ'">
+                                                <div class="col-6">
+                                                    <div class="form-group">
+                                                        <label>{{ 'FETCH_PATIENT.FROM' | translate }}</label>
+                                                        <span class="float-left"><input type="text"
+                                                                placeholder="DD-MM-YYYY"
+                                                                (bsValueChange)="onValueChange('fromDate',$event)"
+                                                                bsDatepicker
+                                                                [bsConfig]="{ dateInputFormat: dateFormat, showWeekNumbers: false }"
+                                                                class="form-control date" formControlName="fromDate"
+                                                                #dp="bsDatepicker" [readonly]="true"></span>
+                                                        <span class="pt-1 float-left"><i
+                                                                (bsValueChange)="onValueChange('fromDate',$event)"
+                                                                (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen"
+                                                                class="far fa-calendar-alt"></i></span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="form-group">
+                                                        <label>{{ 'FETCH_PATIENT.TO' | translate }}</label>
+                                                        <span class="float-left"><input type="text"
+                                                                placeholder="DD-MM-YYYY"
+                                                                (bsValueChange)="onValueChange('toDate',$event)"
+                                                                bsDatepicker
+                                                                [bsConfig]="{ dateInputFormat: dateFormat, showWeekNumbers: false }"
+                                                                class="form-control date" formControlName="toDate"
+                                                                #dp1="bsDatepicker" [readonly]="true"></span>
+                                                        <span class="pt-1 float-left"><i
+                                                                (bsValueChange)="onValueChange('toDate',$event)"
+                                                                (click)="dp1.toggle()" [attr.aria-expanded]="dp1.isOpen"
+                                                                class="far fa-calendar-alt"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" *ngIf="appointmentStatus === 'REQ'">
+                                                <div class="col-6">
+                                                    <div class="form-group">
+                                                        <label>{{ 'FETCH_PATIENT.FROM' | translate }}</label>
+                                                        <span class="float-left"><input type="text"
+                                                                placeholder="DD-MM-YYYY"
+                                                                (bsValueChange)="onValueChange('fromDate',$event)"
+                                                                bsDatepicker
+                                                                [bsConfig]="{ dateInputFormat: dateFormat }"
+                                                                class="form-control date" formControlName="fromDate"
+                                                                #dp="bsDatepicker" [readonly]="true"
+                                                                [minDate]="minDate"></span>
+                                                        <span class="pt-2"><i
+                                                                (bsValueChange)="onValueChange('fromDate',$event)"
+                                                                (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen"
+                                                                class="far fa-calendar-alt"></i></span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="form-group">
+                                                        <label>{{ 'FETCH_PATIENT.TO' | translate }}</label>
+                                                        <span class="float-left"><input type="text"
+                                                                placeholder="DD-MM-YYYY"
+                                                                (bsValueChange)="onValueChange('toDate',$event)"
+                                                                bsDatepicker
+                                                                [bsConfig]="{ dateInputFormat: dateFormat }"
+                                                                class="form-control date" formControlName="toDate"
+                                                                #dp1="bsDatepicker" [readonly]="true"
+                                                                [minDate]="minDate"></span>
+                                                        <span><i (bsValueChange)="onValueChange('toDate',$event)"
+                                                                (click)="dp1.toggle()" [attr.aria-expanded]="dp1.isOpen"
+                                                                class="far fa-calendar-alt"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group" *ngIf="appointmentStatus!=='REQ'">
+                                                <div class="row pb-2">
+                                                    <div class="col-8"><label
+                                                            class="page-header">{{ 'FETCH_PATIENT.APPOINTMENT_STATUS' | translate }}</label>
+                                                    </div>
+                                                    <div class="col-4 text-right link-pos-adj"><a
+                                                            href="javascript:void(0);"
+                                                            (click)="resetAppStatus()">{{ 'FETCH_PATIENT.RESET' | translate }}</a>
+                                                    </div>
+                                                </div>
+                                                <div *ngFor="let s of statusList" class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input type="checkbox"
+                                                            *ngIf="(s.attributeValue === 'CON' || s.attributeValue === 'COM' || s.attributeValue === 'VIP' || s.attributeValue === 'REQ' || s.attributeValue === 'CXL') && appointmentStatus !== 'REQ'"
+                                                            class="form-check-input" value="{{s.attributeValue}}"
+                                                            formControlName="appStatus" [checked]="false"
+                                                            (change)="statusChange($event, s)"><span
+                                                            *ngIf="(s.attributeValue === 'CON' || s.attributeValue === 'COM' || s.attributeValue === 'VIP' || s.attributeValue === 'REQ' || s.attributeValue === 'CXL') && appointmentStatus !== 'REQ'">{{s.displayValue}}</span>
+                                                        <input type="checkbox"
+                                                            *ngIf="s.attributeValue === 'REQ' && appointmentStatus === 'REQ'"
+                                                            class="form-check-input" value="{{s.attributeValue}}"
+                                                            formControlName="appStatus"
+                                                            [checked]="fetchPatientForm.controls.appStatus.value==='REQ'?fetchPatientForm.controls.appStatus.value === s.attributeValue:true"
+                                                            (change)="statusChange($event, s)"><span
+                                                            *ngIf="s.attributeValue === 'REQ' && appointmentStatus === 'REQ'">{{s.displayValue}}</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="page-header">Doctor Name</label>
+                                                <input type="text" class="form-control" formControlName="doctorName">
+                                            </div>
+                                            <div class="form-group">
+                                                <label
+                                                    class="page-header">{{ 'FETCH_PATIENT.PATIENT_NAME' | translate }}</label>
+                                                <input type="text" class="form-control" formControlName="patientName">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group text-right border-top pt-2">
+                                    <button type="submit" (click)="refinePanelhide()"
+                                        class="btn btn-primary btn-sm">{{ 'COMMON.SEARCH_BUTTON' | translate }}</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col" *ngIf="allDataFetched">
+                            <div class="card">
+                                <div class="row header cardHeader  pl-0 pr-0 pt-0 pb-md-0">
+                                    <div class="col-md-12 col-lg-4 col-12">
+                                        <div>
+                                            <h1>{{title}}</h1>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-6 text-lg-center text-md-left pt-md-2 pt-lg-0">
+                                        <div class="btn-group dateNextPrev">
+                                            <div class="btn" *ngIf="appointmentStatus==='REQ'"
+                                                (click)="goToPreviousDate()" [hidden]="prevDateEnableFlag">
+                                                &lt;&lt; </div>
+                                            <div class="btn" *ngIf="appointmentStatus!=='REQ'"
+                                                (click)="goToPreviousDate()">
+                                                &lt;&lt; </div>
+                                            <div style="padding: 2px">
+                                                {{viewDate | date :'mediumDate'}}
+                                            </div>
+                                            <div class="btn" (click)="goToNextDate()">
+                                                &gt;&gt;
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-6 col-12 text-right">
+                                        <div class="filterBtn-for-opd-appointments mr-4 cursor"
+                                            (click)="refinePanelDisplay()">Filters</div>
+                                        <button class="btn btn-secondary"
+                                            (click)="goToCurrentDate()">{{ 'COMMON.TODAY_SECONDARY_BUTTON' | translate }}</button>
+                                    </div>
+                                </div>
+                                <div class="row pt-md-1 pt-lg-0">
+                                    <div [ngClass]="pendingHomeVisitCnt > 0 ? 'col-6 text-right' : 'col-12 text-right noMargin'"
+                                        *ngIf="pendingAppointment > 0">
+                                        <button type="button" class="btn btn-secondary btn-sm"
+                                            *ngIf="appointmentStatus !== 'REQ'"
+                                            (click)="pendingAppointmentListView()">You have {{pendingAppointment}}
+                                            pending
+                                            Appointments</button>
+                                    </div>
+                                </div>
+                                <div class="row pt-md-1 pt-lg-0"
+                                    *ngIf="appointmentStatus === 'REQ' && searchList != null && homeVisitFlag=='N'">
+                                    <div class="col-12  text-right">
+                                        <button type="button" class="btn btn-secondary btn-sm"
+                                            (click)="confirmAll()">{{ 'COMMON.CONFIRM_ALL_APPOINTMENT_BUTTON' | translate }}</button>
+                                    </div>
+                                </div>
+                                <div class="content table-responsive for-medium search-result not-for-mobile">
+                                    <!-- Status label - app#2184 -->
+                                    <div class="row mb-2" *ngIf="searchList != null">
+                                        <div class="col-12">
+                                            <div class="text-right">
+
+                                                <div class="top-card text-center">
+                                                    <span class="badge-text badge-success-txt">Completed </span>
+                                                    <span class="badge badge-success">{{cntCOM}}</span>
+                                                </div>
+                                                <div class="top-card text-center">
+                                                    <span class="badge-text badge-secondary-txt">Confirmed </span>
+                                                    <span class="badge badge-secondary">{{cntCON}}</span>
+                                                </div>
+                                                <div class="top-card text-center">
+                                                    <span class="badge-text badge-primary-txt">In Progress </span>
+                                                    <span class="badge badge-primary">{{cntVIP}}</span>
+                                                </div>
+                                                <div class="top-card text-center">
+                                                    <span class="badge-text badge-secondary-txt">Requested </span>
+                                                    <span class="badge badge-secondary">{{cntREQ}}</span>
+                                                </div>
+                                                <!-- <div class="top-card text-center">
+                              <span class="badge-text badge-danger-txt">Rejected </span>
+                              <span class="badge badge-danger">{{cntREJ}}</span>
+                            </div> -->
+                                                <div class="top-card text-center">
+                                                    <span class="badge-text badge-danger-txt">Cancelled </span>
+                                                    <span class="badge badge-danger">{{cntCXL}}</span>
+
+                                                </div>
+                                                <!-- <div class="top-card text-center">
+                            <div class="total-payment-header">Confirmed</div>
+                            <div class="total-payment">{{cntCON}}</div>
+                          </div>
+                          <div class="top-card text-center">
+                            <div class="total-bill-header">In Progress</div>
+                            <div class="total-bill">{{cntVIP}}</div>
+                          </div>
+                          <div class="top-card text-center">
+                            <div class="total-bill-header">Requested</div>
+                            <div class="total-bill">{{cntREQ}}</div>
+                          </div>
+                          <div class="top-card text-center">
+                            <div class="total-due-header">Rejected</div>
+                            <div class="total-due">{{cntREJ}}</div>
+                          </div>
+                          <div class="top-card text-center">
+                            <div class="total-due-header">Cancelled</div>
+                            <div class="total-due">{{cntCXL}}
+                            </div>
+
+                          </div> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p-table [value]="searchList" [paginator]=isPaginator [rows]=10
+                                        *ngIf="allDataFetched">
+                                        <ng-template pTemplate="header">
+                                            <tr *ngIf="searchListLength>0">
+                                                <th width="16%" class="fetch-patient-name-header">Patient Name</th>
+                                                <th width="13%" class="fetch-patient-date-header">
+                                                    {{ 'FETCH_PATIENT.DATE' | translate }}</th>
+                                                <th class="fetch-patient-chamber-header" width="16%">
+                                                    Doctor Name</th>
+                                                <th class="fetch-patient-freq-header text-center" width="9%">
+                                                    {{ 'FETCH_PATIENT.PAST_VISITS' | translate }}</th>
+                                                <th class="fetch-patient-status-header" width="10%"><span
+                                                        *ngIf="appointmentStatus!=='REQ'">{{ 'FETCH_PATIENT.APPT_STATUS' | translate }}</span>
+                                                </th>
+                                                <th class="small-hide" width="10%">
+                                                    {{ 'FETCH_PATIENT.PAYMENT' | translate }}</th>
+                                                <th class="opd-action" width="33%"></th>
+                                                <!-- <th width="9%"></th> -->
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-q>
+                                            <ng-container>
+                                                <tr class="no-border">
+                                                    <td class="fetch-patient-name" width="21%"
+                                                        *ngIf="q.patientName!=null"
+                                                        title="{{q.patientName}}&nbsp;{{' (' + q.age + '/' + q.gender + ')'}}">
+                                                        <span class="textDotInline">
+                                                            {{q.patientName}}
+                                                        </span>
+                                                        <span
+                                                            class="textDotInlineSpan">{{' (' + q.age + '/' + q.gender + ')'}}</span><br>
+                                                        <div class="pt-2"><span><img
+                                                                    src="../../../../../assets/image/phone.svg"
+                                                                    height="12">&nbsp; {{q.phNo}}</span></div>
+                                                    </td>
+                                                    <td class="fetch-patient-date" width="11%">
+                                                        <span>{{q.appointment.appointmentDate | dateFormat}}</span>&nbsp;
+                                                        <span
+                                                            *ngIf="q.appointment.appointmentTime!=null">{{q.appointment.appointmentTime | timeFormat}}</span>
+                                                    </td>
+                                                    <td class="fetch-patient-chamber" width="19%">
+                                                        <div class="textDot">{{q.doctorName}}</div>
+                                                        <div *ngIf="q.appointment.onlineConsultation == 'Y'"
+                                                            class="online-consultation-outside-div">
+                                                            <div class="online-consultation-text-div"
+                                                                title="Online Consultation">Online
+                                                                Consultation</div>
+                                                        </div>
+                                                    </td>
+                                                    <td width="5%" class="text-center fetch-patient-freq">
+                                                        {{q.appStatus==='Completed'? q.visitFreq: q.visitFreq + 1}}</td>
+                                                    <td width="10%" class="ipad-portrait-hide fetch-patient-status">
+                                                        <span *ngIf="appointmentStatus!=='REQ'"
+                                                            [ngClass]="{'badge': true, 'badge-success': q.appStatus === 'Completed','badge-confirmed': q.appStatus === 'Confirmed', 'badge-primary': q.appStatus==='Visit In Progress',  'badge-secondary': q.appStatus === 'Requested',  'badge-danger': q.appStatus === 'Cancelled','badge-noShow': q.appStatus === 'No Show'}"><span
+                                                                *ngIf="q.appStatus==='Visit In Progress'">In
+                                                                Progress</span><span
+                                                                *ngIf="q.appStatus!='Visit In Progress'">{{q.appStatus}}</span></span>
+                                                    </td>
+                                                    <td class="fetch-patient-pay small-hide" width="11%">
+                                                        <div>
+                                                            <div style="height: 9px;"
+                                                                *ngIf="q.appStatus==='Confirmed' || q.appStatus==='Completed' || q.appStatus==='Visit In Progress' || q.appStatus==='Requested' || q.appStatus === 'No Show'">
+                                                                <b>Paid:</b> {{'SEARCH.SEARCH_INR_SIGN' | translate }}
+                                                                {{q.payAmount}}
+                                                            </div>
+                                                            <div>
+                                                                <b>Due:</b> {{'SEARCH.SEARCH_INR_SIGN' | translate }}
+                                                                <span *ngIf="q.due >= 0">{{q.due}}</span> <span
+                                                                    *ngIf="q.due < 0">0</span>
+                                                            </div>
+                                                        </div>
+                                                        <!-- <span class=""
+                                                            *ngIf="q.appStatus==='Confirmed' || q.appStatus==='Completed' || q.appStatus==='Visit In Progress' || q.appStatus==='Requested' || q.appStatus === 'No Show'">{{'SEARCH.SEARCH_INR_SIGN' | translate
+                        }}{{q.payAmount}}/{{q.fees| rupeeFormat}}</span> -->
+                                                    </td>
+                                                    <td
+                                                        class="multi-btn-w-divider divisor-position-for-doc-my-appointment">
+                                                        <button type="button" class="btn btn-secondary cursor"
+                                                            *ngIf="q.appStatus==='Completed' && user.roleName != sbisConstantRef.ROLE_NAMES.BOOKING_OPERATOR"
+                                                            (click)="viewPrescription(q.appointment.appointmentRefNo)">{{ 'COMMON.VIEW_RX_PRESCRIPTION_BUTTON' | translate }}</button>
+                                                        <button type="button" class="btn btn-secondary cursor"
+                                                            *ngIf="(q.appStatus==='Completed' || q.appStatus==='Confirmed' || q.appStatus==='Visit In Progress') && user.roleName != sbisConstantRef.ROLE_NAMES.BOOKING_OPERATOR"
+                                                            (click)="showInvoice(q.appointment.appointmentRefNo)">{{'INVOICE.INVOICE' | translate}}</button>
+                                                        <button type="button" [attr.for]="'blankPrescription'+i"
+                                                            *ngIf="q.appStatus==='Confirmed' || (q.blankPrescriptionFlag=='Y' && q.appStatus==='Completed')"
+                                                            class="btn btn-secondary cursor"
+                                                            (click)="file.click()">{{ 'COMMON.UPLOAD_PRESCRIPTION' | translate }}</button>
+                                                        <input #file type="file" accept="image/*" [hidden]="true"
+                                                            [attr.id]="'blankPrescription'+i"
+                                                            (change)="uploadPrescription($event,q)">
+                                                        <button
+                                                            *ngIf="(q.appStatus==='Confirmed') && user.roleName != sbisConstantRef.ROLE_NAMES.BOOKING_OPERATOR"
+                                                            type="button" class="btn btn-secondary cursor"
+                                                            (click)="createBlankPrescription(q.appointment)">{{ 'COMMON.PRESCRIPTION_PAD' | translate }}</button>
+                                                        <button type="button" class="btn btn-secondary cursor"
+                                                            *ngIf="q.appStatus==='Requested' && q.homeVisitIndicator == 'N'"
+                                                            (click)="manageDoctorAppointment(q, q.appointment, APP_STATE.CONFIRMED)">{{ 'COMMON.CONFIRM_APPOINTMENT_BUTTON' | translate }}</button>
+                                                        <button type="button" class="btn btn-secondary cursor"
+                                                            *ngIf="q.appStatus==='Requested'"
+                                                            (click)="rejectOrCancelDoctorAppointment(q.appointment, APP_STATE.REJECTED)">{{ 'COMMON.REJECT_BUTTON' | translate }}</button>
+                                                        <button *ngIf="q.appStatus==='Confirmed'" type="button"
+                                                            class="btn btn-secondary cursor"
+                                                            (click)="rejectOrCancelDoctorAppointment(q.appointment, APP_STATE.CANCELLED)">{{ 'COMMON.CANCEL_BUTTON' | translate }}</button>
+                                                        <!-- Working on app/issue/2403 -->
+                                                        <div *ngIf="q.appStatus==='Confirmed' || q.appStatus==='Visit In Progress'"
+                                                            ngbDropdown class="d-inline-block quick-add-menu">
+                                                            <button type="button" class="btn btn-secondary cursor"
+                                                                id="dropdownBasic2"
+                                                                style="border-left: 1px solid #4d4d4d !important;"
+                                                                ngbDropdownToggle>CHANGE STATUS</button>
+                                                            <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
+                                                                <button ngbDropdownItem>
+                                                                    <a class="quick-add-link-menu quick-add-text"
+                                                                        href="javascript:void(0);"
+                                                                        (click)="manageDoctorAppointment(q, q.appointment, APP_STATE.COMPLETED)">
+                                                                        {{ 'COMMON.COMPLETED_BUTTON' | translate }}
+                                                                    </a>
+                                                                </button>
+                                                                <button ngbDropdownItem>
+                                                                    <a class="quick-add-link-menu quick-add-text"
+                                                                        href="javascript:void(0);"
+                                                                        (click)="manageDoctorAppointment(q, q.appointment, APP_STATE.NO_SHOW)">
+                                                                        {{ 'COMMON.NO_SHOW_BUTTON' | translate }}
+                                                                    </a>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <!-- End  Working on app/issue/2403  -->
+                                                    </td>
+
+                                                    <!-- <td class="no-padding-left-small no-padding-left-large text-md-right text-lg-left">
+                            <div *ngIf="q.appStatus==='Confirmed'" class="mb-0"><button type="button"
+                                class="btn btn-secondary"
+                                (click)="rejectOrCancelDoctorAppointment(q.appointment, APP_STATE.CANCELLED)">{{ 'COMMON.CANCEL_BUTTON' | translate }}</button>
+                            </div>
+                          </td> -->
+                                                </tr>
+                                                <tr class="small-show">
+                                                    <td class="fetch-patient-pay">
+                                                        <div class="small-header">
+                                                            {{ 'FETCH_PATIENT.PAYMENT' | translate }}</div>
+                                                        <span class=""
+                                                            *ngIf="q.appStatus==='Confirmed' || q.appStatus==='Completed' || q.appStatus==='Visit In Progress' || q.appStatus==='Requested'">{{'SEARCH.SEARCH_INR_SIGN' | translate
+                        }}{{q.payAmount}}/{{q.fees| rupeeFormat}}</span>
+                                                    </td>
+                                                </tr>
+                                                <tr class="small-show-1024-768">
+                                                    <td width="5%"
+                                                        class="fetch-patient-freq fetch-patient-freq-1024-768">
+                                                        <div class="small-header">
+                                                            {{ 'FETCH_PATIENT.PAST_VISITS' | translate }}</div>
+                                                        {{q.appStatus==='Completed'? q.visitFreq: q.visitFreq + 1}}
+                                                    </td>
+                                                    <td class="fetch-patient-pay" width="11%">
+                                                        <div class="small-header">
+                                                            {{ 'FETCH_PATIENT.PAYMENT' | translate }}</div>
+                                                        <span class=""
+                                                            *ngIf="q.appStatus==='Confirmed' || q.appStatus==='Completed' || q.appStatus==='Visit In Progress' || q.appStatus==='Requested'">{{'SEARCH.SEARCH_INR_SIGN' | translate
+                        }}{{q.payAmount}}/{{q.fees| rupeeFormat}}</span>
+                                                    </td>
+                                                    <td width="10%"
+                                                        class="fetch-patient-status fetch-patient-status-1024-768">
+                                                        <span *ngIf="appointmentStatus!=='REQ'"
+                                                            [ngClass]="{'badge': true, 'badge-success': q.appStatus === 'Completed','badge-confirmed': q.appStatus === 'Confirmed', 'badge-primary': q.appStatus==='Visit In Progress',  'badge-secondary': q.appStatus === 'Requested',  'badge-danger': q.appStatus === 'Cancelled'}"><span
+                                                                *ngIf="q.appStatus==='Visit In Progress'">In
+                                                                Progress</span><span
+                                                                *ngIf="q.appStatus!='Visit In Progress'">{{q.appStatus}}</span></span>
+                                                    </td>
+                                                </tr>
+                                                <tr class="small-show">
+                                                    <td class="show-border" colspan="7"></td>
+                                                </tr>
+                                                <tr class="small-show-1024-768">
+                                                    <td class="show-border" colspan="7"></td>
+                                                </tr>
+                                            </ng-container>
+                                        </ng-template>
+                                    </p-table>
+                                    <div *ngIf="searchList==null && uiType=='all'" class="text-center not-found">
+                                        <h3>{{ 'FETCH_PATIENT.NO_APPOINTMENT' | translate }}</h3>
+                                    </div>
+                                    <div *ngIf="searchList==null && uiType=='req'" class="text-center not-found">
+                                        <h3>{{ 'FETCH_PATIENT.NO_PENDING_APPOINTMENT' | translate }}</h3>
+                                    </div>
+                                    <div *ngIf="searchList==null && uiType=='home'" class="text-center not-found">
+                                        <h3>{{ 'FETCH_PATIENT.NO_HOME_VISITS' | translate }}</h3>
+                                    </div>
+                                </div>
+                                <div class="content table-responsive search-result for-very-small ">
+                                    <p-table [value]="searchList" [paginator]=isPaginator [rows]=10
+                                        *ngIf="allDataFetched">
+                                        <ng-template pTemplate="body" let-q>
+                                            <tr>
+                                                <ng-container>
+                                                    <td class="mobile-table">
+                                                        <table>
+                                                            <tr>
+                                                                <td class="small-header">Patient Name</td>
+                                                                <td class="mb-0" *ngIf="q.patientName!=null"
+                                                                    title="{{q.patientName}}&nbsp;{{' (' + q.age + '/' + q.gender + ')'}}">
+                                                                    <span
+                                                                        class="textDotInline">{{q.patientName}}</span><span
+                                                                        class="textDotInlineSpan">{{' (' + q.age + '/' + q.gender + ')'}}</span>
+                                                                    <div class="pt-1">
+                                                                        <span><img
+                                                                                src="../../../../../assets/image/phone.svg"
+                                                                                height="12">&nbsp; {{q.phNo}}</span>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="small-header">
+                                                                    {{ 'FETCH_PATIENT.DATE' | translate }}</td>
+                                                                <td>
+                                                                    <span>{{q.appointment.appointmentDate | dateFormat}}</span>&nbsp;
+                                                                    <span
+                                                                        *ngIf="q.appointment.appointmentTime!=null">{{q.appointment.appointmentTime | timeFormat}}</span>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="small-header">Doctor Name</td>
+                                                                <td>
+                                                                    <div class="textDot">{{q.doctorName}}</div>
+                                                                    <div *ngIf="q.appointment.onlineConsultation == 'Y'"
+                                                                        class="online-consultation-outside-div">
+                                                                        <div class="online-consultation-text-div"
+                                                                            title="Online Consultation">Online
+                                                                            Consultation</div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="small-header">
+                                                                    {{ 'FETCH_PATIENT.PAST_VISITS' | translate }}</td>
+                                                                <td>{{q.appStatus==='Completed'? q.visitFreq: q.visitFreq + 1}}
+                                                                </td>
+                                                            </tr>
+                                                            <tr *ngIf="appointmentStatus!=='REQ'">
+                                                                <td class="small-header">
+                                                                    {{ 'FETCH_PATIENT.APPT_STATUS' | translate }}</td>
+                                                                <td>
+                                                                    <span
+                                                                        [ngClass]="{'badge': true, 'badge-success': q.appStatus === 'Completed','badge-confirmed': q.appStatus === 'Confirmed', 'badge-primary': q.appStatus==='Visit In Progress',  'badge-secondary': q.appStatus === 'Requested',  'badge-danger': q.appStatus === 'Cancelled'}"><span
+                                                                            *ngIf="q.appStatus==='Visit In Progress'">In
+                                                                            Progress</span><span
+                                                                            *ngIf="q.appStatus!='Visit In Progress'">{{q.appStatus}}</span></span>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="small-header">
+                                                                    {{ 'FETCH_PATIENT.PAYMENT' | translate }}</td>
+                                                                <td> <span class=""
+                                                                        *ngIf="q.appStatus==='Confirmed' || q.appStatus==='Completed' || q.appStatus==='Visit In Progress' || q.appStatus==='Requested'">{{'SEARCH.SEARCH_INR_SIGN' | translate
+                     }}{{q.payAmount}}/{{q.fees| rupeeFormat}}</span></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td></td>
+                                                                <td class="no-padding-left-small fetch-patient-action">
+                                                                    <div *ngIf="q.appStatus==='Confirmed'" class="mb-0">
+                                                                        <button type="button" class="btn btn-secondary"
+                                                                            (click)="createBlankPrescription(q.appointment)">Prescription
+                                                                            Pad</button></div>
+                                                                    <div *ngIf="q.appStatus==='Confirmed'" class="mb-0">
+                                                                        <button type="button" class="btn btn-secondary"
+                                                                            (click)="rejectOrCancelDoctorAppointment(q.appointment, APP_STATE.CANCELLED)">{{ 'COMMON.CANCEL_BUTTON' | translate }}</button>
+                                                                        <button type="button" class="btn btn-secondary"
+                                                                            *ngIf="q.appStatus==='Requested' && q.homeVisitIndicator == 'N'"
+                                                                            (click)="manageDoctorAppointment(q, q.appointment, APP_STATE.CONFIRMED)">{{ 'COMMON.CONFIRM_APPOINTMENT_BUTTON' | translate }}</button>
+                                                                        <button type="button" class="btn btn-secondary"
+                                                                            *ngIf="q.appStatus==='Requested'"
+                                                                            (click)="rejectOrCancelDoctorAppointment(q.appointment, APP_STATE.REJECTED)">{{ 'COMMON.REJECT_BUTTON' | translate }}</button>
+                                                                        <button type="button" class="btn btn-secondary"
+                                                                            *ngIf="q.appStatus==='Completed'"
+                                                                            (click)="viewPrescription(q.appointment.appointmentRefNo)">{{ 'COMMON.VIEW_PRESCRIPTION_BUTTON' | translate }}</button>
+                                                                    </div>
+                                                                    <div>
+                                                                        <button type="button" class="btn btn-secondary"
+                                                                            *ngIf="(q.appStatus==='Completed' || q.appStatus==='Confirmed' || q.appStatus==='Visit In Progress') && user.roleName != sbisConstantRef.ROLE_NAMES.BOOKING_OPERATOR"
+                                                                            (click)="showInvoice(q.appointment.appointmentRefNo)">{{'INVOICE.INVOICE' | translate}}</button>
+                                                                        <!-- End Working on app/issues/1185 -->
+                                                                        <!-- Working on app/issues/1292 -->
+                                                                        <ng-container
+                                                                            *ngIf="q.appStatus==='Confirmed' || (q.blankPrescriptionFlag=='Y' && q.appStatus==='Completed')">
+                                                                            <input type="file" accept="image/*"
+                                                                                [hidden]="true"
+                                                                                [attr.id]="'blankPrescription'+i"
+                                                                                (change)="uploadPrescription($event,q)">
+                                                                            <label style="display: inline !important;"
+                                                                                ngbTooltip="Upload File" class="cursor"
+                                                                                [attr.for]="'blankPrescription'+i">
+                                                                                <i class="fa fa-upload pointer"
+                                                                                    aria-hidden="true"></i>
+                                                                            </label>
+                                                                        </ng-container>
+                                                                    </div>
+                                                                    <!--End Working on app/issues/1292 -->
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </ng-container>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Working on app/issues/1185 -->
+<p-sidebar [(visible)]="displaySidebarInvoice" [dismissible]="false" styleClass="modal-sidebar" [showCloseIcon]="false"
+    appendTo="body" position="right" [style]="{width:'50vw'}">
+    <div *ngIf="loading" class="cover-for-modal">
+        <div class="loader-for-modal">
+            <div class="loading-img"><img width=250px src="../../../../../assets/image/logo.svg" /></div>
+            <div class="loading-txt">Loading<div class="dot-elastic"></div>
+            </div>
+        </div>
+    </div>
+    <div class="close-btn cursor" (click)="closeInvoice()"><i class="fas fa-times"></i></div>
+    <div class="row">
+        <div class="col-md-12">
+            <h1>{{'INVOICE.INVOICE' | translate}}</h1>
+        </div>
+        <div class="col-md-6">
+        </div>
+    </div>
+    <div class="sidebarList" *ngIf="displaySidebarInvoice">
+        <app-invoice-voucher [appointmentRefNo]="appointmentRefNo" [invoiceList]="invoiceList"></app-invoice-voucher>
+    </div>
+</p-sidebar>
+<!--End Working on app/issues/1185 -->

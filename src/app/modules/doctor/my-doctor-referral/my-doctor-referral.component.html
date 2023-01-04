@@ -1,0 +1,32 @@
+<div class="text-center not-found" *ngIf="referralDoctors.length == 0">
+  <h3>No Referral Doctor Added !</h3>
+</div>
+<div *ngIf="referralDoctors.length != 0" class="content table-responsive">
+  <p-table [value]="referralDoctors" [paginator]="referralDoctors.length > 15" [rows]=15>
+    <ng-template pTemplate="header">
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Date of referral</th>
+        <th scope="col">Registration status</th>
+        <th scope="col"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-referral>
+      <tr>
+        <td class="align-top">
+          <span>{{referral.nameOfReferralDoctor}}</span>
+        </td>
+        <td class="align-top">
+          <span>{{referral.referralDateTime | dateFormat}}</span>
+        </td>
+        <td class="align-top">
+          <span *ngIf="referral.registrationStatus == 'NOT_REGISTERED'">Not Registered</span>
+          <span *ngIf="referral.registrationStatus == 'REGISTERED'">Registered</span>
+        </td>
+        <td class="my-doc-referral">
+          <button *ngIf="referral.registrationStatus == 'NOT_REGISTERED'" class="btn btn-sm btn-primary" (click)="resendReferralMail(referral)">Resend</button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

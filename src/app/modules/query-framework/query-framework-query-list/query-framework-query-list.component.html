@@ -1,0 +1,80 @@
+<!-- /*******************************************************************************
+ * * |///////////////////////////////////////////////////////////////////////|
+ * * |                                                                       |
+ * * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ * * | All Rights Reserved                                                   |
+ * * |                                                                       |
+ * * | This document is the sole property of StellaBlue Interactive          |
+ * * | Services Pvt. Ltd.                                                    |
+ * * | No part of this document may be reproduced in any form or             |
+ * * | by any means - electronic, mechanical, photocopying, recording        |
+ * * | or otherwise - without the prior written permission of                |
+ * * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ * * |                                                                       |
+ * * |///////////////////////////////////////////////////////////////////////|
+ ******************************************************************************/ -->
+<!-- sbis-poc/app/issues/861-->
+
+<section class="pageMainContin">
+  <div *ngIf="loading" class="cover">
+    <div class="loader">
+        <div class="loading-img"><img width=250px src="../../../../../assets/image/logo.svg"/></div>
+        <div class="loading-txt">Loading<div class="dot-elastic"></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="header cardHeader ">
+      <div class="row">
+        <div class="col-sm-6">
+          <h1>Query Selection</h1>
+        </div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="row">
+        <div class="col-lg-12">
+          <form [formGroup]="queryForm">
+            <div class="row">
+              <div class="col-md-6 offset-md-3 col-sm-6 offset-sm-3 col-10 offset-1">
+                <div class="row">
+                  <div class="col-xl-4 col-lg-4 col-md-5 col-sm-5 col-5 text-right">
+                    <label>Query List</label>
+                  </div>
+                  <div class="col-xl-6 col-lg-7 col-md-7 col-sm-7 col-7">
+                    <p-dropdown (onChange)="openQueryComponent($event.value)" [style]="{'width':'100%'}"
+                      [options]="optionGroupedQueryes" formControlName="queries" [group]="true" filter="true"
+                      placeholder="Select an Query" class="query-dropdown">
+                      <ng-template let-group pTemplate="group">
+                        <span style="margin-left:.25em">{{group.label}}</span>
+                      </ng-template>
+                    </p-dropdown>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="row">
+            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12" *ngFor="let queryList of queryListByCategory">
+              <div class="card query-card">
+                <div class="card-body">
+                  <h4 class="list-header-font-size-for-query-framework"><i class="fa fa-bars"></i> {{queryList.queryCategoryName}}</h4>
+                  <ul class="card-ul-style-for-query-framework">
+                    <li *ngFor="let singleWidgetQuery of queryList.singleWidgetQueryRecord">
+                      <a class="list-link-font-size-for-query-framework" href="javascript:void(0);" (click)="openQueryComponent(singleWidgetQuery.queryId)"><i
+                          class="fa fa-rocket"></i> {{singleWidgetQuery.queryName}}</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

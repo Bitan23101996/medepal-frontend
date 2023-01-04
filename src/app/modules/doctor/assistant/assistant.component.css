@@ -1,0 +1,22 @@
+.assistant p
+{
+
+    line-height: 22px;
+}
+.multi-btn-w-divide1{
+    border-left:1px solid #4d4d4d !important;
+
+    padding-top: 0px !important;
+    border-radius:0 !important;
+    font-size:11px !important;
+    height:12px;
+    margin-left: -18px;
+}
+
+.multi-btn-w1
+{
+
+    padding-top: 0px !important;
+    font-size:11px !important;
+    height:13px;
+}

@@ -1,0 +1,624 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<div class="row mb-2">
+  <div class="col-md-12">
+    <form [formGroup]="opdForm">
+      <!--(ngSubmit)="saveEntity()"> -->
+      <div class="row top-btn-area">
+        <div class="col-md-12 text-right">
+          <button type="button" *ngIf="btnShow" class="btn btn-primary float-right ml-4" (click)="saveEntity()">Save</button>
+          <button *ngIf="btnShow" class="btn btn-secondary float-right" type="button" (click)="back('N')">Back</button>
+          <!-- <button type="submit" *ngIf="btnShow" class="btn btn-primary btn-sm float-right" style="height: 38px;">Save</button> -->
+
+        </div>
+      </div>
+
+
+      <div class="row page-content">
+        <div class="col-12">
+          <div class="row">
+            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 pb-3">
+              <div class="card">
+                <div class="row card-header">
+                  <div class="col-12">
+                    <h5>Basic Information</h5>
+                  </div>
+                </div>
+                <div class="row card-body">
+                  <div class="col-12">
+                    <div class="row form-group">
+                      <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
+                        <div class="text-center" (mouseover)="progress.isShowUploadBtn=true"
+                          (mouseout)="progress.isShowUploadBtn=false">
+                          <div *ngIf="progress.percentage>0" class="progress-bar progress-bar-info progress-bar-striped"
+                            role="progressbar" attr.aria-valuenow="{{progress.percentage}}" aria-valuemin="0"
+                            aria-valuemax="100" [ngStyle]="{width:progress.percentage+'%'}">
+                            {{progress.percentage}}%</div>
+                          <img *ngIf="logoSrc ==''" src="../../../../../assets/image/opd_logo.svg" class="image cursor"
+                            id="image-corner" alt="..." style="width:100%;height: 100px;padding-right: 22px;">
+                          <img *ngIf="logoSrc !=''" [src]="domSanitizer.bypassSecurityTrustUrl(logoSrc)" class="image"
+                            id="image-corner" alt="..." style="width:100px;height: 100px;">
+                          <div class="middle" style="opacity:1;top:20px">
+                            <div class="profileBtnHolder" style="margin: 0;">
+                              <input type="file" accept="image/*" [hidden]="true" id="logo"
+                                (change)="selectFile($event)">
+                              <label *ngIf="progress.percentage>=0" for="logo"><i class="fas fa-camera"></i></label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9 col-12">
+                        <label class="userKey control-label">{{'OPD_PHARMACY.OPD_PHARMACY_NAME' | translate}} <span
+                            class="validation-error">*</span></label>
+
+                        <input type="hidden" formControlName="refNo">
+                        <p-autoComplete *ngIf="userRoleName === 'Hospital'" styleClass="autoComplete"
+                          (onSelect)="setOPD($event)" placeholder="Name" [suggestions]="results"
+                          (completeMethod)="getHospitalList($event)" formControlName="name" required>
+                          <ng-template let-results pTemplate="item">
+                            <span style="font-size:18px">{{results.hospitalName}}</span><br>
+                            <span style="font-size:14px">Mobile: {{results.phoneNo1}}</span>
+                          </ng-template>
+                        </p-autoComplete>
+                        <input type="text" *ngIf="userRoleName != 'Hospital'" class="form-control" placeholder="Name"
+                          formControlName="name" required autofocus="">
+                        <span *ngIf="opdForm.get('isSubmit').value || opdForm.controls.name.dirty">
+                          <span *ngIf="opdForm.hasError('required', 'name')" class="validation-error">{{
+                        'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="row  form-group">
+                      <div class="col-6">
+                        <label class="userKey control-label">{{'OPD_PHARMACY.OPD_PHARMACY_ENTITY_TYPE' | translate}}
+                          <span class="validation-error">*</span></label>
+                        <select *ngIf="userRoleName === 'Hospital'" class="form-control"
+                          (change)="changeEntity(selectedValue.value)" #selectedValue formControlName="category"
+                          required>
+                          <option value="">Select</option>
+                          <option *ngFor="let opd of opdCategories; let i = index" [value]="opd.key">{{opd.value}}
+                          </option>
+                        </select>
+                        <input *ngIf="userRoleName === 'Pharmacy'" type="text" class="form-control" value="Pharmacy"
+                          readonly>
+                        <input *ngIf="userRoleName === 'Diagnostics'" type="text" class="form-control"
+                          value="Diagnostics" readonly>
+                        <!-- <span *ngIf="submitted && lControls.category.errors && userRoleName !='Pharmacy' || 'Diagnostics'">
+                        <span *ngIf="lControls.category.errors.required" class="validation-error">
+                            {{'VALIDATION.VALIDATION_REQUIRED' | translate}}
+                        </span>
+                      </span> -->
+                      </div>
+                      <div class="col-6">
+                        <label>{{'OPD_PHARMACY.OPD_PHARMACY_IS_MAIN_BRANCH' | translate}}</label>
+                        <div><input type="checkbox" (change)="toggleMainBranchIndicator($event)"
+                            formControlName="isMainBranch"></div>
+                      </div>
+                    </div>
+                    <div class="row  form-group">
+                      <div class="col-12">
+                        <label class="userKey control-label">{{'OPD_PHARMACY.OPD_PHARMACY_PARENT_ENTITY' | translate}}
+                        </label>
+                        <p-autoComplete [disabled]="mainBranchIndicatorFlag==='Y'" styleClass="autoComplete"
+                          (onSelect)="setParentEntity($event)" placeholder="Parent Entity" [suggestions]="parent"
+                          (completeMethod)="getParentEntityList($event)" formControlName="parentEntityName">
+                          <ng-template let-parent pTemplate="item">
+                            <span style="font-size:18px">{{parent.hospitalName}}</span><br>
+                            <!-- <span style="font-size:14px">Mobile: {{parent.phoneNo1}}</span> -->
+                          </ng-template>
+                        </p-autoComplete>
+                        <input type="hidden" formControlName="parentEntityPk">
+                      </div>
+                    </div>
+                    <div class="row form-group">
+                      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 pb-2">
+                        <label>{{'OPD_PHARMACY.OPD_PHARMACY_EMAIL_ID' | translate}}</label>
+                        <input type="email" class="form-control" formControlName="emailId">
+                      </div>
+                      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <label class="userKey control-label">{{'OPD_PHARMACY.OPD_PHARMACY_WEBSITE' | translate}}
+                        </label>
+                        <input type="url" class="form-control" formControlName="website">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12" formArrayName="addressList"
+              *ngIf="opdForm.get('addressList') != null ">
+              <div class="card" *ngFor="let a of opdForm.get('addressList').controls; let i = index" [formGroup]="a"
+                [attr.id]="'tr'+i">
+                <div class="row card-header">
+                  <div class="col-10">
+                    <h5>{{'OPD_PHARMACY.OPD_PHARMACY_ADDRESS' | translate}}</h5>
+                  </div>
+                  <!--  <div class="col-2 text-right">
+                      <a class="btn btn-primary float-right mb-2" *ngIf="!isOpd" href="javascript:void(0);" (click)="addAddressRow()">
+                        Add</a>
+                    </div>-->
+                </div>
+                <div class="row card-body">
+                  <div class="col-12">
+                    <div class="row form-group">
+                      <div class="col-12">
+                        <label class="control-label">{{'OPD_PHARMACY.OPD_PHARMACY_COUNTRY' | translate}}&nbsp;<span
+                            class="validation-error">*</span></label>
+                        <div>
+                          <select (change)="countrySelect(country.value)" #country id="country" name="country"
+                            class="form-control" formControlName="country" required>
+                            <option *ngFor="let country of countryList" value="{{country}}">{{country}}
+                            </option>
+                          </select>
+                          <!-- <p-autoComplete formControlName="country" [suggestions]="filteredCountriesSingle" (completeMethod)="filterCountrySingle($event)"
+                               [size]="20" placeholder="Countries" (onSelect)="countrySelect($event)" [minLength]="1" required></p-autoComplete> -->
+                          <span *ngIf="submitted && opdForm.get('addressList').controls[i].get('country').errors">
+                            <span *ngIf="opdForm.get('addressList').controls[i].get('country').errors.required"
+                              class="validation-error">
+                              {{'VALIDATION.VALIDATION_REQUIRED' | translate}}
+                            </span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row form-group">
+                      <div class="col-5">
+                        <label class="control-label">{{'OPD_PHARMACY.OPD_PHARMACY_PIN' | translate}}&nbsp;<span
+                            class="validation-error">*</span> </label>
+                        <div>
+                          <!-- Changed for issue app#597 -->
+                          <input type="text" class="form-control" formControlName="pinCode" #pin
+                            (keyup)="fetchCountryStateCityByPin(pin.value, $event)" required>
+                          <span *ngIf="submitted && opdForm.get('addressList').controls[i].get('pinCode').errors">
+                            <span *ngIf="opdForm.get('addressList').controls[i].get('pinCode').errors.required"
+                              class="validation-error">
+                              {{'VALIDATION.VALIDATION_REQUIRED' | translate}}
+                            </span>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="col-7">
+                        <label class="control-label">{{'OPD_PHARMACY.OPD_PHARMACY_STATE' | translate}}&nbsp;<span
+                            class="validation-error">*</span></label>
+                        <div>
+                          <!-- Changed for issue app#597 -->
+                          <input type="text" class="form-control" #state id="state" formControlName="state"
+                            [readonly]="true">
+                          <span *ngIf="submitted && opdForm.get('addressList').controls[i].get('state').errors">
+                            <span *ngIf="opdForm.get('addressList').controls[i].get('state').errors.required"
+                              class="validation-error">
+                              {{'VALIDATION.VALIDATION_REQUIRED' | translate}}
+                            </span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row form-group">
+                      <div class="col-12">
+                        <label class="control-label">{{'OPD_PHARMACY.OPD_PHARMACY_CITY' | translate}}&nbsp;<span
+                            class="validation-error">*</span></label>
+                        <div>
+                          <input type="text" class="form-control" formControlName="city" required>
+                          <span *ngIf="submitted && opdForm.get('addressList').controls[i].get('city').errors">
+                            <span *ngIf="opdForm.get('addressList').controls[i].get('city').errors.required"
+                              class="validation-error">
+                              {{'VALIDATION.VALIDATION_REQUIRED' | translate}}
+                            </span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row form-group">
+                      <div class="col-12">
+                        <label
+                          class="control-label">{{'OPD_PHARMACY.OPD_PHARMACY_ADDRESS_LINE1' | translate}}&nbsp;<span
+                            class="validation-error">*</span></label>
+                        <div>
+                          <input type="text" class="form-control" formControlName="line1" required autofocus="">
+                          <span *ngIf="submitted && opdForm.get('addressList').controls[i].get('line1').errors">
+                            <span *ngIf="opdForm.get('addressList').controls[i].get('line1').errors.required"
+                              class="validation-error">
+                              {{'VALIDATION.VALIDATION_REQUIRED' | translate}}
+                            </span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row form-group">
+                      <div class="col-12">
+                        <label class="control-label">{{'OPD_PHARMACY.OPD_PHARMACY_ADDRESS_LINE2' | translate}} </label>
+                        <div>
+                          <input type="text" class="form-control" formControlName="line2">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="userRoleName != 'Hospital'" class="col-12">
+              <!-- Working on app/issue/1193 -->
+              <div class="validation-error mb-2">{{timingValidationMsg}}</div>
+              <app-working-schedule [screenType]="screenType" [saveStatus]="saveStatus"
+                [timingDataFromResponse]="timingDataFromResponse" (workScheduleData)="getWorkScheduleData($event)">
+              </app-working-schedule>
+              <!-- End Working on app/issue/1193 -->
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 pb-3">
+              <div class="card">
+                <div class="row card-header">
+                  <div class="col-12">
+                    <h5>{{'OPD_PHARMACY.OPD_PHARMACY_CONTACT_INFORMATION' | translate}}</h5>
+                  </div>
+                </div>
+                <div class="row card-body">
+                  <div class="col-12">
+                    <div class="row">
+                      <div class="col-xl-6 col-lg-12 col-md-6 col-sm-6 col-12">
+                        <label>{{'OPD_PHARMACY.OPD_PHARMACY_PRIMARY_PHONE_NO' | translate}} <span
+                            class="validation-error">*</span></label>
+                        <int-phone-prefix [locale]="'IN'" [defaultCountry]="'in'" formControlName="phone1" required>
+                        </int-phone-prefix>
+                        <span *ngIf="submitted && lControls.phone1.errors">
+                          <span *ngIf="lControls.phone1.errors.required" class="validation-error">
+                            {{'VALIDATION.VALIDATION_REQUIRED' | translate}}
+                          </span>
+                        </span>
+                      </div>
+                      <div class="col-xl-6 col-lg-12 col-md-6 col-sm-6 col-12">
+                        <label>{{'OPD_PHARMACY.OPD_PHARMACY_SECONDARY_PHONE_NO' | translate}}</label>
+                        <int-phone-prefix [locale]="'IN'" [defaultCountry]="'in'" formControlName="phone2">
+                        </int-phone-prefix>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xl-6 col-lg-12 col-md-6 col-sm-6 col-12">
+                        <label>{{'OPD_PHARMACY.OPD_PHARMACY_ADDITIONAL_PHONE_NO' | translate}}</label>
+                        <int-phone-prefix [locale]="'IN'" [defaultCountry]="'in'" formControlName="phone3">
+                        </int-phone-prefix>
+                      </div>
+                      <div class="col-xl-6 col-lg-12 col-md-6 col-sm-6 col-12">
+                        <label>{{'OPD_PHARMACY.OPD_PHARMACY_FAX_NO' | translate}}</label>
+                        <int-phone-prefix [locale]="'IN'" [defaultCountry]="'in'" formControlName="faxNo">
+                        </int-phone-prefix>
+                      </div>
+                    </div>
+
+                  </div>
+
+
+                </div>
+              </div>
+            </div>
+            <div *ngIf="userRoleName ==='Hospital'" class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+              <div class="card settings">
+                <div class="row card-header">
+                  <div class="col-12">
+                    <h5>{{'OPD_PHARMACY.OPD_PHARMACY_SETTINGS' | translate}}</h5>
+                  </div>
+                </div>
+                <div class="row card-body">
+                  <div class="col-12">
+                    <div class="row">
+                      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                        <h1>{{'OPD_PHARMACY.OPD_PHARMACY_FEES_PAYABLE_TO' | translate}} </h1>
+                        <div class="form-check-inline">
+                          <label class="form-check-label bs-radio">
+                            <input type="radio" name="feesPayableTo" formControlName="feesPayableTo" value="H">{{'OPD_PHARMACY.OPD_PHARMACY_HOSPITAL'
+                                | translate}}
+                          </label>
+                        </div>
+                        <div class="form-check-inline">
+                          <label class="form-check-label bs-radio">
+                            <input type="radio" name="feesPayableTo" formControlName="feesPayableTo" value="D">{{'OPD_PHARMACY.OPD_PHARMACY_DOCTOR'
+                                | translate}}
+                          </label>
+                        </div>
+                      </div>
+                      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 pr-0">
+                        <h1>{{'OPD_PHARMACY.OPD_PHARMACY_APPOINTMENT_MANAGED_BY' | translate}}</h1>
+                        <div class="form-check-inline">
+                          <label class="form-check-label bs-radio">
+                            <input type="radio" name="appointmentManagedBy" formControlName="appointmentManagedBy"
+                              value="H">{{'OPD_PHARMACY.OPD_PHARMACY_HOSPITAL'
+                                | translate}}
+                          </label>
+                        </div>
+                        <div class="form-check-inline">
+                          <label class="form-check-label bs-radio">
+                            <input type="radio" name="appointmentManagedBy" formControlName="appointmentManagedBy"
+                              value="D">{{'OPD_PHARMACY.OPD_PHARMACY_DOCTOR'
+                                | translate}}
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- app/issues/843 Commented for now -->
+                    <!-- <hr>
+                        <div class="row">
+                          <div class="col-4">
+                            <label>{{'DOCTOR_PROFILE.DOCTOR_PRESCRIPTION_TEMPLATE' | translate}} </label>
+                            <select name="prescriptionTemplateType" class="form-control" formControlName="prescriptionTemplateType">
+                              <option selected value="">Select Prescription Template</option>
+                              <option *ngFor="let template of allPrescriptionTemplates" value="{{template.templateFileName}}">{{template.templateName}}</option>
+                            </select>
+                          </div>
+                        </div> -->
+                    <!-- End app/issues/843 -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="userRoleName ==='Hospital'" class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                <div class="card settings" formGroupName="invoiceSettingRule">
+                  <div class="row card-header">
+                    <div class="col-12">
+                      <h5>{{'OPD_PHARMACY.INVOICE_SETTING' | translate}}</h5>
+                    </div>
+                  </div>
+                  <div class="row card-body">
+                    <div class="col-12">
+                      <div class="row">
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                          <h1>{{'OPD_PHARMACY.DOC_PREFIX' | translate}} </h1>
+                          <input type="text" formControlName="docPrefix" class="form-control" (keyup)="showSample('INV')">
+                          <ng-container *ngIf="opdForm.controls.invoiceSettingRule.controls.docPrefix.value!=null">
+                              <!-- <button type="button" class="btn btn-primary btn-sm mt-1" (click)="showSample('INV')" 
+                              *ngIf="opdForm.controls.invoiceSettingRule.controls.docPrefix.value!=''">View Sample</button> -->
+                         
+                              <i class="mt-1" *ngIf="opdForm.controls.invoiceSettingRule.controls.docPrefix.value!='' && showInvSample!=''">
+                                (Sample: {{showInvSample}})
+                              </i>
+                          </ng-container>
+                          
+                          
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <h1>{{'OPD_PHARMACY.STARTING_SERIAL' | translate}} </h1>
+                            <input type="text" formControlName="startingSerialNo" class="form-control" numbersOnly>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="userRoleName ==='Hospital'" class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                  <div class="card settings" formGroupName="admissionSettingRule">
+                    <div class="row card-header">
+                      <div class="col-12">
+                        <h5>{{'OPD_PHARMACY.ADMISSION_SETTING' | translate}}</h5>
+                      </div>
+                    </div>
+                    <div class="row card-body">
+                      <div class="col-12">
+                        <div class="row">
+                          <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <h1>{{'OPD_PHARMACY.DOC_PREFIX' | translate}} </h1>
+                            <input type="text" formControlName="docPrefix" class="form-control" (keyup)="showSample('ADM')">
+                            <ng-container *ngIf="opdForm.controls.admissionSettingRule.controls.docPrefix.value!=null">
+                              <!-- <button type="button" class="btn btn-primary btn-sm mt-1" (click)="showSample('ADM')" 
+                              *ngIf="opdForm.controls.invoiceSettingRule.controls.docPrefix.value!=''">View Sample</button>
+                           -->
+                              <i class="mt-1" *ngIf="opdForm.controls.admissionSettingRule.controls.docPrefix.value!='' && showAdmSample!=''">
+                               (Sample: {{showAdmSample}})
+                              </i>
+                          </ng-container>
+                          </div>
+                          <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                              <h1>{{'OPD_PHARMACY.STARTING_SERIAL' | translate}} </h1>
+                              <input type="text" formControlName="startingSerialNo" class="form-control" numbersOnly>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+            <div *ngIf="!existingRecord && userRoleName !='Hospital'"
+              class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+              <div class="card">
+                <div class="row card-header">
+                  <div class="col-12">
+                    <h5>{{'OPD_PHARMACY.OPD_PHARMACY_CONTACT_PERSON_DETAIL' | translate}}</h5>
+                  </div>
+                </div>
+                <div class="row card-body">
+                  <div class="col-12">
+                    <div class="row">
+                      <div class="col-12 form-group">
+                        <label>{{'OPD_PHARMACY.OPD_PHARMACY_CONTACT_PERSON_NAME' | translate}} <span
+                            class="validation-error">*</span></label>
+                        <input type="text" class="form-control" formControlName="cpName" required>
+                        <span *ngIf="submitted && lControls.cpName.errors">
+                          <span *ngIf="lControls.cpName.errors.required" class="validation-error">
+                            {{'VALIDATION.VALIDATION_REQUIRED' | translate}}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <!-- <div class="col-7">
+                    <label>{{'OPD_PHARMACY.OPD_PHARMACY_CONTACT_PERSON_EMAIL' | translate}}</label>
+                    <input type="text" class="form-control" formControlName="cpEmailId" (change)="checkEmail(opdForm.value.cpEmailId)">
+                  </div> -->
+                      <div class="col-5">
+                        <label>{{'OPD_PHARMACY.OPD_PHARMACY_CONTACT_PERSON_PHONE_NO' | translate}} <span
+                            class="validation-error">*</span></label>
+                        <div class="input-group mb-0">
+                          <int-phone-prefix *ngIf="!opdForm.get('isOTPSent').value" [locale]="'IN'"
+                            [defaultCountry]="'in'" formControlName="cpPhone"
+                            (change)="checkContactNumber(opdForm.value.cpPhone)" required></int-phone-prefix>
+                          <input type="text" *ngIf="opdForm.get('isOTPSent').value" [attr.disabled]="isOTPVeryfied"
+                            class="form-control" formControlName="cpPhone"
+                            (keyup)="checkContactNumber(opdForm.value.cpPhone)">
+                          <span *ngIf="submitted && lControls.cpPhone.errors">
+                            <span *ngIf="lControls.cpPhone.errors.required" class="validation-error">
+                              {{'VALIDATION.VALIDATION_REQUIRED' | translate}}
+                            </span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row form-group">
+                      <div class="col-6">
+                        <label>{{'OPD_PHARMACY.OPD_PHARMACY_CONTACT_PERSON_DESIGNATION' | translate}}</label>
+                        <input type="text" class="form-control" formControlName="cpDesignation">
+                      </div>
+                      <div *ngIf="opdForm.get('isOTPSent').value && !opdForm.get('isOTPVeryfied').value" class="col-6">
+
+
+                        <label>Enter the OTP&nbsp;<span class="validation-error">*</span></label>
+                        <div class="input-group mb-3">
+                          <input type="number" class="form-control" formControlName="cpPhoneOTP">
+                          <span *ngIf="submitted && lControls.cpPhoneOTP.errors">
+                            <span *ngIf="lControls.cpPhoneOTP.errors.required" class="validation-error">
+                              {{'VALIDATION.VALIDATION_REQUIRED' | translate}}
+                            </span>
+                          </span>
+                        </div>
+
+                      </div>
+                    </div>
+                    <div class="row text-right">
+                      <div class="col-12">
+                        
+                        <label><a *ngIf="opdForm.get('isOTPSent').value && !opdForm.get('isOTPVeryfied').value"
+                            (click)="sendOtp()">Re-Send</a></label>
+                        <div class="input-group mb-3 text-right">
+                          <div class="w-100" *ngIf="!opdForm.get('isOTPVeryfied').value">
+                            <button type="button" *ngIf="!opdForm.get('isOTPSent').value" (click)="sendOtp()"
+                              class="btn btn-primary">Send OTP</button>
+                            <button type="button" *ngIf="opdForm.get('isOTPSent').value" (click)="verifyOtp()"
+                              class="btn btn-primary">Verify OTP and Register</button>
+                          </div>
+                          <div class="input-group-append" *ngIf="opdForm.get('isOTPVeryfied').value">
+                            <button type="button" [disabled]="true" class="btn btn-primary btn-sm"
+                              style="height: 38px;">Verify OTP and Register</button>
+                          </div>
+                        </div>
+                        <div class="input-group" *ngIf="isDifferentRole">
+                          <!-- <div class="w-100">
+                          <button type="button" (click)="saveEntity()" [disabled]="isSaved" class="btn btn-primary">Save</button>
+                        </div> -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!existingRecord && userRoleName ==='Hospital'" class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="row card-header">
+                  <div class="col-12">
+                    <h5>{{'OPD_PHARMACY.OPD_PHARMACY_CONTACT_PERSON_DETAIL' | translate}}</h5>
+                  </div>
+                </div>
+                <div class="row card-body">
+                  <div class="col-3">
+                    <label>{{'OPD_PHARMACY.OPD_PHARMACY_CONTACT_PERSON_NAME' | translate}} <span
+                        class="validation-error">*</span></label>
+                    <input type="text" class="form-control" formControlName="cpName" required>
+                    <span *ngIf="submitted && lControls.cpName.errors">
+                      <span *ngIf="lControls.cpName.errors.required" class="validation-error">
+                        {{'VALIDATION.VALIDATION_REQUIRED' | translate}}
+                      </span>
+                    </span>
+                  </div>
+
+                  <!-- <div class="col-3">
+              <label>{{'OPD_PHARMACY.OPD_PHARMACY_CONTACT_PERSON_EMAIL' | translate}}</label>
+              <input type="text" class="form-control" formControlName="cpEmailId" (change)="checkEmail(opdForm.value.cpEmailId)">
+            </div> -->
+
+                  <div class="col-3">
+                    <label>{{'OPD_PHARMACY.OPD_PHARMACY_CONTACT_PERSON_PHONE_NO' | translate}} <span
+                        class="validation-error">*</span></label>
+                    <div class="input-group">
+                      <int-phone-prefix *ngIf="!opdForm.get('isOTPSent').value" [locale]="'IN'" [defaultCountry]="'in'"
+                        formControlName="cpPhone" (change)="checkContactNumber(opdForm.value.cpPhone)" required>
+                      </int-phone-prefix>
+                      <input type="text" *ngIf="opdForm.get('isOTPSent').value" [attr.disabled]="isOTPVeryfied"
+                        class="form-control" formControlName="cpPhone"
+                        (keyup)="checkContactNumber(opdForm.value.cpPhone)">
+                      <span *ngIf="submitted && lControls.cpPhone.errors">
+                        <span *ngIf="lControls.cpPhone.errors.required" class="validation-error">
+                          {{'VALIDATION.VALIDATION_REQUIRED' | translate}}
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+
+
+
+                  <div class="col-3">
+                    <label>{{'OPD_PHARMACY.OPD_PHARMACY_CONTACT_PERSON_DESIGNATION' | translate}}</label>
+                    <input type="text" class="form-control" formControlName="cpDesignation">
+                  </div>
+
+                  <div *ngIf="opdForm.get('isOTPSent').value && !opdForm.get('isOTPVeryfied').value" class="col-12">
+                    <div class="col-3">&nbsp;</div>
+                    <div class="col-3">&nbsp;</div>
+                    <div class="col-3">&nbsp;</div>
+                    <div class="col-3">
+                      <label>Enter the OTP&nbsp;<span class="validation-error">*</span></label>
+                      <div class="input-group mb-3">
+                        <input type="number" class="form-control" formControlName="cpPhoneOTP">
+                        <span *ngIf="submitted && lControls.cpPhoneOTP.errors">
+                          <span *ngIf="lControls.cpPhoneOTP.errors.required" class="validation-error">
+                            {{'VALIDATION.VALIDATION_REQUIRED' | translate}}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-12 ">
+                    <label><a *ngIf="opdForm.get('isOTPSent').value && !opdForm.get('isOTPVeryfied').value"
+                        (click)="sendOtp()">Re-Send</a></label>
+                    <div class="input-group mb-3 text-right">
+                      <div class="w-100 text-right" *ngIf="!opdForm.get('isOTPVeryfied').value">
+                        <button type="button" *ngIf="!opdForm.get('isOTPSent').value" (click)="sendOtp()"
+                          class="btn btn-primary">Send OTP</button>
+                        <button type="button" *ngIf="opdForm.get('isOTPSent').value" (click)="verifyOtp()"
+                          class="btn btn-primary">Verify OTP and Register</button>
+                      </div>
+                      <div class="w-100 text-right" *ngIf="opdForm.get('isOTPVeryfied').value">
+                        <button type="button" [disabled]="true" class="btn btn-primary btn-sm"
+                          style="height: 38px;">Verify OTP and Register</button>
+                      </div>
+                    </div>
+                    <div class="input-group" *ngIf="isDifferentRole">
+                      <!-- <div class="input-group-append">
+                    <button type="button" (click)="saveEntity()" [disabled]="isSaved" class="btn btn-primary btn-sm" style="height: 38px;">Save</button>
+                  </div> -->
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

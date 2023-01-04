@@ -1,0 +1,831 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<div class="loginWrapper">
+    <div [ngClass]="verify ? 'wrapSignupVerify' : 'wrapSignup'" *ngIf="!showSuccessMsgOnEmailSignup">
+        <!-- <div class="loginTab">
+            <ul>
+                <li (click)="activateTab('INDIVIDUAL')"> <a [ngClass]="roleName =='INDIVIDUAL' ? 'activeLogin' : ''">I
+                        am an Individual</a> </li>
+                <li (click)="activateTab('DOCTOR')"> <a [ngClass]="roleName =='DOCTOR' ? 'activeLogin' : ''">I
+                        am a Doctor</a> </li>
+                <li (click)="activateTab('OTHER')"> <a [ngClass]="roleName =='OTHER' ? 'activeLogin' : ''"> I am a
+                        Service Provider</a>
+                </li>
+            </ul>
+
+        </div> -->
+        <div class="loginMainContain small-device">
+            <div class="optionsView" *ngIf="roleName=='INDIVIDUAL'">
+                <form class="form-signin" [formGroup]="signupForm">
+                    <h2 *ngIf="!signupOtpVerify && !verify" style="padding-bottom: 3px;padding-top: 12px;" class="form-signin-heading text-center">{{
+                        'SIGNUP.SIGNUP_HEADER' | translate }}</h2>
+                        <h2 *ngIf="verify" style="padding-bottom: 3px;padding-top: 12px;" class="form-signin-heading text-center">USER VERIFICATION</h2>
+                    <h2 *ngIf="signupOtpVerify" style="padding-bottom: 3px;padding-top: 12px;" class="form-signin-heading text-center">Almost
+                        Done...</h2>
+                    <!-- <h2 *ngIf="signupOtpVerify" style="padding-bottom: 3px;padding-top: 12px;" class="form-signin-heading text-center">Almost
+                                Done...</h2> -->
+                    <div *ngIf="!signupMainSection" class="row">
+                        <div class="signup-header-area">
+							<label class="float-left pr-2">{{'SIGNUP.SIGNUP_REGISTRATIONAS' | translate}}</label>
+							<div class="float-left pr-2 radio-spacer">
+								<label class="radio">
+									<p>{{'SIGNUP.SIGNUP_INDIVIDUAL_LABEL' | translate}}</p>
+									<input type="radio" name="radio" (click)="activateTab('INDIVIDUAL')" checked>
+									<span style="margin-top: 3px;" class="checkmark"></span>
+									<!-- &nbsp;<p>INDIVIDUAL</p> -->
+								</label>
+							</div>
+							<div class="float-left radio-spacer">
+								<label class="radio">
+									<p>{{'SIGNUP.SIGNUP_DOCTOR_LABEL' | translate}}</p>
+									<input type="radio" name="radio" (click)="activateTab('DOCTOR')">
+									<span style="margin-top: 3px;" class="checkmark"></span>
+									<!-- &nbsp;<p>DOCTOR</p> -->
+								</label>
+							</div>
+                        </div>
+                    </div>
+                    <div *ngIf="!signupMainSection" class="row">
+                        <div class="col-sm-5">
+                            
+                            <div class="form-group fomrLabel">
+                                <label class="label ">{{'SIGNUP.SIGNUP_EMAIL_LABEL' | translate}}</label>
+                                <input type="email" class="form-control" name="emailAddress" formControlName="emailAddress"
+                                    placeholder="{{ 'SIGNUP.SIGNUP_EMAIL' | translate }}" (keyup)="enterToSend($event, signupForm.value)"
+                                    (focusout)="checkEmailAddress($event, signupForm.value.emailAddress)" autofocus="" />
+                                <span *ngIf="submitted && lControls.emailAddress.errors">
+                                    <span *ngIf="lControls.emailAddress.errors.email" class="validation-error">{{
+                                        'VALIDATION.VALIDATION_EMAIL_NOT_CORRECT' | translate }}</span>
+                                </span>
+                            </div>
+                            <div class="form-group fomrLabel">
+                                <label class="label ">{{'SIGNUP.SIGNUP_MOBILE_LABEL' | translate}}&nbsp;<span class="mobile-message">(Indian mobile numbers only)</span></label>
+                                <!-- <int-phone-prefix [locale]="'es'" formControlName="phoneNo" [defaultCountry]="'in'"
+                                    (keyup)="enterToSend($event, signupForm.value)" (change)="checkContactNumber(signupForm.value.phoneNo)"></int-phone-prefix>
+                                <input type="text" class="form-control" name="userName" formControlName="userName"
+                            placeholder="{{ 'SIGNUP.SIGNUP_USERNAME' | translate }}" (change)="checkUserName(signupForm.value.userName)"
+                            (keypress)="enterToSend($event, signupForm.value)" required="" /> -->
+							
+							<app-telephone
+									  (keyup)="enterToSend($event, signupForm.value)" (focusout)="checkContactNumber(signupForm.value.phoneNo)"
+									  formControlName="phoneNo" >
+							     </app-telephone>	
+							
+							
+                                <span *ngIf="submitted && lControls.phoneNo.errors">
+                                    <span *ngIf="lControls.phoneNo.errors.minlength" class="validation-error">
+                                        {{ 'VALIDATION.VALIDATION_MIN_LENGTH_10' | translate }}
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="form-group fomrLabel">
+                                <label class="label ">{{ 'SIGNUP.SIGNUP_NAME_LABEL' | translate }}</label>
+                                <input type="text" class="form-control" name="firstName" (keydown)="onKeydown($event)" formControlName="firstName"
+                                    placeholder="{{ 'SIGNUP.SIGNUP_NAME' | translate }}" (keypress)="enterToSend($event, signupForm.value)"
+                                    required="" />
+                                <span *ngIf="submitted && lControls.firstName.errors">
+                                    <span *ngIf="lControls.firstName.errors.required" class="validation-error">{{
+                                        'VALIDATION.VALIDATION_NAME_REQUIRED' | translate }}</span>
+                                </span>
+                            </div>
+
+                            <div class="form-group fomrLabel">
+                                <label class="label">{{ 'SIGNUP.SIGNUP_PASSWORD_LABEL' | translate }}&nbsp;<span class="mobile-message">(Minimum length 8)</span></label>
+                                <div class="row">
+                                    <div class="col-10">
+                                <input type="password" autocomplete="new-password" [type]="show_eye ? 'text' : 'password'" class="form-control allow-all-char" name="password" (keyup)="enterToSend($event, signupForm.value)"
+                                    formControlName="password" placeholder="{{ 'SIGNUP.SIGNUP_PASSWORD' | translate }}"
+                                    required="" />
+                                </div>
+                                    <div class="col-2">
+                                            <i [class]="show_eye ? 'fa fa-eye-slash' : 'fa fa-eye' " (click)="showPassword()"></i>
+                                            </div>
+                                            </div>
+                                <!-- <span *ngIf="submitted && lControls.Password.errors">
+                                    <span *ngIf="lControls.Password.errors.required" class="validation-error">{{
+                                        'VALIDATION.VALIDATION_PASSWORD_REQUIRED' | translate }}</span>
+                                    <span *ngIf="lControls.Password.errors.pattern" class="validation-error">{{
+                                        'VALIDATION.VALIDATION_MIN_LENGTH_8' | translate }}</span>
+                                </span> -->
+                            </div>
+                            <div class="form-group fomrLabel small-text pb-1">
+                              <span>{{ 'SIGNUP.SIGNUP_CONDITIONS' | translate }}</span>&nbsp;<span><a href="javascript:void(0)"  (click)="openPrivacy()">{{ 'SIGNUP.SIGNUP_PRIVACY' | translate }}</a></span>&nbsp;<span>{{ 'SIGNUP.SIGNUP_AND' | translate }}</span><br><span><a href="javascript:void(0)" (click)="openTerms()">{{ 'SIGNUP.SIGNUP_TERMS' | translate }}</a></span>
+                            </div>
+                            <button class="btn btn-md btn-primary btn-block" type="button" (click)="phoneCheckSignup(signupForm.value);">{{
+                                'SIGNUP.SIGNUP_BUTTON'
+                                | translate }}</button>
+                            <p class="bt-style forgotPassword">{{ 'SIGNUP.SIGNUP_ALREADY_MEMBER' | translate }}<a href="javascript:void(0)"
+                                    (click)="goToLogin()" class="cursor">{{ 'LOGIN.LOGIN_BUTTON' | translate }}</a></p>
+
+                        </div>
+                        <div class="col-sm-1 or-image"> <img src="assets/image/or.jpg" /> </div>
+                        <div class="col-sm-6 socMediaLogin">
+                            <button class="btn btn-md btn-primary btn-block" type="button" (click)="socialSignIn('google')"><i
+                                    class="fab float-left"><img src="assets/image/g.jpg" /></i> {{
+                                'SIGNUP.SIGNUP_GOOGLE_BUTTON'
+                                | translate }}</button>
+                            <button class="btn btn-md btn-primary btn-block" type="button" (click)="socialSignIn('facebook')"><i
+                                    class="fab float-left"><img src="assets/image/f.png" /></i> {{
+                                'SIGNUP.SIGNUP_FACEBOOK_BUTTON' | translate }}</button>
+                        </div>
+
+                    </div>
+                    <div style="padding-top: 111px;" *ngIf="signupOtpVerify" class="row">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-6">
+                            <label>{{ 'SIGNUP.SIGNUP_ENTER_OTP' | translate }} {{signupForm.get('phoneNo').value.internationalNumber}} no:
+                            </label>
+                        </div>
+                    </div>
+                    <div *ngIf="signupOtpVerify" class="row">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-5">
+                            <input type="text" placeholder="OTP" name="otp" (keypress)="enterToSignin($event, signupForm.value)"
+                                formControlName="otp">
+                            <a style="color: #ad4274;" href="javascript:void(0)" (click)="resendOtp(signupForm.value);">{{'SIGNUP.SIGNUP_RECENT_OTP'
+                                | translate}}</a>
+                        </div>
+                    </div>
+                    <div style="padding-top: 30px;" *ngIf="signupOtpVerify" class="row">
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-4">
+                            <button class="btn btn-md btn-primary btn-block" type="button" (click)="verifyOtpSignup(signupForm.value);">{{
+                                'SIGNUP.SIGNUP_VERIFY_OTP' | translate }}</button>
+                        </div>
+                        <div class="col-lg-2">
+                            <button type="button" class="btn btn-md btn-secondary" (click)="backToSignup()">{{
+                                'SIGNUP.SIGNUP_BACK_BUTTON' | translate}}</button>
+                        </div>
+                    </div>
+                </form>
+                    <div *ngIf="verify" class="row">
+                        <div class="col-lg-12"><h3 class="pr-2 pt-3 signup-small-header">We have sent an OTP to your registered email / mobile.
+Enter the OTP received to complete the sign-up process.</h3></div>
+                    </div>
+                    <div *ngIf="verify" class="row pt-2">
+                        <div *ngIf="emailSection" class="col-lg-6">
+                            <div class="row">
+                              <div class="col-12">
+                                <label>Email OTP</label>
+                                <input type="number" class="verifyOTPinput" placeholder="Email OTP" [(ngModel)]="emailOtp">
+                                &nbsp;&nbsp;<button [disabled]="otpVerifyButton" type="button" class="btn btn-primary btn-sm" (click)="verifyEmailForDiffRole()">Verify Email</button>&nbsp;&nbsp;
+                               </div>
+                            </div>
+                            <div class="row" *ngIf="isDisabled == true">
+                                <div class="col-12">
+                                    <a href="javascript:void(0);" (click)="resendOtpExistingUser('email');">{{'LOGIN.LOGIN_RESEND_OTP' | translate }}</a>
+                                </div>
+                            </div>
+                        </div>
+						<div *ngIf="mobileSection" class="col-lg-6">
+                            <div class="row">
+                              <div class="col-12">
+                                <label>Mobile OTP</label>
+                                <input type="number" class="verifyOTPinput" placeholder="Mobile OTP" [(ngModel)]="mobileOtp">
+                                &nbsp;&nbsp;<button [disabled]="otpVerifyButton" type="button" class="btn btn-primary btn-sm" (click)="verifyMobileForDiffRole()">Verify Mobile</button>&nbsp;&nbsp; <br>
+                                </div>
+                            </div>
+                            <div class="row" *ngIf="isDisabled == true">
+                                <div class="col-12">
+                                    <a href="javascript:void(0);" (click)="resendOtpExistingUser('mobile');">{{'LOGIN.LOGIN_RESEND_OTP' | translate }}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="verify" class="row text-right pt-3 mr-2">
+                        <div class="col-12">
+                            <button type="button" class="btn btn-secondary btn-sm individual-resend" (click)="backToSignup()">Back</button>&nbsp;
+							<button type="button" [disabled]="!otpVerifyButton" class="btn btn-primary btn-sm individual-resend" (click)="signUpInDiffRole()">Sign Up</button>
+                        </div>
+                    </div>
+            </div>
+            <div class="optionsView" *ngIf="roleName=='DOCTOR'">
+                <form class="form-signin" [formGroup]="signupForm">
+                  <h2 *ngIf="!signupOtpVerify && !verify" style="padding-bottom: 3px;padding-top: 12px;" class="form-signin-heading text-center">{{
+                      'SIGNUP.SIGNUP_HEADER' | translate }}</h2>
+                      <h2 *ngIf="verify" style="padding-bottom: 3px;padding-top: 12px;" class="form-signin-heading text-center">USER VERIFICATION</h2>
+                    <div *ngIf="!signupMainSection" class="row">
+
+						<div class="col">
+						 <div class="signup-header-area">
+                        <label class="float-left pr-2">{{'SIGNUP.SIGNUP_REGISTRATIONAS' | translate}}</label>
+                        <div class="float-left pr-2 radio-spacer">
+                            <label class="radio">
+                                <p>{{'SIGNUP.SIGNUP_INDIVIDUAL_LABEL' | translate}}</p>
+                                <input type="radio" name="radio" (click)="activateTab('INDIVIDUAL')" >
+                                <span style="margin-top: 3px;" class="checkmark"></span>
+                               
+                            </label>
+                        </div>
+                        <div class="float-left radio-spacer">
+                            <label class="radio">
+                                <p>{{'SIGNUP.SIGNUP_DOCTOR_LABEL' | translate}}</p>
+                                <input type="radio" name="radio" (click)="activateTab('DOCTOR')" checked>
+                                <span style="margin-top: 3px;" class="checkmark"></span>
+                                
+                            </label>
+                        </div>
+                        </div>
+						</div>
+                    </div>
+                    <div *ngIf="!signupMainSection" class="row">
+                        <div class="col-sm-5">
+                            <div class="form-group fomrLabel">
+                                <label class="label ">{{'SIGNUP.SIGNUP_EMAIL_LABEL' | translate}}</label>
+                                <input type="email" class="form-control" name="emailAddress" formControlName="emailAddress"
+                                    placeholder="{{ 'SIGNUP.SIGNUP_EMAIL' | translate }}" (keyup)="enterToSend($event, signupForm.value)"
+                                    (focusout)="checkEmailAddress(signupForm.value.emailAddress)" autofocus="" />
+                                <span *ngIf="submitted && lControls.emailAddress.errors">
+                                    <span *ngIf="lControls.emailAddress.errors.email" class="validation-error">{{
+                                        'VALIDATION.VALIDATION_EMAIL_NOT_CORRECT' | translate }}</span>
+                                </span>
+                            </div>
+                            <div class="form-group fomrLabel">
+                                <label class="label ">{{'SIGNUP.SIGNUP_MOBILE_LABEL' | translate}}&nbsp;<span class="mobile-message">(Indian mobile numbers only)</span></label>
+								
+								<app-telephone
+									  (keyup)="enterToSend($event, signupForm.value)" (focusout)="checkContactNumber(signupForm.value.phoneNo)"
+									  formControlName="phoneNo">
+							     </app-telephone>
+								
+                                <span *ngIf="submitted && lControls.phoneNo.errors">
+                                    <span *ngIf="lControls.phoneNo.errors.minlength" class="validation-error">
+                                        {{ 'VALIDATION.VALIDATION_MIN_LENGTH_10' | translate }}
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="form-group fomrLabel">
+                                <label class="label ">{{ 'SIGNUP.SIGNUP_NAME_LABEL' | translate }}</label>
+                                <input type="text" class="form-control" name="firstName" (keydown)="onKeydown($event)" formControlName="firstName"
+                                    placeholder="{{ 'SIGNUP.SIGNUP_NAME' | translate }}" (keypress)="enterToSend($event, signupForm.value)"
+                                    required="" />
+                                <span *ngIf="submitted && lControls.firstName.errors">
+                                    <span *ngIf="lControls.firstName.errors.required" class="validation-error">{{
+                                        'VALIDATION.VALIDATION_NAME_REQUIRED' | translate }}</span>
+                                </span>
+                            </div>
+
+                            <div class="form-group fomrLabel">
+                                <label class="label">{{ 'SIGNUP.SIGNUP_PASSWORD_LABEL' | translate }}&nbsp;<span class="mobile-message">(Minimum length 8)</span></label>
+								
+                                <div class="row">
+                                    <div class="col-10">
+                                <input type="password" autocomplete="new-password" [type]="showDoctor_eye ? 'text' : 'password'" class="form-control allow-all-char" name="password" (keyup)="enterToSend($event, signupForm.value)"
+                                    formControlName="password" placeholder="{{ 'SIGNUP.SIGNUP_PASSWORD' | translate }}"
+                                    required="" />
+                                </div>
+                                <div class="col-2">
+                                  <i [class]="showDoctor_eye ? 'fa fa-eye-slash' : 'fa fa-eye' " (click)="showDoctorPassword()"></i>
+                                  </div>
+                                </div>
+                                <span *ngIf="submitted && lControls.Password.errors">
+                                    <span *ngIf="lControls.Password.errors.required" class="validation-error">{{
+                                        'VALIDATION.VALIDATION_PASSWORD_REQUIRED' | translate }}</span>
+                                    <span *ngIf="lControls.Password.errors.pattern" class="validation-error">{{
+                                        'VALIDATION.VALIDATION_MIN_LENGTH_8' | translate }}</span>
+                                </span>
+                            </div>
+							<div class="form-group fomrLabel small-text pb-1">
+                              <span>{{ 'SIGNUP.SIGNUP_CONDITIONS' | translate }}</span>&nbsp;<span><a href="javascript:void(0)"  (click)="openPrivacy()">{{ 'SIGNUP.SIGNUP_PRIVACY' | translate }}</a></span>&nbsp;<span>{{ 'SIGNUP.SIGNUP_AND' | translate }}</span><br><span><a href="javascript:void(0)" (click)="openTerms()">{{ 'SIGNUP.SIGNUP_TERMS' | translate }}</a></span>
+                            </div>
+                            <button class="btn btn-md btn-primary btn-block" type="button" (click)="phoneCheckSignup(signupForm.value);">{{
+                                'SIGNUP.SIGNUP_BUTTON'
+                                | translate }}</button>
+                            <p class="bt-style forgotPassword">{{ 'SIGNUP.SIGNUP_ALREADY_MEMBER' | translate }}<a href="javascript:void(0)"
+                                    (click)="goToLogin()" class="cursor">{{ 'LOGIN.LOGIN_BUTTON' | translate }}</a></p>
+
+                        </div>
+                        <div class="col-sm-1 or-image"> <img src="assets/image/or.jpg" /> </div>
+                        <div class="col-sm-6 socMediaLogin">
+                            <button class="btn btn-md btn-primary btn-block" type="button" (click)="socialSignIn('google')"><i
+                                    class="fab float-left"><img src="assets/image/g.jpg" /></i> {{
+                                'SIGNUP.SIGNUP_GOOGLE_BUTTON'
+                                | translate }}</button>
+                            <button class="btn btn-md btn-primary btn-block" type="button" (click)="socialSignIn('facebook')"><i
+                                    class="fab float-left"><img src="assets/image/f.png" /></i> {{
+                                'SIGNUP.SIGNUP_FACEBOOK_BUTTON' | translate }}</button>
+                        </div>
+
+                    </div>
+                    <div style="padding-top: 111px;" *ngIf="signupOtpVerify" class="row">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-6">
+                            <label>{{ 'SIGNUP.SIGNUP_ENTER_OTP' | translate }} {{signupForm.get('phoneNo').value.internationalNumber}} no:
+                            </label>
+                        </div>
+                    </div>
+                    <div *ngIf="signupOtpVerify" class="row">
+                        <div class="col-lg-1"></div>
+                        <div class="col-lg-5">
+                            <input type="text" placeholder="OTP" name="otp" (keypress)="enterToSignin($event, signupForm.value)"
+                                formControlName="otp">
+                                <br>
+                            <a style="color: #ad4274;" href="javascript:void(0)" (click)="resendOtp(signupForm.value);">{{
+                                'SIGNUP.SIGNUP_RECENT_OTP' | translate}}</a>
+                        </div>
+                    </div>
+                    <div style="padding-top: 30px;" *ngIf="signupOtpVerify" class="row">
+                        <div class="col-lg-2"></div>
+                        <div class="col-lg-4">
+                            <button class="btn btn-md btn-primary btn-block" type="button" (click)="verifyOtpSignup(signupForm.value);">{{
+                                'SIGNUP.SIGNUP_VERIFY_OTP' | translate}}</button>
+                        </div>
+                        <div class="col-lg-2">
+                            <button type="button" class="btn btn-md btn-secondary" (click)="backToSignup()">{{
+                                'SIGNUP.SIGNUP_BACK_BUTTON' | translate}}</button>
+                        </div>
+                    </div>
+                </form>
+
+                <div *ngIf="verify" class="row">
+                    <div class="col-lg-12"><h3 class="pr-2 pt-3 signup-small-header">We have sent an OTP to your registered email / mobile.
+  Enter the OTP received to complete the sign-up process.</h3></div>
+                </div>
+                    <div *ngIf="verify" class="row">
+                        <div *ngIf="emailSection" class="col-lg-6">
+                            <div class="row">
+                              <div class="col-12">
+                                <label>Email Verify</label>
+                                <input type="number" placeholder="email OTP" [(ngModel)]="emailOtp" [ngModelOptions]="{standalone: true}">                               
+                                &nbsp;&nbsp;<button [disabled]="otpVerifyButton" type="button" class="btn btn-primary btn-sm" (click)="verifyEmailForDiffRole()">Verify Email</button>
+                                </div>
+                            </div>
+                            <div class="row" *ngIf="isDisabled == true">
+                                <div class="col-12">
+                                    <a href="javascript:void(0);" (click)="resendOtpExistingUser('email');">{{'LOGIN.LOGIN_RESEND_OTP' | translate }}</a>
+                                </div>
+                            </div>
+                        </div>
+						<div *ngIf="mobileSection" class="col-lg-6">
+                            <div class="row">
+                              <div class="col-12">
+                                <label>Mobile Verify</label>
+                                <input type="number" placeholder="mobile OTP" [(ngModel)]="mobileOtp" [ngModelOptions]="{standalone: true}">
+                                &nbsp;&nbsp;<button [disabled]="otpVerifyButton" type="button" class="btn btn-primary btn-sm" (click)="verifyMobileForDiffRole()">Verify Mobile</button>
+                                </div>
+                            </div>
+                            <div class="row" *ngIf="isDisabled == true">
+                                <div class="col-12">
+                                    <a href="javascript:void(0);" (click)="resendOtpExistingUser('mobile');">{{'LOGIN.LOGIN_RESEND_OTP' | translate }}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="verify" class="row pt-3 text-right mr-2">
+                        <div class="col-lg-12">
+                            <button type="button" [disabled]="!otpVerifyButton" class="btn btn-primary btn-sm resend" (click)="signUpInDiffRole()">Sign Up</button>&nbsp;
+							<button type="button" class="btn btn-secondary btn-sm resend" (click)="backToSignup()">Back</button>
+                        </div>
+                    </div>
+ 
+            </div>
+
+            <div class="selectOption text-center" *ngIf="roleName=='OTHER'">
+                <form class="form-signin" [formGroup]="othersForm">
+                    <h2 class="form-signin-heading text-center" style="padding-left:70px;">{{ 'SIGNUP.SIGNUP_HEADER' |
+                        translate</h2>
+                    <select name="service-provider" class="select-service-provider" (change)="changeProvider()"
+                        formControlName="provider">
+                        <option value="" disabled>{{ 'SIGNUP.SIGNUP_SELECT_SERVICE_PROVIDER' | translate}}</option>
+                        <option value="Pharmacy">{{ 'SIGNUP.SIGNUP_SELECT_PHARMACY' | translate}}</option>
+                        <option value="OPD">OPD</option>
+                    </select>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <!-- Working on app/issues/782 -->
+    <div *ngIf="showSuccessMsgOnEmailSignup">
+        <app-success-card [successMsgEl]="emailId" [successMsgFor]="successMsgFor"></app-success-card>
+    </div>
+    
+    <!--End Working on app/issues/782 -->
+</div>
+
+
+<ng-template #doctorSignupModal>
+    <form class="form-signin" [formGroup]="signupForm" style="width:500px;">
+        <h2 class="form-signin-heading text-center">{{ 'SIGNUP.SIGNUP_HEADER' | translate }}</h2>
+
+        <div class="row">
+            <div class="col-sm-5">
+                
+                <div class="form-group fomrLabel">
+                    <label class="label ">{{ 'SIGNUP.SIGNUP_EMAIL' | translate }}</label>
+                    <input type="email" class="form-control" name="emailAddress" formControlName="emailAddress"
+                        placeholder="{{ 'SIGNUP.SIGNUP_EMAIL' | translate }}" (keyup)="enterToSend($event, signupForm.value)"
+                        (focusout)="checkEmailAddress(signupForm.value.emailAddress)" autofocus="" />
+                    <span *ngIf="submitted && lControls.emailAddress.errors">
+                        <span *ngIf="lControls.emailAddress.errors.email" class="validation-error">{{
+                            'VALIDATION.VALIDATION_EMAIL_NOT_CORRECT' | translate }}</span>
+                    </span>
+                </div>
+                <div class="form-group fomrLabel">
+                    <label class="label ">{{ 'SIGNUP.SIGNUP_MOBILE_NUMBER' | translate }}</label>
+                    <int-phone-prefix [locale]="'es'" formControlName="phoneNo" [defaultCountry]="'in'" (keyup)="enterToSend($event, signupForm.value)"
+                        (focusout)="checkContactNumber(signupForm.value.phoneNo)"></int-phone-prefix>
+                    <!-- <input type="text" class="form-control" name="userName" formControlName="userName"
+                            placeholder="{{ 'SIGNUP.SIGNUP_USERNAME' | translate }}" (change)="checkUserName(signupForm.value.userName)"
+                            (keypress)="enterToSend($event, signupForm.value)" required="" /> -->
+                    <span *ngIf="submitted && lControls.phoneNo.errors">
+                        <span *ngIf="lControls.phoneNo.errors.minlength" class="validation-error">
+                            {{ 'VALIDATION.VALIDATION_MIN_LENGTH_10' | translate }}
+                        </span>
+                    </span>
+                </div>
+                <div class="form-group fomrLabel">
+                    <label class="label ">{{ 'SIGNUP.SIGNUP_NAME' | translate }}</label>
+                    <input type="text" class="form-control" name="firstName" formControlName="firstName" placeholder="{{ 'SIGNUP.SIGNUP_NAME' | translate }}"
+                        (keypress)="enterToSend($event, signupForm.value)" required="" />
+                    <span *ngIf="submitted && lControls.firstName.errors">
+                        <span *ngIf="lControls.firstName.errors.required" class="validation-error">{{
+                            'VALIDATION.VALIDATION_NAME_REQUIRED' | translate }}</span>
+                    </span>
+                </div>
+
+                <div class="form-group fomrLabel">
+                    <label class="label">{{ 'SIGNUP.SIGNUP_PASSWORD' | translate }}</label>
+                    <input type="password" class="form-control" name="password" (keyup)="enterToSend($event, signupForm.value)"
+                        formControlName="password" placeholder="{{ 'SIGNUP.SIGNUP_PASSWORD' | translate }}" required="" />
+                    <span *ngIf="submitted && lControls.Password.errors">
+                        <span *ngIf="lControls.Password.errors.required" class="validation-error">{{
+                            'VALIDATION.VALIDATION_PASSWORD_REQUIRED' | translate }}</span>
+                        <span *ngIf="lControls.Password.errors.pattern" class="validation-error">{{
+                            'VALIDATION.VALIDATION_MIN_LENGTH_8' | translate }}</span>
+                    </span>
+                </div>
+                <button class="btn btn-md btn-primary btn-block" type="button" (click)="signup(signupForm.value)">{{
+                    'SIGNUP.SIGNUP_BUTTON'
+                    | translate }}</button>
+                <p class="bt-style forgotPassword">{{ 'SIGNUP.SIGNUP_ALREADY_MEMBER' | translate }}<a href="javascript:void(0)"
+                        (click)="goToLogin()" class="cursor">{{ 'LOGIN.LOGIN_BUTTON' | translate }}</a></p>
+            </div>
+            <div class="col-sm-1 or-image"> <img src="assets/image/or.jpg" /> </div>
+            <div class="col-sm-6 socMediaLogin">
+                <button class="btn btn-md btn-primary btn-block" type="button" (click)="socialSignIn('google')"><i
+                        class="fab float-left"><img src="assets/image/g.jpg" /></i> {{
+                    'SIGNUP.SIGNUP_GOOGLE_BUTTON'
+                    | translate }}</button>
+                <button class="btn btn-md btn-primary btn-block" type="button" (click)="socialSignIn('facebook')"><i
+                        class="fab float-left"><img src="assets/image/f.png" /></i> {{
+                    'SIGNUP.SIGNUP_FACEBOOK_BUTTON' | translate }}</button>
+            </div>
+
+        </div>
+
+    </form>
+</ng-template>
+<ng-template #pharmacyModal>
+    <div class="modal-header">
+        <h4 class="modal-title"><a><strong>Pharmacy Signup</strong></a> </h4>
+        <button type="button" class="close" aria-label="close" (click)="modalRef.hide('cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body pharmacy-modal-body">
+        <li><button class="btn btn-primary btn-lg" (click)="openOnModal(signupModal)"> New Registration</button></li>
+        <li><button class="btn btn-primary btn-lg"> Start From Save Data</button></li>
+    </div>
+</ng-template>
+
+<ng-template #signupModal>
+    <h1>Pharmacy Signup - New Registration</h1><br />
+    <form class="well form-horizontal pharmacy-new-reg">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Name</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group"><input id="parentEntity" name="parentEntity" placeholder="Name" class="form-control"
+                                required="true" value="" type="text"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Entity Type</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group">
+                            <select class="selectpicker form-control">
+                                <option>India</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Is main Branch</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group"><input id="parentEntity" name="parentEntity" placeholder="Is main Branch"
+                                class="form-control" required="true" value="" type="text"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Parent Entity</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group"><input id="parentEntity" name="parentEntity" placeholder="Parent Entity"
+                                class="form-control" required="true" value="" type="text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Email ID</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group"><input id="parentEntity" name="parentEntity" placeholder="Email ID"
+                                class="form-control" required="true" value="" type="text"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Website</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group"><input id="parentEntity" name="parentEntity" placeholder="Website"
+                                class="form-control" required="true" value="" type="text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <legend>Address</legend>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Line 1</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group"><input id="parentEntity" name="parentEntity" placeholder="Line 1"
+                                class="form-control" required="true" value="" type="text"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Line 2</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group"><input id="parentEntity" name="parentEntity" placeholder="Line 2"
+                                class="form-control" required="true" value="" type="text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">City</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group"><input id="parentEntity" name="parentEntity" placeholder="City" class="form-control"
+                                required="true" value="" type="text"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Country</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group"><input id="parentEntity" name="parentEntity" placeholder="Country"
+                                class="form-control" required="true" value="" type="text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">State</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group"><input id="parentEntity" name="parentEntity" placeholder="State" class="form-control"
+                                required="true" value="" type="text"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Pin Code</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group"><input id="parentEntity" name="parentEntity" placeholder="Pin Code"
+                                class="form-control" required="true" value="" type="text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <legend>Contact Information</legend>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Primary Phone No.</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group"><input id="parentEntity" name="parentEntity" placeholder="Primary Phone No."
+                                class="form-control" required="true" value="" type="text"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Secondary Phone No.</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group"><input id="parentEntity" name="parentEntity" placeholder="Secondary Phone No."
+                                class="form-control" required="true" value="" type="text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Additional Phone No.</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group"><input id="parentEntity" name="parentEntity" placeholder="Additional Phone No."
+                                class="form-control" required="true" value="" type="text"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Fax No.</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group"><input id="parentEntity" name="parentEntity" placeholder="Fax No."
+                                class="form-control" required="true" value="" type="text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <legend>Contact Person</legend>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Phone</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group"><input id="parentEntity" name="parentEntity" placeholder="Phone" class="form-control"
+                                required="true" value="" type="text"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Email ID</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group"><input id="parentEntity" name="parentEntity" placeholder="Email ID"
+                                class="form-control" required="true" value="" type="text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Designation</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group"><input id="parentEntity" name="parentEntity" placeholder="Designation"
+                                class="form-control" required="true" value="" type="text"></div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <legend>Settings</legend>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Fees payable to</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group"><input id="parentEntity" name="parentEntity" placeholder="Fees payable to"
+                                class="form-control" required="true" value="" type="text"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Appointment managed by</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group"><input id="parentEntity" name="parentEntity" placeholder="Appointment managed by"
+                                class="form-control" required="true" value="" type="text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <legend>Documents Submitted</legend>
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Document Type</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group"><input id="parentEntity" name="parentEntity" placeholder="Document Type"
+                                class="form-control" required="true" value="" type="text"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Name</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group"><input id="parentEntity" name="parentEntity" placeholder="Name" class="form-control"
+                                required="true" value="" type="text"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Upload</label>
+                    <div class="col-md-8 inputGroupContainer">
+                        <div class="input-group"><input id="parentEntity" name="parentEntity" placeholder="Upload"
+                                class="form-control" required="true" value="" type="text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br />
+        <div class="col-sm-12">
+            <div class="text-right"><button class="btn btn-primary btn-lg" (click)="openOnModal(signupModal)"> Save</button>
+                &nbsp;<button type="button" class="btn btn-primary" (click)="modalRef.hide('close click')">Close</button>
+            </div>
+        </div>
+    </form>
+</ng-template>
+<!-- <div class="form-group">
+            <input type="email" class="form-control" name="emailAddress" formControlName="emailAddress" placeholder="{{ 'SIGNUP.SIGNUP_EMAIL' | translate }}"
+              (change)="checkUserEmail(signupForm.value.emailAddress)" required="" autofocus="" />
+              <span *ngIf="submitted && lControls.emailAddress.errors">
+                  <span *ngIf="lControls.emailAddress.errors.required" class="validation-error">{{ 'VALIDATION.VALIDATION_EMAIL_REQUIRED' | translate }}</span>
+                  <span *ngIf="lControls.emailAddress.errors.email" class="validation-error">{{ 'VALIDATION.VALIDATION_EMAIL_NOT_CORRECT' | translate }}</span>
+              </span>
+          </div> -->
+<!-- alert modal for confirmation -->
+<ng-template #confirmationAlert>
+    <div class="modal-header">
+        <h4 class="modal-title">Your email/mobile is registered with another profile</h4>
+        <button type="button" class="close" aria-label="close" (click)="closeModal()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body pb-0">
+    <div class="row">
+        <div *ngFor="let role of roleList; let first = first"  class="col-lg-2">
+            <label class="radio">
+                <p><b>{{role.roleName}}</b></p>
+                <input type="radio" [checked]="first" name="radio" (click)="activateRole(role)">
+                <span style="margin-top: 4px;" class="checkmark"></span>
+            </label>
+        </div>
+    </div>
+    </div>
+    <div class="modal-footer pt-0 pb-0">
+    <div class="row">
+        <div class="col-12 text-right">
+            <button type="button" class="btn btn-primary btn-sm"  (click)="verifyExistingEmailMobile()">Confirm</button>&nbsp;
+            <button type="button" class="btn btn-secondary btn-sm" (click)="closeModal()">Close</button>
+        </div>
+    </div>
+    </div>
+</ng-template>
+<!-- alert modal for confirmation end -->
+
+
+
+
+
+
+<p-sidebar [(visible)]="displaySidebar" blockScroll="true" [style]="{width:'50vw'}" styleClass="privacy-terms-landing"  appendTo="body" position="right">
+  <button pButton type="button" (click)="displaySidebar = false" label="Close" class="btn  btn-primary btn-sm close-btn"></button>
+  <app-privacycontent></app-privacycontent>
+</p-sidebar>
+
+
+
+<p-sidebar [(visible)]="displaySidebarTerms" blockScroll="true" [style]="{width:'50vw'}" styleClass="privacy-terms-landing"  appendTo="body" position="right">
+  <button pButton type="button" (click)="displaySidebarTerms = false" label="Close" class="btn  btn-primary btn-sm close-btn"></button>
+  <app-termscontent></app-termscontent>
+</p-sidebar>

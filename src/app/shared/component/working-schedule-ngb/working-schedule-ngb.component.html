@@ -1,0 +1,195 @@
+<div class="row page-content">
+  <div class="col-12">
+    <div class="card schedule">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-12">
+            <h5>Schedule</h5>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="timingForm">
+          <div class="table-responsive not-for-mobile">
+            <table class="table">
+              <thead>
+                <tr class="d-flex">
+                  <th class="col-7">Day of Week</th>
+                  <th class="col-2">Start Time <span *ngIf="screenType==SBISConstantsRef.SCREEN_TYPE.ADD_PHARMACY"
+                      class="validation-error">*</span></th> <!-- Working on app/issue/1193 -->
+                  <th class="col-2">End Time <span *ngIf="screenType==SBISConstantsRef.SCREEN_TYPE.ADD_PHARMACY"
+                      class="validation-error">*</span></th> <!-- Working on app/issue/1193 -->
+                  <th class="col-1"></th>
+                </tr>
+              </thead>
+              <tbody formArrayName="workingTimingList">
+                <tr class="d-flex" *ngFor="let ct of workingTimingList.controls; let i = index;" [formGroup]="ct"
+                  [attr.id]="'tr'+i">
+                  <td class="col-7">
+                    <div class="float-left">
+                      <div class="float-left"><input type="checkbox" (change)="changeDayofweekAll(ct, i, $event)"
+                          formControlName="all"></div><label class="float-left pl-1 pr-3">All</label>
+                    </div>
+                    <div class="float-left">
+                      <div class="float-left"><input type="checkbox" (change)="changeDayofweek(ct, i, $event)"
+                          formControlName="mon"></div><label class="float-left pl-1 pr-3">Mon</label>
+                    </div>
+                    <div class="float-left">
+                      <div class="float-left"><input type="checkbox" (change)="changeDayofweek(ct, i, $event)"
+                          formControlName="tue"></div><label class="float-left pl-1 pr-3">Tue</label>
+                    </div>
+                    <div class="float-left">
+                      <div class="float-left"><input type="checkbox" (change)="changeDayofweek(ct, i, $event)"
+                          formControlName="wed"></div><label class="float-left pl-1 pr-3">Wed</label>
+                    </div>
+                    <div class="float-left">
+                      <div class="float-left"><input type="checkbox" (change)="changeDayofweek(ct, i, $event)"
+                          formControlName="thu"></div><label class="float-left pl-1 pr-3">Thu</label>
+                    </div>
+                    <div class="float-left">
+                      <div class="float-left"><input type="checkbox" (change)="changeDayofweek(ct, i, $event)"
+                          formControlName="fri"></div><label class="float-left pl-1 pr-3">Fri</label>
+                    </div>
+                    <div class="float-left">
+                      <div class="float-left"><input type="checkbox" (change)="changeDayofweek(ct, i, $event)"
+                          formControlName="sat"></div><label class="float-left pl-1 pr-3">Sat</label>
+                    </div>
+                    <div class="float-left">
+                      <div class="float-left"><input type="checkbox" (change)="changeDayofweek(ct, i, $event)"
+                          formControlName="sun"></div><label class="float-left pl-1 pr-3">Sun</label>
+                    </div>
+
+                  </td>
+                  <td class="col-2 custom-datepicker">
+                    <ngb-timepicker [attr.id]="'time'+i" [attr.name]="'time'+i" [(ngModel)]="time[i]"
+                      formControlName="startTime" #stTime [spinners]="spinners" (keypress)="digitOnly($event)"
+                      (keyup)="convertTiming(time[i].hour,time[i].minute, i, 'stTime', $event)"
+                      (change)="convertTiming(time[i].hour,time[i].minute, i, 'stTime', $event)"></ngb-timepicker>
+                    <div class="validation-error" *ngIf="startTimingErrorFlag[i]">Start time can not be greater than end
+                      time.</div>
+                  </td>
+                  <td class="col-2 custom-datepicker">
+                    <ngb-timepicker [attr.name]="'closingTime'+i" [(ngModel)]="closingTime[i]" formControlName="endTime"
+                      #ndTime [spinners]="spinners" (keypress)="digitOnly($event)"
+                      (keyup)="convertTiming(closingTime[i].hour,closingTime[i].minute, i, 'ndTime', $event)"
+                      (change)="convertTiming(closingTime[i].hour,closingTime[i].minute, i, 'ndTime', $event)">
+                    </ngb-timepicker>
+                    <div class="validation-error" *ngIf="endTimingErrorFlag[i]">End time can not be less than Start
+                      time.</div>
+                  </td>
+                  <td class="col-1">
+                    <span ngbTooltip="Delete Schedule" container="body" (click)="deleteRow(i)" class="cursor deleteIco">
+                      <img class="grey" src="../../../../../assets/image/delete.svg" width="15">
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="col-12 text-right">
+              <button type="button" class="btn btn-secondary btn-sm add-row" (click)="addMockTimingRow()">
+                <i class="fas fa-plus-square"></i>&nbsp;{{'DOCTOR_CHAMBER.ADD_TIMING_LINK'| translate}}</button>
+            </div>
+          </div>
+          <div class="table-responsive pt-0 for-very-small">
+            <div formArrayName="workingTimingList">
+              <div *ngFor="let ct of workingTimingList.controls; let i = index" [formGroup]="ct" [attr.id]="'tr'+i">
+                <table class="table">
+                  <tr class="text-left">
+                    <td class="mobile-table">
+                      <table class="w-100">
+                        <tr>
+                          <td class="small-header min-width8em">Day of Week</td>
+                          <td>
+                            <div class="row">
+                              <div class="col-md-3 col-sm-3 col-12 pr-0">
+                                <div class="float-left"><input type="checkbox"
+                                    (change)="changeDayofweekAll(ct, i, $event)" formControlName="all"></div><label
+                                  class="float-left pl-1 pr-3">All</label>
+                              </div>
+                              <div class="col-md-3 col-sm-3 col-12 pr-0">
+                                <div class="float-left"><input type="checkbox" (change)="changeDayofweek(ct, i, $event)"
+                                    formControlName="mon"></div><label class="float-left pl-1 pr-3">Mon</label>
+                              </div>
+                              <div class="col-md-3 col-sm-3 col-12 pr-0">
+                                <div class="float-left"><input type="checkbox" (change)="changeDayofweek(ct, i, $event)"
+                                    formControlName="tue"></div><label class="float-left pl-1 pr-3">Tue</label>
+                              </div>
+                              <div class="col-md-3 col-sm-3 col-12 pr-0">
+                                <div class="float-left"><input type="checkbox" (change)="changeDayofweek(ct, i, $event)"
+                                    formControlName="wed"></div><label class="float-left pl-1 pr-3">Wed</label>
+                              </div>
+                              <div class="col-md-3 col-sm-3 col-12 pr-0">
+                                <div class="float-left"><input type="checkbox" (change)="changeDayofweek(ct, i, $event)"
+                                    formControlName="thu"></div><label class="float-left pl-1 pr-3">Thu</label>
+                              </div>
+                              <div class="col-md-3 col-sm-3 col-12 pr-0">
+                                <div class="float-left"><input type="checkbox" (change)="changeDayofweek(ct, i, $event)"
+                                    formControlName="fri"></div><label class="float-left pl-1 pr-3">Fri</label>
+                              </div>
+                              <div class="col-md-3 col-sm-3 col-12 pr-0">
+                                <div class="float-left"><input type="checkbox" (change)="changeDayofweek(ct, i, $event)"
+                                    formControlName="sat"></div><label class="float-left pl-1 pr-3">Sat</label>
+                              </div>
+                              <div class="col-md-3 col-sm-3 col-12 pr-0">
+                                <div class="float-left"><input type="checkbox" (change)="changeDayofweek(ct, i, $event)"
+                                    formControlName="sun"></div><label class="float-left pl-1 pr-3">Sun</label>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="small-header min-width8em">
+                            Start Time <span *ngIf="screenType==SBISConstantsRef.SCREEN_TYPE.ADD_PHARMACY"
+                              class="validation-error">*</span>
+                          </td>
+                          <td>
+                            <input type="time" class="form-control" (blur)="timeValidate('stTime',stTime.value, i)"
+                              formControlName="startTime" #stTime
+                              (keyup)="convertTiming(stTime.value, i, 'stTime', $event)"
+                              (change)="convertTiming(stTime.value, i, 'stTime', $event)"
+                              [readonly]="disableTiming[i]==true">
+                            <div class="validation-error" *ngIf="startTimingErrorFlag[i]">Start time can not be greater
+                              than end
+                              time.</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="small-header min-width8em">
+                            End Time <span *ngIf="screenType==SBISConstantsRef.SCREEN_TYPE.ADD_PHARMACY"
+                              class="validation-error">*</span>
+                          </td>
+                          <td>
+                            <input type="time" class="form-control" (blur)="timeValidate('ndTime',ndTime.value, i)"
+                              formControlName="endTime" #ndTime
+                              (change)="convertTiming(ndTime.value, i, 'ndTime', $event)"
+                              [readonly]="disableTiming[i]==true">
+                            <div class="validation-error" *ngIf="endTimingErrorFlag[i]">End time can not be less than
+                              Start
+                              time.</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="small-header min-width8em"></td>
+                          <td class="text-right">
+                            <span ngbTooltip="Delete Schedule" container="body" (click)="deleteRow(i)"
+                              class="cursor deleteIco">
+                              <img class="grey" src="../../../../../assets/image/delete.svg" width="15">
+                            </span>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+                <div class="col-12 text-right">
+                  <button type="button" class="btn btn-secondary btn-sm add-row" (click)="addMockTimingRow()">
+                    <i class="fas fa-plus-square"></i>&nbsp;{{'DOCTOR_CHAMBER.ADD_TIMING_LINK'| translate}}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

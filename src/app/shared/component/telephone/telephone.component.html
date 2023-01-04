@@ -1,0 +1,29 @@
+<span *ngIf="formControlName != null">
+	<ngx-intl-tel-input
+		[cssClass]="'custom'"
+		[enableAutoCountrySelect]="true"
+		[enablePlaceholder]="true"
+		[onlyCountries]="['in']"
+		name="phone"
+		#telComp
+		formatOnDisplay="false"
+		formControlName={{formControlName}}
+		(ngModelChange)="update($event)"
+		[disabled]="disabled">  
+  	</ngx-intl-tel-input>	
+</span>
+<span *ngIf="formControlName == null">
+	<ngx-intl-tel-input
+		[cssClass]="'custom'"
+		[onlyCountries]="['in']"
+		[enableAutoCountrySelect]="true"
+		[enablePlaceholder]="true"
+		name="phone"
+		#telComp
+		formatOnDisplay="false"
+		[(ngModel)]="ngModel"
+		(ngModelChange)="update($event)" 
+		[ngModelOptions]="{standalone: true}"
+		[disabled]="disabled">
+ 	 </ngx-intl-tel-input>	
+</span>

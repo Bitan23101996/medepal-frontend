@@ -1,0 +1,161 @@
+/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+
+ input[type=number], .unit {
+    width: 40px !important;
+    font-size:14px !important;
+    text-align: center;
+    font-weight: 500;
+}
+/* li{
+    list-style-type: none;
+} */
+
+.chkbox-spacer{
+	padding-top:2px;
+	padding-left:3px;
+}
+
+body.prescription-screen .ui-autocomplete .ui-autocomplete-input{
+	height:25px;
+}
+
+select.form-control{
+    font-size: 12px !important;
+	height:20px !important;
+}
+.frequentSection{
+    border: 1px solid rgba(0,0,0,.125) !important;
+    position: absolute;
+    bottom: 0;
+    left:25px;
+}
+.frequentSection ul{
+    margin-left: -25px;
+}
+
+.frequentSection ul li{
+    border-bottom: 1px solid #efeded
+}
+.frequentSection ul li a{
+    color: #93278f;
+}
+.frequentSection ul li a:hover{
+    color: #93278f;
+}
+.frequentSection ul li a.disableLink{
+    color: #93278f;
+    text-decoration: line-through;
+    pointer-events: none;
+}
+.frequentSection .card-body{
+    transition: 1s;
+}
+.frequentSection .card-footer{
+    cursor: pointer;
+}
+
+/* Working On app/issues/591 */
+
+.substituteMedicineArea{margin-top:-5px;}
+.substituteMedicineChipHeader{
+	padding-left:30px;
+}
+
+.substituteMedicineChipHeader label{
+	font-size:12px;
+}
+
+
+
+.substituteMedicineChip{
+    color:#999;
+	font-size:11px;
+	font-style:italic;
+	margin-left: 5px;
+	margin-bottom:10px;
+}
+.substituteMedicineChip a{
+    color: #ccc;
+    font-weight: 500;
+    margin-left: 5px;
+    font-size: 12px;
+	font-style:normal;
+}
+.substituteMedicineChip a:hover{
+    text-decoration: none;
+}
+.substituteMedicineList ul{
+    margin-left: -39px;
+}
+.substituteMedicineList ul li{
+    border-bottom: 1px solid #efeded;
+	margin-bottom:0 !important;
+	margin-top:0 !important;
+}
+.substituteMedicineList  ul li a{
+    font-size: 12px;
+	color:#fff;
+	display:block;
+	padding: 5px 0;
+}
+
+.substituteMedicineList  ul li a:hover{
+	color:#fff;
+	text-decoration:none;
+}
+
+.pres-ipad-view{
+	display:none;
+}
+
+/*End Working On app/issues/591 */
+
+
+
+@media only screen and (max-width: 1023px) and (min-width: 768px){
+	.pres-ipad-view{
+		display:table-row;
+	}
+	
+	.pres-large-view{
+		display:none;
+	}
+	
+	.pres-ipad-view .medicine-frequency{
+		display:table-cell;
+	}
+	
+}
+
+
+@media (max-width: 576px) {
+	.prescription-widgets .card-header.no-padding-mobile{
+		padding-right:0 !important;
+	}
+	
+	.pres-ipad-view{
+		display:table-row;
+	}
+	
+	.pres-large-view{
+		display:none;
+	}
+	
+	.pres-ipad-view .medicine-frequency{
+		display:table-cell;
+	}
+}

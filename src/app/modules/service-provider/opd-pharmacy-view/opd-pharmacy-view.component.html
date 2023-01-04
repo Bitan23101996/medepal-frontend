@@ -1,0 +1,401 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<div class="row" *ngIf="allDataFetched">
+	<div class="col-md-12">
+		<div class="row top-btn-area">
+			<div class="col-lg-12 text-right">
+				<button *ngIf="role==='ADMIN'" class="btn btn-sm btn-primary float-right" type="button" (click)="editServiceProvider()">{{'OPD_PHARMACY.OPD_PHARMACY_EDIT_RECORD'
+					| translate }}</button>
+
+			</div>
+		</div>
+
+		<div class="row page-content opdInformationDetails">
+			<div class="col-12">
+				<div class="row">
+					<div class="col-12 col-lg-6 mb-2">
+						<div class="card">
+							<div class="row card-header">
+								<div class="col-12">
+									<h5>Basic Information</h5>
+								</div>
+							</div>
+							<div class="row card-body">
+								<div class="col-12">
+									<div class="row form-group">
+										<div class="col-12">
+											<label class="userKey control-label">
+												{{ 'OPD_PHARMACY.OPD_PHARMACY_NAME' | translate }}
+											</label>
+											<p data-toggle="tooltip" title="{{serviceProviderData.name}}">{{serviceProviderData.name}}</p>
+										</div>
+									</div>
+									<div class="row form-group">
+										<div class="col-6">
+											<label class="userKey control-label">
+												{{ 'OPD_PHARMACY.OPD_PHARMACY_ENTITY_TYPE' | translate }}
+											</label>
+											<p>
+												<span *ngIf="userRoleName === 'Hospital'">
+													{{serviceProviderData.category === 'H'?'Hospital':serviceProviderData.category === 'N'?'Nursing
+													Home':serviceProviderData.category === 'P'?'Polyclinic':''}}
+												</span>
+												<span *ngIf="userRoleName === 'Pharmacy'">
+													Pharmacy
+												</span>
+												<span *ngIf="userRoleName === 'Diagnostics'">
+													Diagnostics
+												</span>
+											</p>
+										</div>
+									</div>
+									<div class="row form-group">
+										<div class="col-12 col-sm-6">
+											<label class="userKey control-label">
+												{{ 'OPD_PHARMACY.OPD_PHARMACY_EMAIL_ID' | translate }}
+											</label>
+											<p *ngIf="serviceProviderData.emailId===null||serviceProviderData.emailId===''" class="notSpecified"> {{'COMMON.NA' | translate}}</p>
+											<p *ngIf="serviceProviderData.emailId!=null||serviceProviderData.emailId!=''">
+												{{serviceProviderData.emailId}}
+											</p>
+										</div>
+										<div class="col-12 col-sm-6">
+											<label class="userKey control-label">
+												{{ 'OPD_PHARMACY.OPD_PHARMACY_WEBSITE' | translate }}
+											</label>
+											<p *ngIf="serviceProviderData.website===''||serviceProviderData.website===null" class="notSpecified"> {{'COMMON.NA' | translate}}</p>
+											<p *ngIf="serviceProviderData.website!=''||serviceProviderData.website!=null">{{serviceProviderData.website}}</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-12 col-lg-6 mb-2">
+						<div class="card">
+							<div class="row card-header">
+								<div class="col-10">
+									<h5>{{'OPD_PHARMACY.OPD_PHARMACY_ADDRESS' | translate}}</h5>
+								</div>
+							</div>
+							<div class="row card-body">
+								<div class="col-12">
+									<div class="row form-group">
+										<div class="col-12">
+											<label class="userKey control-label">
+												{{ 'OPD_PHARMACY.OPD_PHARMACY_COUNTRY' | translate }}
+											</label>
+											<p *ngIf="serviceProviderData.addressList[0].country===''||serviceProviderData.addressList[0].country===null" class="notSpecified"> {{'COMMON.NA' | translate}}</p>
+											<p *ngIf="serviceProviderData.addressList[0].country!=''||serviceProviderData.addressList[0].country!=null">
+												{{serviceProviderData.addressList[0].country}}
+											</p>
+										</div>
+									</div>
+									<div class="row form-group">
+										<div class="col-4">
+											<label class="userKey control-label">
+												{{ 'OPD_PHARMACY.OPD_PHARMACY_PIN' | translate }}
+											</label>
+											<p *ngIf="serviceProviderData.addressList[0].pinCode===''||serviceProviderData.addressList[0].pinCode===null" class="notSpecified"> {{'COMMON.NA' | translate}}</p>
+											<p *ngIf="serviceProviderData.addressList[0].pinCode!=''||serviceProviderData.addressList[0].pinCode!=null">{{serviceProviderData.addressList[0].pinCode}}</p>
+										</div>
+										<div class="col-8">
+											<label class="userKey control-label">
+												{{ 'OPD_PHARMACY.OPD_PHARMACY_STATE' | translate }}
+											</label>
+											<p *ngIf="serviceProviderData.addressList[0].state===''||serviceProviderData.addressList[0].state===null" class="notSpecified"> {{'COMMON.NA' | translate}}</p>
+											<p *ngIf="serviceProviderData.addressList[0].state!=''||serviceProviderData.addressList[0].state!=null">{{serviceProviderData.addressList[0].state}}</p>
+										</div>
+									</div>
+									<div class="row form-group">
+										<div class="col-12">
+											<label class="userKey control-label">
+												{{ 'OPD_PHARMACY.OPD_PHARMACY_CITY' | translate }}
+											</label>
+											<p *ngIf="serviceProviderData.addressList[0].city===''||serviceProviderData.addressList[0].city===null" class="notSpecified"> {{'COMMON.NA' | translate}}</p>
+											<p *ngIf="serviceProviderData.addressList[0].city!=''||serviceProviderData.addressList[0].city!=null">
+												{{serviceProviderData.addressList[0].city}}
+											</p>
+										</div>
+									</div>
+									<div class="row form-group">
+										<div class="col-12">
+											<label class="userKey control-label">
+												{{ 'OPD_PHARMACY.OPD_PHARMACY_ADDRESS_LINE1' | translate }}
+											</label>
+											<p *ngIf="serviceProviderData.addressList[0].line1===''||serviceProviderData.addressList[0].line1===null" class="notSpecified"> {{'COMMON.NA' | translate}}</p>
+											<p *ngIf="serviceProviderData.addressList[0].line1!=''||serviceProviderData.addressList[0].line1!=null">
+												{{serviceProviderData.addressList[0].line1}}
+											</p>
+										</div>
+									</div>
+									<div class="row form-group">
+										<div class="col-12">
+											<label class="userKey control-label">
+												{{ 'OPD_PHARMACY.OPD_PHARMACY_ADDRESS_LINE2' | translate }}
+											</label>
+											<p *ngIf="serviceProviderData.addressList[0].line2===''||serviceProviderData.addressList[0].line2===null" class="notSpecified"> {{'COMMON.NA' | translate}}</p>
+											<p *ngIf="serviceProviderData.addressList[0].line2!=''||serviceProviderData.addressList[0].line2!=null">{{serviceProviderData.addressList[0].line2}}</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-12 col-lg-6 mb-2">
+						<div class="card">
+							<div class="row card-header">
+								<div class="col-12">
+									<h5>{{'OPD_PHARMACY.OPD_PHARMACY_CONTACT_INFORMATION' | translate}}</h5>
+								</div>
+							</div>
+							<div class="row card-body">
+								<div class="col-12">
+									<div class="row form-group">
+										<div class="col-12 col-sm-6">
+											<label class="userKey control-label">
+												{{ 'OPD_PHARMACY.OPD_PHARMACY_PRIMARY_PHONE_NO' | translate }}
+											</label>
+											<p *ngIf="serviceProviderData.phone1===''||serviceProviderData.phone1===null" class="notSpecified"> {{'COMMON.NA' | translate}}</p>
+											<p *ngIf="serviceProviderData.phone1!=''||serviceProviderData.phone1!=null">
+												{{serviceProviderData.phone1}}
+											</p>
+										</div>
+										<div class="col-12 col-sm-6">
+											<label class="userKey control-label">
+												{{ 'OPD_PHARMACY.OPD_PHARMACY_SECONDARY_PHONE_NO' | translate }}
+											</label>
+											<p *ngIf="serviceProviderData.phone2===''||serviceProviderData.phone2===null" class="notSpecified"> {{'COMMON.NA' | translate}}</p>
+											<p *ngIf="serviceProviderData.phone2!=''||serviceProviderData.phone2!=null">{{serviceProviderData.phone2}}</p>
+										</div>
+									</div>
+									<div class="row form-group">
+										<div class="col-12 col-sm-6">
+											<label class="userKey control-label">
+												{{ 'OPD_PHARMACY.OPD_PHARMACY_ADDITIONAL_PHONE_NO' | translate }}
+											</label>
+											<p *ngIf="serviceProviderData.phone3===''||serviceProviderData.phone3===null" class="notSpecified"> {{'COMMON.NA' | translate}}</p>
+											<p *ngIf="serviceProviderData.phone3!=''||serviceProviderData.phone3!=null">
+												{{serviceProviderData.phone3}}
+											</p>
+										</div>
+										<div class="col-12 col-sm-6">
+											<label class="userKey control-label">
+												{{ 'OPD_PHARMACY.OPD_PHARMACY_FAX_NO' | translate }}
+											</label>
+											<p *ngIf="serviceProviderData.faxNo===''||serviceProviderData.faxNo===null" class="notSpecified"> {{'COMMON.NA' | translate}}</p>
+											<p *ngIf="serviceProviderData.faxNo!=''||serviceProviderData.faxNo!=null">{{serviceProviderData.faxNo}}</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div *ngIf="userRoleName === 'Hospital'" class="col-12 col-lg-6">
+						<div class="card settings">
+							<div class="row card-header">
+								<div class="col-12">
+									<h5>{{'OPD_PHARMACY.OPD_PHARMACY_SETTINGS' | translate}}</h5>
+								</div>
+							</div>
+							<div class="row card-body">
+								<div class="col-12">
+									<div class="row form-group">
+										<div class="col-6">
+											<label class="userKey control-label">
+												{{ 'OPD_PHARMACY.OPD_PHARMACY_FEES_PAYABLE_TO' | translate }}
+											</label>
+											<p>{{serviceProviderData.feesPayableTo === 'H'?'Hospital':'Doctor'}}</p>
+
+										</div>
+										<div class="col-6">
+											<label class="userKey control-label">
+												{{ 'OPD_PHARMACY.OPD_PHARMACY_APPOINTMENT_MANAGED_BY' | translate }}
+											</label>
+											<p>
+												{{serviceProviderData.appointmentManagedBy === 'H'?'Hospital':'Doctor'}}
+											</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div *ngIf="userRoleName === 'Hospital'" class="col-12 col-lg-6">
+							<div class="card settings" *ngIf="serviceProviderData.invoiceSettingRule!=null">
+								<div class="row card-header">
+									<div class="col-12">
+										<h5>{{'OPD_PHARMACY.INVOICE_SETTING' | translate}}</h5>
+									</div>
+								</div>
+								<div class="row card-body">
+									<div class="col-12">
+										<div class="row form-group">
+											<div class="col-6">
+												<label class="userKey control-label">
+													{{ 'OPD_PHARMACY.DOC_PREFIX' | translate }}
+												</label>
+												<p>{{serviceProviderData.invoiceSettingRule.docPrefix}}</p>
+												<ng-container *ngIf="serviceProviderData.invoiceSettingRule.docPrefix!=null">
+													
+													<i class="mt-1" *ngIf="serviceProviderData.invoiceSettingRule.docPrefix!='' && showInvSample!=''">
+														(Sample: {{showInvSample}})
+													</i>
+												</ng-container>
+	
+											</div>
+											<div class="col-6">
+												<label class="userKey control-label">
+													{{ 'OPD_PHARMACY.STARTING_SERIAL' | translate }}
+												</label>
+												<p>{{serviceProviderData.invoiceSettingRule.startingSerialNo}}</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div *ngIf="userRoleName === 'Hospital'" class="col-12 col-lg-6">
+								<div class="card settings" *ngIf="serviceProviderData.admissionSettingRule!=null">
+									<div class="row card-header">
+										<div class="col-12">
+											<h5>{{'OPD_PHARMACY.ADMISSION_SETTING' | translate}}</h5>
+										</div>
+									</div>
+									<div class="row card-body">
+										<div class="col-12">
+											<div class="row form-group">
+												<div class="col-6">
+													<label class="userKey control-label">
+														{{ 'OPD_PHARMACY.DOC_PREFIX' | translate }}
+													</label>
+													<p>{{serviceProviderData.admissionSettingRule.docPrefix}}</p>
+													<ng-container *ngIf="serviceProviderData.admissionSettingRule.docPrefix!=null">
+													
+															<i class="mt-1" *ngIf="serviceProviderData.admissionSettingRule.docPrefix!='' && showAdmSample!=''">
+																(Sample: {{showAdmSample}})
+															</i>
+														</ng-container>
+		
+												</div>
+												<div class="col-6">
+													<label class="userKey control-label">
+														{{ 'OPD_PHARMACY.STARTING_SERIAL' | translate }}
+													</label>
+													<p>{{serviceProviderData.admissionSettingRule.startingSerialNo}}</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+					<div class="col-12 col-lg-6 mb-2 mb-lg-1" *ngIf="userRoleName === 'Pharmacy' || userRoleName === 'Diagnostics'">
+							<div class="card settings">
+									<div class="row card-header">
+										<div class="col-12">
+											<h5>{{'OPD_PHARMACY.OPD_PHARMACY_SCHEDULE' | translate}}</h5>
+										</div>
+									</div>
+						<div class="row">
+							<div class="col-6">
+								<label class="userKey control-label">
+									{{ 'OPD_PHARMACY.OPD_PHARMACY_DAYS_OF_WEEK' | translate }}
+								</label>
+							</div>
+							<div class="col-3">
+								<label class="userKey control-label">
+									{{ 'OPD_PHARMACY.OPD_PHARMACY_START_TIME' | translate }}
+								</label>
+							</div>
+							<div class="col-3">
+								<label class="userKey control-label">
+									{{ 'OPD_PHARMACY.OPD_PHARMACY_END_TIME' | translate }}
+								</label>
+							</div>
+							</div>
+							<div class="row" *ngFor="let timing of pharmacyTimingList; let i = index">
+									<div class="col-6">
+										{{timing.mon?"MON":""}}
+										{{timing.tue?" TUE":""}}
+										{{timing.wed?" WED":""}}
+										{{timing.thu?" THU":""}}
+										{{timing.fri?" FRI":""}}
+										{{timing.sat?" SAT":""}}
+										{{timing.sun?" SUN":""}}
+									</div>
+									<div class="col-3">
+										{{timing.startTime.substring(0,5)}}
+									</div>
+									<div class="col-3">
+										{{timing.endTime.substring(0,5)}}
+									</div>
+								</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- <div class="row" *ngIf="userRoleName === 'Pharmacy'">
+					<div class="col-6">
+						<div class="card">
+							<div class="col-md-6">
+								<label class="userKey control-label">
+									{{ 'OPD_PHARMACY.OPD_PHARMACY_DAYS_OF_WEEK' | translate }}
+								</label>
+							</div>
+							<div class="col-md-3">
+								<label class="userKey control-label">
+									{{ 'OPD_PHARMACY.OPD_PHARMACY_START_TIME' | translate }}
+								</label>
+							</div>
+							<div class="col-md-3">
+								<label class="userKey control-label">
+									{{ 'OPD_PHARMACY.OPD_PHARMACY_END_TIME' | translate }}
+								</label>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-6">
+						<div class="row" *ngFor="let timing of pharmacyTimingList; let i = index">
+							<div class="col-md-6">
+								{{timing.mon?"MON":""}}
+								{{timing.tue?" TUE":""}}
+								{{timing.wed?" WED":""}}
+								{{timing.thu?" THU":""}}
+								{{timing.fri?" FRI":""}}
+								{{timing.sat?" SAT":""}}
+								{{timing.sun?" SUN":""}}
+							</div>
+							<div class="col-md-3">
+								{{timing.startTime.substring(0,5)}}
+							</div>
+							<div class="col-md-3">
+								{{timing.endTime.substring(0,5)}}
+							</div>
+						</div>
+					</div>
+				</div> -->
+			</div>
+		</div>
+	</div>
+</div>

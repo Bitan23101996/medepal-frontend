@@ -1,0 +1,516 @@
+<!--
+*  * |///////////////////////////////////////////////////////////////////////|
+*  * |                                                                       |
+*  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+*  * | All Rights Reserved                                                   |
+*  * |                                                                       |
+*  * | This document is the sole property of StellaBlue Interactive          |
+*  * | Services Pvt. Ltd.                                                    |
+*  * | No part of this document may be reproduced in any form or             |
+*  * | by any means - electronic, mechanical, photocopying, recording        |
+*  * | or otherwise - without the prior written permission of                |
+*  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+*  * |                                                                       |
+*  * |///////////////////////////////////////////////////////////////////////|
+*  *-->
+ 
+<div class="modal-body" id="prescription-preview">
+  <div class="container-fluid" *ngIf="prescriptionPreviewForm!=null">
+    <div class="row" *ngIf="!uploadedPrescriptionSrc">
+      <div class="col-md-12 text-right" *ngIf="!isHide">
+          <!-- <span class="mr-2" *ngIf="user.roleName != 'INDIVIDUAL'"><input type="checkbox" (change)="handelPrePrinted($event)" /> {{'PRESCRIPTION.PRE_PRINTED'|translate}} </span> -->
+        <!--  Working on app/issues/1226  -->
+         <span class="mr-2" *ngIf="(user.entityName == 'DOCTOR' || user.entityName == 'HOSPITAL' || user.entityName == 'SBIS') && !prePrintOff"><input type="checkbox" (change)="handelPrePrinted($event)" /> {{'PRESCRIPTION.PRE_PRINTED'|translate}}</span>
+         <!--  End Working on app/issues/1226  --> 
+          <span class="ml-2" id="download-ico">
+            <app-report [fileName]="fileName" [reportType]="reportType" [preprinted]="preprinted" [isPrint]="'N'" [pk]="pk" [customType]="customType"></app-report>
+          </span>
+          <span class="ml-2" id="print-ico">
+              <!-- Working on app/issues/700 -->
+            <!-- <img src="../../../../assets/image/print.svg" height="15" class="cursor" /> -->
+            <!-- <app-print [documentFor]="prescription" [refNo]="pk"></app-print> -->
+            <!-- <app-print [printSectionId]="printSectionId"></app-print> -->
+            <app-report [fileName]="fileName" [reportType]="reportType" [preprinted]="preprinted" [isPrint]="'Y'" [pk]="pk" [customType]="customType"></app-report>
+          </span>
+       </div>
+    </div>
+    <div class="row" *ngIf="uploadedPrescriptionSrc">
+        <div class="col-md-12">
+          <div class="float-right mb-2">
+            <span class="ml-2" id="download-ico"><img src="../../../../assets/image/download.svg" (click)="downloadFile()"
+                height="15" class="cursor" /></span>
+            <!-- <span class="ml-2" id="print-ico"><img src="../../../../assets/image/print.svg" height="15" (click)="printFile()"
+                class="cursor" /></span> -->
+          </div>
+        </div>
+      </div>
+    <div *ngIf="uploadedPrescriptionSrc" class="row">
+        <!-- <div class="col-12 text-right">
+          <img [src]="domSanitizer.bypassSecurityTrustUrl(uploadedPrescriptionSrc)"
+           id="image-corner" width="100%" alt="...">
+        </div> -->
+        <img *ngIf="download.contentType !='application/pdf'" class="prescription-img-size"
+        [src]="domSanitizer.bypassSecurityTrustUrl(download.downloadImageSrc)" id="image-corner" alt="">
+      <iframe width="100%" height="500" scrolling="no" frameborder="0" id="prescriptionIframe"
+        *ngIf="download.contentType =='application/pdf'"
+        [src]="domSanitizer.bypassSecurityTrustResourceUrl(download.downloadImageSrc)"></iframe>
+   </div>
+
+    <div id="print-section" *ngIf="!uploadedPrescriptionSrc">
+      <div class="print-area">
+    <div class="row border-bottom" *ngIf="headerImage==''">
+      <div class="col-xl-10 col-lg-10 col-md-9">
+        <div class="row">
+          <div class="col-12">
+            <div class="name-header float-left mb-0">
+              <h1 class="doctorName mb-0">{{prescriptionPreviewForm.doctor.doctorName}}&nbsp;</h1>
+            </div>
+            <div class="name-header float-left  mb-0" *ngIf="doctorQualifications.length!=0">
+              <h1 class="mb-0">({{qualifications}})</h1>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="small-text" *ngIf="doctorSpecializations.length!=0">{{specializations}}</div>
+          </div>
+          <div class="col-12 small-text">{{'PRESCRIPTION.DOCTOR_REGISTRATION'| translate}} {{prescriptionPreviewForm.doctor.registrationNo}}</div>
+        </div>
+
+      </div>
+	  <!-- <div class="col-xl-2 col-lg-2 col-md-3" *ngIf="!isHide">
+      <span class="ml-2" id="download-ico">
+        <app-report [fileName]="fileName" [reportType]="reportType" [pk]="pk"></app-report>
+      </span>
+      <span class="ml-2" id="print-ico">
+        <img src="../../../../assets/image/print.svg" height="15" class="cursor" />
+      </span>
+	 </div> -->
+      <div class="col-xl-12 col-lg-12 col-md-12">
+        <div class="header mb-0">
+          <h1>{{prescriptionPreviewForm.doctorChamber.hospitalName}}</h1>
+        </div>
+        <!--new add for location icon-->
+        
+        <!--<div class="small-text" *ngIf="doctorChamberDetails.addressType!=''">{{doctorChamberDetails.addressType}}</div>-->
+        <div class="small-text">
+          <!-- <img *ngIf="prescriptionPreviewForm.doctorChamber.line1 !==undefined || prescriptionPreviewForm.doctorChamber.line1 != null" class="mb-0 cursor" height="12px" (click)="displayGoogleMapLocationInModal(prescriptionPreviewForm.doctorChamber)"
+          src="../../../../../assets/image/pin.svg"> -->
+          {{prescriptionPreviewForm.doctorChamber.line1}}
+          {{prescriptionPreviewForm.doctorChamber.line2}}</div>
+        <div class="small-text"> {{prescriptionPreviewForm.doctorChamber.city}}
+          {{prescriptionPreviewForm.doctorChamber.state == "" || prescriptionPreviewForm.doctorChamber.state == null ? '':'Pin'}}
+          - {{prescriptionPreviewForm.doctorChamber.pinCode}}</div>
+        <div class="small-text"> {{prescriptionPreviewForm.doctorChamber.country}}</div>
+        <div class="small-text">
+          {{prescriptionPreviewForm.doctorChamber.phoneNo1==""?'N/A':prescriptionPreviewForm.doctorChamber.phoneNo1}}
+        </div>
+      </div>
+	  
+    </div>
+    <div class="row border-bottom" *ngIf="headerImage!=''">
+        <img [src]="domSanitizer.bypassSecurityTrustUrl(headerImage)" width="100%" height="150" alt="...">
+    </div>
+
+    <div class="row mt-2 mb-2">
+      <div class="col-lg-8 col-md-12">
+        <div class="header float-left textDot">
+          <h1>Patient: <span class="patient-name">{{prescriptionPreviewForm.individualUserEntity.name}}</span>
+             <!-- Working on app/issues/570 -->
+            <span> 
+              (
+                <span class="notSpecified" *ngIf="prescriptionPreviewForm.age==null">{{'COMMON.NA'| translate}}</span>
+                <span *ngIf="prescriptionPreviewForm.age!=null"> {{prescriptionPreviewForm.age}} </span> / 
+                <span class="notSpecified" *ngIf="prescriptionPreviewForm.individualUserEntity.gender=='Not Specified'">{{prescriptionPreviewForm.individualUserEntity.gender}} </span>
+                <span *ngIf="prescriptionPreviewForm.individualUserEntity.gender!='Not Specified'">{{prescriptionPreviewForm.individualUserEntity.gender=='M'?'M':prescriptionPreviewForm.individualUserEntity.gender=='F'?'F':'O'}} </span>
+              <span></span>
+              )
+            </span>
+             <!--End Working on app/issues/570 -->
+          </h1>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-12 header pr-4">
+        <h1>{{'PRESCRIPTION.DATE_OF_VISIT'| translate}} - <span
+            class="small-text">{{prescriptionPreviewForm.prescriptionDt | date:'dd-MM-yyyy'}}</span></h1>
+      </div>
+      <!-- <div class="col-12 small-text">
+        Age - {{age}},&nbsp;Gender - {{prescriptionPreviewForm.individualUserEntity.gender=='M' ? 'Male' : prescriptionPreviewForm.individualUserEntity.gender=='F'
+        ? 'Female' : 'N/A'}}
+      </div> -->
+      <div *ngIf="prescriptionPreviewForm.individualUserEntity.addressSet.value!=null" class="col-12">
+
+        <div>
+          <div class="small-text"> {{prescriptionPreviewForm.individualUserEntity.addressSet[0].line1}},
+            {{prescriptionPreviewForm.individualUserEntity.addressSet[0].line2}}</div>
+          <div class="small-text">
+            {{prescriptionPreviewForm.individualUserEntity.addressSet[0].city}},{{prescriptionPreviewForm.individualUserEntity.addressSet[0].state}}
+            - {{prescriptionPreviewForm.individualUserEntity.addressSet[0].pinCode}}</div>
+          <div class="small-text"> {{prescriptionPreviewForm.individualUserEntity.addressSet[0].country}}</div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="previewContainer">
+
+
+
+      <div class="row">
+        <div class="col-lg-4 col-md-12"
+          *ngIf="prescriptionPreviewForm.medicalFindingsList.length!=0 || prescriptionPreviewForm.nextCheckUpDt !==undefined">
+          <!-- sbis-poc/app/issues/644-->
+          <div *ngIf="prescriptionPreviewForm.medicalFindingsList.length!=0 && isVitalShow" class="border p-3 mb-2">
+
+            <div class="header">
+              <h1 class="pb-2">{{'PRESCRIPTION.VITALS'| translate}}</h1>
+              
+              <ng-container *ngFor="let val of prescriptionPreviewForm.medicalFindingsList">
+                  <!-- Working on app/issues/731 -->
+                  <ng-container *ngIf="val.result!=null">
+                  <div class="float-left w-50" *ngIf="val.systemCode!=='L833' && val.systemCode!=='L722'">
+                      <div class="vital-value-heading">
+                        <b>{{val.medicalAttributeName}}</b>
+                      </div>
+                      <div *ngIf="val.result!=null" class="vital-value">{{val.result}} {{val.unit}}</div>
+                    </div>
+                  </ng-container>
+                    <ng-container *ngIf="val.systemCode=='L833' || val.systemCode=='L722'">
+                        <div class="w-50">
+                          <div class="float-left sys-label" *ngIf="val.systemCode=='L833' && val.result!=null">
+                              <div class="vital-value-heading">
+                                  <b>{{'PRESCRIPTION.BLOOD_PRESSURE'| translate}}</b>
+                              </div>                            
+                              <div *ngIf="val.result!=null" class="vital-value">{{val.result}}</div>
+                          </div>
+                          <div class="dias-label" *ngIf="val.systemCode=='L722' && val.result!=null">
+                              <div class="vital-value-heading">
+                                  <b>&nbsp;</b>
+                              </div> 
+                              <div class="diastolic-label vital-value">{{val.result}} {{val.unit}}</div>
+                          </div>
+                        </div>
+                  </ng-container>
+                  <!--End Working on app/issues/731 -->
+                </ng-container>
+
+              <div class="clearfix"></div>
+            </div>
+
+
+        </div>
+        <div class="border p-3" *ngIf="prescriptionPreviewForm.nextCheckUpDt !==null || prescriptionPreviewForm.reportReviewDt !==null">
+            <div class="header" *ngIf="prescriptionPreviewForm.reportReviewDt !==null">
+                <h1 class="pb-2">{{'PRESCRIPTION.REPORT_REVIEW_DATE'| translate}}</h1>
+                <p>
+                  {{prescriptionPreviewForm.reportReviewDt | date:'dd-MM-yyyy'}}
+                </p>
+              </div>
+            <div class="header" *ngIf="prescriptionPreviewForm.nextCheckUpDt !==null">
+              <h1 class="pb-2">{{'PRESCRIPTION.NEXT_CHECK_UP_DATE'| translate}}</h1>
+              <p>
+                {{prescriptionPreviewForm.nextCheckUpDt | date:'dd-MM-yyyy'}}
+              </p>
+            </div>
+            
+
+
+          </div>
+        </div>
+        <div
+          [ngClass]="prescriptionPreviewForm.medicalFindingsList.length===0 && prescriptionPreviewForm.nextCheckUpDt===undefined ?'col-12':'col-lg-8 col-md-12'">
+          <!-- Working on app/issues/937 -->
+          <div *ngIf="prescriptionPreviewForm.referredBy !== null" class="row mr-2">
+              <div class="col-12" *ngIf="prescriptionPreviewForm.referredBy !== ''" >
+                
+                    <div class="header pb-1">
+                      <h1>{{'PRESCRIPTION.REFERRED_BY_DOCTOR'| translate}}</h1>
+                    </div>
+                    <pre>{{prescriptionPreviewForm.referredBy}}</pre>
+                  </div>
+              </div>
+            <!--End Working on app/issues/937 -->
+          <!-- <div *ngIf="prescriptionPreviewForm.patientProblemNarration !== null" class="row mr-2">
+            <div class="col-12" *ngIf="prescriptionPreviewForm.patientProblemNarration !== ''">
+              <div class="header pb-1">
+                <h1>{{'COMMON.SYMPTOMS'| translate }}</h1>
+              </div>
+              <pre>{{prescriptionPreviewForm.patientProblemNarration}}</pre>
+            </div>
+          </div> -->
+          <div *ngIf="prescriptionPreviewForm.symptomList.length!=0" class="row mr-2">
+
+            <div class="col-12">
+
+              <div class="header pb-1">
+                <h1>{{'COMMON.SYMPTOMS'| translate}}</h1>
+              </div>
+              <ol>
+                <li *ngFor="let s of prescriptionPreviewForm.symptomList">
+                  {{s.symptom}}
+                </li>
+              </ol>
+
+            </div>
+          </div>
+          <div *ngIf="prescriptionPreviewForm.observationList.length!=0" class="row mr-2">
+
+            <div class="col-12">
+
+              <div class="header pb-1">
+                <h1>{{'PRESCRIPTION.FINDING'| translate}}</h1>
+              </div>
+              <ol>
+                <li *ngFor="let o of prescriptionPreviewForm.observationList">
+                  {{o.observation}}
+                </li>
+              </ol>
+
+            </div>
+          </div>
+
+
+          <div *ngIf="prescriptionPreviewForm.diagnosisList.length!=0" class="row mr-2">
+            <div class="col-12">
+
+              <div class="header pb-1">
+                <h1>{{'PRESCRIPTION.DIAGNOSIS'| translate}}</h1>
+              </div>
+              <ol>
+                <li *ngFor="let d of prescriptionPreviewForm.diagnosisList">
+                  {{d.diagnosis}}
+                </li>
+              </ol>
+            </div>
+
+
+
+          </div>
+
+          <div class="row mr-2" *ngIf="prescriptionPreviewForm.medicationDTOList.length !== 0">
+            <div class="col-12">
+              <div class="header pb-1">
+                <h1>{{'PRESCRIPTION.MEDICATIONS'| translate}}</h1>
+              </div>
+              <!-- <ol>
+                    <li *ngFor="let pm of prescriptionPreviewForm.medicationDTOList">
+                    {{pm.medicineName}} => {{pm.dosageFrequency}} time/times {{pm.dosageInterval == 'D' ? 'Daily' : (pm.dosageInterval == 'W'
+                    ? 'Weekly' : 'Monthly')}} - For {{pm.duration}} {{pm.durationUnit == 'D' ? 'Days' : (pm.durationUnit ==
+                    'W' ? 'Weeks' : 'Months')}} - {{pm.timing}}
+                  </li>
+                  </ol> -->
+                  <ol>
+                      <li *ngFor="let pm of prescriptionPreviewForm.medicationDTOList">
+                        <span>
+                            <!-- *ngIf="pm.status=='NRM'" -->
+                          {{pm.medicineName}} 
+                          <span class="generic" *ngIf="pm.genericName!=null">(Generic Name-{{pm.genericName}})</span>
+                          {{pm.sosFlag == 'Y'?' (SoS) ':''}}: 
+                          <span *ngIf="pm.unitType !== ''">
+                              <!-- sbis-poc/app/issues/803-->
+                                 {{pm.noOfUnit}} {{pm.unitType | prescribeMedicine:pm.noOfUnit}} {{pm.sosFlag == 'Y'?'':'x '}}
+                            </span>
+                          <span *ngIf="pm.sosFlag == 'N' || pm.sosFlag == null">
+                              <!-- sbis-poc/app/issues/803-->
+                              {{pm.dosageFrequency}} <ng-container *ngIf="pm.dosageFrequency > 1"> times</ng-container> <ng-container *ngIf="pm.dosageFrequency <= 1"> time</ng-container>
+                              {{pm.dosageInterval == 'D' ? 'daily' : (pm.dosageInterval == 'W' ? 'weekly' : 'monthly')}} 
+                              for {{pm.duration}} 
+                              <!-- sbis-poc/app/issues/803-->
+                              <ng-container *ngIf="pm.duration > 1">
+                                {{pm.durationUnit == 'D' ? 'days' : (pm.durationUnit == 'W' ? 'weeks' : 'months')}}  
+                              </ng-container>
+                              <ng-container *ngIf="pm.duration <= 1">
+                                  {{pm.durationUnit == 'D' ? 'day' : (pm.durationUnit == 'W' ? 'week' : 'month')}}  
+                              </ng-container>
+                          </span>
+                          <!-- {{pm.sosFlag == 'Y' || pm.sosFlag == null ?'':' - '}} -->
+                         
+                          {{pm.beforeAfterMealFlag != null ? (pm.beforeAfterMealFlag == 'A' ? ' - after meal': ' - before meal') : ''}} 
+                          <span *ngIf="pm.comments !== ''">
+                              - {{pm.comments}}
+                          </span>
+                          
+                        </span>
+                      </li>
+                    </ol>
+                </div>
+      </div>
+
+
+          <div class="row mr-2" *ngIf="prescriptionPreviewForm.doctorRecommendedTestList.length !== 0">
+            <div class="col-12">
+              <div class="header pb-1">
+                <h1>{{'PRESCRIPTION.INVESTIGATIONS'| translate}}</h1>
+                </div>
+                <ol>
+                  <li *ngFor="let t of prescriptionPreviewForm.doctorRecommendedTestList">
+                  {{t.medicalAttributeName}} 
+                  <span *ngIf="t.comments !== ''">
+                      - {{t.comments}}
+                  </span>
+                  </li>
+                </ol>
+        </div>
+
+
+      </div>
+
+      <div *ngIf="prescriptionPreviewForm.adviceList.length !== 0" class="row mr-2">
+        <div class="col-12">
+
+          <div *ngIf="prescriptionPreviewForm.adviceList.length !== 0" class="row mr-2">
+            <div class="col-12">
+              <div class="header pb-1">
+                <h1>{{'PRESCRIPTION.ADVICE'| translate}}</h1>
+              </div>
+              <ol>
+                <li *ngFor="let a of prescriptionPreviewForm.adviceList">
+                  {{a.advice}}
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+        <!-- <div *ngIf="user.roleName == 'DOCTOR'">
+        <div *ngIf="prescriptionPreviewForm.doctorNote !== null || prescriptionPreviewForm.doctorNote !== 'undefined'" class="row mr-2">
+            <div class="col-12">
+    
+                    <div class="header pb-1">
+                    <h1>Note</h1>
+                    </div>
+                    <pre>
+                        {{prescriptionPreviewForm.doctorNote.note}}
+                    </pre>
+                  </div>
+    
+    
+            </div>
+          </div>
+            <div *ngIf="prescriptionPreviewForm.doctorReferral !== null || prescriptionPreviewForm.doctorReferral != undefined" class="row mr-2">
+                <div class="col-12">
+        
+                        <div class="header pb-1">
+                        <h1>REFERRAL</h1>
+                        </div>
+                        <p>
+                            {{prescriptionPreviewForm.doctorReferral.referredName}}
+                        </p>
+                      </div>
+        
+        
+                </div> -->
+
+
+      </div>
+
+      <div *ngIf="prescriptionPreviewForm.doctorReferral !== null || prescriptionPreviewForm.doctorReferral != undefined" class="row mr-2">
+          <div class="col-12">
+  
+                  <div class="header pb-1">
+                  <h1>REFERRAL</h1>
+                  </div>
+                  <p>
+                      {{prescriptionPreviewForm.doctorReferral.referredName}}
+                  </p>
+                </div>
+  
+  
+          </div>
+
+       <!-- Working on app/issues/937 -->
+       <div *ngIf="prescriptionPreviewForm.vaccinationList.length !== 0" class="row mr-2">
+          <div class="col-12">
+                <div class="header pb-1">
+                  <h1>{{'PRESCRIPTION.IMMUNIZATION'| translate}}</h1>
+                </div>
+                <ol>
+                  <li *ngFor="let v of prescriptionPreviewForm.vaccinationList">
+                    {{v.vaccineName}} {{v.vaccineCode != null && v.vaccineCode != ''? ('(' + v.vaccineCode + ')'): ''}}
+                    <span *ngIf="v.doesNo !== 0">
+                      - {{v.doesNo}} dose
+                    </span>
+                  </li>
+                </ol>
+          </div>
+        </div>
+        <!-- Working on app/issues/937 -->
+
+      <div class="row mr-2"  *ngIf="download.downloadImageSrc">
+          <div class="col-12">
+              <div class="header pb-1">
+                  <h1>{{'PRESCRIPTION.DIAGRAM'| translate}}</h1>
+                </div>
+              <div class="card">
+                <div class="card-body">
+                  <img *ngIf="download.contentType !='application/pdf'" class="prescription-img-size" width="100%"
+                  [src]="domSanitizer.bypassSecurityTrustUrl(download.downloadImageSrc)" id="image-corner" alt="">
+                  <iframe width="100%" height="500" scrolling="no" frameborder="0" id="prescriptionIframe"
+                  *ngIf="download.contentType =='application/pdf'"
+                  [src]="domSanitizer.bypassSecurityTrustResourceUrl(download.downloadImageSrc)"></iframe>
+                </div> 
+              </div>
+            </div>      
+          
+        </div>
+
+      <div *ngIf="signatureSrc" class="row">
+          <div class="col-12 text-right" *ngIf="customType!='BLANK'">
+            <img [src]="domSanitizer.bypassSecurityTrustUrl(signatureSrc)"
+             id="image-corner" width="150" height="50" alt="...">
+          </div>
+     </div>
+    </div>
+    <!-- <button type="button" class="btn btn-primary btn-sm" (click)="printPrescription">Print</button>
+    <button type="button" class="btn btn-primary btn-sm ml-5" (click)="backToAppointment()">Close</button> -->
+  </div>
+  <div class="row border-bottom" *ngIf="footerImage!=''">
+    <ng-container *ngIf="customType!='BLANK'">
+        <img [src]="domSanitizer.bypassSecurityTrustUrl(footerImage)" width="100%" height="150" alt="...">
+    </ng-container>
+  </div>
+</div>
+</div>  
+</div>   
+<!-- <div *ngIf="prescriptionPreviewForm!=null && user.parentRoleName=='INDIVIDUAL' && prescriptionPreviewForm.medicationDTOList.length !== 0 && !isHide" class="modal-footer presc-preview">
+  <button class="btn btn-primary float-right" (click)="goToOrderMedicine()">ORDER MEDICINE</button>
+</div> -->
+
+<div  class="modal-footer presc-preview" style="display: block;">
+    <div class="row">
+        <!-- <div class="col-6 text-left">
+          <img *ngIf="signatureSrc !=''" [src]="domSanitizer.bypassSecurityTrustUrl(signatureSrc)"
+           id="image-corner" width="150" height="50" alt="...">
+        </div> -->
+        <div class="col-lg-6"></div>
+        <div class="col-lg-3">
+          <button *ngIf="prescriptionPreviewForm!=null && user.parentRoleName=='INDIVIDUAL' && prescriptionPreviewForm.showdiagnostics && prescriptionPreviewForm.doctorRecommendedTestList.length !== 0 && !isHide" class="btn btn-primary btn-sm" (click)="goToBookDiagnostics()">BOOK DIAGNOSTICS</button>
+        </div>
+        <div class="col-lg-3">
+          <button *ngIf="prescriptionPreviewForm!=null && user.parentRoleName=='INDIVIDUAL' && prescriptionPreviewForm.showOrderMedicine && prescriptionPreviewForm.medicationDTOList.length !== 0 && !isHide" class="btn btn-primary btn-sm" (click)="goToOrderMedicine()">ORDER MEDICINE</button>
+        </div>
+   </div>
+</div>
+
+<div class="container-fluid not-found">
+  <h3 class="text-center" *ngIf="prescriptionPreviewForm==null">{{notFoundMsg}}</h3>
+</div>
+
+<ng-template #googleMapLocation>
+  <div class="modal-header">
+    <pre class="overflow-hidden google-map-pre-style">
+              <h5 class="modal-title">{{chamberName}}</h5>
+              <p class="google-map-p-modal-style modal-title">{{chamberAddress}}</p>
+            </pre>
+    <button type="button" class="close" aria-label="close" (click)="modalRef.hide('cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body overflow-hidden" id="user-review">
+    <google-map-modal [lat]="lat" [long]="long"></google-map-modal>
+  </div>
+  <div class="modal-footer">
+    <!-- <div class="text-right">
+      <button class="btn-sm btn-secondary cursor med-det-closebtn-custom-style" (click)="modalRef.hide();">{{
+                    'USER_PROFILE.USER_PROFILE_POPUP_CLOSE' | translate }}</button>
+    </div> -->
+  </div>
+</ng-template>

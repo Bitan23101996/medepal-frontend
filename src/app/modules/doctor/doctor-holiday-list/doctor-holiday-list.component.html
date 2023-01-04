@@ -1,0 +1,326 @@
+<!-- /*******************************************************************************
+ * * |///////////////////////////////////////////////////////////////////////|
+ * * |                                                                       |
+ * * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ * * | All Rights Reserved                                                   |
+ * * |                                                                       |
+ * * | This document is the sole property of StellaBlue Interactive          |
+ * * | Services Pvt. Ltd.                                                    |
+ * * | No part of this document may be reproduced in any form or             |
+ * * | by any means - electronic, mechanical, photocopying, recording        |
+ * * | or otherwise - without the prior written permission of                |
+ * * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ * * |                                                                       |
+ * * |///////////////////////////////////////////////////////////////////////|
+ ******************************************************************************/ -->
+
+ <div class="row">
+  <div class="col-lg-12">
+    <div class="row holiday-calendar top-btn-area">
+      <div class="col-lg-12 text-right">
+        <button type="button" [disabled]="holidayAddDisableFlag" class="btn btn-primary btn-sm float-right mr-2" (click)="addHoliday()">{{'COMMON.ADD_BUTTON'|translate}}</button>
+      </div>
+    </div>
+    <div class="row page-content ">
+      <div class="col-md-9">
+        <form [formGroup]="updateHolidayForm">
+          <!-- Issue app#711 and app#974 -->
+          <div class="text-center not-found" *ngIf="(updateHolidayForm.controls.holiday['controls'].length==0 && user.roleName == 'DOCTOR')">
+            <!-- Changed message (app#711) -->
+            <h3>{{ 'DOCTOR_HOLIDAY_LIST.NO_HOLIDAY_FOUND' | translate }}</h3>
+          </div>
+          <div class="text-center not-found" *ngIf="(updateHolidayForm.controls.holiday['controls'].length==0 && user.roleName == 'ASSISTANT')">
+            <!-- Changed message (app#711) -->
+            <h3>{{ 'DOCTOR_HOLIDAY_LIST.NO_HOLIDAY_FOUND_ASSISTANT' | translate }}</h3>
+          </div>
+          <div class="filterPanel">
+            <div formArrayName="holiday" class="align-middle row">
+              <div class="col-lg-12">
+
+                  <table class="table table-fixed hide-for-small-holiday">
+
+
+                    <tbody class="lifeStyleScrollHidden display-grid">
+                      <tr *ngFor="let ctrl of updateHolidayForm.get('holiday')['controls']; let i = index" [formGroupName]="i"><!--updateHolidayForm.controls.holiday.controls-->
+                        <div class= "unavailable-calendar information-header" *ngIf="ctrl.get('isEdit').value">
+
+                          <h2>
+                            Specify your unavailability dates and the chambers where you will not be available
+                          </h2>
+                          </div>
+                        <td colspan="10" *ngIf="ctrl === -1">No matches found</td>
+
+                        <td class="col-2 text-left font-weight400 padding-left0" *ngIf="ctrl.get('isEdit').value">
+                          <!-- <input type="text" formControlName="holidayFrom"> -->
+                          <input type="text" [minDate]="minDate" placeholder="DD-MM-YYYY" bsDatepicker [bsConfig]="{ dateInputFormat: dateFormat, showWeekNumbers: false  }"
+                            class="form-control date-pick" formControlName="holidayFrom" [readonly]="true" #dp="bsDatepicker">
+                          <span>
+                            <i (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt date-picker-calendarIco"></i>
+                          </span>
+
+                        </td>
+                        <td class="col-2 text-left font-weight400 padding-left0" *ngIf="ctrl.get('isEdit').value">
+                          <!-- <input type="text" formControlName="holidayTo"> -->
+                          <input type="text" [minDate]="minDate" placeholder="DD-MM-YYYY" bsDatepicker [bsConfig]="{ dateInputFormat: dateFormat, showWeekNumbers: false  }"
+                            class="form-control date-pick" formControlName="holidayTo" [readonly]="true" #dp="bsDatepicker">
+                          <span>
+                            <i (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt date-picker-calendarIco"></i>
+                          </span>
+
+                        </td>
+                        <td class="col-3 text-left font-weight400 padding-left0" *ngIf="ctrl.get('isEdit').value">
+                          <div *ngFor="let c of ctrl.value.doctorHolidayChamberDTOList; let j = index">
+                              <!-- <input type="checkbox" [value]="c.refNo" [checked]="checkedChamber[j]"> {{c.hospitalName}} -->
+                              <input type="checkbox" [value]="c.chamberRefNo" [checked]="c.ischecked" (click)="setChamber($event, c, j)"> {{c.chamberName}}
+                          </div>
+
+
+                      </td>
+                      <td class="col-5 text-left occupationActionTd" *ngIf="ctrl.get('isEdit').value ">
+                        <!--<span  *ngIf="!newRow" ngbTooltip="Cancel" container="body" (click)="cancelHoliday(ctrl, i , 'edit')" class="table-action-btn grey cursor">
+                          <img src="../../../../../assets/image/cancel.svg" height="20" alt="">
+                        </span>-->
+                        <button type="button" class="btn btn-secondary cursor table-action-btn multi-btn-w-divide"*ngIf="!newRow"  container="body" (click)="cancelHoliday(ctrl, i , 'edit')">CANCEL</button>
+                        <!--<span *ngIf="!newRow"  ngbTooltip="Update Holiday" container="body" (click)="saveHoliday(ctrl, 'UPDATE')" class="table-action-btn grey cursor">
+                          <img src="../../../../../assets/image/save.svg" height="25" alt="">
+                        </span>-->
+                        <button type="button" class="btn btn-secondary cursor table-action-btn multi-btn-w" *ngIf="!newRow"  container="body" (click)="saveHoliday(ctrl, 'UPDATE')">SAVE</button>
+                        <!--<span *ngIf="newRow" ngbTooltip="Save Holiday" container="body" (click)="saveHoliday(ctrl, 'SAVE')" class="table-action-btn grey cursor">
+                            <img src="../../../../../assets/image/save.svg" height="25" alt="">
+                          </span>-->
+                          <button type="button" class="btn btn-secondary cursor table-action-btn multi-btn-w" *ngIf="newRow"  container="body" (click)="saveHoliday(ctrl, 'SAVE')">SAVE</button>
+                        <!--<span *ngIf="newRow" ngbTooltip="Cancel Holiday" container="body" (click)="cancelHoliday(ctrl, i, 'add')"
+                          class="table-action-btn grey cursor">
+                          <img src="../../../../../assets/image/cancel.svg" height="20" alt="">
+                        </span>-->
+                        <button type="button" class="btn btn-secondary cursor table-action-btn multi-btn-w-divide"*ngIf="newRow"  container="body" (click)="cancelHoliday(ctrl, i , 'add')">CANCEL</button>
+                      </td>
+                      </tr>
+                      </tbody>
+                  </table>
+                  </div>
+
+                  </div>
+
+            <div *ngIf="searchList?.length > 0"  class="page-heading-info">
+              <h2>Your upcoming unavailability dates</h2>
+
+              <div formArrayName="holiday" class="align-middle row">
+                <div class="col-lg-12">
+                  <div class="overflow-x-hidden">
+
+                    <table class="table table-fixed hide-for-small-holiday">
+                      <thead *ngIf="updateHolidayForm.controls.holiday['controls'].length!=0">
+                        <tr class="border-top-lightgrey">
+                          <th class="col-2 text-left alergy-procedure-thead-custom-style padding-left0" scope="col" nowrap >
+                              {{ 'DOCTOR_HOLIDAY_LIST.HOLIDAY_FROM' | translate }}
+                          </th>
+                          <th class="col-2 text-left alergy-procedure-thead-custom-style padding-left0" scope="col" nowrap >
+                              {{ 'DOCTOR_HOLIDAY_LIST.HOLIDAY_TO' | translate }}
+                          </th>
+                          <th class="col-8 text-left alergy-procedure-thead-custom-style padding-left0" scope="col" nowrap>
+                              {{ 'DOCTOR_HOLIDAY_LIST.CHAMBER_NAME' | translate }}
+                          </th>
+
+                        </tr>
+                      </thead>
+
+
+
+
+                       <tbody class="lifeStyleScrollHidden display-grid">
+                        <tr *ngFor="let ctrl of updateHolidayForm.controls.holiday.controls; let i = index" class="border-bottom-lightgrey" [formGroupName]="i">
+                          <td colspan="10" *ngIf="ctrl === -1">No matches found</td>
+                          <td class="col-2 text-left font-weight400 padding-left0" *ngIf="!ctrl.get('isEdit').value">
+                            <p class="textDot">{{ctrl.get('holidayFrom').value | date: 'dd-MM-yyyy'}}</p>
+                          </td>
+
+
+                          <td class="col-2 text-left font-weight400 padding-left0" *ngIf="!ctrl.get('isEdit').value">
+                            <p class="textDot">{{ctrl.get('holidayTo').value | date: 'dd-MM-yyyy'}}</p>
+                          </td>
+                          <td class="col-3 text-left font-weight400 padding-left0 " *ngIf="!ctrl.get('isEdit').value">
+                            <div *ngFor="let c of ctrl.value.doctorHolidayChamberDTOList">
+                              <p class="textDot" *ngIf="c.ischecked">{{c.chamberName}}</p>
+                            </div>
+                          </td>
+
+
+                          <td class="col-5 text-left occupationActionTd  " *ngIf="!ctrl.get('isEdit').value">
+                            <!--<span *ngIf="isAddNewButtonDisable != true" (click)="editHoliday(ctrl)"  ngbTooltip="Edit Holiday" container="body" class="table-action-btn grey cursor">
+                              <img src="../../../../../assets/image/edit.svg" height="20" alt="">
+                            </span>-->
+                            
+                            <button type="button" class="btn btn-secondary cursor table-action-btn multi-btn-w" *ngIf="isAddNewButtonDisable != true" (click)="editHoliday(ctrl)" container="body">EDIT</button>
+                            
+                            <!-- <span *ngIf="isAddNewButtonDisable == true" class="table-action-btn grey">
+                              <img src="../../../../../assets/image/edit.svg" height="20" alt="">
+                            </span> -->
+                            <!--<span *ngIf="isAddNewButtonDisable != true"  ngbTooltip="Delete Holiday" container="body" (click)="deleteHoliday(ctrl, i)" class="table-action-btn grey cursor occupationDeleteIcon">
+                              <img src="../../../../../assets/image/delete.svg" height="20" alt="">
+                            </span>-->
+                          
+                            <button type="button" class="btn btn-secondary cursor table-action-btn multi-btn-w-divide" *ngIf="isAddNewButtonDisable != true" container="body" (click)="deleteHoliday(ctrl, i)">DELETE</button>
+                            
+                            <!-- <span *ngIf="isAddNewButtonDisable == true" class="table-action-btn grey">
+                              <img src="../../../../../assets/image/delete.svg" height="20" alt="">
+                            </span> -->
+                          </td>
+
+                        </tr>
+                      </tbody>
+                    </table>
+
+          <!-- for mobile start -->
+
+          <table class="table table-fixed show-for-very-small">
+                      <thead>
+                        <tr class="border-top-lightgrey">
+                          <th class="col-6 text-left alergy-procedure-thead-custom-style padding-left0" scope="col" nowrap>
+                              {{ 'DOCTOR_HOLIDAY_LIST.HOLIDAY_FROM' | translate }}
+                          </th>
+                          <th class="col-6 text-left alergy-procedure-thead-custom-style padding-left0" scope="col" nowrap>
+                              {{ 'DOCTOR_HOLIDAY_LIST.HOLIDAY_TO' | translate }}
+                          </th>
+                         <!-- <th class="col-4 text-left alergy-procedure-thead-custom-style padding-left0" scope="col" nowrap>
+                              {{ 'DOCTOR_HOLIDAY_LIST.CHAMBER_NAME' | translate }}
+                          </th>
+                          <th class="col-2 alergy-procedure-thead-custom-style padding-left0" scope="col" nowrap>
+                              {{ 'DOCTOR_HOLIDAY_LIST.ACTION' | translate }}
+                          </th> -->
+                        </tr>
+                      </thead>
+
+                      <tbody class="lifeStyleScrollHidden display-grid">
+                        <tr *ngFor="let ctrl of updateHolidayForm.controls.holiday.controls; let i = index" class="border-bottom-lightgrey" [formGroupName]="i">
+              <td class="w-100" colspan=3>
+                <table class="w-100">
+                  <tr *ngIf="ctrl === -1">
+                     <td colspan="10" >No matches found</td>
+                  </tr>
+
+                  <tr>
+                     <td class="col-6 text-left font-weight400 padding-left0" *ngIf="!ctrl.get('isEdit').value">
+                      <p class="textDot">{{ctrl.get('holidayFrom').value | date: 'dd-MM-yyyy'}}</p>
+                      </td>
+                      <td class="col-6 text-left font-weight400 padding-left0" *ngIf="ctrl.get('isEdit').value">
+                      <!-- <input type="text" formControlName="holidayFrom"> -->
+                      <input type="text" [minDate]="minDate" placeholder="DD-MM-YYYY" bsDatepicker [bsConfig]="{ dateInputFormat: dateFormat, showWeekNumbers: false  }"
+                        class="form-control date-pick" formControlName="holidayFrom" [readonly]="true" #dp="bsDatepicker">
+                      <span>
+                        <i (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt date-picker-calendarIco"></i>
+                      </span>
+                      <!-- <div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.testNameLab.dirty">
+                        <span *ngIf="ctrl.hasError('required', 'testNameLab')" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                      </div> -->
+                      </td>
+                      <td class="col-6 text-left font-weight400 padding-left0" *ngIf="!ctrl.get('isEdit').value">
+                      <p class="textDot">{{ctrl.get('holidayTo').value | date: 'dd-MM-yyyy'}}</p>
+                      </td>
+                      <td class="col-6 text-left font-weight400 padding-left0" *ngIf="ctrl.get('isEdit').value">
+                      <!-- <input type="text" formControlName="holidayTo"> -->
+                      <input type="text" [minDate]="minDate" placeholder="DD-MM-YYYY" bsDatepicker [bsConfig]="{ dateInputFormat: dateFormat, showWeekNumbers: false  }"
+                        class="form-control date-pick" formControlName="holidayTo" [readonly]="true" #dp="bsDatepicker">
+                      <span>
+                        <i (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt date-picker-calendarIco"></i>
+                      </span>
+                      <!-- <div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.testNameCode.dirty">
+                        <span *ngIf="ctrl.hasError('required', 'testNameCode')" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                      </div> -->
+                      </td>
+
+                    </tr>
+                    <tr>
+                      <td class="col-10 text-left font-weight400 padding-left0" *ngIf="!ctrl.get('isEdit').value">
+                        <div class="responsive-popup-heading">{{ 'DOCTOR_HOLIDAY_LIST.CHAMBER_NAME' | translate }}</div>
+                        <div *ngFor="let c of ctrl.value.doctorHolidayChamberDTOList">
+                          <p class="textDot" *ngIf="c.ischecked">{{c.chamberName}}</p>
+                        </div>
+                        </td>
+                      <td class="col-10 text-left font-weight400 padding-left0" *ngIf="ctrl.get('isEdit').value">
+                        <div class="responsive-popup-heading pb-1">{{ 'DOCTOR_HOLIDAY_LIST.CHAMBER_NAME' | translate }}</div>
+                        <div *ngFor="let c of ctrl.value.doctorHolidayChamberDTOList; let j = index">
+                          <!-- <input type="checkbox" [value]="c.refNo" [checked]="checkedChamber[j]"> {{c.hospitalName}} -->
+
+                          <input type="checkbox" [value]="c.chamberRefNo" [checked]="c.ischecked" (click)="setChamber($event, c, j)"> {{c.chamberName}}
+                        </div>
+
+                      <!--<div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.price.dirty">
+                        <span *ngIf="ctrl.hasError('required', 'price')" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                      </div> -->
+                      </td>
+                      <td class="col-2 text-left occupationActionTd" *ngIf="!ctrl.get('isEdit').value">
+                      <span *ngIf="isAddNewButtonDisable != true" (click)="editHoliday(ctrl)"  ngbTooltip="Edit Holiday" container="body" class="table-action-btn grey cursor">
+                        <img src="../../../../../assets/image/edit.svg" height="20" alt="">
+                      </span>
+                      <!-- <span *ngIf="isAddNewButtonDisable == true" class="table-action-btn grey">
+                        <img src="../../../../../assets/image/edit.svg" height="20" alt="">
+                      </span> -->
+                      <span *ngIf="isAddNewButtonDisable != true"  ngbTooltip="Delete Holiday" container="body" (click)="deleteHoliday(ctrl, i)" class="table-action-btn grey cursor occupationDeleteIcon">
+                        <img src="../../../../../assets/image/delete.svg" height="20" alt="">
+                      </span>
+                      <!-- <span *ngIf="isAddNewButtonDisable == true" class="table-action-btn grey">
+                        <img src="../../../../../assets/image/delete.svg" height="20" alt="">
+                      </span> -->
+                      </td>
+                      <td class="col-2 text-left occupationActionTd" *ngIf="ctrl.get('isEdit').value ">
+                      <!--<span  *ngIf="!newRow" ngbTooltip="Cancel" container="body" (click)="cancelHoliday(ctrl, i , 'edit')" class="table-action-btn grey cursor">
+                        <img src="../../../../../assets/image/cancel.svg" height="20" alt="">
+                      </span>-->
+                      <button type="button" class="btn btn-secondary cursor table-action-btn "*ngIf="!newRow"  container="body" (click)="cancelHoliday(ctrl, i , 'edit')">CANCEL</button>
+                      <span *ngIf="!newRow"  ngbTooltip="Update Holiday" container="body" (click)="saveHoliday(ctrl, 'UPDATE')" class="table-action-btn grey cursor">
+                        <img src="../../../../../assets/image/save.svg" height="25" alt="">
+                      </span>
+                      <span *ngIf="newRow" ngbTooltip="Save Holiday" container="body" (click)="saveHoliday(ctrl, 'SAVE')" class="table-action-btn grey cursor">
+                        <img src="../../../../../assets/image/save.svg" height="25" alt="">
+                        </span>
+                      <span *ngIf="newRow" ngbTooltip="Cancel Holiday" container="body" (click)="cancelHoliday(ctrl, i, 'add')"
+                        class="table-action-btn grey cursor">
+                        <img src="../../../../../assets/image/cancel.svg" height="20" alt="">
+                      </span>
+                      </td>
+
+                    </tr>
+                    <tr>
+
+                  </tr>
+                  </table>
+                </td>
+
+
+
+
+
+                        </tr>
+                      </tbody>
+                    </table>
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col-3 right-panel-border">
+        <div class="desc-box3">
+          <div class="main-header">What is a unavailability Calendar?</div>
+          <div class="holiday">
+          <p>You can mark yourself as 'Unavailable' for patient consultation in the Unavailability Calendar.
+          </p>
+          <p>You can mark yourself unavailable for selected chambers or for all chambers where you treat your patients.</p>
+        </div>
+        </div>
+        <div class="desc-box1">
+          <div class="main-header"> What happens once you mark yourself Unavailable?</div>
+          <div class="holiday">
+          <p>Once you mark yourself 'Unavailable' for a date or period, no appointments can be booked by patinets or clinic personnel for these dates.
+          </p>
+          <p>If there are confirmed appointments during this period, appointments will be cancelled by the system and the patients notified about it.</p>
+        </div>
+        </div>
+    </div>
+  </div>
+
+</div>

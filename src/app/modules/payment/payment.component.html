@@ -1,0 +1,60 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<!-- <div class="container">
+  <div class="row text-center">
+        <div class="col-sm-6 col-sm-offset-3">
+        <br><br> <h2 style="color:#0fad00">Success</h2>
+        <a href="" class="btn btn-success">     Log in      </a>
+    <br><br>
+        </div>
+        
+  </div>
+</div> -->
+
+<section *ngIf="visibleSection == 'success'">
+  <div>
+    <h1 style="text-align: center">Your payment has bees completed successfully.</h1>
+  </div>
+</section>
+
+<section *ngIf="visibleSection == 'fail'">
+  <div>
+    <h1 style="text-align: center">Oops! something went wrong during the payment. Please try again.</h1>
+  </div>
+</section>
+
+<section *ngIf="visibleSection == 'payment'">
+  <div>
+    <h1 style="text-align: center">Please do not refresh this page...</h1>
+  </div>
+  <form #someVar method="post" action="https://securegw-stage.paytm.in/theia/processTransaction" name="f1">
+    <input type="hidden" name="MID" value="tquFhB17960756207178">
+    <input type="hidden" name="WEBSITE" value="WEBSTAGING">
+    <input type="hidden" name="CHANNEL_ID" value="WEB">
+    <input type="hidden" name="INDUSTRY_TYPE_ID" value="Retail">
+    <input type="hidden" name="ORDER_ID" value="TEST_154175407238hh4">
+    <input type="hidden" name="CUST_ID" value="Customer001">
+    <input type="hidden" name="TXN_AMOUNT" value="1.00">
+    <input type="hidden" name="CALLBACK_URL" value="http://localhost:4200/complete/paytm/payment">
+    <input type="hidden" name="EMAIL" value="abc@mailinator.com">
+    <input type="hidden" name="MOBILE_NO" value="7777777777">
+    <input type="hidden" name="CHECKSUMHASH" value="atVOD6ja0sQcza4VyfDNiqcBphCmmnLsmDlrbBHvsq21bVQjQcQqkmN8Yd0zUI82+YYHsh5ecRzoJQ/Hg0AScQsK3x68LoYxeaafV4jND0c=">
+  </form>
+  
+</section>
+
+<router-outlet></router-outlet>

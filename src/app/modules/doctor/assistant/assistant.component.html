@@ -1,0 +1,171 @@
+<ng-template #assistantModal>
+
+    <form [formGroup]="assistant" (ngSubmit)="submit()">
+  
+    <div class="modal-header">
+        <h4 class="modal-title">ASSISTANT</h4> <!-- Working on app/issues/893 -->
+        <!-- working on frontend/issues/181 -->
+        <button type="button" class="close" (click)="modalRef.hide()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+         <!--End working on frontend/issues/181 -->     
+    </div> 
+    <div class="modal-body">
+    <div class="content">  
+      <table class="table">
+      <thead>
+        <tr>
+          <th width="40%">Name<span class="validation-error">*</span></th>
+          <th width="40%">Email Id<span class="validation-error"></span></th>
+          <th width="20%">Phone No<span class="validation-error"></span></th>
+        </tr>
+      </thead>
+      <tbody >
+        <tr >
+          <td>
+          <!-- <input type="text" class="form-control" formControlName="userName" required> -->
+          <app-name preventType="all" formControlName="userName" required="required"></app-name>
+          <span *ngIf="submitted && assistant.get('userName').errors ">
+              <span *ngIf="assistant.get('userName').errors.required" class="validation-error">* Name is required</span>
+            </span>
+          </td>
+          
+  
+          <td >
+            <input type="text" class="form-control" formControlName="email" (blur)="checkDuplicateEmail()" [readonly]= "isReadOnlyEmail">
+            <span *ngIf="submitted && assistant.get('email').errors ">
+              
+              <span *ngIf="assistant.get('email').errors.email" class="validation-error">* Invalid Email </span>
+            </span>
+            <p data-toggle="tooltip" title="{{assistant.value.email}}">
+              
+                <span *ngIf="assistant.value.email_verification_status == 'Y'" data-toggle="tooltip" title="Verified" style="position: relative;left: 125px;top: -26px;"><img src="../../../../../assets/image/verified.svg" height="18px;"></span>
+               
+                <a style="font-size: 11px;" *ngIf="assistant.value.email_verification_status == 'N' " (click)="emailVerify()" href="javascript:void(0)">Verify Email</a>
+               
+            
+            </p>
+          </td>
+  
+          <td>
+              <div  *ngIf="isReadOnlyContact">
+                  <input type="text" class="form-control" formControlName="contact"  (keypress)="keyPress($event)" (blur) ="checkContactNumber()"  [readonly]= "isReadOnlyContact">
+                  <p data-toggle="tooltip" title="{{assistant.value.contact}}">
+                     
+                      <span *ngIf="assistant.value.contact_verification_status == 'Y'" data-toggle="tooltip" title="Verified" style="position: relative;left: 72px;top: -24px;"><img src="../../../../../assets/image/verified.svg" height="18px;"></span>
+                     
+                          <a style="font-size: 11px;" *ngIf="assistant.value.contact_verification_status == 'N'" (click)="mobileVerify()" href="javascript:void(0)">Verify Mobile</a>
+                 
+                  </p> 
+                 
+                  <div *ngIf="!otpVerifySuccess" class="col-lg-7">
+                      <div class="row">
+                          <input *ngIf="otpVerify" type="text" formControlName="otp" class="form-control user-verify-otp">
+                          <button style="margin-top: -15px;" *ngIf="otpVerify" type="button" class="btn btn-secondary btn-sm" (click)="cancelSection()">Cancel</button>
+                          &nbsp;&nbsp;&nbsp;<button type="button" *ngIf="otpVerify" style="margin-top: -15px;" class="btn btn-primary btn-sm" (click)="otpSubmit()">Submit OTP</button>
+                      </div>
+                      <div class="row">
+                          <a style="margin-top: -11px;margin-left: 29px;" *ngIf="otpVerify" href="javascript:void(0)" (click)="resendOtp()">resend OTP</a>
+                      </div>
+                  </div>
+              </div>
+              
+              <div  *ngIf="!isReadOnlyContact">
+                  <int-phone-prefix [locale]="'IN'" [defaultCountry]="'in'" formControlName="contact"  autofocus=""  (keypress)="keyPress($event)" (keyup)="checkContactNumber()" ></int-phone-prefix>
+              </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button"  class="btn btn-secondary btn-sm" (click)="closeModal()">Cancel</button>
+    <button type="submit" class="btn btn-primary btn-sm pull-right" >ADD ASSISTANT</button>
+  </div>
+  </form>
+  
+  </ng-template>
+  <div *ngIf ="resdata.length > 0" class="page-heading-info">
+   
+            
+    <h2>Displaying your assistants who can manage selected activities on your behalf</h2>
+    </div>
+  <div class="row">
+   
+      <div class="col-lg-9">
+      <div class="row">
+       
+              
+          <div class="col-md-6">
+           
+          </div>
+          
+          <div class="col-md-6">
+              <button type="button" class="btn btn-primary float-right mb-2" (click)="openModal()"> Add</button>
+          </div>
+        </div> 
+        
+        <div class="content table-responsive search-result">
+          
+            
+           
+          <p-table [value]="resdata" [paginator]="isPaginator" [rows]="15"> <!--Working on app/issues/575-->
+            <ng-template pTemplate="header">
+            <tr>
+              <th width="30%"  scope="col">Name</th>
+              <th width="25%"  scope="col">Email Id</th>
+              <th width="20%"  scope="col">Phone No</th>
+              <th width="25%" scope="col"></th>
+            </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-i="rowIndex">
+          <tr>
+              <td>
+                  {{rowData.userName}}
+              </td>
+              <td>
+                  {{rowData.email}}
+              </td>
+              <td>
+                  {{rowData.contact}}
+              </td>
+              
+              <td >
+           
+  
+                  <!--<span ngbTooltip="Edit User" container="body" (click)="openEditModal(rowData)" class="cursor">
+                      <img class="grey" src="../../../../../assets/image/edit.svg" height="15" alt="">
+                    </span>-->
+                    <button type="button" class="btn btn-secondary cursor table-action-btn multi-btn-w1" container="body" (click)="openEditModal(rowData)">EDIT</button>  
+                  &nbsp;&nbsp;&nbsp;&nbsp; 
+                
+                  <!--<span ngbTooltip="Delete User" container="body" (click)="deleteUser(rowData)" class="cursor">
+                    <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                  </span>-->
+                  <button type="button" class="btn btn-secondary cursor table-action-btn multi-btn-w-divide1 " container="body" (click)="deleteUser(rowData)">DELETE</button>  
+              </td>
+          </tr>
+      </ng-template>
+  </p-table>
+  </div>
+ 
+  </div>
+  <div class="col-3 right-panel-border">
+    <div class="desc-box3">
+      <div class="main-header">What does adding an Assistant imply?</div>
+      <div class="holiday">
+      <p>You can add an assistant if you want somebody else to manage selected activities on your behalf. For e.g., your front desk receptionist who manages your appointments.</p>
+      
+    </div>
+    </div>
+    <div class="desc-box1">
+      <div class="main-header">Will my assistants have accessed all functions on my behalf?</div>
+      <div class="assistant">
+      <p>No, assistants have access to limited functions. They can manage the appointments, but cannot create prescriptions. Assistants have restricted access in the system.</p>
+    </div>
+    </div>
+</div>
+  </div>
+ 
+ 

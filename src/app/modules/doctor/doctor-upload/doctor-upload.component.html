@@ -1,0 +1,167 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+<div class="row">
+  <div class="desc-box1 box-margin prescription-heading">
+  <h2>The look and feel of your prescriptions can be configured. You can specify a custom
+    prescription header and footer. Your scanned signature, if provided, will be used to sign the
+    prescription. 
+  </h2>
+  </div>
+
+  <div class="col-9">
+
+<div class="row">
+  <div class="col-12">
+    <label>{{'DOCTOR_PROFILE.DOCTOR_PROFILE_SIGNATURE_IMAGE' | translate}} </label>
+    <p class="top-description-p">Your scanned signature will be automatically embedded in your prescriptions. If
+      signature is not updated, you can manualy sign the prescriptions.</p>
+    <div class="row">
+      <div class="col-lg-3 col-md-3 col-sm-6 col-10 content_position">
+        <div *ngIf="signatureSrc !=''">
+          <img *ngIf="signatureSrc !=''" [src]="domSanitizer.bypassSecurityTrustUrl(signatureSrc)"
+            class="d-block signature_design" alt="...">
+        </div>
+        <div *ngIf="(signatureSrc =='' || signatureSrc ==null)">
+          <p style="margin: 10px;" class="float-left notSpecified">Signature not specified</p>
+        </div>
+      </div>
+      <div class="col-lg-7 col-md-7 col-sm-5 col-11">
+        <div *ngIf="!signatureSrc" class="pt-2" style="margin: 0">
+          <input type="file" accept="image/*" [hidden]="true" id="signaturePhoto"
+            (change)="selectSignatureFile($event)">
+          <label class="cursor side-label" for="signaturePhoto" container="body">
+            UPLOAD SIGNATURE
+          </label>
+        </div>
+        <div class="pt-2 table-action-btn delete cursor grey text-right custom-img-delete-style" *ngIf="signatureSrc">
+          <label (click)="resetDoctorSignatureHeaderFooterImage('signature')" class="cursor side-label"
+            ngbTooltip="Delete">DELETE</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-lg-11 col-12">
+    <label>{{'DOCTOR_PROFILE.DOCTOR_PROFILE_HEADER_IMAGE' | translate}} </label>
+    <p class="top-description-p">Your prescription header. If not specified, MEDePAL will create a default prescription
+      header.</p>
+    <div class="row">
+      <div class="col-lg-7 col-md-8 col-sm-8 col-11 content_position">
+        <div *ngIf="headerImage !=''">
+          <img class="header_footer_design" *ngIf="headerImage !=''"
+            [src]="domSanitizer.bypassSecurityTrustUrl(headerImage)" alt="...">
+        </div>
+        <div *ngIf="(headerImage =='' || headerImage ==null)">
+          <p style="margin: 19px;" class="float-left notSpecified">Header not specified</p>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-3 col-sm-3 col-11">
+        <div *ngIf="!headerImage" class="pt-3" style="margin: 0">
+          <input type="file" accept="image/*" [hidden]="true" id="headerPhoto" (change)="uploadHeader($event)">
+          <label class="cursor side-label" for="headerPhoto">
+            <span ngbTooltip="Upload Header">UPLOAD HEADER</span>
+          </label>
+        </div>
+        <div class="pt-3 table-action-btn delete cursor grey text-right custom-img-delete-style" *ngIf="headerImage">
+          <label class="cursor side-label" ngbTooltip="Delete"
+            (click)="resetDoctorSignatureHeaderFooterImage('header')">DELETE</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-12">
+    <label>{{'DOCTOR_PROFILE.DOCTOR_PROFILE_FOOTER_IMAGE' | translate}} </label>
+    <p class="top-description-p">Your prescription footer. If not specified, MEDePAL will create a default prescription
+      footer.</p>
+    <div class="row">
+      <div class="col-lg-7 col-md-8 col-sm-8 col-11 content_position">
+        <div *ngIf="footerImage !=''">
+          <img class="header_footer_design" [src]="domSanitizer.bypassSecurityTrustUrl(footerImage)" alt="...">
+        </div>
+        <div *ngIf="(footerImage =='' || footerImage ==null)">
+          <p style="margin: 19px;" class="float-left notSpecified">Footer not specified</p>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-3 col-sm-3 col-11">
+        <div *ngIf="!footerImage" class="pt-3" style="margin: 0">
+          <input type="file" accept="image/*" [hidden]="true" id="footerPhoto" (change)="uploadFooter($event)">
+          <label for="footerPhoto" container="body" class="cursor side-label">
+            <span ngbTooltip="Upload Footer">UPLOAD FOOTER</span>
+          </label>
+        </div>
+        <div class="pt-3 table-action-btn delete cursor grey text-right custom-img-delete-style" *ngIf="footerImage">
+          <label class="cursor side-label" ngbTooltip="Delete"
+            (click)="resetDoctorSignatureHeaderFooterImage('footer')">DELETE</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-12">
+    <div class="checkbox-input">
+      <input id="generic" type="checkbox" class="cursor flag" (click)="saveGenericFlag($event)"
+        [checked]="showGenericFlag=='Y'">
+    </div>
+    <div>
+      <label for="generic" class="cursor checkbox-label">
+        Print generic name of medicines in prescription
+        <!-- message style 2-->
+        <img class="cursor" src="../../../../assets/image/information.svg" height="13" [ngbPopover]="apptToday"
+          triggers="mouseenter:mouseleave" container="body" popoverClass="popover-info" />
+        <!-- message style 2-->
+      </label>
+    </div>
+  </div>
+</div>
+</div>
+<div class="col-3 right-panel-border">
+  <div class="desc-box3">
+    <div class="main-header">Is it mandatory to configure my prescription?</div>
+    <div class="upload">
+        <p>No, its optional. If you do not
+          customise, default MEDePAL
+          prescription will be generated.
+          MEDePAL prescription is
+          compliant with the Medical
+          Council of India guidelines.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #apptToday>If enabled, generic name of prescribed medicines, in addition to the brand name, will be printed in the prescription. Else only brand names will be printed.</ng-template>
+
+
+<!-- app/issues/843 Commented for now -->
+<!-- <div class="row">
+      <div class="col-4">
+        <label>{{'DOCTOR_PROFILE.DOCTOR_PRESCRIPTION_TEMPLATE' | translate}}</label>
+        <select name="prescriptionTemplateType" class="form-control" [(ngModel)]="prescriptionTemplateType">
+          <option selected value="">Select Prescription Template</option>
+          <option *ngFor="let template of allPrescriptionTemplates" value="{{template.templateFileName}}">{{template.templateName}}</option>
+        </select>
+      </div>
+      <div class="col-md-4 pull-right">
+        <button class="btn btn-primary btn-sm float-right" (click)="savePrescriptionTemplateType()">{{'COMMON.SAVE_BUTTON'|translate}}</button>
+      </div>
+    </div> -->
+<!-- End app/issues/843 -->

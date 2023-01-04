@@ -1,0 +1,105 @@
+.fileUploadInput{
+  width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+.chooseFile{
+  background:#28882e;
+  padding:2px 10px;
+  color:#fff;
+  font-weight:400;
+  text-align:center;
+  font-size:14px;
+  border-radius:20px;
+  cursor:pointer;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  width:220px;
+  overflow:hidden;
+  margin:auto;
+}
+
+.table-responsive.uploadImage td{
+  border-bottom:none !important;
+}
+
+.downloadImageBtn{
+  border:1px solid #28882e;
+  border-radius:20px;
+  cursor:pointer;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  width:220px;
+  overflow:hidden;
+  margin:auto;
+  color:#28882e;
+  text-decoration:none;
+  font-weight:400;
+  text-align:center;
+  font-size:14px;
+  margin-left:5px;
+  display:inline-block;
+}
+
+.uploadImage{
+  max-height: calc(100vh - 450px);
+  overflow: auto;
+}
+
+
+.drop-zone{
+  border:1px dashed #4dbeac;
+  min-height:100px;
+  width:90%;
+  margin:auto;
+  background:#f4faff;
+  border-radius:10px;
+}
+
+.drop-zone h1{
+  color:#146199 !important;
+  padding:10px 0;
+  margin-bottom:0 !important;
+}
+
+.drop-zone .chooseFile{
+  border-radius:10px;
+  background: #146199;
+  color:#fff !important;
+  display:inline-block !important;
+  padding: 5px 20px;
+}
+
+.fileUploadInput{
+  width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+
+
+.file-ready .file-name{
+  width:80%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-left:10px;
+}
+
+.file-ready .file-ico{
+  margin-top:-10px;
+}
+
+
+@media (max-width: 1024px) {
+  .chooseFile{
+    width:150px;
+  }
+
+}

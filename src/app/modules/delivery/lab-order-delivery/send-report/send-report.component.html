@@ -1,0 +1,38 @@
+<form [formGroup]="labDeliveryForm">
+  <!-- <div class="form-group">
+        <label class="userKey control-label">
+        Report Sending Date
+          <span class="validation-error">*</span>
+        </label>
+        <input type="text" placeholder="DD-MM-YYYY" bsDatepicker
+          [bsConfig]="{ dateInputFormat: dateFormat, showWeekNumbers: false  }" class="form-control date-pick"
+          [minDate]="minDate" #dp="bsDatepicker" formControlName="reportSendingDate" required>
+        <span><i (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt date-picker-calendarIco"></i></span>
+        <div *ngIf="submitted && labDeliveryForm.controls.reportSendingDate.errors">
+            <div class="validation-error mt-2" *ngIf="labDeliveryForm.controls.reportSendingDate.errors.required">This field is required</div>
+          </div>
+      </div>
+
+      <div class="form-group">
+          <label class="userKey control-label">
+              Report Sending Time
+            <span class="validation-error">*</span>
+          </label>
+          <input type="time" class="form-control" formControlName="reportSendingTime" required>
+          <div *ngIf="submitted && labDeliveryForm.controls.reportSendingTime.errors">
+              <div class="validation-error mt-2" *ngIf="labDeliveryForm.controls.reportSendingTime.errors.required">This field is required</div>
+            </div>
+        </div> -->
+
+  <button type="button" class="btn btn-primary mt-4" (click)="saveDeliveryStep()">Upload Report</button>
+</form>
+
+<!-- shanu -->
+<!-- https://gitlab.com/sbis-poc/frontend/issues/210 -->
+<ng-container *ngIf="showDiagnosticsTestReport">
+  <app-medical-test-results [selectedPatientDetail]="patientPrescriptionDetail"
+    [selectedDiagnosticsDetails]="medicalDiagnosticDetailsData" (medicalDetailsClose)="medicalDetailsClose($event)">
+  </app-medical-test-results>
+</ng-container>
+<!-- https://gitlab.com/sbis-poc/frontend/issues/210 -->
+<!-- shanu -->

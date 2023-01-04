@@ -1,0 +1,685 @@
+<!--
+*  * |///////////////////////////////////////////////////////////////////////|
+*  * |                                                                       |
+*  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+*  * | All Rights Reserved                                                   |
+*  * |                                                                       |
+*  * | This document is the sole property of StellaBlue Interactive          |
+*  * | Services Pvt. Ltd.                                                    |
+*  * | No part of this document may be reproduced in any form or             |
+*  * | by any means - electronic, mechanical, photocopying, recording        |
+*  * | or otherwise - without the prior written permission of                |
+*  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+*  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  -->
+
+<ng-template #addEditTestModal>
+  <form [formGroup]="labTestForm">
+    <div class="modal-header">
+      <h4 class="modal-title">Add Diagnostic Test</h4>
+
+      <button type="button" class="close float-right" (click)="closeModal()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+
+            <label>Test Name
+              <span class="validation-error">*</span>
+            </label>
+            <p-autoComplete styleClass="medicineListAutoComplete" placeholder="Test Name" #testName [suggestions]="labTestList" (onSelect)="setTestName($event)"
+              (completeMethod)="getTestList($event)" formControlName="testNameLab" (onKeyUp)="managePk(testName.value)" required>
+              <ng-template let-results pTemplate="item">
+                <span>{{results.longName}}</span>
+              </ng-template>
+            </p-autoComplete>
+            <span *ngIf="submitted && labTestForm.get('testNameLab').value==null" class="validation-error">* Lab Test Name is required
+            </span>
+            <label>
+              <input type="checkbox" formControlName="homeCollectionFlag" (change)="toggleHomeCollection($event)"> Home Collection
+            </label>
+          </div>
+
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+
+            <label>Test Code
+              <span class="validation-error">*</span>
+            </label>
+            <input type="text" class="form-control" formControlName="testNameCode">
+            <span *ngIf="submitted && labTestForm.get('testNameCode').value==null" class="validation-error">* Test Code is required
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+
+            <label>Price
+              <span class="validation-error">*</span>
+            </label>
+            <input type="text" class="form-control" formControlName="price">
+            <span *ngIf="submitted && labTestForm.get('price').value==null" class="validation-error">* Test Price is required
+            </span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+
+            <label>Effective From
+              <span class="validation-error">*</span>
+            </label>
+            <input type="text" [minDate]="minDate" placeholder="DD-MM-YYYY" bsDatepicker [bsConfig]="{ dateInputFormat: dtFormat, showWeekNumbers: false  }"
+              class="form-control date-pick" formControlName="fromDate" [readonly]="true" #dp="bsDatepicker">
+            <span>
+              <i (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt date-picker-calendarIco"></i>
+            </span>
+            <div *ngIf="submitted && labTestForm.get('fromDate').value==null" class="validation-error">* Effective Date is required
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+
+        </div>
+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary btn-sm" (click)="saveTest()">Save Test</button>
+    </div>
+  </form>
+</ng-template>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="row top-btn-area">
+      <div class="col-lg-12 text-right">
+        <!-- <button type="button" (click)="openAddEditTestModal()" class="btn btn-primary btn-sm float-right">Add</button> -->
+        <button type="button" [disabled]="testAddDisableFlag" (click)="addTest()" class="btn btn-primary btn-sm float-right">
+            {{'COMMON.ADD_BUTTON'| translate}}
+        </button>
+      </div>
+    </div>
+    <div class="row page-content">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-9 text-center">
+            <ul class="alphabetList">
+              <li *ngFor="let a of alphabet">
+                <a href="javascript:void(0);" (click)="filterByAlphabet(a)">{{a}}</a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-3">
+            <input type="text" placeholder="Seacrh by diagnostic test name" name="search" [(ngModel)]="searchText">
+          </div>
+        </div>
+
+        <!-- <div class="row">
+          <div class="col-md-12">
+            <div class="content table-responsive search-result">
+              <p-table [value]="testList" [paginator]="true" [rows]="5">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th scope="col" style="width:35%">Test Name</th>
+                    <th scope="col">Test Code</th>
+                    <th scope="col">Home Collection</th>
+                    <th scope="col">Effective From</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </ng-template>
+                 <ng-template pTemplate="body" let-rowData let-i="rowIndex">
+                  <tr>
+                    <td>
+                      {{rowData.testNameLab}}
+                    </td>
+                    <td>
+                      {{rowData.testNameCode}}
+                    </td>
+                    <td>
+                      {{rowData.homeCollectionFlag=='Y'?'Yes':'No'}}
+                    </td>
+                    <td>
+                      {{rowData.fromDate | date : 'dd-MM-yyyy'}}
+                    </td>
+                    <td>
+                      {{rowData.price | number:'1.2-2'}}
+                    </td>
+                    <td>
+                      <span ngbTooltip="Edit Test" container="body" (click)="openEditTestModal(rowData)" class="cursor">
+                        <img class="grey" src="../../../../../assets/image/edit.svg" height="15" alt="">
+                      </span>
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                      <span ngbTooltip="Delete Test" container="body" (click)="deleteTest(i, rowData)" class="cursor">
+                        <img class="grey" src="../../../../../assets/image/delete.svg" height="15" alt="">
+                      </span>
+                    </td>
+                  </tr>
+                </ng-template> -->
+
+        <!-- <ng-template pTemplate="body" let-rowData let-editing="editing" let-i="rowIndex">
+                    <tr [pEditableColumn]="rowData">
+                <td>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input type="text" formControlName="testNameLab" [value]="rowData.testNameLab">
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{rowData.testNameLab}}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input type="text" formControlName="testNameCode" [value]="rowData.testNameCode">
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{rowData.testNameCode}}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input type="text" formControlName="homeCollectionFlag" [value]="rowData.homeCollectionFlag">
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{rowData.homeCollectionFlag}}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input type="text" formControlName="fromDate" [value]="rowData.fromDate">
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{rowData.fromDate}}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input type="text" formControlName="price" [value]="rowData.price">
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{rowData.price}}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td style="text-align:center">
+                  {{editable[i]}}
+                    <button *ngIf="!editable[i]" pButton type="button" pInitEditableRow icon="pi pi-pencil" class="ui-button-info" (click)="onRowEditInit(rowData,i)"></button>
+                    <button *ngIf="editable[i]" pButton type="button" pSaveEditableRow icon="pi pi-check" class="ui-button-success" style="margin-right: .5em" (click)="onRowEditSave(rowData, i)"></button>
+                    <button *ngIf="editable[i]" pButton type="button" pCancelEditableRow icon="pi pi-times" class="ui-button-danger" (click)="onRowEditCancel(rowData, ri)"></button>
+                </td>
+                </tr>
+                </ng-template> 
+
+              </p-table>
+
+              <div class="table-responsive overflow-x-hidden">
+              <table class="table table-fixed">
+                <thead>
+                  <tr class="d-flex">
+                    <th class="col-2" scope="col" nowrap>
+                      Test Name
+                    </th>
+                    <th class="col-2" scope="col" nowrap>
+                      Test Code
+                    </th>
+                    <th class="col-2" scope="col" nowrap>
+                      Home Collection
+                    </th>
+                    <th class="col-2" scope="col" nowrap>
+                      Effective From
+                    </th>
+                    <th class="col-2" scope="col" nowrap>
+                      Price
+                    </th>
+                    <th class="col-2" scope="col" nowrap>
+                      Actions
+                    </th>
+
+
+
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr class="d-flex">
+                      <td colspan="10">No </td>
+                    </tr>
+                </tbody>    
+                <tbody>
+                  <tr class="d-flex" *ngFor="let t of testList">
+                    <td class="col-2">
+                      {{t.testNameLab}}
+                    </td>
+                    <td class="col-2">
+                        {{t.testNameCode}}
+                    </td>
+                    <td class="col-2">
+                        {{t.homeCollectionFlag=='Y'?'Yes':'No'}}
+                    </td>
+                    <td class="col-2">
+                        {{t.fromDate}}
+                    </td>
+                    <td class="col-2">
+                        {{t.price}}
+                    </td>
+                    <td class="col-2">
+                        <button type="button" (click)="openEditTestModal()" class="btn btn-primary btn-sm mr-1">Edit</button>
+                        <button type="button" (click)="deleteTest()" class="btn btn-primary btn-sm">Delete</button>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div> 
+
+            </div>
+          </div>
+        </div> -->
+
+
+
+        <form [formGroup]="form">
+          <div class="alert alert-warning" *ngIf="(form.controls.labTest['controls'].length==0)">
+            No Diagnostic Test Found
+          </div>
+
+          <div class="filterPanel">
+            <div *ngIf="form.controls.labTest['controls'].length>0">
+              <div formArrayName="labTest" class="align-middle row">
+                <div class="col-lg-12">
+                  <div class="content show-for-large table-responsive search-result">
+                    <!--table-responsive-->
+                    <table class="table table-fixed">
+                      <thead>
+                        <tr class="border-top-lightgrey">
+                          <!--class="d-flex"-->
+
+                          <th class="col-3 text-left alergy-procedure-thead-custom-style padding-left0" scope="col" nowrap>
+                            Test Name
+                          </th>
+                          <th class="col-2 text-left alergy-procedure-thead-custom-style padding-left0" scope="col" nowrap>
+                            Test Code
+                          </th>
+                          <th class="col-2 text-left alergy-procedure-thead-custom-style padding-left0" scope="col" nowrap>
+                            Home Collection
+                          </th>
+                          <th class="col-2 text-left alergy-procedure-thead-custom-style padding-left0" scope="col" nowrap>
+                            Price
+                          </th>
+                          <th class="col-2 text-left alergy-procedure-thead-custom-style padding-left0" scope="col" nowrap>
+                            Effective From
+                          </th>
+                          <th class="col-1 alergy-procedure-thead-custom-style padding-left0" scope="col" nowrap>{{'ALLERGY_PROCEDURE_HISTORY.ACTIONS'| translate}}</th>
+                        </tr>
+                      </thead>
+
+                      <tbody class="lifeStyleScrollHidden display-grid">
+                        <tr *ngFor="let ctrl of form.controls.labTest.controls  | filterByName: searchText; let i = index" class="border-bottom-lightgrey" [formGroupName]="i">
+                          <td colspan="10" *ngIf="ctrl === -1">No matches found</td>
+                          <td class="col-3 text-left font-weight400 padding-left0" *ngIf="!ctrl.get('isEdit').value || ctrl.get('labTestMapPk').value > 0">
+                            <p  ngbTooltip="{{ctrl.get('testNameLab').value}}" container="body"  class="textDot">{{ctrl.get('testNameLab').value}}</p>
+                          </td>
+                          <td class="col-3 text-left font-weight400 padding-left0" *ngIf="ctrl.get('isEdit').value && ctrl.get('labTestMapPk').value==0">
+                            <!-- <input type="text" formControlName="testNameLab"> -->
+                            <p-autoComplete styleClass="medicineListAutoComplete" placeholder="Test Name" #testName [suggestions]="labTestList" (onSelect)="setTestName($event, i)"
+                            (completeMethod)="getTestList($event)" formControlName="testNameLab" (onKeyUp)="managePk(testName.value, i)" required>
+                            <ng-template let-results pTemplate="item">
+                              <span>{{results.longName}}</span>
+                            </ng-template>
+                          </p-autoComplete>
+                            <div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.testNameLab.dirty">
+                              <span *ngIf="ctrl.hasError('required', 'testNameLab')" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                            </div>
+                          </td>
+
+                          <td class="col-2 text-left font-weight400 padding-left0" *ngIf="!ctrl.get('isEdit').value || ctrl.get('labTestMapPk').value > 0">
+                            <p class="textDot">{{ctrl.get('testNameCode').value}}</p>
+                          </td>
+                          <td class="col-2 text-left font-weight400 padding-left0" *ngIf="ctrl.get('isEdit').value && ctrl.get('labTestMapPk').value == 0">
+                            <input type="text" formControlName="testNameCode">
+                            <div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.testNameCode.dirty">
+                              <span *ngIf="ctrl.hasError('required', 'testNameCode')" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                            </div>
+                          </td>
+                          <td class="col-2 text-left font-weight400 padding-left0" *ngIf="!ctrl.get('isEdit').value">
+                            <p class="textDot">{{ctrl.get('homeCollectionFlag').value}}</p>
+                          </td>
+                          <td class="col-2 text-left font-weight400 padding-left0" *ngIf="ctrl.get('isEdit').value">
+                            <input type="checkbox" formControlName="homeCollectionFlag">
+                          </td>
+                          <td class="col-2 text-left font-weight400 padding-left0" *ngIf="!ctrl.get('isEdit').value">
+                            <p class="textDot">{{ctrl.get('price').value | number:'1.2-2'}}</p>
+                          </td>
+                          <td class="col-2 text-left font-weight400 padding-left0" *ngIf="ctrl.get('isEdit').value">
+                            <input type="text" formControlName="price">
+                            <div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.price.dirty">
+                              <span *ngIf="ctrl.hasError('required', 'price')" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                            </div>
+                          </td>
+                          <td class="col-2 text-left font-weight400 padding-left0" *ngIf="!ctrl.get('isEdit').value">
+                            <p class="textDot">{{ctrl.get('fromDate').value | date : 'dd-MM-yyyy'}}</p>
+                          </td>
+                          <td class="col-2 text-left font-weight400 padding-left0" *ngIf="ctrl.get('isEdit').value">
+                            <!-- <input type="text" formControlName="fromDate"> -->
+                            <input type="text" [minDate]="minDate" placeholder="DD-MM-YYYY" bsDatepicker [bsConfig]="{ dateInputFormat: dtFormat, showWeekNumbers: false  }"
+                            class="form-control date-pick" formControlName="fromDate" [readonly]="true" #dp="bsDatepicker">
+                          <span>
+                            <i (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt date-picker-calendarIco"></i>
+                          </span>
+                            <div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.fromDate.dirty">
+                              <span *ngIf="ctrl.hasError('required', 'fromDate')" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                            </div>
+
+                          </td>
+
+                          <td class="col-1 text-left occupationActionTd" *ngIf="!ctrl.get('isEdit').value">
+                            <span *ngIf="isAddNewButtonDisable != true" (click)="editTest(ctrl)"  ngbTooltip="Edit Test" container="body" class="table-action-btn grey cursor">
+                              <img src="../../../../../assets/image/edit.svg" height="20" alt="">
+                            </span>
+                            <!-- <span *ngIf="isAddNewButtonDisable == true" class="table-action-btn grey">
+                              <img src="../../../../../assets/image/edit.svg" height="20" alt="">
+                            </span> -->
+                            <span *ngIf="isAddNewButtonDisable != true"  ngbTooltip="Delete Test" container="body" (click)="deleteTest(ctrl, i)" class="table-action-btn grey cursor occupationDeleteIcon">
+                              <img src="../../../../../assets/image/delete.svg" height="20" alt="">
+                            </span>
+                            <!-- <span *ngIf="isAddNewButtonDisable == true" class="table-action-btn grey">
+                              <img src="../../../../../assets/image/delete.svg" height="20" alt="">
+                            </span> -->
+                          </td>
+                          <td class="col-1 text-left occupationActionTd" *ngIf="ctrl.get('isEdit').value ">
+                            <span [hidden]="ctrl.get('labTestMapPk').value==0"  ngbTooltip="Cancel" container="body" (click)="cancelTest(ctrl, i , 'edit')" class="table-action-btn grey cursor">
+                              <img src="../../../../../assets/image/cancel.svg" height="20" alt="">
+                            </span>
+                            <span  ngbTooltip="Save Test" container="body" (click)="saveTest(ctrl)" class="table-action-btn grey cursor">
+                              <img src="../../../../../assets/image/save.svg" height="25" alt="">
+                            </span>
+                            <span [hidden]="ctrl.get('labTestMapPk').value!==0"  ngbTooltip="Cancel Test" container="body" (click)="cancelTest(ctrl, i, 'add')"
+                              class="table-action-btn grey cursor">
+                              <img src="../../../../../assets/image/cancel.svg" height="20" alt="">
+                            </span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div class="content for-medium table-responsive search-result">
+                    <!--table-responsive-->
+                    <table class="table table-fixed">
+                      <thead>
+                        <tr class="border-top-lightgrey">
+                          <!--class="d-flex"-->
+
+                          <th class="col-6 text-left alergy-procedure-thead-custom-style padding-left0" scope="col" nowrap>
+                            Test Name
+                          </th>
+                          <th class="col-3 text-left alergy-procedure-thead-custom-style padding-left0" scope="col" nowrap>
+                            Test Code
+                          </th>
+                          <!--  <th class="col-2 text-left alergy-procedure-thead-custom-style padding-left0" scope="col" nowrap>
+                            Home Collection
+                          </th>
+                        <th class="col-2 text-left alergy-procedure-thead-custom-style padding-left0" scope="col" nowrap>
+                            Price
+                          </th>
+                          <th class="col-2 text-left alergy-procedure-thead-custom-style padding-left0" scope="col" nowrap>
+                            Effective From
+                          </th>-->
+                          <th class="col-3 alergy-procedure-thead-custom-style padding-left0" scope="col" nowrap>{{'ALLERGY_PROCEDURE_HISTORY.ACTIONS'| translate}}</th>
+                        </tr>
+                      </thead>
+
+                      <tbody *ngFor="let ctrl of form.controls.labTest.controls  | filterByName: searchText; let i = index" class="lifeStyleScrollHidden display-grid" >
+                        <tr [formGroupName]="i">
+                          <td colspan="10" *ngIf="ctrl === -1">No matches found</td>
+                          <td class="col-6 text-left font-weight400 padding-left0" *ngIf="!ctrl.get('isEdit').value || ctrl.get('labTestMapPk').value > 0">
+                            <p  ngbTooltip="{{ctrl.get('testNameLab').value}}" container="body"  class="textDot">{{ctrl.get('testNameLab').value}}</p>
+                          </td>
+                          <td class="col-6 text-left font-weight400 padding-left0" *ngIf="ctrl.get('isEdit').value && ctrl.get('labTestMapPk').value==0">
+                            <!-- <input type="text" formControlName="testNameLab"> -->
+                            <p-autoComplete styleClass="medicineListAutoComplete" placeholder="Test Name" #testName [suggestions]="labTestList" (onSelect)="setTestName($event, i)"
+                            (completeMethod)="getTestList($event)" formControlName="testNameLab" (onKeyUp)="managePk(testName.value, i)" required>
+                            <ng-template let-results pTemplate="item">
+                              <span>{{results.longName}}</span>
+                            </ng-template>
+                          </p-autoComplete>
+                            <div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.testNameLab.dirty">
+                              <span *ngIf="ctrl.hasError('required', 'testNameLab')" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                            </div>
+                          </td>
+
+                          <td class="col-3 text-left font-weight400 padding-left0" *ngIf="!ctrl.get('isEdit').value || ctrl.get('labTestMapPk').value > 0">
+                            <p class="textDot">{{ctrl.get('testNameCode').value}}</p>
+                          </td>
+                          <td class="col-3 text-left font-weight400 padding-left0" *ngIf="ctrl.get('isEdit').value && ctrl.get('labTestMapPk').value == 0">
+                            <input type="text" formControlName="testNameCode">
+                            <div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.testNameCode.dirty">
+                              <span *ngIf="ctrl.hasError('required', 'testNameCode')" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                            </div>
+                          </td>
+
+
+
+
+                          <td class="col-3 text-left occupationActionTd" *ngIf="!ctrl.get('isEdit').value">
+                            <span *ngIf="isAddNewButtonDisable != true" (click)="editTest(ctrl)"  ngbTooltip="Edit Test" container="body" class="table-action-btn grey cursor">
+                              <img src="../../../../../assets/image/edit.svg" height="20" alt="">
+                            </span>
+                            <!-- <span *ngIf="isAddNewButtonDisable == true" class="table-action-btn grey">
+                              <img src="../../../../../assets/image/edit.svg" height="20" alt="">
+                            </span> -->
+                            <span *ngIf="isAddNewButtonDisable != true"  ngbTooltip="Delete Test" container="body" (click)="deleteTest(ctrl, i)" class="table-action-btn grey cursor occupationDeleteIcon">
+                              <img src="../../../../../assets/image/delete.svg" height="20" alt="">
+                            </span>
+                            <!-- <span *ngIf="isAddNewButtonDisable == true" class="table-action-btn grey">
+                              <img src="../../../../../assets/image/delete.svg" height="20" alt="">
+                            </span> -->
+                          </td>
+                          <td class="col-3 text-left occupationActionTd" *ngIf="ctrl.get('isEdit').value ">
+                            <span [hidden]="ctrl.get('labTestMapPk').value==0"  ngbTooltip="Cancel" container="body" (click)="cancelTest(ctrl, i , 'edit')" class="table-action-btn grey cursor">
+                              <img src="../../../../../assets/image/cancel.svg" height="20" alt="">
+                            </span>
+                            <span  ngbTooltip="Save Test" container="body" (click)="saveTest(ctrl)" class="table-action-btn grey cursor">
+                              <img src="../../../../../assets/image/save.svg" height="25" alt="">
+                            </span>
+                            <span [hidden]="ctrl.get('labTestMapPk').value!==0"  ngbTooltip="Cancel Test" container="body" (click)="cancelTest(ctrl, i, 'add')"
+                              class="table-action-btn grey cursor">
+                              <img src="../../../../../assets/image/cancel.svg" height="20" alt="">
+                            </span>
+                          </td>
+                        </tr>
+                        <tr class="border-bottom-lightgrey">
+                          <td class="col-6 text-left font-weight400 padding-left0" *ngIf="!ctrl.get('isEdit').value">
+                            <div class="small-header">Effective From</div>
+                            <p class="textDot">{{ctrl.get('fromDate').value | date : 'dd-MM-yyyy'}}</p>
+                          </td>
+                          <td class="col-6 text-left font-weight400 padding-left0" *ngIf="ctrl.get('isEdit').value">
+                            <div class="small-header">Effective From</div>
+                            <!-- <input type="text" formControlName="fromDate"> -->
+                            <input type="text" [minDate]="minDate" placeholder="DD-MM-YYYY" bsDatepicker [bsConfig]="{ dateInputFormat: dtFormat, showWeekNumbers: false  }"
+                            class="form-control date-pick" formControlName="fromDate" [readonly]="true" #dp="bsDatepicker">
+                          <span>
+                            <i (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt date-picker-calendarIco"></i>
+                          </span>
+                            <div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.fromDate.dirty">
+                              <span *ngIf="ctrl.hasError('required', 'fromDate')" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                            </div>
+
+                          </td>
+                          <td class="col-3 text-left font-weight400 padding-left0" *ngIf="!ctrl.get('isEdit').value">
+                            <div class="small-header">Price</div>
+                            <p class="textDot">{{ctrl.get('price').value | number:'1.2-2'}}</p>
+                          </td>
+                          <td class="col-3 text-left font-weight400 padding-left0" *ngIf="ctrl.get('isEdit').value">
+                            <div class="small-header">Price</div>
+                            <input type="text" formControlName="price">
+                            <div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.price.dirty">
+                              <span *ngIf="ctrl.hasError('required', 'price')" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                            </div>
+                          </td>
+                          <td class="col-3 text-left font-weight400 padding-left0" *ngIf="!ctrl.get('isEdit').value">
+                            <div class="small-header">Home Collection</div>
+                            <p class="textDot">{{ctrl.get('homeCollectionFlag').value}}</p>
+                          </td>
+                          <td class="col-3 text-left font-weight400 padding-left0" *ngIf="ctrl.get('isEdit').value">
+                            <div class="small-header">Home Collection</div>
+                            <input type="checkbox" formControlName="homeCollectionFlag">
+                          </td>
+                        </tr>
+
+                      </tbody>
+                    </table>
+                  </div>
+
+
+                  <div class="content show-for-very-small-both-side table-responsive search-result">
+                    <!--table-responsive-->
+                    <table class="table">
+
+                      <tbody class="lifeStyleScrollHidden display-grid">
+                        <tr *ngFor="let ctrl of form.controls.labTest.controls  | filterByName: searchText; let i = index" class="border-bottom-lightgrey" [formGroupName]="i">
+                          <td class="mobile-table">
+                            <table class="w-100">
+                              <tr>
+                                <td colspan="2" *ngIf="ctrl === -1">No matches found</td>
+                              </tr>
+                              <tr>
+                                <td class="small-header">Test Name</td>
+                                <td class="" *ngIf="!ctrl.get('isEdit').value || ctrl.get('labTestMapPk').value > 0">
+                                  <p  ngbTooltip="{{ctrl.get('testNameLab').value}}" container="body">{{ctrl.get('testNameLab').value}}</p>
+                                </td>
+                                <td class="" *ngIf="ctrl.get('isEdit').value && ctrl.get('labTestMapPk').value==0">
+                                  <!-- <input type="text" formControlName="testNameLab"> -->
+                                  <p-autoComplete styleClass="medicineListAutoComplete" placeholder="Test Name" #testName [suggestions]="labTestList" (onSelect)="setTestName($event, i)"
+                                  (completeMethod)="getTestList($event)" formControlName="testNameLab" (onKeyUp)="managePk(testName.value, i)" required>
+                                  <ng-template let-results pTemplate="item">
+                                    <span>{{results.longName}}</span>
+                                  </ng-template>
+                                </p-autoComplete>
+                                  <div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.testNameLab.dirty">
+                                    <span *ngIf="ctrl.hasError('required', 'testNameLab')" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td class="small-header">Test Code</td>
+                                <td class="" *ngIf="!ctrl.get('isEdit').value || ctrl.get('labTestMapPk').value > 0">
+                                  <p>{{ctrl.get('testNameCode').value}}</p>
+                                </td>
+                                <td class="" *ngIf="ctrl.get('isEdit').value && ctrl.get('labTestMapPk').value == 0">
+                                  <input type="text" formControlName="testNameCode">
+                                  <div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.testNameCode.dirty">
+                                    <span *ngIf="ctrl.hasError('required', 'testNameCode')" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td class="small-header">Home Collection</td>
+                                <td class="" *ngIf="!ctrl.get('isEdit').value">
+                                  <p>{{ctrl.get('homeCollectionFlag').value}}</p>
+                                </td>
+                                <td class="" *ngIf="ctrl.get('isEdit').value">
+                                  <input type="checkbox" formControlName="homeCollectionFlag">
+                                </td>
+                              </tr>
+                              <tr>
+                                <td class="small-header">Price</td>
+                                <td class="" *ngIf="!ctrl.get('isEdit').value">
+                                  <p>{{ctrl.get('price').value | number:'1.2-2'}}</p>
+                                </td>
+                                <td class="" *ngIf="ctrl.get('isEdit').value">
+                                  <input type="text" formControlName="price">
+                                  <div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.price.dirty">
+                                    <span *ngIf="ctrl.hasError('required', 'price')" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td class="small-header">Effective From</td>
+                                <td class="" *ngIf="!ctrl.get('isEdit').value">
+                                  <p>{{ctrl.get('fromDate').value | date : 'dd-MM-yyyy'}}</p>
+                                </td>
+                                <td class="" *ngIf="ctrl.get('isEdit').value">
+                                  <!-- <input type="text" formControlName="fromDate"> -->
+                                  <input type="text" [minDate]="minDate" placeholder="DD-MM-YYYY" bsDatepicker [bsConfig]="{ dateInputFormat: dtFormat, showWeekNumbers: false  }"
+                                  class="form-control date-pick" formControlName="fromDate" [readonly]="true" #dp="bsDatepicker">
+                                <span>
+                                  <i (click)="dp.toggle()" [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt date-picker-calendarIco"></i>
+                                </span>
+                                  <div *ngIf="ctrl.get('isSubmit').value || ctrl.controls.fromDate.dirty">
+                                    <span *ngIf="ctrl.hasError('required', 'fromDate')" class="validation-error">{{ 'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+                                  </div>
+
+                                </td>
+                              </tr>
+                              <tr>
+                                <td class="small-header">{{'ALLERGY_PROCEDURE_HISTORY.ACTIONS'| translate}}</td>
+                                <td class=" occupationActionTd" *ngIf="!ctrl.get('isEdit').value">
+                                  <span *ngIf="isAddNewButtonDisable != true" (click)="editTest(ctrl)"  ngbTooltip="Edit Test" container="body" class="table-action-btn grey cursor">
+                                    <img src="../../../../../assets/image/edit.svg" height="20" alt="">
+                                  </span>
+                                  <!-- <span *ngIf="isAddNewButtonDisable == true" class="table-action-btn grey">
+                                    <img src="../../../../../assets/image/edit.svg" height="20" alt="">
+                                  </span> -->
+                                  <span *ngIf="isAddNewButtonDisable != true"  ngbTooltip="Delete Test" container="body" (click)="deleteTest(ctrl, i)" class="table-action-btn grey cursor occupationDeleteIcon">
+                                    <img src="../../../../../assets/image/delete.svg" height="20" alt="">
+                                  </span>
+                                  <!-- <span *ngIf="isAddNewButtonDisable == true" class="table-action-btn grey">
+                                    <img src="../../../../../assets/image/delete.svg" height="20" alt="">
+                                  </span> -->
+                                </td>
+                                <td class="occupationActionTd" *ngIf="ctrl.get('isEdit').value ">
+                                  <span [hidden]="ctrl.get('labTestMapPk').value==0"  ngbTooltip="Cancel" container="body" (click)="cancelTest(ctrl, i , 'edit')" class="table-action-btn grey cursor">
+                                    <img src="../../../../../assets/image/cancel.svg" height="20" alt="">
+                                  </span>
+                                  <span  ngbTooltip="Save Test" container="body" (click)="saveTest(ctrl)" class="table-action-btn grey cursor">
+                                    <img src="../../../../../assets/image/save.svg" height="25" alt="">
+                                  </span>
+                                  <span [hidden]="ctrl.get('labTestMapPk').value!==0"  ngbTooltip="Cancel Test" container="body" (click)="cancelTest(ctrl, i, 'add')"
+                                    class="table-action-btn grey cursor">
+                                    <img src="../../../../../assets/image/cancel.svg" height="20" alt="">
+                                  </span>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+
+
+
+
+
+
+
+
+
+
+
+
+      </div>
+    </div>
+  </div>

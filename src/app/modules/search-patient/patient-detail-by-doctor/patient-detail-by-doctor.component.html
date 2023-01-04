@@ -1,0 +1,386 @@
+<!--/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */-->
+
+<section class="pageMainContin mt-60">
+  <div class="content">
+    <div class="row page-content patient-detail">
+      <div class="col-lg-12">
+        <div class="row">
+          <div class="w-350 pr-0 pl-3">
+            <app-patient-details [userRefNo]="selectedPatientRefNo" [doctorRefNo]="loggedInUser.refNo" [screenFlag]="screenFlag"></app-patient-details>
+
+            <!--/************************************************************
+            * This screen  is modified two different commonent
+            * <app-patient-details> and <app-treatment-history>.
+            * All the related functions are moved to those components.
+            * ********************************************************* */ -->
+
+            <!-- <div class="card">
+              <div class="filterPanel">
+                <div class="row border-bottom">
+                  <div class="col-12">
+                    <h4 class="search-result-left-pen-heading">{{'SEARCH.PATIENT_DETAILS'| translate}}</h4>
+                  </div>
+                </div>
+
+                <div class="row">
+
+                  <div class="col-12 patientDetails" *ngIf="userProfileData!=null">
+                    <div class="row">
+                      <div class="col-3">
+                        <div *ngIf="patientProfileImageSrc==null">
+                          <img src="../../../../../assets/image/user.png" width="60px" height="60px" alt="" class="rounded-circle" />
+                        </div>
+                        <div *ngIf="patientProfileImageSrc!=null">
+                          <img [src]="domSanitizer.bypassSecurityTrustUrl(patientProfileImageSrc)" class="rounded-circle" width="60px" height="60px"
+                            alt="" />
+                          
+                        </div>
+                      </div>
+                      <div *ngIf="userProfileData!=null" class="col-9">
+                        <label class="name" style="font-size: 16px;color: #662d91;font-weight: 400;">
+                          <b class="notSpecified" *ngIf="userProfileData.name=='Not Specified'">{{userProfileData.name}}</b>
+                          <b *ngIf="userProfileData.name!='Not Specified'">{{userProfileData.name}}</b>
+                          <span> (<b class="notSpecified" *ngIf="age=='Not Specified'">{{age}}</b>
+                            <b *ngIf="age!='Not Specified'">{{age}}</b>/<b class="notSpecified" *ngIf="userProfileData.gender=='Not Specified'">{{userProfileData.gender}} </b><b *ngIf="userProfileData.gender!='Not Specified'">{{userProfileData.gender=='M'?'M':userProfileData.gender=='F'?'F':'O'}} </b>)
+                          </span>
+                        </label>
+                        <div class="mb-0">
+                            Blood Group
+                          <span class="notSpecified" *ngIf="userProfileData.bloodGroup==null"> - Not Specified</span>
+                          <span *ngIf="userProfileData.bloodGroup!=null"> - {{userProfileData.bloodGroup}} </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-12">
+                        <label class="page-header">Recent Medication</label>
+                        <i *ngIf="recentMedicationList.length == 0">Not Specified</i>
+                        <ol>
+                          <li *ngFor="let rm of recentMedicationList">
+                              {{rm.medicineName}} from {{rm.prescriptionDate}}
+                          </li>
+                        </ol>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-12">
+                        <label class="page-header">Allergies</label>
+                        <i *ngIf="allergyList.length == 0">Not Specified</i>
+                        <table width="100%">
+                          <tbody>
+                            <tr *ngFor="let al of allergyList">
+                              <td class="text-left">
+                                {{al.allergyType}}
+                              </td>
+                              <td class="text-left">
+                                : {{al.causes}}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-12">
+                        <label class="page-header">Procedure History</label>
+                        <i *ngIf="procedureHistoryList.length == 0">Not Specified</i>
+                        <table width="100%">
+                          <tbody>
+                            <tr *ngFor="let ph of procedureHistoryList">
+                              <td class="text-left">
+                                {{ph.procedureName}} ({{ph.procedureYear}})
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-12">
+                        <label class="page-header">Diseases History</label>
+                        <i *ngIf="diseaseHistoryList.length == 0">Not Specified</i>
+                        <table width="100%">
+                          <tbody>
+                            <tr *ngFor="let dh of diseaseHistoryList">
+                              <td class="text-left">
+                                {{dh.diseaseName}} ({{dh.diseaseYear}})
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="reportList table-responsive patient-past-history">
+                          <label class="page-header">Medical Test Report</label>
+                          <i *ngIf="medicalDetailsList.length == 0">Not Specified</i>
+                          <table width="100%" class="table table-fixed">
+                            <tbody class="patient-past-history-tbl-height">
+                              <tr *ngFor="let medicalDetail of medicalDetailsList">
+                                <td class="text-left col-12">
+                                  <div class="display-inline-block">{{medicalDetail.longName}}
+                                    <span>( {{medicalDetail.result}} {{medicalDetail.unitName}} )</span>
+                                    &nbsp;
+                                    <i class="fas fa-chart-line cursor" (click)="showHealthAttributeProgress(medicalDetail,'showChart')"></i>
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div> -->
+            <!--/************************************************************
+            * ************************End*******************************
+            * This screen  is modified two different commonent
+            * <app-patient-details> and <app-treatment-history>.
+            * All the related functions are moved to those components.
+            * ********************************************************* */ -->
+          </div>
+          <!-- <div class="card"> -->
+          <div class="col">
+            <app-treatment-history [userRefNo]="selectedPatientRefNo" [doctorRefNo]="loggedInUser.refNo" [screenFlag]="screenFlag"></app-treatment-history>
+            <!--/************************************************************
+            * This screen  is modified two different commonent
+            * <app-patient-details> and <app-treatment-history>.
+            * All the related functions are moved to those components.
+            * ********************************************************* */ -->
+            <!-- <div class="card">
+              <div class="row header cardHeader  pl-0 pr-0 pt-0">
+                <div class="col-4">
+                  <div>
+                    <h1>Treatment History</h1>
+                  </div>
+                </div>
+                <div class="col-8 text-right">
+                    <button type="button" class="btn btn-secondary mr-2" (click)="back()">{{'COMMON.BACK_BUTTON'|translate}}</button>
+                  <button type="button" class="btn btn-primary mr-2" (click)="newPrescription()">{{'SEARCH.NEW_PRESCRIPTION'|translate}}</button>
+                  <button type="button" class="btn btn-primary mr-2" (click)="openNoteModal()">{{'SEARCH.ADD_NOTES'|translate}}</button>
+                  <button type="button" class="btn btn-primary" (click)="onUploadModal()">{{'SEARCH.UPLOAD_TEST_REPORT'| translate}}</button>
+                  </div>
+              </div>
+              <div class="text-center not-found p-3" *ngIf="pastPrescription.length == 0">
+                  <h3>Patient does not have any past prescription</h3>
+              </div>
+              <div class="row" *ngIf="pastPrescription.length > 0"> 
+                <div class="col-12">
+                  <div class="pastPrescriptionList">
+                    <div *ngFor="let pp of pastPrescription">
+                      <div class="row" *ngIf="pp.prescriptionRefNo!=null">
+                        <div class="col-3">
+                            <label class="page-header">Problem(As per Patient)</label>
+                            <div *ngIf="pp.patientProblemNarration==null"><i>Not Specified</i></div>  
+                            <div *ngIf="pp.patientProblemNarration!=null">
+                                {{pp.patientProblemNarration}}
+                            </div>  
+                            
+                            <label class="page-header">Diagnosis</label>
+                            <div *ngIf="pp.diagnosisList.length==0"><i>Not Specified</i></div>  
+                            <div *ngIf="pp.diagnosisList.length > 0">
+                                <ol>
+                                  <li *ngFor="let d of pp.diagnosisList">
+                                    {{d.diagnosis}}
+                                  </li>
+                                </ol>
+                            </div>  
+                        </div>
+                        <div class="col-3">
+                            <label class="page-header">Medication</label>
+                            <div *ngIf="pp.medicationDTOList.length==0"><i>Not Specified</i></div>  
+                            <div *ngIf="pp.medicationDTOList.length > 0">
+                                <ol>
+                                  <li *ngFor="let pm of pp.medicationDTOList">
+                                      {{pm.medicineName}} {{pm.sosFlag == 'Y'?' (SoS) ':''}} => 
+                                      <span *ngIf="pm.sosFlag == 'N'">
+                                          {{pm.dosageFrequency}} time/times 
+                                          {{pm.dosageInterval == 'D' ? 'Daily' : (pm.dosageInterval == 'W' ? 'Weekly' : 'Monthly')}} 
+                                      </span>
+                                      {{pm.sosFlag == 'Y'?'':' - '}}
+                                      For {{pm.duration}} 
+                                      {{pm.durationUnit == 'D' ? 'Days' : (pm.durationUnit == 'W' ? 'Weeks' : 'Months')}}  
+                                      {{pm.beforeAfterMealFlag != null ? (pm.beforeAfterMealFlag == 'A' ? ' - After meal': ' - Before meal') : ''}} 
+                                      <span *ngIf="pm.comments !== ''">
+                                          - {{pm.comments}}
+                                      </span> 
+                                  </li>
+                                </ol>
+                            </div>  
+                        </div>
+                        <div class="col-2">
+                            <label class="page-header">Diagnostics Test</label>
+                            <div *ngIf="pp.doctorRecommendedTestList.length==0"><i>Not Specified</i></div>  
+                            <div *ngIf="pp.doctorRecommendedTestList.length > 0">
+                                <ol>
+                                  <li *ngFor="let t of pp.doctorRecommendedTestList">
+                                    {{t.medicalAttributeName}}
+                                  </li>
+                                </ol>
+                            </div>  
+                        </div>
+                        <div class="col-2">
+                            <label class="page-header">Notes</label>
+                            <div *ngIf="pp.doctorNote==null"><i>Not Specified</i></div>  
+                            <div *ngIf="pp.doctorNote!=null">
+                                {{pp.doctorNote.note}}
+                            </div>  
+                        </div>
+                        <div class="col-2">
+                          <p class="text-right">{{pp.prescriptionDate | date : "dd-MM-yyyy"}}</p>
+                          <a href="javascript:void(0);" (click)="openPrescriptionModal(pp)">
+                              <img style="margin-top: 5px;" width="50" class="ng-tns-c1-1 ng-star-inserted" src="../../../../../assets/image/prescription.svg">
+                          </a>
+                        </div>
+                        
+                      </div>
+
+                    </div>
+                   
+                  </div>
+                 
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-md-12 text-right">
+                  
+                </div>
+              </div>
+
+
+            </div> -->
+            <!--/************************************************************
+            * ************************End*******************************
+            * This screen  is modified two different commonent
+            * <app-patient-details> and <app-treatment-history>.
+            * All the related functions are moved to those components.
+            * ********************************************************* */ -->
+
+          </div>
+
+        </div>
+
+      </div>
+      <!-- </div> -->
+    </div>
+
+
+  </div>
+</section>
+
+
+
+<!-- <jw-modal id="showChart">
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="closeNewModal('showChart')">{{'USER_GROUPS.USER_GROUPS_POPUP_CLOSE' | translate }}</button>
+  </div>
+  <div class="modal-body">
+    <chart-component [chartType]="'line'" [data]="chartData"></chart-component>
+  </div>
+
+</jw-modal> -->
+<ng-template #prescriptionPreviewModal>
+
+  <div class="modal-header">
+    <h4 class="modal-title">{{'APPOINTMENT.APPOINTMENT_PRESCRIPTION'|translate}}</h4>
+    <!-- <span class="ml-2" id="download-ico">
+          <app-report [fileName]="fileName" [reportType]="reportType" [pk]="pk"></app-report>
+        </span>
+        <span class="ml-2" id="print-ico">
+          <img src="../../../../assets/image/print.svg" height="15" class="cursor" />
+        </span> -->
+    <button type="button" class="close float-right" (click)="modalRef.hide()" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <app-prescription-preview [appRefNo]="this.appRefNo"></app-prescription-preview>
+</ng-template>
+
+
+<ng-template #noteModal>
+  <form [formGroup]="doctorNoteForm">
+    <div class="modal-header">
+      <h4 class="modal-title">{{'SEARCH.ADD_NOTES'|translate}}</h4>
+    </div>
+    <div class="modal-body pb-0">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label>Brief note</label>
+            <textarea #textvalue style="width: 100% !important; height: 100px !important;" maxlength="2024" class="form-control" placeholder=" write here ...."
+              class="form-control" formControlName="note"></textarea>
+
+            <!-- <textarea #docNoteDet rows="20" column="20" maxlength="2024" class="form-control" formControlName ="note"></textarea> -->
+            <!-- app#855 -->
+            <i style="color: black;text-align: right; font-size: 10px">({{2024 - textvalue.value.length}} characters remaining)</i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer pt-0">
+      <button type="button" class="btn btn-secondary btn-sm" (click)="closeModal()">{{'COMMON.CANCEL_BUTTON'|translate}}</button>
+      <button type="submit" class="btn btn-primary btn-sm" (click)="saveNote()">{{'COMMON.SAVE_BUTTON'|translate}}</button>
+    </div>
+  </form>
+</ng-template>
+
+<!-- Modal -->
+<ng-template #testReportsUpload>
+    <!-- Modal content-->
+    <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
+      <div class="modal-header">
+        <h4 class="modal-title">{{'MEDICAL_REPORTS.MEDICAL_RECORD_UPLOAD' | translate}}</h4>
+        <button type="button" class="close" data-dismiss="modal" (click)="modalRef.hide()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- <div class="row">
+          <div class="col-md-6 padding20">
+            <label>{{'MEDICAL_REPORTS.TEST_NAME' | translate}}</label>
+            <p-autoComplete [style]="{'width':'100%'}" [suggestions]="results" (completeMethod)="search($event)"
+              field="longName" formControlName="testName" placeholder="Search for test reports">
+            </p-autoComplete>
+            <br>
+            <span *ngIf="uploadForm.get('isSubmit').value || uploadForm.controls.testName.dirty">
+              <span *ngIf="uploadForm.hasError('required', 'testName')" class="validation-error">{{
+                          'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+            </span>
+          </div>
+          <div class="col-md-6 padding20">
+            <label>{{'COMMON.DATE' | translate}}</label>
+            <app-datepicker formControlName="date" [maxDate]="maxDate" position="right"></app-datepicker>
+          </div>
+        </div> -->
+        <div class="col-md-6 padding20">
+          <input type="file" (change)="prescriptionFileSelected($event)" formControlName="documents" />
+          <span *ngIf="uploadForm.get('isSubmit').value || uploadForm.controls.file.dirty">
+            <span *ngIf="uploadForm.hasError('required', 'file')" class="validation-error">{{
+                          'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+          </span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="col-md-6 float-right text-right">
+          <button type="button" type="submit" class="btn btn-primary">{{'MEDICAL_REPORTS.UPLOAD' | translate}}</button>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+  <!--end of modal-->

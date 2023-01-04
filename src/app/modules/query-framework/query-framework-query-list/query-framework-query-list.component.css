@@ -1,0 +1,22 @@
+
+.query-card h4{
+    color: #9251a3;
+    font-weight: 300 !important;
+    text-transform: uppercase;
+}
+.query-card h4 i{
+    margin-right: 7px;
+}
+.query-card ul{
+    list-style-type: none;
+    margin-left: -28px;
+}
+.query-card ul li{
+    padding: 10px;
+    border-bottom: 1px solid #f3f2f2;
+}
+.query-card ul li a{
+    color: #9251a3;
+    text-decoration: none;
+    font-size: 14px;
+}

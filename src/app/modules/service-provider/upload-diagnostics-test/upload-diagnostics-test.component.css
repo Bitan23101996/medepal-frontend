@@ -1,0 +1,35 @@
+.show-for-large{
+  display:flex;
+}
+
+.show-for-ipad{
+  display:none;
+}
+
+@media only screen and (min-width : 768px) and (max-width : 1024px){
+  .show-for-ipad{
+    display:block;
+  }
+
+  .show-for-large{
+    display:none;
+  }
+
+}
+
+
+@media only screen and (min-width: 575px) and (max-width: 767px){
+  .show-for-large{
+    display:none;
+  }
+}
+
+
+@media (max-width: 576px) {
+  .show-for-ipad{
+    display:none;
+  }
+  .show-for-large{
+    display:none;
+  }
+}

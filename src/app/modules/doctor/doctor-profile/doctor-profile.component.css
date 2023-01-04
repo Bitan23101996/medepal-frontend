@@ -1,0 +1,109 @@
+/*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+
+.addNew{
+    width: 100%;
+    text-align: center;
+    border: 1px dashed #999;
+    padding: 10px 0;
+}
+.addNew a{
+    display: block;
+    color: #555;
+}
+.addNew a:hover{
+    text-decoration: none;
+}
+
+.btn-icess{
+    background: #3f51b5;
+    color: #fff;
+}
+
+
+
+/* table {
+width: 100%;
+}
+
+table, td {
+border-collapse: collapse;
+}
+
+thead {
+display: table; 
+width: calc(100% - 17px); 
+}
+
+tbody {
+display: block; 
+max-height: 400px; 
+overflow-y: scroll; 
+}
+
+th, td {
+width: 33.33%; 
+padding: 10px;
+}
+
+
+tr {
+display: table; 
+width: 100%;
+} */
+
+
+th{
+    /* background: #eed7ff; */
+    color: #333;
+}
+
+tr:nth-child(even) {
+    background: #fff !important;
+}
+
+td {
+border-bottom: none;
+border-left: none;
+}
+#image-corner {
+    border-radius: 30px;
+    border: 1px solid black;
+    padding: 0; 
+    width: 110px;
+    height: 110px;  
+  }
+  .profileBtnHolder {
+    margin: -79px auto !important;    
+  }
+.middle{
+    opacity: 1;
+}
+.middle label i{
+ cursor: pointer;
+}
+
+
+.page-content .card{
+	margin-bottom:30px !important;    
+}
+
+
+
+
+
+
+

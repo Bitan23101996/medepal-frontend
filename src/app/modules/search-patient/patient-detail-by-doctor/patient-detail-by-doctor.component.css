@@ -1,0 +1,38 @@
+.scrollarea {
+    min-height: calc(100vh - 600px);
+    max-height: calc(100vh - 600px);
+    overflow: auto;
+}
+.w-350{
+    width:350px;
+}
+.card-title{
+    font-size: .825rem;
+    font-weight: 500;
+    color: #662d91;
+    text-transform: uppercase;
+}
+.patientDetails {
+    margin-bottom: 10px;
+}
+.patientDetails .row{
+    margin-top: 12px;
+}
+.pastPrescriptionList .page-header{
+    text-transform: uppercase;
+    margin-top: 15px;
+    font-weight: 500;
+}
+.pastPrescriptionList ol{
+    margin-left: -26px;
+}
+.pastPrescriptionList .row{
+    border-bottom: 1px solid #e9e8e8;
+    margin: 4px;
+}
+/*.patientDetails .row div:nth-child(2){
+    font-size: 1rem;
+    font-weight: 300;
+    color: #662d91;
+    text-transform: uppercase;
+    }*/

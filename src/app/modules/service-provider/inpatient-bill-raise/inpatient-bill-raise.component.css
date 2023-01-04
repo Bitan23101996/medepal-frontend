@@ -1,0 +1,17 @@
+#patientBillDetailSection{
+    margin-top: 20px;
+   
+}
+.input-sm{
+    width: 50px !important;
+}
+.input-md{
+    width: 110px !important;
+}
+.table-responsive{
+    overflow-x: inherit;
+}
+.unit{
+    margin-top: 7px;
+    margin-left: 10px;
+}

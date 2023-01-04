@@ -1,0 +1,481 @@
+<!-- /*
+*  * |///////////////////////////////////////////////////////////////////////|
+*  * |                                                                       |
+*  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+*  * | All Rights Reserved                                                   |
+*  * |                                                                       |
+*  * | This document is the sole property of StellaBlue Interactive          |
+*  * | Services Pvt. Ltd.                                                    |
+*  * | No part of this document may be reproduced in any form or             |
+*  * | by any means - electronic, mechanical, photocopying, recording        |
+*  * | or otherwise - without the prior written permission of                |
+*  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+*  * |                                                                       |
+*  * |///////////////////////////////////////////////////////////////////////|
+*  */ -->
+
+
+<ng-template #procedurePreviewModal>
+
+    <div class="modal-header">
+      <h4 class="modal-title">Procedure</h4>
+      <button type="button" class="close float-right" (click)="modalRef.hide()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <app-procedure-preview [procedureNote]="procedureNote"></app-procedure-preview>
+  </ng-template>
+
+<ng-template #prescriptionPreviewModal>
+
+  <div class="modal-header">
+    <h4 class="modal-title">{{'APPOINTMENT.APPOINTMENT_PRESCRIPTION'|translate}}</h4>
+    <!-- <span class="ml-2" id="download-ico">
+            <app-report [fileName]="fileName" [reportType]="reportType" [pk]="pk"></app-report>
+          </span>
+          <span class="ml-2" id="print-ico">
+            <img src="../../../../assets/image/print.svg" height="15" class="cursor" />
+          </span> -->
+    <button type="button" class="close float-right" (click)="modalRef.hide()" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <app-prescription-preview [appRefNo]="this.appRefNo"></app-prescription-preview>
+</ng-template>
+
+<!-- Modal --closed because[this have been used for only upload test-report] of https://gitlab.com/sbis-poc/app/issues/1163 issue-->
+<!-- <ng-template #testReportsUpload>
+    <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()">
+      <div class="modal-header">
+        <h4 class="modal-title">{{'MEDICAL_REPORTS.MEDICAL_RECORD_UPLOAD' | translate}}</h4>
+        <button type="button" class="close" data-dismiss="modal" (click)="modalRef.hide()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="col-md-6 padding20">
+          <input type="file" (change)="prescriptionFileSelected($event)" formControlName="documents" />
+          <span *ngIf="uploadForm.get('isSubmit').value || uploadForm.controls.file.dirty">
+            <span *ngIf="uploadForm.hasError('required', 'file')" class="validation-error">{{
+                          'VALIDATION.VALIDATION_REQUIRED' | translate }}</span>
+          </span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="col-md-6 float-right text-right">
+          <button type="submit" class="btn btn-primary">{{'MEDICAL_REPORTS.UPLOAD' | translate}}</button>
+        </div>
+      </div>
+    </form>
+  </ng-template> -->
+<!--end of modal-->
+<!--closed because[this have been used for only upload test-report] of https://gitlab.com/sbis-poc/app/issues/1163 issue-->
+
+<ng-template #noteModal>
+  <form [formGroup]="doctorNoteForm">
+    <div class="modal-header">
+      <h4 class="modal-title">{{'SEARCH.ADD_NOTES'|translate}}</h4>
+    </div>
+    <div class="modal-body pb-0">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label>Brief note</label>
+            <textarea #textvalue style="width: 100% !important; height: 100px !important;" maxlength="2024"
+              class="form-control" placeholder=" write here ...." class="form-control"
+              formControlName="note"></textarea>
+            <!-- <textarea #docNoteDet rows="20" column="20" maxlength="2024" class="form-control" formControlName ="note"></textarea> -->
+            <!-- app#855 -->
+            <i style="color:black;text-align: right; font-size: 10px">({{2024 - textvalue.value.length}} characters
+              remaining)</i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer pt-0">
+      <button type="button" class="btn btn-secondary btn-sm"
+        (click)="closeModal()">{{'COMMON.CANCEL_BUTTON'|translate}}</button>
+      <button type="submit" class="btn btn-primary btn-sm"
+        (click)="saveNote()">{{'COMMON.SAVE_BUTTON'|translate}}</button>
+    </div>
+  </form>
+</ng-template>
+
+<div class="card">
+  <div class="row header  pl-0 pr-0 pt-0">
+    <div class="col-lg-10 col-md-10 col-sm-10 col-9">
+      <div>
+        <h1>{{'PRESCRIPTION.TREATMENT_HISTORY'|translate}}</h1>
+      </div>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-2 col-3 text-right">
+      <button type="button" *ngIf="screenFlag=='prescription'" class="btn btn-secondary"
+        (click)="cancelPatientPreview()">{{'COMMON.BACK_BUTTON'|translate}}</button>
+      <button type="button" *ngIf="screenFlag=='patient' || screenFlag=='patient' || screenFlag=='opd'"
+        class="btn btn-secondary" (click)="back()">{{'COMMON.BACK_BUTTON'|translate}}</button>
+    </div>
+    <div class="col-12 text-lg-right text-md-right text-center border-top border-bottom action-bar-links mb-2">
+      <ng-container *ngIf="screenFlag=='patient' || screenFlag=='prescription'">
+        <a href="javascript:void(0)" *ngIf="screenFlag=='patient'" class="mr-1"
+          (click)="newPrescription()">{{'SEARCH.NEW_PRESCRIPTION'|translate}}</a>&nbsp;|&nbsp;
+        <a href="javascript:void(0)" *ngIf="screenFlag=='patient'" class="mr-1 ml-1"
+          (click)="openNoteModal()">{{'SEARCH.ADD_NOTES'|translate}}</a>&nbsp;|&nbsp;
+        <a href="javascript:void(0)" *ngIf="screenFlag=='patient' || screenFlag=='prescription'" class="mr-1 ml-1"
+          (click)="onClickEditDiagnosticsTestDetails(null, null,'add')">{{'SEARCH.ADD_TEST_REPORT'| translate}}</a>&nbsp;|&nbsp;
+        <!--https://gitlab.com/sbis-poc/app/issues/1163-->
+        <a href="javascript:void(0)" *ngIf="screenFlag=='patient' || screenFlag=='prescription'" class="mr-1 ml-1"
+          (click)="onProcedureNote()">{{'PROCEDURE.PROCEDURE_NOTE'| translate}}</a> &nbsp;|&nbsp;
+        <!--issue number 765-->
+        <a href="javascript:void(0)" *ngIf="screenFlag=='patient' || screenFlag=='prescription'" class=""
+          (click)="peerConsulting()">{{'SEARCH.CONSULT'| translate}}</a>
+        <!--issue number 765-->
+      </ng-container>
+      <a href="javascript:void(0)" *ngIf="screenFlag=='opd'" class=""
+        (click)="onClickEditDiagnosticsTestDetails(null, null,'add')">{{'SEARCH.ADD_TEST_REPORT'| translate}}</a>
+      <!-- issue number https://gitlab.com/sbis-poc/app/issues/1103-->
+
+    </div>
+  </div>
+  <!-- Working on app/issues/1161 -->
+  <div class="text-center not-found p-3" *ngIf="!showDataFlag">
+    <h3>{{'PRESCRIPTION.PAST_PRESCRIPTION_FETCHING_MSG'|translate}}</h3>
+  </div>
+  <!--End Working on app/issues/1161 -->
+  <div class="text-center not-found p-3" *ngIf="pastPrescription.length == 0 && showDataFlag">
+    <h3>{{'PRESCRIPTION.NO_PAST_TREATMENT_HISTORY'|translate}}</h3>
+  </div>
+  <div class="row" *ngIf="pastPrescription.length > 0 && showDataFlag">
+    <div class="col-12">
+      <div class="pastPrescriptionList">
+        <div *ngFor="let pp of pastPrescription">
+          <div class="row border-bottom" *ngIf="pp.prescriptionRefNo!=null">
+            <div class="col-12">
+              <div class="row">
+                <div class="col-6 history-dates bold-text">
+                  <b>{{pp.prescriptionDate | date : "dd-MM-yyyy"}}</b>
+                  <span class="badge badge-success ml-2">Consultation</span>
+                </div>
+                <!-- Working on app/issues/1298 -->
+                <div class="col-6 bold-text text-right" *ngIf="loggedInUser.entityName=='HOSPITAL'">
+                  Dr. <span class="text-uppercase"> {{pp.doctor.doctorName}}</span>
+                </div>
+                <!-- <div [ngClass]="loggedInUser.entityName=='HOSPITAL'?'col-2 text-right':'col-6 text-right'">
+                <span class="badge badge-success">Consultation</span>
+              </div> -->
+
+                <!--End Working on app/issues/1298 -->
+              </div>
+              <div class="row">
+                <div class="col-lg-6 col-md-6 col-12">
+                  <label class="page-header">{{'PRESCRIPTION.SYMPTOMS'|translate}}</label>
+                  <div *ngIf="pp.patientProblemNarration==null"><i>{{'COMMON.NA'|translate}}</i></div>
+                  <div *ngIf="pp.patientProblemNarration!=null">
+                    {{pp.patientProblemNarration}}
+                  </div>
+
+                </div>
+                <div class="col-lg-5 col-md-5 col-10">
+                  <label class="page-header">{{'PRESCRIPTION.DIAGNOSIS'|translate}}</label>
+                  <div *ngIf="pp.diagnosisList.length==0"><i>{{'COMMON.NA'|translate}}</i></div>
+                  <div *ngIf="pp.diagnosisList.length > 0">
+                    <ol>
+                      <li *ngFor="let d of pp.diagnosisList">
+                        {{d.diagnosis}}
+                      </li>
+                    </ol>
+                  </div>
+                </div>
+                <div class="col-lg-1 col-md-1 col-2">
+                  <a href="javascript:void(0);" (click)="openPrescriptionModal(pp)">
+                    <img style="margin-top: 5px;" width="30"
+                      class="ng-tns-c1-1 ng-star-inserted treatment-history-presc-ico"
+                      src="../../../../../assets/image/prescription.svg">
+                  </a>
+                </div>
+              </div>
+
+
+              <div class="row">
+                <div class="col-lg-6">
+                  <label class="page-header">{{'PRESCRIPTION.MEDICATIONS'|translate}}</label>
+                  <div *ngIf="pp.medicationDTOList.length==0"><i>{{'COMMON.NA'|translate}}</i></div>
+                  <div *ngIf="pp.medicationDTOList.length > 0">
+                    <ol>
+                        <ng-container *ngFor="let pm of pp.medicationDTOList; let i = index">
+                            <ng-container *ngIf="pm.status=='NRM' && pm.medicineName!=null">
+                              <li *ngIf="pm.medicineName!=''">
+                                <span>
+                                  {{pm.medicineName}} {{pm.sosFlag == 'Y'?' (SoS) ':''}}:
+                                  <span *ngIf="pm.unitType !== ''">
+                                    <!-- sbis-poc/app/issues/803-->
+                                    {{pm.noOfUnit}} {{pm.unitType | prescribeMedicine:pm.noOfUnit}} {{pm.sosFlag == 'Y'?'':'x '}}
+                                  </span>
+                                  <span *ngIf="pm.sosFlag == 'N' || pm.sosFlag == null">
+                                    <!-- sbis-poc/app/issues/803-->
+                                    {{pm.dosageFrequency}}
+                                    <ng-container *ngIf="pm.dosageFrequency > 1">times</ng-container>
+                                    <ng-container *ngIf="pm.dosageFrequency <= 1">time</ng-container>
+                                    {{pm.dosageInterval == 'D' ? 'daily' : (pm.dosageInterval == 'W' ? 'weekly' : 'monthly')}} for {{pm.duration}}
+                                    <!-- sbis-poc/app/issues/803-->
+                                    <ng-container *ngIf="pm.duration > 1">
+                                      {{pm.durationUnit == 'D' ? 'days' : (pm.durationUnit == 'W' ? 'weeks' : 'months')}}
+                                    </ng-container>
+                                    <ng-container *ngIf="pm.duration <= 1">
+                                      {{pm.durationUnit == 'D' ? 'day' : (pm.durationUnit == 'W' ? 'week' : 'month')}}
+                                    </ng-container>
+                                  </span>
+                                  <!-- {{pm.sosFlag == 'Y'?'':' - '}} -->
+                          
+                                  {{pm.beforeAfterMealFlag != null ? (pm.beforeAfterMealFlag == 'A' ? ' - after meal': ' - before meal') : ''}}
+                                  <span *ngIf="pm.comments !== ''">
+                                    - {{pm.comments}}
+                                  </span>
+                          
+                                </span>
+                                <!-- Working On app/issues/591 -->
+                                <div *ngIf="pm.substituteMedicineList != null && pm.substituteMedicineList.length > 0">
+                                  <p>
+                                    <u>{{'PRESCRIPTION.SUBSTITUTE_MEDICINE'| translate}}</u>
+                                  </p>
+                                  <ul>
+                                    <li *ngFor="let sm of pm.substituteMedicineList">
+                                      {{sm.medicineName}}
+                                    </li>
+                                  </ul>
+                                </div>
+                                <!--End Working On app/issues/591 -->
+                              </li>
+                            </ng-container>
+                          </ng-container>
+                      <!-- <li *ngFor="let pm of pp.medicationDTOList">
+                        {{pm.medicineName}} {{pm.sosFlag == 'Y'?' (SoS) ':''}} =>
+                        <span *ngIf="pm.sosFlag == 'N'">
+                          {{pm.dosageFrequency}} time/times
+                          {{pm.dosageInterval == 'D' ? 'Daily' : (pm.dosageInterval == 'W' ? 'Weekly' : 'Monthly')}}
+                        </span>
+                        {{pm.sosFlag == 'Y'?'':' - '}}
+                        For {{pm.duration}}
+                        {{pm.durationUnit == 'D' ? 'Days' : (pm.durationUnit == 'W' ? 'Weeks' : 'Months')}}
+                        {{pm.beforeAfterMealFlag != null ? (pm.beforeAfterMealFlag == 'A' ? ' - After meal': ' - Before meal') : ''}}
+                        <span *ngIf="pm.comments !== ''">
+                          - {{pm.comments}}
+                        </span>
+                      </li> -->
+                    </ol>
+                  </div>
+                </div>
+
+
+                <div class="col-lg-3 col-md-6">
+                  <label class="page-header">{{'PRESCRIPTION.INVESTIGATIONS'|translate}}</label>
+                  <div *ngIf="pp.doctorRecommendedTestList.length==0"><i>{{'COMMON.NA'|translate}}</i></div>
+                  <div *ngIf="pp.doctorRecommendedTestList.length > 0">
+                    <ol class="mb-0">
+                      <li *ngFor="let t of pp.doctorRecommendedTestList" class="mb-0">
+                        <div class="row">
+                          <div class="col-lg-10 margin-bottom-20px">
+                            <span ngbTooltip="{{t.medicalAttributeName}} {{t.result}} {{t.unit}}"
+                              class="textDot">{{t.medicalAttributeName}} <ng-container *ngIf="t?.result">({{t.result}}
+                                {{t.unit}})</ng-container></span>&nbsp;
+                          </div>
+                          <!-- <div class="col-lg-5">
+                        <span style="font-size: 12px;">({{t.result}}/{{t.unit}})</span>
+                      </div> -->
+                          <div class="col-lg-2 margin-left-20px">
+                            <!-- edit diagnostics test details (https://gitlab.com/sbis-poc/frontend/issues/210) -->
+                            <span ngbTooltip="Update Medical Data" class="table-action-btn edit cursor"
+                              (click)="onClickEditDiagnosticsTestDetails(t, pp,'edit')">
+                              <img src="assets/image/edit.svg" height="20" alt="">
+                            </span>
+                          </div>
+                        </div>
+                        <!-- end of edit diagnostics test details (https://gitlab.com/sbis-poc/frontend/issues/210) -->
+                      </li>
+                    </ol>
+                    <!--new add to show the uploaded files-->
+                    <div class="row ml-1">
+                      <div class="col-2 col-md-2 mb-0 p-0 display-inline-block text-center"
+                        *ngFor="let ppuploadedMRImg of pp.uploadedMRImages">
+                        <img [src]="transform(ppuploadedMRImg.imgSrc)" height="50px" width="50px" class="cursor border p-1 mr-1"
+                        (click)="openImageInNewTab(ppuploadedMRImg.imgSrc)" *ngIf="ppuploadedMRImg.contentType != 'application/pdf'"/>
+
+                        <img *ngIf="ppuploadedMRImg.contentType == 'application/pdf'"  height="50px" width="50px" class="cursor border pt-1 pb-1 mr-1" (click)="openPdf(ppuploadedMRImg.imgSrc)"  src="assets/image/pdf.svg"/>
+                      </div>
+                      <!-- end of new add to show the uploaded files-->
+                    </div>
+                  </div>
+                  <div class="row">
+                    <label class="mt-0 mb-0 col-md-12 col-lg-12 col-12 page-header">{{'PRESCRIPTION.NOTES'|translate}}</label>
+                    <div *ngIf="pp.doctorNote==null" class="col-md-12 col-lg-12 col-12"><i>{{'COMMON.NA'|translate}}</i></div>
+                    <div *ngIf="pp.doctorNote!=null" class="col-md-12 col-lg-12 col-12">
+                      {{pp.doctorNote.note}}
+                    </div>
+                  </div>
+
+
+                </div>
+
+              </div>
+
+
+
+            </div>
+            </div>
+            <!-- //sbis-poc/app/issues/862 start -->
+            <div class="row border-bottom" *ngIf="pp.procedureRefNo!=null">
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-6 bold-text">
+                    <b>{{pp.procedureDate | date : "dd-MM-yyyy"}}</b>
+                    <span class="badge badge-primary ml-2">{{'PROCEDURE.PROCEDURE_NOTE'| translate}}</span>
+                  </div>
+                  <!-- Working on app/issues/1298 -->
+                  <div class="col-6 bold-text text-right" *ngIf="loggedInUser.entityName=='HOSPITAL'">
+                    Dr. <span class="text-uppercase"> {{pp.doctorName}}</span>
+                  </div>
+                  <!-- <div [ngClass]="loggedInUser.entityName=='HOSPITAL'?'col-2 text-right':'col-6 text-right'">
+                <span class="badge badge-primary">Procedure</span>
+              </div> -->
+                  <!--End Working on app/issues/1298 -->
+                </div>
+                <div class="row">
+                  <div class="col-lg-4 col-md-4 col-12 col-xs-4 col-sm-4">
+                    <label class="page-header">{{'PRESCRIPTION.PROCEDURE_NAME'|translate}}</label>
+                    <div *ngIf="pp.procedureName==null"><i>{{'COMMON.NA'|translate}}</i></div>
+                    <div *ngIf="pp.procedureName!=null">
+                      {{pp.procedureName}}
+                    </div>
+
+                  </div>
+
+                  <!-- <div class="col-lg-4 col-md-4 col-10 col-xs-4 col-sm-4">
+                    <label class="page-header">{{'PRESCRIPTION.PROCEDURE_LOCATION'|translate}}</label>
+                    <div *ngIf="pp.procedureLocation==null"><i>{{'COMMON.NA'|translate}}</i></div>
+                    <div *ngIf="pp.procedureLocation!=null">{{pp.procedureLocation}}
+                    </div>
+                  </div>
+                  <div class="col-lg-2 col-md-2 col-10 col-xs-2 col-sm-2">
+                    <label class="page-header">{{'PRESCRIPTION.PROCEDURE_DATETIME'|translate}}</label>
+                    <div *ngIf="pp.procedureStartTime==null"><i>{{'COMMON.NA'|translate}}</i></div>
+                    <div *ngIf="pp.procedureStartTime!=null">
+                      {{pp.procedureDate | date : "dd-MM-yyyy"}} {{pp.procedureStartTime}}
+                    </div>
+                  </div> -->
+                  <div class="col-lg-6 col-md-6 col-10 col-xs-6 col-sm-6">
+                      <label class="page-header">{{'PROCEDURE.PROCEDURE_NOTE'|translate}}</label>
+                      <div *ngIf="pp.notes==null"><i>{{'COMMON.NA'|translate}}</i></div>
+                      <div *ngIf="pp.notes!=null">{{pp.notes}}</div>
+                  </div>
+                  <div class="col-lg-1 col-md-1 col-1 col-xs-1 col-sm-1"></div>
+
+                  <div class="col-lg-1 col-md-1 col-1 col-xs-1 col-sm-1">
+                      <!-- <a href="javascript:void(0);" (click)="openProcedure(pp)"> -->
+                    <a href="javascript:void(0);" (click)="openProcedureModal(pp)">
+                      <img class="ng-tns-c1-1 ng-star-inserted treatment-history-presc-ico"
+                        src="../../../../../assets/image/add-medical.jpg" style="margin-top: 1px;width: 53px;position: absolute;
+          left: 7px;">
+                    </a>
+                  </div>
+
+
+
+                </div>
+
+              </div>
+
+
+
+            </div>
+
+            <!-- //sbis-poc/app/issues/862 end -->
+
+
+
+            <!--<div class="col-3">
+                    <label class="page-header">Problem(As per Patient)</label>
+                    <div *ngIf="pp.patientProblemNarration==null"><i>Not Specified</i></div>  
+                    <div *ngIf="pp.patientProblemNarration!=null">
+                        {{pp.patientProblemNarration}}
+                    </div>  
+                    
+                    <label class="page-header">Diagnosis</label>
+                    <div *ngIf="pp.diagnosisList.length==0"><i>Not Specified</i></div>  
+                    <div *ngIf="pp.diagnosisList.length > 0">
+                        <ol>
+                          <li *ngFor="let d of pp.diagnosisList">
+                            {{d.diagnosis}}
+                          </li>
+                        </ol>
+                    </div>  
+                </div>
+                <div class="col-3">
+                    <label class="page-header">Medication</label>
+                    <div *ngIf="pp.medicationDTOList.length==0"><i>Not Specified</i></div>  
+                    <div *ngIf="pp.medicationDTOList.length > 0">
+                        <ol>
+                          <li *ngFor="let pm of pp.medicationDTOList">
+                              {{pm.medicineName}} {{pm.sosFlag == 'Y'?' (SoS) ':''}} => 
+                              <span *ngIf="pm.sosFlag == 'N'">
+                                  {{pm.dosageFrequency}} time/times 
+                                  {{pm.dosageInterval == 'D' ? 'Daily' : (pm.dosageInterval == 'W' ? 'Weekly' : 'Monthly')}} 
+                              </span>
+                              {{pm.sosFlag == 'Y'?'':' - '}}
+                              For {{pm.duration}} 
+                              {{pm.durationUnit == 'D' ? 'Days' : (pm.durationUnit == 'W' ? 'Weeks' : 'Months')}}  
+                              {{pm.beforeAfterMealFlag != null ? (pm.beforeAfterMealFlag == 'A' ? ' - After meal': ' - Before meal') : ''}} 
+                              <span *ngIf="pm.comments !== ''">
+                                  - {{pm.comments}}
+                              </span> 
+                          </li>
+                        </ol>
+                    </div>  
+                </div>
+                <div class="col-2">
+                    <label class="page-header">Diagnostics Test</label>
+                    <div *ngIf="pp.doctorRecommendedTestList.length==0"><i>Not Specified</i></div>  
+                    <div *ngIf="pp.doctorRecommendedTestList.length > 0">
+                        <ol>
+                          <li *ngFor="let t of pp.doctorRecommendedTestList">
+                            {{t.medicalAttributeName}}
+                          </li>
+                        </ol>
+                    </div>  
+                </div>
+                <div class="col-2">
+                    <label class="page-header">Notes</label>
+                    <div *ngIf="pp.doctorNote==null"><i>Not Specified</i></div>  
+                    <div *ngIf="pp.doctorNote!=null">
+                        {{pp.doctorNote.note}}
+                    </div>  
+                </div>
+                <div class="col-2">
+                  <p class="text-right">{{pp.prescriptionDate | date : "dd-MM-yyyy"}}</p>
+                  <a href="javascript:void(0);" (click)="openPrescriptionModal(pp)">
+                      <img style="margin-top: 5px;" width="50" class="ng-tns-c1-1 ng-star-inserted" src="../../../../../assets/image/prescription.svg">
+                  </a>
+                </div> -->
+
+
+
+         
+
+        </div>
+
+      </div>
+    </div>
+    <div class="row mb-2">
+      <div class="col-md-12 text-right">
+
+      </div>
+    </div>
+
+
+  </div>
+
+  <!-- shanu -->
+  <!-- https://gitlab.com/sbis-poc/frontend/issues/210 -->
+  <ng-container *ngIf="showDiagnosticsTestReport">
+    <app-medical-test-results [selectedPatientDetail]="patientPrescriptionDetail"
+      [selectedDiagnosticsDetails]="medicalDiagnosticDetailsData" (medicalDetailsClose)="medicalDetailsClose($event)">
+    </app-medical-test-results>
+  </ng-container>
+  <!-- https://gitlab.com/sbis-poc/frontend/issues/210 -->
+  <!-- shanu -->

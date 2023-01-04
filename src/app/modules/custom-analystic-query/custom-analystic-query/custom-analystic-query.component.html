@@ -1,0 +1,828 @@
+<!--
+  /*
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  * |                                                                       |
+ *  * | Copyright (C) STELLABLUE INTERACTIVE SERVICES PVT. LTD.               |
+ *  * | All Rights Reserved                                                   |
+ *  * |                                                                       |
+ *  * | This document is the sole property of StellaBlue Interactive          |
+ *  * | Services Pvt. Ltd.                                                    |
+ *  * | No part of this document may be reproduced in any form or             |
+ *  * | by any means - electronic, mechanical, photocopying, recording        |
+ *  * | or otherwise - without the prior written permission of                |
+ *  * | StellaBlue Interactive Services Pvt. Ltd.                             |
+ *  * |                                                                       |
+ *  * |///////////////////////////////////////////////////////////////////////|
+ *  */
+// /sbis-poc/app/issues/936
+-->
+<section class="pageMainContin">
+  <div *ngIf="loading" class="cover">
+    <div class="loader">
+        <div class="loading-img"><img width=250px src="../../../../../assets/image/logo.svg"/></div>
+        <div class="loading-txt">Loading<div class="dot-elastic"></div></div>
+    </div>
+  </div>
+  <div class="content">
+    <div class="row page-content">
+      <div class="col-lg-12">
+        <div class="row">
+          <div (clickOutside)="outsideDivClick($event)"   class="sml" [ngClass]="panelVisible ? 'panelVisible' : 'panelNotVisible'">
+
+            <div class="w-10 pr-0 pl-3 ">
+              <form [formGroup]="customAnalysticQuery">
+                <div class="card" style="position: inherit;" *ngIf="isDefaultAvailable"> <!-- DEFAULT VALUE BLOCK START -->
+                  <div class="filterPanel">
+                    <!--  Working on app/issue/2202 -->
+                    <div class="row border-bottom">                   
+                      <div class="col-12 text-right link-pos-adj"><a href="javascript:void(0);"
+                          (click)="resetAll()">{{ 'ANALYSTIC_QUERY.RESET_ALL' | translate }}</a></div>
+                    </div>                 
+                    <div class="row border-bottom" >
+                      <div class="col-12">
+                        <div class="row mt-2">
+                            <div class="col-12" style="border-bottom:1px solid #dee2e6;">
+                                <h4 class="search-result-left-pen-heading">{{ 'ANALYSTIC_QUERY.DATE_TIME' | translate }}</h4>
+                              </div>
+                        </div>
+                    
+                    <div class="row border-bottom">                    
+                      <div class="col-12">                      
+                        <div class="row">
+                          <div class="col-12">
+                            <!-- <div class="row border-bottom pb-2 mt-2" *ngIf="false">
+                              <div class="col-9">
+                                <label>{{ 'ANALYSTIC_QUERY.QUERY_SCENARIO' | translate }}</label>
+                                <p-dropdown [options]="queryScenario" (onChange)="fetchColumns($event)"
+                                  [style]="{'width':'267px'}" placeholder="--  Select a Scenario  --"
+                                  formControlName="queryScenario" [showClear]="true"></p-dropdown>
+                              </div>
+                              <div class="col-3">
+                                <span>&nbsp;</span>
+                              </div>
+                            </div> -->
+
+
+                            <div class="row" style="margin-top: 20px;">
+
+                              <div class="col-12 text-left" style="border-bottom: 1px solid #ccc !important;">
+                                <div class="row">
+                                  <div class="col-4" *ngFor="let queryParam of queryParams; let i = index">
+                                    <div class="row switchRow">
+                                      <div class="col-md-7">
+                                        <label for="param{{i}}">{{queryParam.paramName}}</label>
+                                      </div>
+                                      <div class="col-md-5">
+                                        <label class="switch">
+                                          <input id="param{{i}}" type="checkbox" [checked]="queryParam.isApplied"
+                                            (change)="createFilterSection(queryParam, $event)">
+                                          <span class="slider round"></span>
+                                        </label>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                </div>
+                              </div>
+
+                              <div class="col-12">
+
+                                <div *ngFor="let filterData of filterList; let i=index"
+                                  [ngSwitch]="filterData.displayType" style="margin-top: 25px;">
+                                  
+                                  <div *ngIf="filterData.defaultParameterValue!=null">
+                                  <ng-container *ngSwitchCase="'range'">
+                                    <div class="row">
+                                      <div class="col-md-12">
+                                        <label>{{filterData.paramName}}</label>
+                                      </div>
+                                    </div>
+                                    <ng-container [ngSwitch]="filterData.dataType">
+                                      <ng-container *ngSwitchCase="'date'">
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            <div class="form-group">
+                                              <label>{{ 'ANALYSTIC_QUERY.FROM' | translate }}</label>
+                                              <app-datepicker formControlName="from{{filterData.paramName}}"
+                                                [readonly]="true" position="right"></app-datepicker>
+
+                                            </div>
+                                          </div>
+                                          <div class="col-md-6">
+                                            <div class="form-group">
+                                              <label>{{ 'ANALYSTIC_QUERY.TO' | translate }}</label>
+                                              <app-datepicker formControlName="to{{filterData.paramName}}"
+                                                [readonly]="true" position="right"></app-datepicker>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </ng-container>
+                                      <ng-container *ngSwitchCase="'period'">
+                                        <div class="row">
+                                          <div class="col-12">
+                                            <div class="form-group">
+                                              <p-dropdown [options]="filterData.data"
+                                                (onChange)="isCustomDatePeriod($event, filterData)" optionLabel="value"
+                                                [style]="{'width':'250px'}"
+                                                placeholder="--  Select {{filterData.paramName}}  --"
+                                                formControlName="{{filterData.paramName}}" [showClear]="true">
+                                              </p-dropdown>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="row" *ngIf="isCustomeSelected == true">
+                                          <div class="col-md-6">
+                                            <div class="form-group">
+                                              <label>{{ 'ANALYSTIC_QUERY.FROM' | translate }}</label>
+                                              <app-datepicker formControlName="from{{filterData.paramName}}"
+                                                [readonly]="true" position="right"></app-datepicker>
+
+                                            </div>
+                                          </div>
+                                          <div class="col-md-6">
+                                            <div class="form-group">
+                                              <label>{{ 'ANALYSTIC_QUERY.TO' | translate }}</label>
+                                              <app-datepicker formControlName="to{{filterData.paramName}}"
+                                                [readonly]="true" position="right"></app-datepicker>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </ng-container>
+                                      <ng-container *ngSwitchDefault>
+                                        <div class="row">
+                                          <div class="col-6">
+                                            <div class="form-group">
+                                              <label>{{ 'ANALYSTIC_QUERY.FROM' | translate }}</label>
+                                              <input type="text" formControlName="from{{filterData.paramName}}"
+                                                class="form-control">
+                                            </div>
+                                          </div>
+                                          <div class="col-6">
+                                            <div class="form-group">
+                                              <label>{{ 'ANALYSTIC_QUERY.TO' | translate }}</label>
+                                              <input type="text" formControlName="to{{filterData.paramName}}"
+                                                class="form-control">
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </ng-container>
+                                    </ng-container>
+
+                                  </ng-container>
+
+                                  <ng-container *ngSwitchCase="'dropdown'">
+                                    <div class="row">
+                                      <div class="col-md-12">
+                                        <label>{{filterData.paramName}}</label>
+                                      </div>
+                                    </div>
+                                    <div class="row">
+                                      <div class="col-12">
+                                        <div class="form-group">
+                                          <p-dropdown [options]="filterData.data" optionLabel="value"
+                                            [style]="{'width':'250px'}"
+                                            placeholder="--  Select {{filterData.paramName}}  --"
+                                            formControlName="{{filterData.paramName}}" [showClear]="true"></p-dropdown>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </ng-container>
+
+                                  <ng-container *ngSwitchCase="'checkbox'">
+                                    <div class="row">
+                                      <div class="col-md-12">
+                                        <label>{{filterData.paramName}}</label>
+                                      </div>
+                                    </div>
+                                    <div class="row">
+                                      <div class="col-12">
+                                        <div class="form-group" [formArrayName]="filterData.paramName">
+                                          <div
+                                            *ngFor="let item of customAnalysticQuery.get(filterData.paramName).controls; let ind = index;">
+
+                                            <div class="row" [formGroupName]="ind">
+                                              <div class="col-1">
+                                                <input id="{{filterData.paramName}}{{ind}}" type="checkbox"
+                                                  [formControlName]="getFromControlName(item)">
+                                              </div>
+
+                                              <div class="col-6">
+                                                <label for="{{filterData.paramName}}{{ind}}">
+                                                  {{filterData.data[ind].value}}</label>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </ng-container>
+
+                                  <ng-container *ngSwitchCase="'radio'">
+                                    <div class="row">
+                                      <div class="col-md-12">
+                                        <label>{{filterData.paramName}}</label>
+                                      </div>
+                                    </div>
+                                    <div class="row">
+                                      <div class="col-12">
+                                        <div class="form-group">
+                                          <div class="ui-g" style="width:250px">
+                                            <div class="ui-g-12" *ngFor="let data of filterData.data; let ind = index">
+                                              <p-radioButton name="group{{filterData.paramName}}" value="{{data.ref}}"
+                                                label="{{data.value}}" formControlName="{{filterData.paramName}}"
+                                                inputId="preopt{{ind}}"></p-radioButton>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </ng-container>
+
+                                  <ng-container *ngSwitchCase="'typeahead'">
+                                    <div class="row">
+                                      <div class="col-md-12">
+                                        <label>{{filterData.paramName}}</label>
+                                      </div>
+                                    </div>
+                                    <div class="row">
+                                      <div class="col-12">
+                                        <div class="form-group">
+                                          <div class="row"
+                                            *ngIf="filterData.itemsArr != null && filterData.itemsArr.length > 0">
+                                            <div class="col-12">
+                                              <span
+                                                class="ng-tns-c1-4 wid100 ui-autocomplete ui-widget ui-autocomplete-multiple">
+                                                <ul
+                                                  class="ui-autocomplete-multiple-container ui-widget ui-inputtext ui-state-default ui-corner-all ng-tns-c1-4 ng-star-inserted">
+
+                                                  <li
+                                                    class="ui-autocomplete-token ui-state-highlight ui-corner-all ng-tns-c1-4 ng-star-inserted"
+                                                    *ngFor="let data of filterData.itemsArr; let ind = index">
+                                                    <span
+                                                      class="ui-autocomplete-token-icon pi pi-fw pi-times ng-tns-c1-4 ng-star-inserted"
+                                                      (click)="removeTypeAheadFilter(filterData, data);"></span>
+                                                    <span
+                                                      class="ui-autocomplete-token-label ng-tns-c1-4 ng-star-inserted">{{data}}</span>
+                                                  </li>
+                                                </ul>
+                                              </span>
+                                            </div>
+                                          </div>
+                                          <div class="row">
+                                            <div class="col-12">
+                                              <p-autoComplete styleClass="medicineListAutoComplete"
+                                                inputStyleClass="medicationStyle" placeholder="{{filterData.paramName}}"
+                                                [suggestions]="filterData.data" [minLength]="1"
+                                                (completeMethod)="fetchTypeaheadData($event, filterData)"
+                                                (onBlur)="selectedListGen(filterData)" field="value"
+                                                autoHighlight="false" formControlName="{{filterData.paramName}}"
+                                                required>
+                                                <ng-template let-results pTemplate="item">
+                                                  <span
+                                                    style="font-size:11px;font-weight: 500;">{{results.value}}</span> 
+
+                                                </ng-template>
+                                              </p-autoComplete>
+                                            </div>
+                                          </div>
+
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </ng-container>
+
+                                  <ng-container *ngSwitchDefault>
+                                    <div class="row">
+                                      <div class="col-md-12">
+                                        <label>{{filterData.paramName}}</label>
+                                      </div>
+                                    </div>
+                                    <div class="row">
+                                      <div class="col-12">
+                                        <div class="form-group">
+                                          <input type="text" formControlName="{{filterData.paramName}}"
+                                            class="form-control">
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </ng-container>
+                                </div>
+
+                                </div>
+
+
+                              </div>
+
+
+
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                      </div>
+                    </div>
+                  </div>
+                </div><!-- DEFAULT VALUE BLOCK END -->
+
+
+
+                <!-- FITER BY BLOCK START -->
+                <div class="card" style="margin-top:5px;position: inherit;" *ngIf="filterByParams.length>0">
+                    <div class="row border-bottom" *ngIf="!isDefaultAvailable">                   
+                        <div class="col-12 text-right link-pos-adj"><a href="javascript:void(0);"
+                            (click)="resetAll()">{{ 'ANALYSTIC_QUERY.RESET_ALL' | translate }}</a></div>
+                    </div> 
+                  <div class="row " >
+                  <div class="col-12">
+                    <div class="row mt-2">
+                        <div class="col-12" style="border-bottom:1px solid #dee2e6;">
+                            <h4 class="search-result-left-pen-heading">{{ 'ANALYSTIC_QUERY.FILTER_BY' | translate }}</h4>
+                          </div>
+                    </div>
+                
+                <div class="row border-bottom">                    
+                  <div class="col-12">
+                        <div class="row" style="margin-top: 20px;">
+
+                          <div class="col-12 text-left" style="border-bottom: 1px solid #ccc !important;">
+                            <div class="row">
+                              <div class="col-6" *ngFor="let queryParam of filterByParams; let i = index">
+                                <div class="row switchRow">
+                                  <div class="col-md-7">
+                                    <label for="param{{i}}">{{queryParam.paramName}}</label>
+                                  </div>
+                                  <div class="col-md-5">
+                                    <label class="switch">
+                                      <input id="param{{i}}" type="checkbox" [checked]="!queryParam.isApplied"
+                                        (change)="createFilterSection(queryParam, $event)">
+                                      <span class="slider round"></span>
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+
+                            </div>
+                          </div>
+
+                          <div class="col-12">
+
+                            <div *ngFor="let filterData of filterList; let i=index"
+                              [ngSwitch]="filterData.displayType" style="margin-top: 25px;">
+                              <div *ngIf="filterData.defaultParameterValue==null">
+                              <ng-container *ngSwitchCase="'range'">
+                                <div class="row">
+                                  <div class="col-md-12">
+                                    <label>{{filterData.paramName}}</label>
+                                  </div>
+                                </div>
+                                <ng-container [ngSwitch]="filterData.dataType">
+                                  <ng-container *ngSwitchCase="'date'">
+                                    <div class="row">
+                                      <div class="col-md-6">
+                                        <div class="form-group">
+                                          <label>{{ 'ANALYSTIC_QUERY.FROM' | translate }}</label>
+                                          <app-datepicker formControlName="from{{filterData.paramName}}"
+                                            [readonly]="true" position="right"></app-datepicker>
+
+                                        </div>
+                                      </div>
+                                      <div class="col-md-6">
+                                        <div class="form-group">
+                                          <label>{{ 'ANALYSTIC_QUERY.TO' | translate }}</label>
+                                          <app-datepicker formControlName="to{{filterData.paramName}}"
+                                            [readonly]="true" position="right"></app-datepicker>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </ng-container>
+                                  <ng-container *ngSwitchCase="'period'">
+                                    <div class="row">
+                                      <div class="col-12">
+                                        <div class="form-group">
+                                          <p-dropdown [options]="filterData.data"
+                                            (onChange)="isCustomDatePeriod($event, filterData)" optionLabel="value"
+                                            [style]="{'width':'250px'}"
+                                            placeholder="--  Select {{filterData.paramName}}  --"
+                                            formControlName="{{filterData.paramName}}" [showClear]="true">
+                                          </p-dropdown>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="row" *ngIf="isCustomeSelected == true">
+                                      <div class="col-md-6">
+                                        <div class="form-group">
+                                          <label>{{ 'ANALYSTIC_QUERY.FROM' | translate }}</label>
+                                          <app-datepicker formControlName="from{{filterData.paramName}}"
+                                            [readonly]="true" position="right"></app-datepicker>
+
+                                        </div>
+                                      </div>
+                                      <div class="col-md-6">
+                                        <div class="form-group">
+                                          <label>{{ 'ANALYSTIC_QUERY.TO' | translate }}</label>
+                                          <app-datepicker formControlName="to{{filterData.paramName}}"
+                                            [readonly]="true" position="right"></app-datepicker>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </ng-container>
+                                  <ng-container *ngSwitchDefault>
+                                    <div class="row">
+                                      <div class="col-6">
+                                        <div class="form-group">
+                                          <label>{{ 'ANALYSTIC_QUERY.FROM' | translate }}</label>
+                                          <input type="text" formControlName="from{{filterData.paramName}}"
+                                            class="form-control">
+                                        </div>
+                                      </div>
+                                      <div class="col-6">
+                                        <div class="form-group">
+                                          <label>{{ 'ANALYSTIC_QUERY.TO' | translate }}</label>
+                                          <input type="text" formControlName="to{{filterData.paramName}}"
+                                            class="form-control">
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </ng-container>
+                                </ng-container>
+
+                              </ng-container>
+
+                              <ng-container *ngSwitchCase="'dropdown'">
+                                <div class="row">
+                                  <div class="col-md-12">
+                                    <label>{{filterData.paramName}}</label>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-12">
+                                    <div class="form-group">
+                                      <p-dropdown [options]="filterData.data" optionLabel="value"
+                                        [style]="{'width':'250px'}"
+                                        placeholder="--  Select {{filterData.paramName}}  --"
+                                        formControlName="{{filterData.paramName}}" [showClear]="true"></p-dropdown>
+                                    </div>
+                                  </div>
+                                </div>
+                              </ng-container>
+
+                              <ng-container *ngSwitchCase="'checkbox'">
+                                <div class="row">
+                                  <div class="col-md-12">
+                                    <label class="page-header">{{filterData.paramName}}</label>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-12">
+                                    <div class="form-group" [formArrayName]="filterData.paramName">
+                                      <div
+                                        *ngFor="let item of customAnalysticQuery.get(filterData.paramName).controls; let ind = index;">
+
+                                        <div class="row" [formGroupName]="ind">
+                                          <div class="col-1">
+                                            <input id="{{filterData.paramName}}{{ind}}" type="checkbox"
+                                              [formControlName]="getFromControlName(item)">
+                                          </div>
+
+                                          <div class="col-6">
+                                            <label class="custom-form-check-label" for="{{filterData.paramName}}{{ind}}">
+                                              {{filterData.data[ind].value}}</label>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </ng-container>
+
+                              <ng-container *ngSwitchCase="'radio'">
+                                <div class="row">
+                                  <div class="col-md-12">
+                                    <label>{{filterData.paramName}}</label>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-12">
+                                    <div class="form-group">
+                                      <div class="ui-g" style="width:250px">
+                                        <div class="ui-g-12" *ngFor="let data of filterData.data; let ind = index">
+                                          <p-radioButton name="group{{filterData.paramName}}" value="{{data.ref}}"
+                                            label="{{data.value}}" formControlName="{{filterData.paramName}}"
+                                            inputId="preopt{{ind}}"></p-radioButton>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </ng-container>
+
+                              <ng-container *ngSwitchCase="'typeahead'">
+                                <div class="row">
+                                  <div class="col-md-12">
+                                    <label>{{filterData.paramName}}</label>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-12">
+                                    <div class="form-group">
+                                      <div class="row"
+                                        *ngIf="filterData.itemsArr != null && filterData.itemsArr.length > 0">
+                                        <div class="col-12">
+                                          <span
+                                            class="ng-tns-c1-4 wid100 ui-autocomplete ui-widget ui-autocomplete-multiple">
+                                            <ul
+                                              class="ui-autocomplete-multiple-container ui-widget ui-inputtext ui-state-default ui-corner-all ng-tns-c1-4 ng-star-inserted">
+
+                                              <li
+                                                class="ui-autocomplete-token ui-state-highlight ui-corner-all ng-tns-c1-4 ng-star-inserted"
+                                                *ngFor="let data of filterData.itemsArr; let ind = index">
+                                                <span
+                                                  class="ui-autocomplete-token-icon pi pi-fw pi-times ng-tns-c1-4 ng-star-inserted"
+                                                  (click)="removeTypeAheadFilter(filterData, data);"></span>
+                                                <span
+                                                  class="ui-autocomplete-token-label ng-tns-c1-4 ng-star-inserted">{{data}}</span>
+                                              </li>
+                                            </ul>
+                                          </span>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-12">
+                                          <p-autoComplete styleClass="medicineListAutoComplete"
+                                            inputStyleClass="medicationStyle" placeholder="{{filterData.paramName}}"
+                                            [suggestions]="filterData.data" [minLength]="1"
+                                            (completeMethod)="fetchTypeaheadData($event, filterData)"
+                                            (onBlur)="selectedListGen(filterData)" field="value"
+                                            autoHighlight="false" formControlName="{{filterData.paramName}}"
+                                            required>
+                                            <ng-template let-results pTemplate="item">
+                                              <span
+                                                style="font-size:11px;font-weight: 500;">{{results.value}}</span> 
+
+                                            </ng-template>
+                                          </p-autoComplete>
+                                        </div>
+                                      </div>
+
+                                    </div>
+                                  </div>
+                                </div>
+                              </ng-container>
+
+                              <ng-container *ngSwitchDefault>
+                                <div class="row">
+                                  <div class="col-md-12">
+                                    <label>{{filterData.paramName}}</label>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-12">
+                                    <div class="form-group">
+                                      <input type="text" formControlName="{{filterData.paramName}}"
+                                        class="form-control">
+                                    </div>
+                                  </div>
+                                </div>
+                              </ng-container>
+                              </div>
+
+                            </div>
+
+
+                          </div>
+
+
+
+                        </div>
+                      
+                  </div>
+                </div>
+              </div>
+                  </div>                
+                  <div class="row text-right">
+                      <div class="col text-center"><button class="btn btn-primary" 
+                          style="margin-top: 5px;" (click)="submitSearchRequest()" type="submit">Search</button></div>
+                  </div> 
+                </div>
+                <!-- FITER BY BLOCK END -->
+
+              <!-- REFINE BY BLOCK START -->
+                <div class="card mb-5" *ngIf="customAnalysticQuery.get('queryFrameWork') && refineByColumnList.length>0">
+                    <div  class="row overflow-auto"  formGroupName="queryFrameWork">
+                        <div class="col-12">
+                            <div class="row mt-2">
+                                <div class="col-12" style="border-bottom:1px solid #dee2e6;">
+                                    <h4 class="search-result-left-pen-heading">{{ 'ANALYSTIC_QUERY.REFINE_BY' | translate }}</h4>
+                                  </div>
+                                 
+                            </div>
+                          <div class="row" *ngFor="let refinecolumn of refineByColumnList; index as i">
+                            <ng-container *ngIf="refinecolumn">
+                            <div class="col-12"
+                              *ngIf="refinecolumn.displayType==='Datetime' || refinecolumn.displayType==='Date'"><label
+                                class="page-header">{{refinecolumn.columnHeading}}</label></div>
+                            </ng-container>
+                            <div class="col-12">
+                              <div class="row"
+                                *ngIf="refinecolumn.displayType==='Datetime' || refinecolumn.displayType==='Date'">
+                                <div class="col-12">
+                                  <div class="form-group">
+                                    <p-dropdown [options]="refinecolumn.refineByValues"
+                                      (onChange)="isCustomRefineByDatePeriod($event, refinecolumn.formControlName)"
+                                      optionLabel="attrDisplayValue" [style]="{'width':'250px'}"
+                                      placeholder="--  Select {{refinecolumn.formControlName}}  --"
+                                      formControlName="{{refinecolumn.formControlName}}" [showClear]="true"></p-dropdown>
+                                  </div>
+                                </div>
+                              </div>
+                              <ng-container *ngIf="isCustomeRefineSelected">
+                               <!--  <div class="row mt-3 mb-3"
+                                  *ngIf="refinecolumn.displayType==='Datetime' || refinecolumn.displayType==='Date'">
+                                  <div class="col-8">
+                                    <button
+                                      [className]="onDaySelection[i]">{{ 'FETCH_PATIENT.ONE_DAY' | translate }}</button>
+                                    <button
+                                      [className]="durationSelection[i]">{{ 'FETCH_PATIENT.DURATION' | translate }}</button>
+                                  </div>
+                                  <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0);"
+                                      (click)="resetSearchDate(i)">{{ 'FETCH_PATIENT.RESET' | translate }}</a></div>
+                                </div> -->
+    
+                                <div class="row"
+                                  *ngIf="refinecolumn.displayType==='Datetime' || refinecolumn.displayType==='Date'">
+                                  
+                                  <div class="col-6">                                   
+                                    <div class="form-group">
+                                      <label>{{ 'QUERY_FRAMEWORK.FROM' | translate }}</label>
+                                      <span class="float-left"><input type="text" placeholder="DD-MM-YYYY"
+                                          bsDatepicker (bsValueChange)="patchDateValue($event,refinecolumn.formControlName+'From')"
+                                          [bsConfig]="{ dateInputFormat: dateFormat,showWeekNumbers:false }"
+                                          class="form-control date"
+                                          formControlName="{{refinecolumn.formControlName+'From'}}" #dp="bsDatepicker"
+                                          [readonly]="true" name="{{refinecolumn.formControlName+'From'}}">
+                                        
+                                          <span class="pt-2 float-right" style="margin-top: -23%;"><i (click)="dp.toggle()"
+                                            [attr.aria-expanded]="dp.isOpen" class="far fa-calendar-alt"></i></span>
+                                        
+                                        </span>
+                                     
+    
+                                    </div>
+                                  </div>
+                                  <div class="col-6">
+                                    <div class="form-group">
+                                      <label>{{ 'QUERY_FRAMEWORK.TO' | translate }}</label>
+                                      <span class="float-left"><input type="text" placeholder="DD-MM-YYYY"
+                                          (bsValueChange)="patchDateValue($event,refinecolumn.formControlName+'To')" bsDatepicker
+                                          [bsConfig]="{ dateInputFormat: dateFormat,showWeekNumbers:false }"
+                                          class="form-control date" formControlName="{{refinecolumn.formControlName+'To'}}"
+                                          #dp1="bsDatepicker" [readonly]="true" name="{{refinecolumn.formControlName+'To'}}"></span>
+                                      <span class="pt-2 float-right" style="margin-top: -23%;"><i (bsValueChange)="filterData()" (click)="dp1.toggle()"
+                                          [attr.aria-expanded]="dp1.isOpen" class="far fa-calendar-alt"></i></span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </ng-container>
+
+                              
+                              <!-- sbis-poc/app/issues/1301 END-->
+                              <div class="form-group" *ngIf="refinecolumn.displayType==='Checkbox'"
+                                >
+                                <div class="row">
+                                  <div class="col-8"><label class="page-header">{{refinecolumn.columnHeading}}</label></div>
+                                  <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0);"
+                                      (click)="resetCheckBox(i)">{{ 'FETCH_PATIENT.RESET' | translate }}</a></div>
+                                </div>
+                                <div *ngFor="let a of refinecolumn.refineByValues" class="form-check">
+                                  <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input"
+                                      formControlName="{{refinecolumn.formControlName}}" value="{{a}}"
+                                      (click)="setCheckBoxArr($event, refinecolumn.columnHeading)"
+                                      (change)="filterData()">{{a}}
+                                  </label>
+                                </div>
+                              </div>
+    
+                              <div class="form-group" *ngIf="refinecolumn.displayType==='String'"
+                               >
+                                <div class="row">
+                                  <div class="col-8"><label class="page-header">{{refinecolumn.columnHeading}}</label></div>
+                                  <!-- <div class="col-4 text-right link-pos-adj"><a href="javascript:void(0);">{{ 'FETCH_PATIENT.RESET' | translate }}</a></div> -->
+                                </div>
+                                <input type="text" name="{{refinecolumn.formControlName}}" (input)="filterData()" class="form-control"
+                                  formControlName="{{refinecolumn.formControlName}}">
+                              </div>
+    
+                            </div>
+                          </div>
+                         
+                        </div>
+    
+    
+    
+                    </div>
+
+                </div>
+              <!-- REFINE BY BLOCK END -->                
+              </form>
+            </div>
+
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="row header cardHeader  pl-0 pr-0 pt-0">
+                <div class="col-5">
+                  <div>
+                    <h1>{{title}}</h1>
+                  </div>
+                </div>
+
+                <!-- <div class="col-2 text-right">
+                  <app-report-download [exportDataSet]=recordSet [title]=title [pdfPaperSizeUnit]="'a1'"></app-report-download>
+                </div> -->
+                <div class="col-7 text-right">
+                  <div class="filterBtn mr-4 cursor" (click)="refinePanelDisplay()">Filters</div>
+                  <button class="btn btn-primary" (click)="backToPrevious()">Back</button>
+                </div>
+              </div>
+              <div class="content table-responsive search-result row">
+                <div class="row mb-2">
+                    <div class="col-12 text-right">
+                        <app-report-download [exportDataSet]=recordSet [columnHeaders]="tableColumns" [title]=title [pdfPaperSizeUnit]="'a1'"></app-report-download>
+                    </div>
+                </div>
+                <p-table class="report-grid" [value]="recordSet" [paginator]="true" [rows]=10  sortable="true" [autoLayout]="true" >
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th class="report-heading"  *ngFor="let column of tableColumns" [pSortableColumn]="column.columnHeading" [hidden]="column.isVisible=='N'"><span class="textDot">{{column.columnHeading}}</span>
+                        <p-sortIcon [field]="column.columnHeading"></p-sortIcon>
+                      </th>
+                      <!-- <th *ngIf="actionList!=null && actionList.length > 0">Action</th> -->
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-i="rowIndex" let-r>
+                    <tr>
+                      <ng-container *ngFor="let column of tableColumns; index as ind">
+                        <td *ngIf="column.isVisible=='Y'">
+                          <div class="textDot" *ngIf="column.displayType=='Date' && r[column.columnHeading] != 'null'">
+                            {{r[column.columnHeading] | date: 'dd/MM/yyyy'}}
+                          </div>
+                          <div class="textDot" *ngIf="(column.displayType=='String' ||column.displayType=='Checkbox') && r[column.columnHeading]!='null'">
+                            {{r[column.columnHeading]}}
+                          </div>
+                         
+                          <div class="textDot text-center" *ngIf="column.displayType.indexOf('Decimal')==0 && r[column.columnHeading]!='null'">
+                              {{fetchDecimalPoint(r[column.columnHeading], column.displayType)}}
+                          </div>
+                          <div class="textDot" *ngIf="column.displayType=='Datetime' && r[column.columnHeading]!='null'">
+                              {{r[column.columnHeading] | date: 'dd/MM/yyyy HH:mm'}}
+                          </div>
+                          <div class="textDot" *ngIf="column.displayType=='Time' && r[column.columnHeading]!='null'">
+                              {{r[column.columnHeading]}}
+                          </div>
+                         <!-- app/issues/936 -->
+                          <div class="textDot text-center" *ngIf="column.displayType=='number' && r[column.columnHeading]!='null'">
+                              {{fetchDecimalPoint(r[column.columnHeading], column.displayType)}}
+                          </div>
+                        </td>
+                      </ng-container>
+
+                      <!-- <td *ngIf="actionList!=null && actionList.length > 0" class="no-padding-left-small">
+              <span *ngFor="let a of actionList; index as j">
+                <span *ngIf="a.displayText == 'NOTIFY'">
+                  <button type="button"
+                    class="btn btn-secondary" (click)="handleNotification(i,j)">{{a.displayText}}</button>
+                </span>
+                <span *ngIf="a.displayText != 'NOTIFY'">
+                    <button type="button"
+                      class="btn btn-secondary" (click)="handleAction(i,j)">{{a.displayText}}</button>
+                  </span>
+              </span>
+            </td> -->
+                    </tr>
+                  </ng-template>
+                </p-table>
+                <div *ngIf="recordSet!=null && recordSet.length==0" class="text-center not-found">
+                  <h3>{{ 'QUERY_FRAMEWORK.NO_RESULT' | translate }}</h3>
+                </div>
+              </div>
+            <ng-container *ngIf="recordSet!=null && recordSet.length!=0">
+                <div class="row">
+                  <div class="col-6" *ngFor="let queryGroup of queryGroups">
+                    <div class="card">
+                      <h1>{{queryGroup.primaryColoumnName}}</h1>
+                      <chart-component [chartType]="queryGroup.chartType" [data]="queryGroup.chartData"></chart-component>
+                    </div>
+                  </div>
+                </div>
+
+              </ng-container> 
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
